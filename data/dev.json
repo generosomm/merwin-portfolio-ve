@@ -1,24 +1,35 @@
 {
   "sectionEyebrow": "Also Builds",
   "heading": "Web development, on the side.",
-  "sub": "Web Development Lead for Microsoft Student Community — NU Laguna. Real, shipped projects in PHP, MySQL, and JavaScript.",
+  "sub": "Web Development Lead for Microsoft Student Community — NU Laguna. Real, shipped projects in Node.js, PHP, MySQL, and JavaScript.",
   "githubLabel": "github.com/generosomm →",
   "githubUrl": "https://github.com/generosomm",
   "projects": [
     {
+      "stack": "Node.js · Express · MySQL",
+      "title": "MSC NU Laguna — Official Website (Backend)",
+      "desc": "Backend contributor on MSC's official site — built REST API endpoints (auth, events, guilds) per an API contract from the org president, using Node.js, Express, and MySQL.",
+      "repoUrl": "https://github.com/mscnulaguna/MSC-Official-Website",
+      "liveUrl": "https://mscnulaguna.org/"
+    },
+    {
       "stack": "PHP · MySQL",
       "title": "Document Tracking & Analytics System",
-      "desc": "Full-stack tracking system built for the City Government of Sto. Tomas as Capstone Project Lead."
+      "desc": "Full-stack tracking system built for the City Government of Sto. Tomas as Capstone Project Lead.",
+      "repoUrl": "https://github.com/generosomm/Document-Tracker"
     },
     {
-      "stack": "HTML · CSS · JavaScript",
+      "stack": "HTML · CSS · JS",
       "title": "Nexus Pass",
-      "desc": "Interactive 3D digital credential platform built with vanilla web technologies."
+      "desc": "Interactive 3D digital credential platform built with vanilla web technologies.",
+      "repoUrl": "https://github.com/generosomm/nexus-pass"
     },
     {
-      "stack": "AWS S3",
-      "title": "Portfolio Hosting Prototype",
-      "desc": "Static site demonstrating cloud hosting, combining web development with media production."
+      "stack": "HTML · CSS · JS",
+      "title": "Personal Portfolio Site",
+      "desc": "This site — a data-driven portfolio built with vanilla JS, deployed on GitHub Pages.",
+      "repoUrl": "https://github.com/generosomm/merwin-portfolio",
+      "liveUrl": "https://generosomm.github.io/merwin-portfolio/"
     }
   ]
 }

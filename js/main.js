@@ -289,11 +289,16 @@ function renderDev(data) {
           ${projects
             .map((p, i) => {
               if (!p) return "";
+              const links = [
+                p.liveUrl ? `<a href="${esc(p.liveUrl)}" target="_blank" rel="noopener">Live site →</a>` : "",
+                p.repoUrl ? `<a href="${esc(p.repoUrl)}" target="_blank" rel="noopener">Repo →</a>` : "",
+              ].filter(Boolean).join("");
               return `
           <div class="dev-card reveal" style="transition-delay:${revealDelay(i)};">
             ${p.stack ? `<div class="stack">${esc(p.stack)}</div>` : ""}
             <h4>${esc(pick(p, "title", "Untitled project"))}</h4>
             <p>${esc(pick(p, "desc", ""))}</p>
+            ${links ? `<div class="dev-card-links">${links}</div>` : ""}
           </div>`;
             })
             .join("")}

@@ -231,6 +231,36 @@ section{ max-width:1180px; margin:0 auto; padding:96px 24px; }
 .demo-bar{ height:8px; background:var(--surface-2); border-radius:4px; overflow:hidden; margin-top:6px; }
 .demo-fill{ height:100%; background:var(--teal); }
 
+/* ===== TESTIMONIALS ===== */
+.testimonial-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:22px; }
+.testimonial-card{
+  background:var(--glass-fill);
+  backdrop-filter:blur(var(--glass-blur)) saturate(160%); -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(160%);
+  border:1px solid var(--glass-border); border-radius:16px; padding:26px 24px; box-shadow:var(--glass-shadow);
+}
+.testimonial-card blockquote{ font-size:15px; color:var(--text); line-height:1.6; margin-bottom:18px; }
+.testimonial-card figcaption{ display:flex; flex-direction:column; gap:2px; }
+.t-name{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13.5px; color:var(--gold); }
+.t-role{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em; }
+
+.coming-soon-card{
+  background:var(--glass-fill);
+  backdrop-filter:blur(var(--glass-blur)) saturate(160%); -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(160%);
+  border:1px dashed var(--glass-border); border-radius:16px;
+  padding:40px 32px; text-align:center; max-width:520px; margin:0 auto;
+}
+.coming-soon-badge{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--teal); border:1px solid var(--line); border-radius:20px; padding:6px 14px; margin-bottom:16px;
+}
+.coming-soon-badge::before{ content:''; width:6px; height:6px; border-radius:50%; background:var(--teal); animation:pulse 1.6s ease-in-out infinite; }
+.coming-soon-card p{ color:var(--text-dim); font-size:14px; line-height:1.65; }
+
+@media (max-width: 900px){
+  .testimonial-grid{ grid-template-columns:1fr; gap:16px; }
+}
+
 /* ===== SKILLS / TOOLKIT ===== */
 .toolkit-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; }
 .tool-card{

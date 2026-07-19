@@ -8,6 +8,7 @@ const DATA_FILES = {
   hero: "data/hero.json",
   work: "data/work.json",
   stats: "data/stats.json",
+  testimonials: "data/testimonials.json",
   skills: "data/skills.json",
   dev: "data/dev.json",
   about: "data/about.json",
@@ -233,6 +234,55 @@ function renderStats(data) {
     }`;
 }
 
+function renderTestimonials(data) {
+  const el = document.getElementById("testimonials");
+  if (!el) return;
+  if (!data) { el.innerHTML = ""; return; }
+
+  const items = list(data.items);
+
+  if (!items.length) {
+    // No real testimonials yet. If comingSoon is set, show an honest
+    // "in progress" state instead of a fake quote or a blank gap.
+    // Once real feedback comes in, add it to "items" and this branch
+    // stops running automatically — no code changes needed then.
+    if (!data.comingSoon) { el.innerHTML = ""; return; }
+    el.innerHTML = `
+      <div class="section-head reveal">
+        <span class="eyebrow">${esc(pick(data, "sectionEyebrow", ""))}</span>
+        <h2>${esc(pick(data, "heading", ""))}</h2>
+        ${data.sub ? `<p>${esc(data.sub)}</p>` : ""}
+      </div>
+      <div class="coming-soon-card reveal">
+        <span class="coming-soon-badge">New Section — In Progress</span>
+        <p>${esc(pick(data, "comingSoonNote", "Currently collecting real feedback from clients I've worked with. Check back soon."))}</p>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="section-head reveal">
+      <span class="eyebrow">${esc(pick(data, "sectionEyebrow", ""))}</span>
+      <h2>${esc(pick(data, "heading", ""))}</h2>
+      ${data.sub ? `<p>${esc(data.sub)}</p>` : ""}
+    </div>
+    <div class="testimonial-grid">
+      ${items
+        .map((t, i) => {
+          if (!t || !t.quote) return "";
+          return `
+        <figure class="testimonial-card reveal" style="transition-delay:${revealDelay(i)};">
+          <blockquote>&ldquo;${esc(t.quote)}&rdquo;</blockquote>
+          <figcaption>
+            ${t.name ? `<span class="t-name">${esc(t.name)}</span>` : ""}
+            ${t.role ? `<span class="t-role">${esc(t.role)}</span>` : ""}
+          </figcaption>
+        </figure>`;
+        })
+        .join("")}
+    </div>`;
+}
+
 function renderSkills(data) {
   const el = document.getElementById("skills");
   if (!el) return;
@@ -369,6 +419,7 @@ function renderContact(data) {
     <div class="contact-actions reveal" style="transition-delay:80ms;">
       ${data.email ? `<a href="mailto:${esc(data.email)}" class="btn-primary">${esc(data.email)}</a>` : ""}
       ${data.linktree ? `<a href="${esc(data.linktree)}" class="btn-ghost" target="_blank" rel="noopener">View All My Socials</a>` : ""}
+      ${data.resumeUrl ? `<a href="${esc(data.resumeUrl)}" class="btn-ghost" target="_blank" rel="noopener">View Resume</a>` : ""}
     </div>
     ${metaLinks ? `<div class="contact-meta reveal" style="transition-delay:150ms;">${metaLinks}</div>` : ""}
     ${data.availability ? `<div class="availability reveal" style="transition-delay:220ms;"><span class="dot-live"></span> ${esc(data.availability)}</div>` : ""}`;
@@ -505,6 +556,9 @@ async function init() {
   renderSection("work", renderWork, data.work);
   initWorkVideos();
   renderSection("stats", renderStats, data.stats);
+  renderSection("stats", renderStats, data.stats);
+  renderSection("testimonials", renderTestimonials, data.testimonials);
+  renderSection("skills", renderSkills, data.skills);
   renderSection("skills", renderSkills, data.skills);
   renderSection("dev", renderDev, data.dev);
   renderSection("about", renderAbout, data.about);

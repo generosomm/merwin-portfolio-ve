@@ -430,7 +430,6 @@ function renderAbout(data) {
     ${sectionHead(7, "About", data)}
     <div class="about-grid">
       <div class="about-copy reveal">
-        <h2 style="font-size:clamp(28px,4vw,42px); margin-bottom:24px; line-height:1.08;">${esc(pick(data,"heading",""))}</h2>
         ${paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}
       </div>
       <div class="about-list reveal" style="transition-delay:120ms;">
@@ -602,6 +601,13 @@ function initWorkVideos() {
 
 // Opens PDF in a modal instead of downloading instantly
 function initPdfViewer() {
+  // Mobile browsers (especially Chrome/Android) cannot render PDFs in iframes, 
+  // they only show a black screen and force a download. 
+  // We must bypass the modal on mobile so the browser handles it natively.
+  if (window.matchMedia("(max-width: 768px)").matches || window.matchMedia("(pointer: coarse)").matches) {
+    return;
+  }
+
   const pdfLinks    = document.querySelectorAll("a[href$='.pdf']");
   const modal       = document.getElementById("pdfModal");
   const iframe      = document.getElementById("pdfViewer");

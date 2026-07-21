@@ -35,6 +35,17 @@
       "postUrl": "https://www.tiktok.com/@eroedtx/video/7439577492840647943",
       "c1": "#2c1c30",
       "c2": "#0D0E10"
+    },
+    {
+      "badge": "Client Commission",
+      "title": "The Chosen — \"Judas\" Sound Edit Series",
+      "stat": "2-part edit series · 24-hr turnaround",
+      "desc": "Client-commissioned two-part edit series syncing key scenes from The Chosen to a trending TikTok sound — full intake-to-delivery workflow from creative brief to final approval.",
+      "image": "assets/images/the-chosen-judas-thumb.jpg",
+      "video": "assets/videos/the-chosen-judas.mp4",
+      "postUrl": "https://vt.tiktok.com/ZSHC135P5/",
+      "c1": "#241c30",
+      "c2": "#0D0E10"
     }
   ]
 }

@@ -1,23 +1,11 @@
 {
-  "eyebrow": "Video Editor — Short-Form Content Specialist",
+  "eyebrow": "Virtual Assistant · Content Ops · Video Editor",
   "nameLine1": "MERWIN",
   "nameLine2Start": "GENE",
   "nameLine2Accent": "ROSO",
-  "tagline": "I cut raw footage into videos that clear the algorithm. 124M+ cumulative views across TikTok, YouTube, Facebook, and Instagram — built on pacing, storytelling, and knowing exactly where a viewer drops off.",
-  "ctaPrimary": { "label": "Start a project →", "href": "mailto:generosomerwin10@gmail.com" },
-  "ctaSecondary": { "label": "See the work", "href": "#work" },
-  "frame": {
-    "recLabel": "REC",
-    "ratio": "09:16",
-    "handle": "@EROEDTX",
-    "initials": "MG",
-    "image": "assets/images/reel-cover.jpg",
-    "linkUrl": "https://www.tiktok.com/@eroedtx",
-    "placeholderNote": "reel-cover.jpg \"image\" above to a path like \"assets/images/reel-cover.jpg\".",
-    "tcStart": "00:00:03:12",
-    "tcEnd": "00:00:14:08",
-    "scrubberPercent": 34
-  },
+  "tagline": "Helping businesses stay organized through email management, scheduling, research, data entry, and content operations — plus video editing when you need content made, not just managed. 124M+ cumulative views built by running every calendar, deadline, and edit myself, end to end.",
+  "ctaPrimary": { "label": "Hire Me", "href": "mailto:generosomerwin10@gmail.com" },
+  "ctaSecondary": { "label": "Download Resume", "href": "assets/resume.pdf" },
   "stats": [
     { "value": "124M+", "label": "Cumulative Views" },
     { "value": "239K+", "label": "TikTok Followers" },

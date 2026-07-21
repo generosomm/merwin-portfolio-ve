@@ -7,6 +7,7 @@ const DATA_FILES = {
   nav: "data/nav.json",
   hero: "data/hero.json",
   work: "data/work.json",
+  services: "data/services.json",
   stats: "data/stats.json",
   testimonials: "data/testimonials.json",
   skills: "data/skills.json",
@@ -104,34 +105,14 @@ function renderHero(data) {
   if (!el) return;
   if (!data) { el.innerHTML = emptyState("Hero content is missing."); return; }
 
-  const f = data.frame || {};
-  const image = f.image || null;
-  const frameStyle = image ? ` style="background-image:url('${esc(image)}');"` : "";
+  el.classList.add("no-frame");
+
   const stats = list(data.stats);
   const ctaPrimary = data.ctaPrimary || {};
   const ctaSecondary = data.ctaSecondary || {};
 
-  const link = f.linkUrl || null;
-  const frameTag = link ? "a" : "div";
-  const frameLinkAttrs = link
-    ? ` href="${esc(link)}" target="_blank" rel="noopener" aria-label="Watch on TikTok"`
-    : "";
-
   el.innerHTML = `
-    <${frameTag} class="hero-frame reveal"${frameStyle}${frameLinkAttrs}>
-      <div class="frame-chrome-top">
-        <span class="rec-dot"></span> ${esc(pick(f, "recLabel", "REC"))} &nbsp;·&nbsp; ${esc(pick(f, "ratio", ""))} &nbsp;·&nbsp; ${esc(pick(f, "handle", ""))}
-      </div>
-      <div class="frame-body">
-        ${image ? "" : `<div class="initials">${esc(pick(f, "initials", ""))}</div>`}
-        <p class="frame-tagline">${image ? "" : esc(pick(f, "placeholderNote", ""))}</p>
-      </div>
-      <div class="frame-chrome-bottom">
-        <div class="scrubber"><div class="scrubber-fill" style="width:${Number(f.scrubberPercent) || 0}%;"></div></div>
-        <div class="frame-tc"><span>${esc(pick(f, "tcStart", "00:00:00:00"))}</span><span>${esc(pick(f, "tcEnd", "00:00:00:00"))}</span></div>
-      </div>
-    </${frameTag}>
-    <div class="hero-copy reveal" style="transition-delay:120ms;">
+    <div class="hero-copy reveal">
       <span class="eyebrow">${esc(pick(data, "eyebrow", ""))}</span>
       <h1>${esc(pick(data, "nameLine1", ""))}<br>${esc(pick(data, "nameLine2Start", ""))}<span>${esc(pick(data, "nameLine2Accent", ""))}</span></h1>
       <p class="hero-sub">${esc(pick(data, "tagline", ""))}</p>
@@ -194,6 +175,47 @@ function renderWork(data) {
     </div>`
         : emptyState("No work added yet — add items to data/work.json.")
     }`;
+}
+
+function renderServices(data) {
+  const el = document.getElementById("services");
+  if (!el) return;
+  if (!data) { el.innerHTML = ""; return; }
+
+  const items = list(data.items);
+  const samples = list(data.samples);
+
+  el.innerHTML = `
+    <div class="section-head reveal">
+      <span class="eyebrow">${esc(pick(data, "sectionEyebrow", ""))}</span>
+      <h2>${esc(pick(data, "heading", ""))}</h2>
+      <p>${esc(pick(data, "sub", ""))}</p>
+    </div>
+    ${
+      items.length
+        ? `<div class="service-grid">
+      ${items
+        .map((it, i) => {
+          if (!it) return "";
+          return `
+        <div class="service-card reveal" style="transition-delay:${revealDelay(i)};">
+          <h4>${esc(pick(it, "title", ""))}</h4>
+          <p>${esc(pick(it, "desc", ""))}</p>
+        </div>`;
+        })
+        .join("")}
+    </div>`
+        : emptyState("No services added yet — add items to data/services.json.")
+    }
+    ${
+      samples.length
+        ? `<div class="service-samples reveal">
+      <h4>${esc(pick(data, "samplesHeading", "Sample Work"))}</h4>
+      <ul>${samples.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
+    </div>`
+        : ""
+    }
+    ${data.note ? `<p class="service-note reveal">${esc(data.note)}</p>` : ""}`;
 }
 
 function renderStats(data) {
@@ -555,10 +577,9 @@ async function init() {
   renderSection("hero", renderHero, data.hero);
   renderSection("work", renderWork, data.work);
   initWorkVideos();
-  renderSection("stats", renderStats, data.stats);
+  renderSection("services", renderServices, data.services);
   renderSection("stats", renderStats, data.stats);
   renderSection("testimonials", renderTestimonials, data.testimonials);
-  renderSection("skills", renderSkills, data.skills);
   renderSection("skills", renderSkills, data.skills);
   renderSection("dev", renderDev, data.dev);
   renderSection("about", renderAbout, data.about);

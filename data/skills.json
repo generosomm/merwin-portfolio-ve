@@ -1,10 +1,10 @@
 {
   "sectionEyebrow": "Toolkit",
-  "heading": "Software I actually cut in, every week.",
+  "heading": "What I bring to the table, every week.",
   "groups": [
-    { "title": "Editing", "items": ["Adobe Premiere Pro", "Adobe After Effects", "CapCut"] },
-    { "title": "Design", "items": ["Canva", "Photoshop (Basic)"] },
-    { "title": "AI-Assisted Workflow", "items": ["Claude", "ChatGPT", "Gemini"] },
-    { "title": "Production & Ops", "items": ["Google Workspace", "Notion / Trello", "Zoom / Discord"] }
+    { "title": "Admin & Client Support", "items": ["Email & Calendar Management", "Data Entry & File Organization", "Internet Research", "Documentation & Reporting"] },
+    { "title": "Content & Project Ops", "items": ["Content Calendars & Scheduling", "Social Media Management", "Digital Asset Organization", "Project & Timeline Coordination"] },
+    { "title": "Editing & Design", "items": ["Adobe Premiere Pro", "Adobe After Effects", "CapCut", "Canva", "Photoshop (Basic)"] },
+    { "title": "Production Tools", "items": ["Google Workspace", "Notion / Trello", "Zoom / Discord", "Claude, ChatGPT, Gemini"] }
   ]
 }

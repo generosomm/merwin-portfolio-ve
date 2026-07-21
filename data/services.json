@@ -1,0 +1,22 @@
+{
+  "sectionEyebrow": "Services",
+  "heading": "What I can help you with.",
+  "sub": "Administrative and content-ops support for businesses that need someone reliable to keep things moving — plus video editing when you need content made, not just organized.",
+  "items": [
+    { "title": "Email & Calendar Management", "desc": "Inbox upkeep, scheduling, and follow-ups so nothing slips through." },
+    { "title": "Data Entry & File Organization", "desc": "Clean spreadsheets and organized drives you can actually find things in later." },
+    { "title": "Internet Research", "desc": "Gathering and summarizing information into clear, usable formats." },
+    { "title": "Social Media Management", "desc": "Content calendars, scheduling, and cross-platform posting." },
+    { "title": "Document & Spreadsheet Management", "desc": "Google Workspace / Microsoft Office file handling and reporting." },
+    { "title": "Video Editing", "desc": "Premiere Pro & After Effects — for when you need content made, not just organized." }
+  ],
+  "samplesHeading": "Sample Administrative & Ops Work",
+  "samples": [
+    "Managed the content production schedule for a student organization, end to end.",
+    "Organized project files and documentation across Google Drive for team-wide access.",
+    "Created meeting notes and project timelines for a multi-person dev team.",
+    "Designed social media graphics in Canva for university event promotion.",
+    "Edited promotional videos for university events, from raw footage to publish."
+  ],
+  "note": "Open to additional administrative or virtual assistant tasks beyond this list — this isn't exhaustive."
+}

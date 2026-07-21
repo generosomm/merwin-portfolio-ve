@@ -601,13 +601,6 @@ function initWorkVideos() {
 
 // Opens PDF in a modal instead of downloading instantly
 function initPdfViewer() {
-  // Mobile browsers (especially Chrome/Android) cannot render PDFs in iframes, 
-  // they only show a black screen and force a download. 
-  // We must bypass the modal on mobile so the browser handles it natively.
-  if (window.matchMedia("(max-width: 768px)").matches || window.matchMedia("(pointer: coarse)").matches) {
-    return;
-  }
-
   const pdfLinks    = document.querySelectorAll("a[href$='.pdf']");
   const modal       = document.getElementById("pdfModal");
   const iframe      = document.getElementById("pdfViewer");
@@ -615,9 +608,21 @@ function initPdfViewer() {
   
   if (!modal || !iframe || !downloadBtn) return;
 
-  function openPdfModal(src) {
-    iframe.src = src;
-    downloadBtn.href = src;
+  function openPdfModal(href) {
+    // Convert relative href to absolute URL for Google Docs Viewer
+    const absoluteUrl = new URL(href, window.location.href).href;
+    
+    // On mobile, native iframes often fail for PDFs, so we force Google Docs Viewer.
+    // On desktop, native iframe works perfectly.
+    const isMobile = window.matchMedia("(max-width: 768px)").matches || window.matchMedia("(pointer: coarse)").matches;
+    
+    if (isMobile) {
+      iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(absoluteUrl)}&embedded=true`;
+    } else {
+      iframe.src = href;
+    }
+
+    downloadBtn.href = href;
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";

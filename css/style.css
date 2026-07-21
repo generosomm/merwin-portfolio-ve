@@ -413,6 +413,7 @@ section {
   border-radius: var(--radius-md); cursor: grab;
 }
 .case-marquee:active { cursor: grabbing; }
+.case-marquee.dragging .case-card { pointer-events: none; }
 .case-marquee::-webkit-scrollbar { display: none; }
 .case-track { display: flex; gap: 1px; width: max-content; }
 .case-card {

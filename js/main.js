@@ -463,12 +463,46 @@ function initWorkMarquee() {
   }
 
   marquee.addEventListener("mouseenter",  () => { paused = true; });
-  marquee.addEventListener("mouseleave",  () => { clearTimeout(resumeTimer); syncPosFromScroll(); paused = false; });
+  marquee.addEventListener("mouseleave",  () => { 
+    isDown = false; 
+    setTimeout(() => marquee.classList.remove("dragging"), 0);
+    clearTimeout(resumeTimer); 
+    syncPosFromScroll(); 
+    paused = false; 
+  });
   marquee.addEventListener("touchstart",  () => { paused = true; }, { passive: true });
   marquee.addEventListener("touchend",    pauseForAWhile, { passive: true });
   marquee.addEventListener("wheel",       pauseForAWhile, { passive: true });
-  marquee.addEventListener("pointerdown", () => { paused = true; });
-  marquee.addEventListener("pointerup",   pauseForAWhile);
+
+  // Mouse drag to scroll
+  let isDown = false;
+  let startX;
+  let scrollLeftState;
+
+  marquee.addEventListener("mousedown", (e) => {
+    isDown = true;
+    marquee.classList.remove("dragging");
+    paused = true;
+    clearTimeout(resumeTimer);
+    startX = e.pageX - marquee.offsetLeft;
+    scrollLeftState = marquee.scrollLeft;
+  });
+
+  marquee.addEventListener("mouseup", () => {
+    isDown = false;
+    setTimeout(() => marquee.classList.remove("dragging"), 0);
+    pauseForAWhile();
+  });
+
+  marquee.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    marquee.classList.add("dragging");
+    const x = e.pageX - marquee.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    marquee.scrollLeft = scrollLeftState - walk;
+    syncPosFromScroll();
+  });
 
   if (reduceMotion) return;
 

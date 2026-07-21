@@ -140,6 +140,7 @@ function renderHero(data) {
     `<span>${esc(item)}</span><span class="m-sep">✦</span>`;
 
   // I repeat items to ensure the marquee fills wide screens
+  const repeatCount = 4;
   let groupItems = [];
   for (let i = 0; i < repeatCount; i++) {
     groupItems = groupItems.concat(marqueeItems);

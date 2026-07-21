@@ -286,10 +286,8 @@ function renderStats(data) {
       ${images.length
         ? `<div class="stats-image-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 32px;">
              ${images.map((img, i) =>
-               `<div class="stat-img-card reveal" style="transition-delay:${revealDelay(i)}; border: 1px solid var(--border-dark); border-radius: 8px; overflow: hidden; background: var(--bg-dark);">
-                  <a href="${esc(img)}" target="_blank" rel="noopener noreferrer" style="display: block; cursor: zoom-in;">
-                    <img src="${esc(img)}" alt="Analytics screenshot" style="width: 100%; height: auto; display: block; filter: grayscale(20%); transition: filter 0.3s, transform 0.3s;" onmouseover="this.style.filter='grayscale(0%)'; this.style.transform='scale(1.02)';" onmouseout="this.style.filter='grayscale(20%)'; this.style.transform='scale(1)';">
-                  </a>
+               `<div class="stat-img-card reveal" style="transition-delay:${revealDelay(i)}; border: 1px solid var(--border-dark); border-radius: 8px; overflow: hidden; background: var(--bg-dark); cursor: zoom-in;" data-img="${esc(img)}" onclick="openImageModal(this.dataset.img)">
+                  <img src="${esc(img)}" alt="Analytics screenshot" style="width: 100%; height: auto; display: block; filter: grayscale(20%); transition: filter 0.3s, transform 0.3s;" onmouseover="this.style.filter='grayscale(0%)'; this.style.transform='scale(1.02)';" onmouseout="this.style.filter='grayscale(20%)'; this.style.transform='scale(1)';">
                 </div>`
              ).join("")}
            </div>`
@@ -819,5 +817,36 @@ async function init() {
     console.warn("Some sections failed to load:", failed.join(", "));
   }
 }
+
+// Image Modal Logic
+const imageModal = document.getElementById("imageModal");
+const imageModalImg = document.getElementById("imageModalImg");
+
+function openImageModal(src) {
+  if (!imageModal || !imageModalImg) return;
+  imageModalImg.src = src;
+  imageModal.classList.add("open");
+  imageModal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeImageModal() {
+  if (!imageModal || !imageModalImg) return;
+  imageModal.classList.remove("open");
+  imageModal.setAttribute("aria-hidden", "true");
+  setTimeout(() => { imageModalImg.src = ""; }, 300);
+  document.body.style.overflow = "";
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.matches("[data-img-close]")) {
+    closeImageModal();
+  }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && imageModal && imageModal.classList.contains("open")) {
+    closeImageModal();
+  }
+});
 
 init();

@@ -346,69 +346,6 @@ function renderTestimonials(data) {
     </div>`;
 }
 
-function renderSkills(data) {
-  const el = document.getElementById("skills");
-  if (!el) return;
-  if (!data) { el.innerHTML = emptyState("Toolkit section is missing."); return; }
-
-  const groups = list(data.groups);
-
-  el.innerHTML = `
-    ${sectionHead(5, "Toolkit", data)}
-    ${groups.length
-      ? `<div class="toolkit-grid">
-           ${groups.map((g,i) => {
-             if (!g) return "";
-             const items = list(g.items);
-             return `
-             <div class="tool-card reveal" style="transition-delay:${revealDelay(i)};">
-               <h4>${esc(pick(g,"title","Tools"))}</h4>
-               ${items.length ? `<ul>${items.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}
-             </div>`;
-           }).join("")}
-         </div>`
-      : emptyState("No toolkit groups added yet.")}`;
-}
-
-function renderDev(data) {
-  const el = document.getElementById("dev");
-  if (!el) return;
-  if (!data) { el.innerHTML = ""; return; }
-
-  const projects  = list(data.projects);
-  const hasGithub = data.githubUrl && data.githubLabel;
-
-  el.innerHTML = `
-    <div class="dev-section reveal">
-      <div class="dev-inner">
-        <div class="dev-head">
-          ${sectionHead(6, "Also Builds", data)}
-          ${hasGithub
-            ? `<a class="gh-link" href="${esc(data.githubUrl)}" target="_blank" rel="noopener">${esc(data.githubLabel)}</a>`
-            : ""}
-        </div>
-        ${projects.length
-          ? `<div class="dev-grid">
-               ${projects.map((p,i) => {
-                 if (!p) return "";
-                 const links = [
-                   p.liveUrl ? `<a href="${esc(p.liveUrl)}" target="_blank" rel="noopener">Live site →</a>` : "",
-                   p.repoUrl ? `<a href="${esc(p.repoUrl)}" target="_blank" rel="noopener">Repo →</a>`     : "",
-                 ].filter(Boolean).join("");
-                 return `
-                 <div class="dev-card reveal" style="transition-delay:${revealDelay(i)};">
-                   ${p.stack ? `<div class="stack">${esc(p.stack)}</div>` : ""}
-                   <h4>${esc(pick(p,"title","Untitled project"))}</h4>
-                   <p>${esc(pick(p,"desc",""))}</p>
-                   ${links ? `<div class="dev-card-links">${links}</div>` : ""}
-                 </div>`;
-               }).join("")}
-             </div>`
-          : emptyState("No projects added yet.")}
-      </div>
-    </div>`;
-}
-
 function renderAbout(data) {
   const el = document.getElementById("about");
   if (!el) return;
@@ -462,7 +399,6 @@ function renderContact(data) {
     <div class="contact-actions reveal" style="transition-delay:80ms;">
       ${data.email    ? `<a href="mailto:${esc(data.email)}" class="btn-primary">${esc(data.email)}  →</a>` : ""}
       ${data.linktree ? `<a href="${esc(data.linktree)}" class="btn-ghost" target="_blank" rel="noopener">All My Socials →</a>` : ""}
-      ${data.resumeUrl? `<a href="${esc(data.resumeUrl)}" class="btn-ghost" target="_blank" rel="noopener">View Resume</a>` : ""}
     </div>
     ${metaLinks ? `<div class="contact-meta reveal" style="transition-delay:150ms;">${metaLinks}</div>` : ""}
     ${data.availability
@@ -599,60 +535,6 @@ function initWorkVideos() {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modal.classList.contains("open")) closeModal(); });
 }
 
-// Opens PDF in a modal instead of downloading instantly
-function initPdfViewer() {
-  const pdfLinks    = document.querySelectorAll("a[href$='.pdf']");
-  const modal       = document.getElementById("pdfModal");
-  const iframe      = document.getElementById("pdfViewer");
-  const downloadBtn = document.getElementById("pdfDownloadBtn");
-  
-  if (!modal || !iframe || !downloadBtn) return;
-
-  function openPdfModal(href) {
-    // Convert relative href to absolute URL for Google Docs Viewer
-    const absoluteUrl = new URL(href, window.location.href).href;
-    
-    // On mobile, native iframes often fail for PDFs, so we force Google Docs Viewer.
-    // On desktop, native iframe works perfectly.
-    const isMobile = window.matchMedia("(max-width: 768px)").matches || window.matchMedia("(pointer: coarse)").matches;
-    
-    if (isMobile) {
-      iframe.src = `https://docs.google.com/viewer?url=${encodeURIComponent(absoluteUrl)}&embedded=true`;
-    } else {
-      iframe.src = href;
-    }
-
-    downloadBtn.href = href;
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-  }
-  
-  function closePdfModal() {
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-    iframe.src = "";
-  }
-
-  pdfLinks.forEach((link) => {
-    // Only hijack if it's not our actual download button
-    if (link.id === "pdfDownloadBtn") return;
-    
-    // Change text from "Download Resume" to "View Resume" if we want
-    if (link.innerText.includes("Download")) {
-      link.innerText = link.innerText.replace("Download", "View");
-    }
-
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      openPdfModal(link.href);
-    });
-  });
-
-  modal.querySelectorAll("[data-pdf-close]").forEach((el) => { el.addEventListener("click", closePdfModal); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modal.classList.contains("open")) closePdfModal(); });
-}
 
 // Fade-in + slide-up as elements enter the viewport
 function initScrollReveal() {
@@ -675,85 +557,6 @@ function initScrollReveal() {
     { threshold: 0.1, rootMargin: "0px 0px -6% 0px" }
   );
   els.forEach((el) => observer.observe(el));
-}
-
-// Custom dot & ring cursor with background spotlight glow
-function initCursorGlow() {
-  const dot    = document.getElementById("cursorDot");
-  const ring   = document.getElementById("cursorRing");
-  const bgGlow = document.getElementById("bgCursorGlow");
-  if (!dot || !ring) return;
-
-  // Disable custom cursor on touch devices
-  if (window.matchMedia("(pointer: coarse)").matches) {
-    dot.style.display = "none";
-    ring.style.display = "none";
-    if (bgGlow) bgGlow.style.display = "none";
-    return;
-  }
-
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduceMotion) return;
-
-  let mouseX = -100, mouseY = -100;
-  let ringX  = -100, ringY  = -100;
-  let bgX    = -100, bgY    = -100;
-  let visible = false;
-  let dirX    = 1;
-
-  window.addEventListener("mousemove", (e) => {
-    const prevX = mouseX;
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    if (mouseX < prevX - 2) dirX = -1;
-    else if (mouseX > prevX + 2) dirX = 1;
-
-    if (!visible) {
-      visible = true;
-      dot.style.opacity  = "1";
-      ring.style.opacity = "1";
-      if (bgGlow) bgGlow.style.opacity = "1";
-    }
-    const flip = dirX === -1 ? "scaleX(-1)" : "scaleX(1)";
-    dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) ${flip}`;
-  }, { passive: true });
-
-  window.addEventListener("mouseleave", () => {
-    visible = false;
-    dot.style.opacity  = "0";
-    ring.style.opacity = "0";
-    if (bgGlow) bgGlow.style.opacity = "0";
-  });
-
-  function lerp(a, b, t) { return a + (b - a) * t; }
-
-  function render() {
-    ringX = lerp(ringX, mouseX, 0.38);
-    ringY = lerp(ringY, mouseY, 0.38);
-    ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
-
-    if (bgGlow) {
-      bgX = lerp(bgX, mouseX, 0.12);
-      bgY = lerp(bgY, mouseY, 0.12);
-      bgGlow.style.transform = `translate(${bgX}px, ${bgY}px) translate(-50%, -50%)`;
-    }
-
-    requestAnimationFrame(render);
-  }
-  render();
-
-  // Hover detection for buttons, links, cards
-  const interactiveSelector = 'a, button, input, textarea, .case-card, .service-card, .dev-card, .tool-card, .marker, .btn-primary, .btn-ghost';
-  document.addEventListener("mouseover", (e) => {
-    if (e.target.closest(interactiveSelector)) {
-      document.body.classList.add("cursor-hover");
-    }
-  });
-  document.addEventListener("mouseout", (e) => {
-    if (e.target.closest(interactiveSelector)) {
-      document.body.classList.remove("cursor-hover");
-    }
-  });
 }
 
 
@@ -1004,14 +807,11 @@ async function init() {
   renderSection("services",     renderServices,     data.services);
   renderSection("stats",        renderStats,        data.stats);
   renderSection("testimonials", renderTestimonials, data.testimonials);
-  renderSection("skills",       renderSkills,       data.skills);
-  renderSection("dev",          renderDev,          data.dev);
   renderSection("about",        renderAbout,        data.about);
   renderSection("contact",      renderContact,      data.contact);
 
   initScrollSpy();
   initScrollReveal();
-  initCursorGlow();
   initMagneticButtons();
   initCardTilt();
   
@@ -1019,7 +819,6 @@ async function init() {
   initScrollVelocitySkew();
   initTextScramble();
   initParallaxHero();
-  initPdfViewer();
 
   if (failed.length === Object.keys(DATA_FILES).length) {
     document.body.innerHTML = `

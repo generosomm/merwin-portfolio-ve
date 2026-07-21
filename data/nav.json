@@ -5,8 +5,6 @@
     { "target": "#work",     "tc": "00:00:08", "label": "Work" },
     { "target": "#services", "tc": "00:00:16", "label": "Services" },
     { "target": "#stats",    "tc": "00:00:28", "label": "Stats" },
-    { "target": "#skills",   "tc": "00:00:41", "label": "Toolkit" },
-    { "target": "#dev",      "tc": "00:00:54", "label": "Also Builds" },
     { "target": "#about",    "tc": "00:01:08", "label": "About" },
     { "target": "#contact",  "tc": "00:01:21", "label": "Contact" }
   ]

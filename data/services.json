@@ -1,25 +1,18 @@
 {
   "sectionEyebrow": "Services",
-  "heading": "What I can help you with.",
-  "sub": "Administrative and content-ops support for businesses that need someone reliable to keep things moving, plus video editing and paid social support when you need content made, not just organized.",
+  "heading": "What I can do for you.",
+  "sub": "Everything from the initial cut to the final campaign. Built for creators and brands who want to scale their content without losing their minds.",
   "items": [
-    { "title": "Email & Calendar Management", "desc": "Inbox upkeep, scheduling, and follow-ups so nothing slips through." },
-    { "title": "Data Entry & File Organization", "desc": "Clean spreadsheets and organized drives you can actually find things in later." },
-    { "title": "Internet Research", "desc": "Gathering and summarizing information into clear, usable formats." },
-    { "title": "Social Media Management", "desc": "Content calendars, scheduling, and cross-platform posting." },
-    { "title": "Paid Social & Meta Ads Support", "desc": "Setting up and running Facebook/Instagram ad campaigns, from listing creatives to audience targeting and reporting." },
-    { "title": "Document & Spreadsheet Management", "desc": "Google Workspace / Microsoft Office file handling and reporting." },
-    { "title": "Video Editing", "desc": "Premiere Pro & After Effects, for when you need content made, not just organized." },
-    { "title": "Workflow & Automation Support", "desc": "Setting up form workflows, Google Workspace automations, and streamlined daily operations." }
+    { "title": "Video Editing", "desc": "High-retention edits in Premiere Pro & After Effects. I don't just cut footage; I build pacing that keeps people watching." },
+    { "title": "Content Operations", "desc": "Managing your entire production pipeline. From organizing raw assets to scheduling the final post across platforms." },
+    { "title": "Paid Social & Ads", "desc": "Setting up and running Meta ad campaigns to guarantee your best content reaches a wider audience." }
   ],
-  "samplesHeading": "Sample Administrative & Ops Work",
+  "samplesHeading": "Proven Results",
   "samples": [
-    "Managed the content production schedule for a student organization, end to end.",
-    "Ran Facebook ad campaigns for a Tagaytay Highlands real estate agent, covering property listing creatives and audience targeting.",
-    "Organized project files and documentation across Google Drive for team-wide access.",
-    "Created meeting notes and project timelines for a multi-person dev team.",
-    "Designed social media graphics in Canva for university event promotion.",
-    "Edited promotional videos for university events, from raw footage to publish."
+    "Delivered a commissioned edit for a U.S.-based recording artist that reached 3.9M views natively.",
+    "Managed the content production schedule for a large student organization, end to end.",
+    "Ran successful Facebook ad campaigns for Tagaytay Highlands real estate, handling creatives and targeting.",
+    "Edited promotional videos from raw footage to publish, driving 124M+ cumulative views across all platforms."
   ],
-  "note": "Open to additional administrative or virtual assistant tasks beyond this list, this isn't exhaustive."
+  "note": "Let's build a content system that works for you."
 }

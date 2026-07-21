@@ -1,18 +1,11 @@
 {
   "sectionEyebrow": "By The Numbers",
   "heading": "Real audience data, not vanity metrics.",
-  "rows": [
-    { "label": "TikTok followers", "value": "239K+" },
-    { "label": "TikTok likes", "value": "21.3M+" },
-    { "label": "TikTok videos posted", "value": "1,848" },
-    { "label": "YouTube subscribers", "value": "16.4K+" },
-    { "label": "YouTube total views", "value": "15.9M+" },
-    { "label": "YouTube videos published", "value": "644+" },
-    { "label": "Instagram followers", "value": "1.9K+" }
+  "images": [
+    "assets/images/stat-1.jpg",
+    "assets/images/stat-2.jpg",
+    "assets/images/stat-3.jpg",
+    "assets/images/stat-4.jpg"
   ],
-  "bars": [
-    { "label": "Non-follower discovery (Search + For You)", "value": "96%+", "percent": 96 },
-    { "label": "Audience in Philippines", "value": "63–87%", "percent": 75 },
-    { "label": "Audience aged 18–24", "value": "44.8%", "percent": 45 }
-  ]
+  "note": "Replace these placeholders in assets/images/ with your actual analytics screenshots."
 }

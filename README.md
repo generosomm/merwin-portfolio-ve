@@ -2,7 +2,7 @@
 
 My personal portfolio site showcasing my work as a Video Editor and Social Media Marketer. Built with plain HTML, CSS, and JavaScript - no frameworks.
 
-**Live site:** https://generosomm.github.io/merwin-portfolio/
+**Live site:** https://generosomm.github.io/merwin-portfolio-ve/
 **Contact:** generosomerwin10@gmail.com
 
 ## How it works

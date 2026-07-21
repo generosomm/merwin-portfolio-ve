@@ -1,10 +1,26 @@
 {
   "sectionEyebrow": "By The Numbers",
   "heading": "Real audience data, not vanity metrics.",
-  "images": [
-    "assets/images/stat-1.png",
-    "assets/images/stat-2.png",
-    "assets/images/stat-3.png",
-    "assets/images/stat-4.png"
+  "items": [
+    {
+      "image": "assets/images/stat-1.png",
+      "title": "TikTok Studio Overview",
+      "context": "Generated 57.9M video views, 4.8M likes, and over 317K shares, demonstrating strong organic reach and engagement on short-form platforms."
+    },
+    {
+      "image": "assets/images/stat-2.png",
+      "title": "Top Performing TikTok Content",
+      "context": "Consistent viral hits. Multiple videos reaching between 3.4M and 7.2M views individually by leveraging effective pacing and retention editing techniques."
+    },
+    {
+      "image": "assets/images/stat-3.png",
+      "title": "YouTube Channel Analytics",
+      "context": "Grew channel to over 16.4M total views and gained 16.7K+ subscribers, showing sustained cross-platform growth and long-form video success."
+    },
+    {
+      "image": "assets/images/stat-4.png",
+      "title": "YouTube Monthly Audience",
+      "context": "Maintained a monthly audience of 4M unique viewers, building a loyal community of regular viewers alongside a massive influx of new audiences."
+    }
   ]
 }

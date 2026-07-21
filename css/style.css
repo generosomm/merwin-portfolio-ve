@@ -491,6 +491,51 @@ section {
 .demo-bar { height: 3px; background: var(--surface-2); overflow: hidden; margin-top: 8px; border-radius: 2px; }
 .demo-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--teal)); border-radius: 2px; }
 
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  margin-top: 32px;
+}
+.stat-item {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.stat-img-card {
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  cursor: zoom-in;
+  overflow: hidden;
+}
+.stat-img-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: grayscale(15%);
+  transition: filter 0.3s ease, transform 0.4s ease;
+}
+.stat-img-card:hover img {
+  filter: grayscale(0%);
+  transform: scale(1.015);
+}
+.stat-info {
+  padding: 32px;
+}
+.stat-info h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.stat-info p {
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
 /* testimonials */
 .testimonial-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);

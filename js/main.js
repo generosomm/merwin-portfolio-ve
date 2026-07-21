@@ -275,16 +275,22 @@ function renderStats(data) {
   if (!el) return;
   if (!data) { el.innerHTML = emptyState("Stats section is missing."); return; }
 
-  const images = list(data.images);
+  const items = list(data.items);
 
   el.innerHTML = `
     <div class="section-inner">
       ${sectionHead(3, "By The Numbers", data)}
-      ${images.length
-        ? `<div class="stats-image-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 32px;">
-             ${images.map((img, i) =>
-               `<div class="stat-img-card reveal" style="transition-delay:${revealDelay(i)}; border: 1px solid var(--border-dark); border-radius: 8px; overflow: hidden; background: var(--bg-dark); cursor: zoom-in;" data-img="${esc(img)}" onclick="openImageModal(this.dataset.img)">
-                  <img src="${esc(img)}" alt="Analytics screenshot" style="width: 100%; height: auto; display: block; filter: grayscale(20%); transition: filter 0.3s, transform 0.3s;" onmouseover="this.style.filter='grayscale(0%)'; this.style.transform='scale(1.02)';" onmouseout="this.style.filter='grayscale(20%)'; this.style.transform='scale(1)';">
+      ${items.length
+        ? `<div class="stats-list">
+             ${items.map((item, i) =>
+               `<div class="stat-item reveal" style="transition-delay:${revealDelay(i)};">
+                  <div class="stat-img-card" data-img="${esc(item.image)}" onclick="openImageModal(this.dataset.img)">
+                    <img src="${esc(item.image)}" alt="Analytics screenshot for ${esc(item.title)}">
+                  </div>
+                  <div class="stat-info">
+                    <h3>${esc(item.title)}</h3>
+                    <p>${esc(item.context)}</p>
+                  </div>
                 </div>`
              ).join("")}
            </div>`

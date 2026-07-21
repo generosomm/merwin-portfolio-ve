@@ -1,6 +1,6 @@
 // main.js
 // Loads content from /data/*.json and renders each section.
-// To change site content, just edit the JSON files — no need to touch this file.
+// To change site content, just edit the JSON files. No need to touch this file.
 // If a JSON file is missing/broken, that section just shows a fallback message instead of breaking the page.
 
 const DATA_FILES = {
@@ -123,7 +123,7 @@ function renderHero(data) {
       ${stats.length
         ? `<div class="hero-stats">
             ${stats
-              .map((s) => `<div><strong>${esc(pick(s, "value", "—"))}</strong><span>${esc(pick(s, "label", ""))}</span></div>`)
+              .map((s) => `<div><strong>${esc(pick(s, "value", "N/A"))}</strong><span>${esc(pick(s, "label", ""))}</span></div>`)
               .join("")}
           </div>`
         : ""}
@@ -137,6 +137,31 @@ function renderWork(data) {
 
   const items = list(data.items);
 
+  const cardHTML = (item) => {
+    if (!item) return "";
+    const hasVideo = !!item.video;
+    const bg = item.image
+      ? `background-image:url('${esc(item.image)}');`
+      : `--c1:${esc(pick(item, "c1", "#1a1b20"))}; --c2:${esc(pick(item, "c2", "#0D0E10"))};`;
+    return `
+      <article class="case-card">
+        <div class="case-frame${hasVideo ? " has-video" : ""}" style="${bg}"${
+          hasVideo
+            ? ` data-video="${esc(item.video)}" role="button" tabindex="0" aria-label="Play video: ${esc(pick(item, "title", "project video"))}"`
+            : ""
+        }>
+          <span class="case-badge">${esc(pick(item, "badge", "Project"))}</span>
+          <div class="play-icon"></div>
+        </div>
+        <div class="case-body">
+          <h3>${esc(pick(item, "title", "Untitled project"))}</h3>
+          ${item.stat ? `<p class="case-stat">${esc(item.stat)}</p>` : ""}
+          <p>${esc(pick(item, "desc", ""))}</p>
+          ${item.postUrl ? `<a href="${esc(item.postUrl)}" target="_blank" rel="noopener" class="case-link">Watch original post →</a>` : ""}
+        </div>
+      </article>`;
+  };
+
   el.innerHTML = `
     <div class="section-head reveal">
       <span class="eyebrow">${esc(pick(data, "sectionEyebrow", ""))}</span>
@@ -145,35 +170,13 @@ function renderWork(data) {
     </div>
     ${
       items.length
-        ? `<div class="case-grid">
-      ${items
-        .map((item, i) => {
-          if (!item) return "";
-          const hasVideo = !!item.video;
-          const bg = item.image
-            ? `background-image:url('${esc(item.image)}');`
-            : `--c1:${esc(pick(item, "c1", "#1a1b20"))}; --c2:${esc(pick(item, "c2", "#0D0E10"))};`;
-          return `
-        <article class="case-card reveal" style="transition-delay:${revealDelay(i)};">
-          <div class="case-frame${hasVideo ? " has-video" : ""}" style="${bg}"${
-            hasVideo
-              ? ` data-video="${esc(item.video)}" role="button" tabindex="0" aria-label="Play video: ${esc(pick(item, "title", "project video"))}"`
-              : ""
-          }>
-            <span class="case-badge">${esc(pick(item, "badge", "Project"))}</span>
-            <div class="play-icon"></div>
-          </div>
-          <div class="case-body">
-            <h3>${esc(pick(item, "title", "Untitled project"))}</h3>
-            ${item.stat ? `<p class="case-stat">${esc(item.stat)}</p>` : ""}
-            <p>${esc(pick(item, "desc", ""))}</p>
-            ${item.postUrl ? `<a href="${esc(item.postUrl)}" target="_blank" rel="noopener" class="case-link">Watch original post →</a>` : ""}
-          </div>
-        </article>`;
-        })
-        .join("")}
+        ? `<div class="case-marquee" id="workMarquee">
+      <div class="case-track" id="workTrack">
+        ${items.map(cardHTML).join("")}
+        ${items.map(cardHTML).join("")}
+      </div>
     </div>`
-        : emptyState("No work added yet — add items to data/work.json.")
+        : emptyState("No work added yet, add items to data/work.json.")
     }`;
 }
 
@@ -205,7 +208,7 @@ function renderServices(data) {
         })
         .join("")}
     </div>`
-        : emptyState("No services added yet — add items to data/services.json.")
+        : emptyState("No services added yet, add items to data/services.json.")
     }
     ${
       samples.length
@@ -252,7 +255,7 @@ function renderStats(data) {
           .join("")}
       </div>
     </div>`
-        : emptyState("No stats added yet — add rows or bars to data/stats.json.")
+        : emptyState("No stats added yet, add rows or bars to data/stats.json.")
     }`;
 }
 
@@ -267,7 +270,7 @@ function renderTestimonials(data) {
     // No real testimonials yet. If comingSoon is set, show an honest
     // "in progress" state instead of a fake quote or a blank gap.
     // Once real feedback comes in, add it to "items" and this branch
-    // stops running automatically — no code changes needed then.
+    // stops running automatically, no code changes needed then.
     if (!data.comingSoon) { el.innerHTML = ""; return; }
     el.innerHTML = `
       <div class="section-head reveal">
@@ -276,7 +279,7 @@ function renderTestimonials(data) {
         ${data.sub ? `<p>${esc(data.sub)}</p>` : ""}
       </div>
       <div class="coming-soon-card reveal">
-        <span class="coming-soon-badge">New Section — In Progress</span>
+        <span class="coming-soon-badge">New Section, In Progress</span>
         <p>${esc(pick(data, "comingSoonNote", "Currently collecting real feedback from clients I've worked with. Check back soon."))}</p>
       </div>`;
     return;
@@ -332,7 +335,7 @@ function renderSkills(data) {
         })
         .join("")}
     </div>`
-        : emptyState("No toolkit groups added yet — add groups to data/skills.json.")
+        : emptyState("No toolkit groups added yet, add groups to data/skills.json.")
     }`;
 }
 
@@ -375,7 +378,7 @@ function renderDev(data) {
             })
             .join("")}
         </div>`
-            : emptyState("No projects added yet — add projects to data/dev.json.")
+            : emptyState("No projects added yet, add projects to data/dev.json.")
         }
       </div>
     </div>`;
@@ -485,6 +488,62 @@ function initScrollSpy() {
   sections.forEach((s) => observer.observe(s));
 }
 
+// slowly auto-scrolls the work section to the left, looping seamlessly;
+// pauses while the user hovers, touches, or manually scrolls it
+
+function initWorkMarquee() {
+  const marquee = document.getElementById("workMarquee");
+  const track = document.getElementById("workTrack");
+  if (!marquee || !track) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let paused = false;
+  let resumeTimer = null;
+  const SPEED = 0.35; // px per frame, kept slow/ambient
+
+  // scrollLeft is rounded to a whole pixel by the browser on every read, so
+  // adding a sub-1px SPEED straight to marquee.scrollLeft each frame just
+  // gets rounded back down to where it started and never actually moves.
+  // Track the true (fractional) position ourselves and only write the
+  // rounded pixel value to scrollLeft.
+  let pos = marquee.scrollLeft;
+
+  function syncPosFromScroll() {
+    pos = marquee.scrollLeft;
+  }
+
+  function pauseForAWhile() {
+    paused = true;
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => { syncPosFromScroll(); paused = false; }, 1800);
+  }
+
+  marquee.addEventListener("mouseenter", () => { paused = true; });
+  marquee.addEventListener("mouseleave", () => { clearTimeout(resumeTimer); syncPosFromScroll(); paused = false; });
+  marquee.addEventListener("touchstart", () => { paused = true; }, { passive: true });
+  marquee.addEventListener("touchend", pauseForAWhile, { passive: true });
+  marquee.addEventListener("wheel", pauseForAWhile, { passive: true });
+  marquee.addEventListener("pointerdown", () => { paused = true; });
+  marquee.addEventListener("pointerup", pauseForAWhile);
+
+  if (reduceMotion) return; // no automatic motion when the user prefers reduced motion
+
+  function step() {
+    if (!paused) {
+      const half = track.scrollWidth / 2;
+      pos += SPEED;
+      if (pos >= half) {
+        pos -= half;
+      }
+      marquee.scrollLeft = pos;
+    }
+    requestAnimationFrame(step);
+  }
+
+  requestAnimationFrame(step);
+}
+
 // opens the video modal when a work card with a video is clicked
 
 function initWorkVideos() {
@@ -577,6 +636,7 @@ async function init() {
   renderSection("hero", renderHero, data.hero);
   renderSection("work", renderWork, data.work);
   initWorkVideos();
+  initWorkMarquee();
   renderSection("services", renderServices, data.services);
   renderSection("stats", renderStats, data.stats);
   renderSection("testimonials", renderTestimonials, data.testimonials);
@@ -593,8 +653,8 @@ async function init() {
       <div class="load-msg error">
         Couldn't load any site content.<br><br>
         This usually means the page was opened directly as a file.<br>
-        Run a local server instead — e.g. the VS Code "Live Server" extension,
-        or <code>python -m http.server</code> in this folder — then reload.
+        Run a local server instead, e.g. the VS Code "Live Server" extension,
+        or <code>python -m http.server</code> in this folder, then reload.
       </div>`;
   } else if (failed.length) {
     console.warn("Some sections failed to load:", failed.join(", "));

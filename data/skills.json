@@ -3,8 +3,9 @@
   "heading": "What I bring to the table, every week.",
   "groups": [
     { "title": "Admin & Client Support", "items": ["Email & Calendar Management", "Data Entry & File Organization", "Internet Research", "Documentation & Reporting"] },
-    { "title": "Content & Project Ops", "items": ["Content Calendars & Scheduling", "Social Media Management", "Digital Asset Organization", "Project & Timeline Coordination"] },
+    { "title": "Marketing & Paid Social", "items": ["Meta / Facebook Ads (campaign setup & targeting)", "Ad Creative Coordination", "Social Media Marketing", "Content Calendars & Scheduling"] },
+    { "title": "Content & Project Ops", "items": ["Social Media Management", "Digital Asset Organization", "Project & Timeline Coordination"] },
     { "title": "Editing & Design", "items": ["Adobe Premiere Pro", "Adobe After Effects", "CapCut", "Canva", "Photoshop (Basic)"] },
-    { "title": "Production Tools", "items": ["Google Workspace", "Notion / Trello", "Zoom / Discord", "Claude, ChatGPT, Gemini"] }
+    { "title": "Production Tools", "items": ["Google Workspace", "Meta Ads Manager", "Notion / Trello", "Zoom / Discord", "Claude, ChatGPT, Gemini"] }
   ]
 }

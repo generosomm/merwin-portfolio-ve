@@ -1,15 +1,15 @@
-# ERO | VISUALS — Video Editor & Social Media Marketing Portfolio
+# ERO | VISUALS - Video Editor & Social Media Marketing Portfolio
 
-My personal portfolio site showcasing my work as a Video Editor and Social Media Marketer. Built with plain HTML, CSS, and JavaScript — no frameworks.
+My personal portfolio site showcasing my work as a Video Editor and Social Media Marketer. Built with plain HTML, CSS, and JavaScript - no frameworks.
 
-**Live site:** add your deployed link here
+**Live site:** https://generosomm.github.io/merwin-portfolio/
 **Contact:** generosomerwin10@gmail.com
 
 ## How it works
 
 The whole site is data-driven. Every section (hero, work, stats, skills, dev, about, contact) is rendered by `js/main.js`, which fetches its content from a matching JSON file in `data/`.
 
-This means I can update almost anything on the site — text, stats, projects — just by editing a JSON file. No need to touch the HTML or JS for normal content changes.
+This means I can update almost anything on the site - text, stats, projects - just by editing a JSON file. No need to touch the HTML or JS for normal content changes.
 
 ```
 index.html        → page shell, section containers only
@@ -43,7 +43,7 @@ Easiest options:
 
 ## About me
 
-4th year BS Information Technology student (NU Laguna × Asia Pacific College) and the video editor running ERO | VISUALS. I specialize in crafting engaging content, video editing, and executing social media marketing strategies to build impactful online presences.
+I am the Video Editor and Social Media Marketer behind ERO | VISUALS. I specialize in crafting engaging content, video editing, and executing social media marketing strategies to build impactful online presences.
 
 - TikTok: [@eroedtx](https://www.tiktok.com/@eroedtx)
 - LinkedIn: [generosomm](https://linkedin.com/in/generosomm)

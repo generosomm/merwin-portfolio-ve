@@ -277,22 +277,27 @@ function renderStats(data) {
 
   const items = list(data.items);
 
+  const statHTML = (item, i) => `
+    <div class="stat-item reveal" style="transition-delay:${revealDelay(i)};">
+      <div class="stat-img-card" data-img="${esc(item.image)}" onclick="openImageModal(this.dataset.img)">
+        <img src="${esc(item.image)}" alt="Analytics screenshot for ${esc(item.title)}">
+      </div>
+      <div class="stat-info">
+        <h3>${esc(item.title)}</h3>
+        <p>${esc(item.context)}</p>
+      </div>
+    </div>
+  `;
+
   el.innerHTML = `
     <div class="section-inner">
       ${sectionHead(3, "By The Numbers", data)}
       ${items.length
-        ? `<div class="stats-list">
-             ${items.map((item, i) =>
-               `<div class="stat-item reveal" style="transition-delay:${revealDelay(i)};">
-                  <div class="stat-img-card" data-img="${esc(item.image)}" onclick="openImageModal(this.dataset.img)">
-                    <img src="${esc(item.image)}" alt="Analytics screenshot for ${esc(item.title)}">
-                  </div>
-                  <div class="stat-info">
-                    <h3>${esc(item.title)}</h3>
-                    <p>${esc(item.context)}</p>
-                  </div>
-                </div>`
-             ).join("")}
+        ? `<div class="stats-marquee" id="statsMarquee">
+             <div class="stats-track" id="statsTrack">
+               ${items.map(statHTML).join("")}
+               ${items.map(statHTML).join("")}
+             </div>
            </div>`
         : emptyState("No stats screenshots added yet.")}
       ${data.note ? `<p class="service-note reveal" style="margin-top:24px;">${esc(data.note)}</p>` : ""}
@@ -450,15 +455,14 @@ function initScrollSpy() {
 }
 
 // Marquee scroll
-function initWorkMarquee() {
-  const marquee = document.getElementById("workMarquee");
-  const track   = document.getElementById("workTrack");
+function initMarquee(marqueeId, trackId, speed) {
+  const marquee = document.getElementById(marqueeId);
+  const track   = document.getElementById(trackId);
   if (!marquee || !track) return;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let paused = false;
   let resumeTimer = null;
-  const SPEED = 0.38;
   let pos = marquee.scrollLeft;
 
   function syncPosFromScroll() { pos = marquee.scrollLeft; }
@@ -515,7 +519,7 @@ function initWorkMarquee() {
   function step() {
     if (!paused) {
       const half = track.scrollWidth / 2;
-      pos += SPEED;
+      pos += speed;
       if (pos >= half) pos -= half;
       marquee.scrollLeft = pos;
     }
@@ -825,9 +829,10 @@ async function init() {
   initStatCounters();
   renderSection("work",         renderWork,         data.work);
   initWorkVideos();
-  initWorkMarquee();
+  initMarquee("workMarquee", "workTrack", 0.38);
   renderSection("services",     renderServices,     data.services);
   renderSection("stats",        renderStats,        data.stats);
+  initMarquee("statsMarquee", "statsTrack", 0.20);
   renderSection("testimonials", renderTestimonials, data.testimonials);
   renderSection("about",        renderAbout,        data.about);
   renderSection("contact",      renderContact,      data.contact);

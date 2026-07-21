@@ -16,7 +16,7 @@ const DATA_FILES = {
   contact:      "data/contact.json",
 };
 
-// ── Helpers ──────────────────────────────────────────────────
+// helpers
 
 function esc(value) {
   if (value === null || value === undefined) return "";
@@ -43,17 +43,27 @@ function revealDelay(i) {
   return `${Math.min(i, 8) * 65}ms`;
 }
 
-// Azurio-style section index label e.g. "01 / WORK"
 function sectionIndex(num, label) {
   return `<span class="section-index">${String(num).padStart(2,"0")} / ${label}</span>`;
 }
 
-// ── Data loading ──────────────────────────────────────────────
+function sectionHead(index, label, data) {
+  if (!data) return "";
+  return `
+    <div class="section-head reveal">
+      ${sectionIndex(index, label)}
+      <h2>${esc(pick(data, "heading", ""))}</h2>
+      ${data.sub ? `<p>${esc(data.sub)}</p>` : ""}
+    </div>`;
+}
+
+// data loading
 
 async function loadData() {
   const results = await Promise.allSettled(
     Object.entries(DATA_FILES).map(async ([key, path]) => {
-      const res = await fetch(path, { cache: "no-store" });
+      const url = `${path}?t=${Date.now()}`;
+      const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) throw new Error(`${path} responded ${res.status}`);
       const json = await res.json();
       return [key, json];
@@ -77,7 +87,7 @@ async function loadData() {
   return { data, failed };
 }
 
-// ── Render functions ──────────────────────────────────────────
+// render functions
 
 function renderNav(data) {
   const el = document.getElementById("nav-root");
@@ -118,35 +128,45 @@ function renderHero(data) {
   const ctaPrimary   = data.ctaPrimary   || {};
   const ctaSecondary = data.ctaSecondary || {};
 
-  // Roles for the horizontal scrolling ticker
-  const roles = data.roles || [
-    "Video Editor",
-    "Virtual Assistant",
-    "Content Creator",
-    "Content Operator",
-  ];
+  // Build marquee track items dynamically from data.marquee
+  const rawMarquee = list(data.marquee);
+  const marqueeItems = rawMarquee.length
+    ? rawMarquee
+    : [
+        "VIRTUAL ASSISTANT",
+        "VIDEO EDITOR",
+        "CONTENT CREATOR",
+        "CONTENT OPERATOR",
+      ];
 
-  // Build one set of ticker items, duplicated for seamless loop
-  const roleItem = (r) =>
-    `<span class="role-ticker-item">
-       <span class="role-prefix">Available as —</span>
-       <span class="role-name">${esc(r)}</span>
-       <span class="role-sep">/</span>
-     </span>`;
-  const roleTicker =
-    `<div class="hero-role-wrap" aria-label="Available roles" role="marquee">
-       <div class="role-ticker-track" id="roleTicker">
-         ${roles.map(roleItem).join("")}
-         ${roles.map(roleItem).join("")}
-       </div>
-     </div>`;
+  const itemHTML = (item) =>
+    `<span>${esc(item)}</span><span class="m-sep">✦</span>`;
+
+  // Repeat items inside a group to ensure 1 group is wider than 4K screens (~16 items min)
+  const repeatCount = Math.max(4, Math.ceil(16 / marqueeItems.length));
+  let groupItems = [];
+  for (let i = 0; i < repeatCount; i++) {
+    groupItems = groupItems.concat(marqueeItems);
+  }
+
+  const groupContent = groupItems.map(itemHTML).join("");
+
+  // 2 identical groups = 100% mathematically seamless infinite loop
+  const marqueeTrackHTML = `
+    <div class="hero-marquee-group">${groupContent}</div>
+    <div class="hero-marquee-group" aria-hidden="true">${groupContent}</div>
+  `;
 
   el.innerHTML = `
     <div class="hero-main">
       <div class="hero-copy">
         <span class="hero-index">00 / INTRO</span>
 
-        ${roleTicker}
+        <div class="hero-marquee-wrap" aria-label="Role ticker">
+          <div class="hero-marquee-track">
+            ${marqueeTrackHTML}
+          </div>
+        </div>
 
         <h1>
           <span class="line">${esc(pick(data, "nameLine1", "MERWIN"))}</span>
@@ -172,6 +192,8 @@ function renderHero(data) {
       </div>
     </div>`;
 }
+
+
 
 function renderWork(data) {
 
@@ -209,11 +231,7 @@ function renderWork(data) {
   };
 
   el.innerHTML = `
-    <div class="section-head reveal">
-      ${sectionIndex(1, "Selected Work")}
-      <h2>${esc(pick(data,"heading",""))}</h2>
-      <p>${esc(pick(data,"sub",""))}</p>
-    </div>
+    ${sectionHead(1, "Selected Work", data)}
     ${items.length
       ? `<div class="case-marquee" id="workMarquee">
            <div class="case-track" id="workTrack">
@@ -221,7 +239,7 @@ function renderWork(data) {
              ${items.map(cardHTML).join("")}
            </div>
          </div>`
-      : emptyState("No work added yet — add items to data/work.json.")}`;
+      : emptyState("No work added yet.")}`;
 }
 
 function renderServices(data) {
@@ -233,11 +251,7 @@ function renderServices(data) {
   const samples = list(data.samples);
 
   el.innerHTML = `
-    <div class="section-head reveal">
-      ${sectionIndex(2, "Services")}
-      <h2>${esc(pick(data,"heading",""))}</h2>
-      <p>${esc(pick(data,"sub",""))}</p>
-    </div>
+    ${sectionHead(2, "Services", data)}
     ${items.length
       ? `<div class="service-grid">
            ${items.map((it,i) => {
@@ -269,10 +283,7 @@ function renderStats(data) {
 
   el.innerHTML = `
     <div class="section-inner">
-      <div class="section-head reveal">
-        ${sectionIndex(3, "By The Numbers")}
-        <h2>${esc(pick(data,"heading",""))}</h2>
-      </div>
+      ${sectionHead(3, "By The Numbers", data)}
       ${rows.length || bars.length
         ? `<div class="stats-cols">
              <div>
@@ -310,11 +321,7 @@ function renderTestimonials(data) {
   if (!items.length) {
     if (!data.comingSoon) { el.innerHTML = ""; return; }
     el.innerHTML = `
-      <div class="section-head reveal">
-        ${sectionIndex(4, "Social Proof")}
-        <h2>${esc(pick(data,"heading",""))}</h2>
-        ${data.sub ? `<p>${esc(data.sub)}</p>` : ""}
-      </div>
+      ${sectionHead(4, "Social Proof", data)}
       <div class="coming-soon-card reveal">
         <span class="coming-soon-badge">New Section — In Progress</span>
         <p>${esc(pick(data,"comingSoonNote","Currently collecting real feedback from clients. Check back soon."))}</p>
@@ -323,11 +330,7 @@ function renderTestimonials(data) {
   }
 
   el.innerHTML = `
-    <div class="section-head reveal">
-      ${sectionIndex(4, "Social Proof")}
-      <h2>${esc(pick(data,"heading",""))}</h2>
-      ${data.sub ? `<p>${esc(data.sub)}</p>` : ""}
-    </div>
+    ${sectionHead(4, "Social Proof", data)}
     <div class="testimonial-grid">
       ${items.map((t,i) => {
         if (!t || !t.quote) return "";
@@ -351,10 +354,7 @@ function renderSkills(data) {
   const groups = list(data.groups);
 
   el.innerHTML = `
-    <div class="section-head reveal">
-      ${sectionIndex(5, "Toolkit")}
-      <h2>${esc(pick(data,"heading",""))}</h2>
-    </div>
+    ${sectionHead(5, "Toolkit", data)}
     ${groups.length
       ? `<div class="toolkit-grid">
            ${groups.map((g,i) => {
@@ -382,11 +382,7 @@ function renderDev(data) {
     <div class="dev-section reveal">
       <div class="dev-inner">
         <div class="dev-head">
-          <div>
-            ${sectionIndex(6, "Also Builds")}
-            <h2>${esc(pick(data,"heading",""))}</h2>
-            <p>${esc(pick(data,"sub",""))}</p>
-          </div>
+          ${sectionHead(6, "Also Builds", data)}
           ${hasGithub
             ? `<a class="gh-link" href="${esc(data.githubUrl)}" target="_blank" rel="noopener">${esc(data.githubLabel)}</a>`
             : ""}
@@ -431,9 +427,7 @@ function renderAbout(data) {
       : "";
 
   el.innerHTML = `
-    <div class="section-head reveal">
-      ${sectionIndex(7, "About")}
-    </div>
+    ${sectionHead(7, "About", data)}
     <div class="about-grid">
       <div class="about-copy reveal">
         <h2 style="font-size:clamp(28px,4vw,42px); margin-bottom:24px; line-height:1.08;">${esc(pick(data,"heading",""))}</h2>
@@ -465,15 +459,11 @@ function renderContact(data) {
   ].filter(Boolean).join("");
 
   el.innerHTML = `
-    <div class="reveal">
-      <span class="section-index">08 / CONTACT</span>
-      <h2>${esc(pick(data,"heading",""))}</h2>
-      <p>${esc(pick(data,"sub",""))}</p>
-    </div>
+    ${sectionHead(8, "Contact", data)}
     <div class="contact-actions reveal" style="transition-delay:80ms;">
       ${data.email    ? `<a href="mailto:${esc(data.email)}" class="btn-primary">${esc(data.email)}  →</a>` : ""}
       ${data.linktree ? `<a href="${esc(data.linktree)}" class="btn-ghost" target="_blank" rel="noopener">All My Socials →</a>` : ""}
-      ${data.resumeUrl? `<a href="${esc(data.resumeUrl)}" class="btn-ghost" target="_blank" rel="noopener">Download Resume</a>` : ""}
+      ${data.resumeUrl? `<a href="${esc(data.resumeUrl)}" class="btn-ghost" target="_blank" rel="noopener">View Resume</a>` : ""}
     </div>
     ${metaLinks ? `<div class="contact-meta reveal" style="transition-delay:150ms;">${metaLinks}</div>` : ""}
     ${data.availability
@@ -483,7 +473,7 @@ function renderContact(data) {
   if (footerEl) footerEl.innerHTML = esc(pick(data,"footerNote",""));
 }
 
-// ── Interactive behaviours ────────────────────────────────────
+// interactive behaviours
 
 // Highlights the active nav link as you scroll
 function initScrollSpy() {
@@ -497,29 +487,43 @@ function initScrollSpy() {
   markers.forEach((m) => {
     m.addEventListener("click", () => {
       const target = document.querySelector(m.dataset.target);
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      if (document.activeElement === m) {
+        m.blur();
+      }
     });
   });
 
   if (!sections.length) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const idx = sections.indexOf(entry.target);
-        if (idx === -1) return;
-        markers.forEach((m) => m.classList.remove("active"));
-        const activeMarker = [...markers].find(
-          (m) => m.dataset.target === `#${entry.target.id}`
-        );
-        if (activeMarker) activeMarker.classList.add("active");
-      });
-    },
-    { rootMargin: "-40% 0px -50% 0px", threshold: 0 }
-  );
+  function updateActiveNav() {
+    const scrollPos = window.scrollY + 120;
+    let currentSection = sections[0];
 
-  sections.forEach((s) => observer.observe(s));
+    for (let i = 0; i < sections.length; i++) {
+      const s = sections[i];
+      if (s.offsetTop <= scrollPos) {
+        currentSection = s;
+      }
+    }
+
+    markers.forEach((m) => {
+      const isActive = m.dataset.target === `#${currentSection.id}`;
+      if (isActive) {
+        m.classList.add("active");
+      } else {
+        m.classList.remove("active");
+        if (document.activeElement === m) {
+          m.blur();
+        }
+      }
+    });
+  }
+
+  window.addEventListener("scroll", updateActiveNav, { passive: true });
+  updateActiveNav();
 }
 
 // Slowly auto-scrolls the work marquee; pauses on hover/touch/drag
@@ -596,6 +600,49 @@ function initWorkVideos() {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modal.classList.contains("open")) closeModal(); });
 }
 
+// Opens PDF in a modal instead of downloading instantly
+function initPdfViewer() {
+  const pdfLinks    = document.querySelectorAll("a[href$='.pdf']");
+  const modal       = document.getElementById("pdfModal");
+  const iframe      = document.getElementById("pdfViewer");
+  const downloadBtn = document.getElementById("pdfDownloadBtn");
+  
+  if (!modal || !iframe || !downloadBtn) return;
+
+  function openPdfModal(src) {
+    iframe.src = src;
+    downloadBtn.href = src;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+  
+  function closePdfModal() {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    iframe.src = "";
+  }
+
+  pdfLinks.forEach((link) => {
+    // Only hijack if it's not our actual download button
+    if (link.id === "pdfDownloadBtn") return;
+    
+    // Change text from "Download Resume" to "View Resume" if we want
+    if (link.innerText.includes("Download")) {
+      link.innerText = link.innerText.replace("Download", "View");
+    }
+
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      openPdfModal(link.href);
+    });
+  });
+
+  modal.querySelectorAll("[data-pdf-close]").forEach((el) => { el.addEventListener("click", closePdfModal); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modal.classList.contains("open")) closePdfModal(); });
+}
+
 // Fade-in + slide-up as elements enter the viewport
 function initScrollReveal() {
   const els = document.querySelectorAll(".reveal");
@@ -619,39 +666,143 @@ function initScrollReveal() {
   els.forEach((el) => observer.observe(el));
 }
 
-// Cursor ambient glow that follows mouse position
+// Custom dot & ring cursor with background spotlight glow
 function initCursorGlow() {
-  const glow = document.getElementById("cursorGlow");
-  if (!glow) return;
+  const dot    = document.getElementById("cursorDot");
+  const ring   = document.getElementById("cursorRing");
+  const bgGlow = document.getElementById("bgCursorGlow");
+  if (!dot || !ring) return;
+
+  // Disable custom cursor on touch devices
+  if (window.matchMedia("(pointer: coarse)").matches) {
+    dot.style.display = "none";
+    ring.style.display = "none";
+    if (bgGlow) bgGlow.style.display = "none";
+    return;
+  }
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduceMotion) return;
 
-  let raf;
-  let tx = -500, ty = -500;
-  let cx = -500, cy = -500;
+  let mouseX = -100, mouseY = -100;
+  let ringX  = -100, ringY  = -100;
+  let bgX    = -100, bgY    = -100;
+  let visible = false;
+  let dirX    = 1;
 
-  document.addEventListener("mousemove", (e) => {
-    tx = e.clientX;
-    ty = e.clientY;
-    glow.style.opacity = "1";
+  window.addEventListener("mousemove", (e) => {
+    const prevX = mouseX;
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (mouseX < prevX - 2) dirX = -1;
+    else if (mouseX > prevX + 2) dirX = 1;
+
+    if (!visible) {
+      visible = true;
+      dot.style.opacity  = "1";
+      ring.style.opacity = "1";
+      if (bgGlow) bgGlow.style.opacity = "1";
+    }
+    const flip = dirX === -1 ? "scaleX(-1)" : "scaleX(1)";
+    dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) ${flip}`;
+  }, { passive: true });
+
+  window.addEventListener("mouseleave", () => {
+    visible = false;
+    dot.style.opacity  = "0";
+    ring.style.opacity = "0";
+    if (bgGlow) bgGlow.style.opacity = "0";
   });
-
-  document.addEventListener("mouseleave", () => { glow.style.opacity = "0"; });
 
   function lerp(a, b, t) { return a + (b - a) * t; }
 
-  function tick() {
-    cx = lerp(cx, tx, 0.1);
-    cy = lerp(cy, ty, 0.1);
-    glow.style.left = cx + "px";
-    glow.style.top  = cy + "px";
-    raf = requestAnimationFrame(tick);
+  function render() {
+    ringX = lerp(ringX, mouseX, 0.38);
+    ringY = lerp(ringY, mouseY, 0.38);
+    ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+
+    if (bgGlow) {
+      bgX = lerp(bgX, mouseX, 0.12);
+      bgY = lerp(bgY, mouseY, 0.12);
+      bgGlow.style.transform = `translate(${bgX}px, ${bgY}px) translate(-50%, -50%)`;
+    }
+
+    requestAnimationFrame(render);
   }
-  tick();
+  render();
+
+  // Hover detection for buttons, links, cards
+  const interactiveSelector = 'a, button, input, textarea, .case-card, .service-card, .dev-card, .tool-card, .marker, .btn-primary, .btn-ghost';
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest(interactiveSelector)) {
+      document.body.classList.add("cursor-hover");
+    }
+  });
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest(interactiveSelector)) {
+      document.body.classList.remove("cursor-hover");
+    }
+  });
 }
 
-// Role ticker is CSS-only (role-scroll keyframe), no JS needed.
+
+
+// Count-up animation for hero stat numbers when they scroll into view
+function initStatCounters() {
+  const statsEl = document.querySelector(".hero-stats");
+  if (!statsEl) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+
+        const cells = entry.target.querySelectorAll("div");
+        cells.forEach((cell, i) => {
+          const delay = i * 110; // stagger each card
+
+          // 1. Pop-in animation
+          cell.style.animationDelay = `${delay}ms`;
+          cell.classList.add("stat-animate");
+
+          if (reduceMotion) return;
+
+          // 2. Count-up the number
+          const strong = cell.querySelector("strong");
+          if (!strong) return;
+
+          const raw = strong.textContent.trim();
+          // Parse e.g. "124M+" → num=124, suffix="M+"
+          const match = raw.match(/^([\d.]+)([A-Za-z+]*)$/);
+          if (!match) return;
+
+          const target   = parseFloat(match[1]);
+          const suffix   = match[2];
+          const decimals = match[1].includes(".") ? match[1].split(".")[1].length : 0;
+          const duration = 1500;
+
+          function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+          setTimeout(() => {
+            const start = performance.now();
+            function update(now) {
+              const t = Math.min((now - start) / duration, 1);
+              strong.textContent = (target * easeOut(t)).toFixed(decimals) + suffix;
+              if (t < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+          }, delay + 150);
+        });
+      });
+    },
+    { threshold: 0.05 }
+  );
+
+  observer.observe(statsEl);
+}
 
 // Section wrapper: catches render errors gracefully
 function renderSection(name, fn, data) {
@@ -665,13 +816,177 @@ function renderSection(name, fn, data) {
   }
 }
 
-// ── Entry point ───────────────────────────────────────────────
+// interactive effects
+
+// Magnetic Buttons
+function initMagneticButtons() {
+  const magnets = document.querySelectorAll(".marker, .btn-primary, .btn-ghost, .gh-link, .contact-meta a");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) return;
+
+  magnets.forEach((btn) => {
+    btn.addEventListener("mousemove", (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const moveX = (x - centerX) * 0.2;
+      const moveY = (y - centerY) * 0.3;
+      
+      btn.classList.add("magneting");
+      btn.style.setProperty("--tx", moveX + "px");
+      btn.style.setProperty("--ty", moveY + "px");
+    });
+    
+    btn.addEventListener("mouseleave", () => {
+      btn.classList.remove("magneting");
+      btn.style.setProperty("--tx", "0px");
+      btn.style.setProperty("--ty", "0px");
+    });
+  });
+}
+
+// 3D Card Hover Tilt
+function initCardTilt() {
+  const cards = document.querySelectorAll(".case-card, .service-card, .dev-card, .tool-card");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) return;
+
+  cards.forEach((card) => {
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -3.5;
+      const rotateY = ((x - centerX) / centerX) * 3.5;
+      
+      card.classList.add("tilting");
+      card.style.setProperty("--rx", rotateX + "deg");
+      card.style.setProperty("--ry", rotateY + "deg");
+      card.style.setProperty("--s", "1.015");
+    });
+    
+    card.addEventListener("mouseleave", () => {
+      card.classList.remove("tilting");
+      card.style.setProperty("--rx", "0deg");
+      card.style.setProperty("--ry", "0deg");
+      card.style.setProperty("--s", "1");
+    });
+  });
+}
+
+// Phase 2: Interactivity Updates
+function initScrollVelocitySkew() {
+  const skewElements = document.querySelectorAll("h1, h2, .section-head h3");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion || !skewElements.length) return;
+
+  skewElements.forEach(el => el.classList.add("velocity-skew"));
+
+  let lastScrollY = window.scrollY;
+  let currentScrollY = window.scrollY;
+  let skew = 0;
+
+  function loop() {
+    currentScrollY = window.scrollY;
+    const delta = currentScrollY - lastScrollY;
+    
+    // Calculate target skew based on scroll velocity (max 5 deg)
+    const targetSkew = Math.min(Math.max(delta * 0.05, -5), 5); 
+    
+    // Lerp for smoothness
+    skew += (targetSkew - skew) * 0.1;
+    
+    if (Math.abs(skew) > 0.01) {
+      skewElements.forEach(el => el.style.setProperty("--skew", skew + "deg"));
+    } else if (skew !== 0) {
+      skew = 0;
+      skewElements.forEach(el => el.style.setProperty("--skew", "0deg"));
+    }
+    
+    lastScrollY = currentScrollY;
+    requestAnimationFrame(loop);
+  }
+  
+  requestAnimationFrame(loop);
+}
+
+function initTextScramble() {
+  const headers = document.querySelectorAll("h2, .section-head h3");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion || !headers.length) return;
+
+  const chars = "!<>-_\\\\/[]{}—=+*^?#________";
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      // Only trigger once per header
+      if (entry.isIntersecting && !entry.target.hasAttribute('data-scrambled')) {
+        entry.target.setAttribute('data-scrambled', 'true');
+        entry.target.classList.add("scramble-text");
+        
+        const originalText = entry.target.innerText;
+        let iteration = 0;
+        
+        clearInterval(entry.target.scrambleInterval);
+        
+        entry.target.scrambleInterval = setInterval(() => {
+          entry.target.innerText = originalText
+            .split("")
+            .map((letter, index) => {
+              if (index < iteration) return originalText[index];
+              // Don't scramble spaces so word wrapping doesn't jump crazily
+              if (originalText[index] === " ") return " ";
+              return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join("");
+          
+          if (iteration >= originalText.length) {
+            clearInterval(entry.target.scrambleInterval);
+            entry.target.innerText = originalText;
+          }
+          
+          // Speed up significantly based on string length so long sentences don't take forever
+          iteration += Math.max(1.5, originalText.length / 10);
+        }, 25);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: "0px 0px -10% 0px" });
+
+  headers.forEach(h => observer.observe(h));
+}
+
+function initParallaxHero() {
+  // Wrap hero children in .hero-content if not already
+  const heroContent = document.querySelector(".hero-content") || document.querySelector(".hero > .container");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion || !heroContent) return;
+
+  heroContent.classList.add("hero-content");
+
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY;
+    if (y < window.innerHeight) {
+      heroContent.style.setProperty("--hero-y", (y * 0.4) + "px");
+    }
+  }, { passive: true });
+}
+
+// entry point
 
 async function init() {
   const { data, failed } = await loadData();
 
   renderSection("nav",          renderNav,          data.nav);
   renderSection("hero",         renderHero,         data.hero);
+  initStatCounters();
   renderSection("work",         renderWork,         data.work);
   initWorkVideos();
   initWorkMarquee();
@@ -686,6 +1001,14 @@ async function init() {
   initScrollSpy();
   initScrollReveal();
   initCursorGlow();
+  initMagneticButtons();
+  initCardTilt();
+  
+  // Phase 2 Interactive Effects
+  initScrollVelocitySkew();
+  initTextScramble();
+  initParallaxHero();
+  initPdfViewer();
 
   if (failed.length === Object.keys(DATA_FILES).length) {
     document.body.innerHTML = `

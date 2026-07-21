@@ -1,11 +1,17 @@
 {
   "eyebrow": "Virtual Assistant · Content Ops · Video Editor",
+  "marquee": [
+    "VIRTUAL ASSISTANT",
+    "VIDEO EDITOR",
+    "CONTENT CREATOR",
+    "CONTENT OPERATOR"
+  ],
   "nameLine1": "MERWIN",
   "nameLine2Start": "GENE",
   "nameLine2Accent": "ROSO",
   "tagline": "Helping businesses stay organized through email management, scheduling, research, data entry, and content operations, plus video editing and Meta ads support when you need content made, not just managed. 124M+ cumulative views built by running every calendar, deadline, and edit myself, end to end.",
   "ctaPrimary": { "label": "Hire Me", "href": "mailto:generosomerwin10@gmail.com" },
-  "ctaSecondary": { "label": "Download Resume", "href": "assets/resume.pdf" },
+  "ctaSecondary": { "label": "View Resume", "href": "assets/resume.pdf" },
   "stats": [
     { "value": "124M+", "label": "Cumulative Views" },
     { "value": "239K+", "label": "TikTok Followers" },

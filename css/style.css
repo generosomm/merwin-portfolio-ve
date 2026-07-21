@@ -491,17 +491,28 @@ section {
 .demo-bar { height: 3px; background: var(--surface-2); overflow: hidden; margin-top: 8px; border-radius: 2px; }
 .demo-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--teal)); border-radius: 2px; }
 
-.stats-list {
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
+.stats-marquee {
+  overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--line); background: var(--line);
+  border-radius: var(--radius-md); cursor: grab;
   margin-top: 32px;
 }
+.stats-marquee:active { cursor: grabbing; }
+.stats-marquee.dragging .stat-img-card { pointer-events: none; }
+.stats-marquee::-webkit-scrollbar { display: none; }
+
+.stats-track {
+  display: flex; gap: 1px; width: max-content;
+}
+
 .stat-item {
+  flex: 0 0 650px; width: 650px;
   background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  overflow: hidden;
+  transition: background 0.2s ease;
+}
+.stat-item:hover {
+  background: var(--surface-2);
 }
 .stat-img-card {
   background: var(--surface-2);
@@ -794,6 +805,7 @@ footer {
   .case-body h3 { font-size: 13.5px; }
 
   /* Stats */
+  .stat-item { flex: 0 0 84vw; width: 84vw; }
   .stats-cols { gap: 0; }
   .stat-row { padding: 8px 0; font-size: 11.5px; }
 

@@ -9,7 +9,7 @@
     { "target": "#contact",  "tc": "00:01:21", "label": "Contact" }
   ],
   "cta": {
-    "label": "Hire Me",
+    "label": "Let's Work",
     "target": "#contact"
   }
 }

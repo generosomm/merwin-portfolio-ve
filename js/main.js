@@ -231,11 +231,15 @@ function renderWork(data) {
   el.innerHTML = `
     ${sectionHead(1, "Selected Work", data)}
     ${items.length
-      ? `<div class="case-marquee" id="workMarquee">
-           <div class="case-track" id="workTrack">
-             ${items.map(cardHTML).join("")}
-             ${items.map(cardHTML).join("")}
+      ? `<div class="marquee-wrapper">
+           <button class="nav-arrow nav-arrow-left" aria-label="Scroll left">←</button>
+           <div class="case-marquee" id="workMarquee">
+             <div class="case-track" id="workTrack">
+               ${items.map(cardHTML).join("")}
+               ${items.map(cardHTML).join("")}
+             </div>
            </div>
+           <button class="nav-arrow nav-arrow-right" aria-label="Scroll right">→</button>
          </div>`
       : emptyState("No work added yet.")}`;
 }
@@ -317,11 +321,15 @@ function renderStats(data) {
     <div class="section-inner">
       ${sectionHead(4, "By The Numbers", data)}
       ${items.length
-        ? `<div class="stats-marquee" id="statsMarquee">
-             <div class="stats-track" id="statsTrack">
-               ${items.map(statHTML).join("")}
-               ${items.map(statHTML).join("")}
+        ? `<div class="marquee-wrapper">
+             <button class="nav-arrow nav-arrow-left" aria-label="Scroll left">←</button>
+             <div class="stats-marquee" id="statsMarquee">
+               <div class="stats-track" id="statsTrack">
+                 ${items.map(statHTML).join("")}
+                 ${items.map(statHTML).join("")}
+               </div>
              </div>
+             <button class="nav-arrow nav-arrow-right" aria-label="Scroll right">→</button>
            </div>`
         : emptyState("No stats screenshots added yet.")}
       ${data.note ? `<p class="service-note reveal" style="margin-top:24px;">${esc(data.note)}</p>` : ""}
@@ -383,6 +391,11 @@ function renderAbout(data) {
   el.innerHTML = `
     ${sectionHead(7, "About", data)}
     <div class="about-grid">
+      ${data.image ? `
+      <div class="about-image reveal">
+        <img src="${esc(data.image)}" alt="Merwin Generoso - Profile">
+      </div>
+      ` : ""}
       <div class="about-copy reveal">
         ${paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}
       </div>
@@ -461,6 +474,11 @@ function initScrollSpy() {
       }
     }
 
+    // Force active state to last section if scrolled to the very bottom
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
+      currentSection = sections[sections.length - 1];
+    }
+
     markers.forEach((m) => {
       const isActive = m.dataset.target === `#${currentSection.id}`;
       if (isActive) {
@@ -537,6 +555,27 @@ function initMarquee(marqueeId, trackId, speed) {
     marquee.scrollLeft = scrollLeftState - walk;
     syncPosFromScroll();
   });
+
+  // Nav Arrows
+  const wrapper = marquee.closest('.marquee-wrapper');
+  if (wrapper) {
+    const scrollAmount = marqueeId === 'statsMarquee' ? 650 : 340;
+    const leftBtn = wrapper.querySelector('.nav-arrow-left');
+    const rightBtn = wrapper.querySelector('.nav-arrow-right');
+    
+    if (leftBtn) {
+      leftBtn.addEventListener('click', () => {
+        marquee.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        pauseForAWhile();
+      });
+    }
+    if (rightBtn) {
+      rightBtn.addEventListener('click', () => {
+        marquee.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        pauseForAWhile();
+      });
+    }
+  }
 
   if (reduceMotion) return;
 

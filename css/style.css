@@ -234,14 +234,32 @@ section {
 
 @media (max-width: 900px) {
   .hero-main {
-    flex-direction: column;
-    gap: 40px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "index index"
+      "marquee marquee"
+      "title image"
+      "sub sub"
+      "cta cta"
+      "stats stats";
+    gap: 0 16px;
   }
+  .hero-copy {
+    display: contents;
+  }
+  .hero-index { grid-area: index; }
+  .hero-marquee-wrap { grid-area: marquee; }
+  .hero-copy h1 { grid-area: title; align-self: center; }
+  .hero-sub { grid-area: sub; }
+  .hero-cta { grid-area: cta; }
+  .hero-stats { grid-area: stats; }
   .hero-image {
-    order: -1;
-    width: 100%;
-    max-width: 280px;
-    margin: 0 auto;
+    grid-area: image;
+    width: 120px;
+    max-width: 120px;
+    margin: 0;
+    align-self: center;
   }
 }
 

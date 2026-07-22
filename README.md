@@ -7,7 +7,7 @@ My personal portfolio site showcasing my work as a Video Editor and Social Media
 
 ## How it works
 
-The whole site is data-driven. Every section (hero, work, stats, skills, dev, about, contact) is rendered by `js/main.js`, which fetches its content from a matching JSON file in `data/`.
+The whole site is data-driven. Every section (hero, work, services, stats, testimonials, skills, dev, about, contact) is rendered by `js/main.js`, which fetches its content from a matching JSON file in `data/`.
 
 This means I can update almost anything on the site - text, stats, projects - just by editing a JSON file. No need to touch the HTML or JS for normal content changes.
 
@@ -18,7 +18,9 @@ js/main.js         → fetches data/*.json and renders each section
 data/nav.json      → nav bar links
 data/hero.json     → hero heading, tagline, stats, video frame
 data/work.json     → project/case study cards
+data/services.json → service offerings
 data/stats.json    → audience numbers and bars
+data/testimonials.json → client quotes and feedback
 data/skills.json   → toolkit/software list
 data/dev.json      → side dev projects
 data/about.json    → about text, education, certifications

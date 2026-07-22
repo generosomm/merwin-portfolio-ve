@@ -113,6 +113,7 @@ function renderNav(data) {
         </button>`;
         })
         .join("")}
+      ${data.cta ? `<a href="${esc(data.cta.target)}" class="btn-primary nav-cta" style="margin-left:auto; font-size:12px; padding:8px 16px;">${esc(data.cta.label)}</a>` : ""}
     </div>`;
 }
 
@@ -270,6 +271,29 @@ function renderServices(data) {
     ${data.note ? `<p class="service-note reveal">${esc(data.note)}</p>` : ""}`;
 }
 
+function renderSkills(data) {
+  const el = document.getElementById("skills");
+  if (!el) return;
+  if (!data) { el.innerHTML = emptyState("Skills section is missing."); return; }
+
+  const groups = list(data.groups);
+
+  el.innerHTML = `
+    <div class="section-inner">
+      ${sectionHead(3, "Toolkit", data)}
+      <div class="toolkit-grid">
+        ${groups.map((g, i) => `
+          <div class="tool-card reveal" style="transition-delay:${revealDelay(i)};">
+            <h4>${esc(g.title)}</h4>
+            <ul>
+              ${list(g.items).map(item => `<li>${esc(item)}</li>`).join("")}
+            </ul>
+          </div>
+        `).join("")}
+      </div>
+    </div>`;
+}
+
 function renderStats(data) {
   const el = document.getElementById("stats");
   if (!el) return;
@@ -291,7 +315,7 @@ function renderStats(data) {
 
   el.innerHTML = `
     <div class="section-inner">
-      ${sectionHead(3, "By The Numbers", data)}
+      ${sectionHead(4, "By The Numbers", data)}
       ${items.length
         ? `<div class="stats-marquee" id="statsMarquee">
              <div class="stats-track" id="statsTrack">
@@ -314,7 +338,7 @@ function renderTestimonials(data) {
   if (!items.length) {
     if (!data.comingSoon) { el.innerHTML = ""; return; }
     el.innerHTML = `
-      ${sectionHead(4, "Social Proof", data)}
+      ${sectionHead(5, "Social Proof", data)}
       <div class="coming-soon-card reveal">
         <span class="coming-soon-badge">New Section — In Progress</span>
         <p>${esc(pick(data,"comingSoonNote","Currently collecting real feedback from clients. Check back soon."))}</p>
@@ -323,7 +347,7 @@ function renderTestimonials(data) {
   }
 
   el.innerHTML = `
-    ${sectionHead(4, "Social Proof", data)}
+    ${sectionHead(5, "Social Proof", data)}
     <div class="testimonial-grid">
       ${items.map((t,i) => {
         if (!t || !t.quote) return "";
@@ -575,9 +599,11 @@ function initScrollReveal() {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        } else {
+          entry.target.classList.remove("is-visible");
+        }
       });
     },
     { threshold: 0.1, rootMargin: "0px 0px -6% 0px" }
@@ -722,86 +748,7 @@ function initCardTilt() {
   });
 }
 
-// Phase 2: Interactivity Updates
-function initScrollVelocitySkew() {
-  const skewElements = document.querySelectorAll("h1, h2, .section-head h3");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduceMotion || !skewElements.length) return;
 
-  skewElements.forEach(el => el.classList.add("velocity-skew"));
-
-  let lastScrollY = window.scrollY;
-  let currentScrollY = window.scrollY;
-  let skew = 0;
-
-  function loop() {
-    currentScrollY = window.scrollY;
-    const delta = currentScrollY - lastScrollY;
-    
-    // Calculate target skew based on scroll velocity (max 5 deg)
-    const targetSkew = Math.min(Math.max(delta * 0.05, -5), 5); 
-    
-    // Lerp for smoothness
-    skew += (targetSkew - skew) * 0.1;
-    
-    if (Math.abs(skew) > 0.01) {
-      skewElements.forEach(el => el.style.setProperty("--skew", skew + "deg"));
-    } else if (skew !== 0) {
-      skew = 0;
-      skewElements.forEach(el => el.style.setProperty("--skew", "0deg"));
-    }
-    
-    lastScrollY = currentScrollY;
-    requestAnimationFrame(loop);
-  }
-  
-  requestAnimationFrame(loop);
-}
-
-function initTextScramble() {
-  const headers = document.querySelectorAll("h2, .section-head h3");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduceMotion || !headers.length) return;
-
-  const chars = "!<>-_\\\\/[]{}—=+*^?#________";
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      // Only trigger once per header
-      if (entry.isIntersecting && !entry.target.hasAttribute('data-scrambled')) {
-        entry.target.setAttribute('data-scrambled', 'true');
-        entry.target.classList.add("scramble-text");
-        
-        const originalText = entry.target.innerText;
-        let iteration = 0;
-        
-        clearInterval(entry.target.scrambleInterval);
-        
-        entry.target.scrambleInterval = setInterval(() => {
-          entry.target.innerText = originalText
-            .split("")
-            .map((letter, index) => {
-              if (index < iteration) return originalText[index];
-              // Don't scramble spaces so word wrapping doesn't jump crazily
-              if (originalText[index] === " ") return " ";
-              return chars[Math.floor(Math.random() * chars.length)];
-            })
-            .join("");
-          
-          if (iteration >= originalText.length) {
-            clearInterval(entry.target.scrambleInterval);
-            entry.target.innerText = originalText;
-          }
-          
-          // Speed up significantly based on string length so long sentences don't take forever
-          iteration += Math.max(1.5, originalText.length / 10);
-        }, 25);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: "0px 0px -10% 0px" });
-
-  headers.forEach(h => observer.observe(h));
-}
 
 function initParallaxHero() {
   // Wrap hero children in .hero-content if not already
@@ -831,6 +778,7 @@ async function init() {
   initWorkVideos();
   initMarquee("workMarquee", "workTrack", 0.38);
   renderSection("services",     renderServices,     data.services);
+  renderSection("skills",       renderSkills,       data.skills);
   renderSection("stats",        renderStats,        data.stats);
   initMarquee("statsMarquee", "statsTrack", 0.20);
   renderSection("testimonials", renderTestimonials, data.testimonials);
@@ -843,8 +791,6 @@ async function init() {
   initCardTilt();
   
   // Phase 2 Interactive Effects
-  initScrollVelocitySkew();
-  initTextScramble();
   initParallaxHero();
 
   if (failed.length === Object.keys(DATA_FILES).length) {

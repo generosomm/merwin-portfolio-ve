@@ -7,5 +7,9 @@
     { "target": "#stats",    "tc": "00:00:28", "label": "Stats" },
     { "target": "#about",    "tc": "00:01:08", "label": "About" },
     { "target": "#contact",  "tc": "00:01:21", "label": "Contact" }
-  ]
+  ],
+  "cta": {
+    "label": "Hire Me",
+    "target": "#contact"
+  }
 }

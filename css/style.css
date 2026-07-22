@@ -126,21 +126,9 @@ h1, h2, h3, h4 { font-family: 'Archivo Black', sans-serif; font-weight: 400; let
 /* all sections stay dark — no light mode */
 
 /* Animations */
-.velocity-skew {
-  display: block;
-  will-change: transform;
-  transform: skewY(var(--skew, 0deg));
-  transition: transform 0.1s ease-out;
-  transform-origin: left center;
-}
-
 .hero-content {
   will-change: transform;
   transform: translateY(var(--hero-y, 0px));
-}
-
-.scramble-text {
-  font-family: inherit; /* ensure it inherits the header font */
 }
 
 /* Tool Grid Focus Effect */
@@ -155,14 +143,27 @@ h1, h2, h3, h4 { font-family: 'Archivo Black', sans-serif; font-weight: 400; let
 
 /* timeline nav */
 .timeline-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(10,10,13,0.92);
+  position: sticky; top: 24px; z-index: 100;
+  background: rgba(10,10,13,0.75);
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0 auto;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  animation: nav-float-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@keyframes nav-float-in {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 .timeline-track {
   display: flex; align-items: center; gap: 0; overflow-x: auto; scrollbar-width: none;
-  max-width: var(--max-w); margin: 0 auto; padding: 0 24px; position: relative;
+  padding: 0 16px; position: relative;
 }
 .timeline-track::-webkit-scrollbar { display: none; }
 .tl-brand {

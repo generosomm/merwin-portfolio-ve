@@ -429,7 +429,7 @@ function renderContact(data) {
   el.innerHTML = `
     ${sectionHead(8, "Contact", data)}
     <div class="contact-actions reveal" style="transition-delay:80ms;">
-      ${data.email    ? `<a href="mailto:${esc(data.email)}" class="btn-primary">SEND ME A MESSAGE  →</a>` : ""}
+      ${data.email    ? `<a href="mailto:${esc(data.email)}" class="btn-primary">EMAIL ME →</a>` : ""}
     </div>
     ${metaLinks ? `<div class="contact-meta reveal" style="transition-delay:150ms;">${metaLinks}</div>` : ""}
     ${data.availability

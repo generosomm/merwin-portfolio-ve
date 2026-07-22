@@ -694,7 +694,7 @@ section {
 .dev-card-links a:hover { color: var(--gold); border-color: var(--gold); }
 
 /* about */
-.about-grid { display: grid; grid-template-columns: 280px 1.15fr 0.85fr; gap: 64px; align-items: start; }
+.about-grid { display: grid; grid-template-columns: 280px 1fr; gap: 64px; align-items: center; }
 .about-image { 
   background: var(--surface);
   border: 1px solid rgba(255,255,255,0.08);
@@ -723,7 +723,7 @@ section {
 .about-image:hover img { 
   transform: scale(1.02); 
 }
-.about-copy p { color: var(--text-dim); font-size: 16px; margin-bottom: 20px; max-width: 540px; line-height: 1.75; }
+.about-copy p { color: var(--text-dim); font-size: 16px; margin-bottom: 20px; line-height: 1.75; }
 .about-list h4 { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; margin: 28px 0 14px; }
 .about-list h4:first-child { margin-top: 0; }
 .about-list li { list-style: none; font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 14px; }

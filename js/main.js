@@ -332,6 +332,7 @@ function renderStats(data) {
                </div>
              </div>
              <button class="nav-arrow nav-arrow-right" aria-label="Scroll right" onclick="document.getElementById('statsMarquee').scrollBy({left: 682, behavior: 'smooth'})">→</button>
+             <div class="swipe-indicator"><span>← Swipe to explore →</span></div>
            </div>`
         : emptyState("No stats screenshots added yet.")}
       ${data.note ? `<p class="service-note reveal" style="margin-top:24px;">${esc(data.note)}</p>` : ""}

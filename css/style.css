@@ -226,10 +226,45 @@ section {
 .hero-main {
   max-width: var(--max-w); margin: 0 auto; width: 100%;
   padding: 32px 32px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 64px;
+}
+
+@media (max-width: 900px) {
+  .hero-main {
+    flex-direction: column;
+    gap: 40px;
+  }
+  .hero-image {
+    order: -1;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+  }
 }
 
 /* hero left: text */
-.hero-copy { position: relative; z-index: 2; }
+.hero-copy { 
+  position: relative; 
+  z-index: 2; 
+  flex: 1.2;
+  min-width: 0; /* Prevents overflow from stretching the flex item */
+}
+
+.hero-image {
+  flex: 0.8;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hero-image img {
+  width: 100%; max-width: 480px; height: auto;
+  display: block; border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+}
 
 .hero-index {
   font-family: 'IBM Plex Mono', monospace; font-size: 10px;
@@ -507,24 +542,32 @@ section {
 .stats-marquee {
   overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  border: 1px solid var(--line); background: var(--line);
-  border-radius: var(--radius-md); cursor: grab;
+  border-radius: var(--radius-md);
   margin-top: 32px;
   user-select: none;
   -webkit-user-select: none;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 10px calc(50% - 325px); /* Centers the first and last item */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 .stats-marquee:active { cursor: grabbing; }
 .stats-marquee.dragging .stat-img-card { pointer-events: none; }
 .stats-marquee::-webkit-scrollbar { display: none; }
 
 .stats-track {
-  display: flex; gap: 1px; width: max-content;
+  display: flex; gap: 32px; width: max-content;
 }
 
 .stat-item {
   flex: 0 0 650px; width: 650px;
-  background: var(--bg);
-  transition: background 0.2s ease;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  scroll-snap-align: center;
+  overflow: hidden;
 }
 .stat-item:hover {
   background: var(--surface-2);
@@ -692,7 +735,7 @@ section {
 .contact h2 { font-size: clamp(32px, 5.5vw, 64px); margin: 0 auto 18px; line-height: 1; }
 .contact p { color: var(--text-dim); font-size: 15.5px; max-width: 500px; margin: 0 auto 28px; line-height: 1.6; }
 .contact-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
-.contact-meta { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text-dim); }
+.contact-meta { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text-dim); max-width: 600px; margin: 0 auto; }
 .contact-meta a, .contact-meta span {
   text-decoration: none;
   border: 1px solid var(--line); padding: 7px 14px; border-radius: var(--radius-pill);

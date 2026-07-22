@@ -188,6 +188,9 @@ function renderHero(data) {
              </div>`
           : ""}
       </div>
+      <div class="hero-image reveal" style="transition-delay:200ms;">
+        <img src="assets/images/my-picture.png" alt="Merwin Generoso">
+      </div>
     </div>`;
 }
 
@@ -322,14 +325,13 @@ function renderStats(data) {
       ${sectionHead(4, "By The Numbers", data)}
       ${items.length
         ? `<div class="marquee-wrapper">
-             <button class="nav-arrow nav-arrow-left" aria-label="Scroll left">←</button>
+             <button class="nav-arrow nav-arrow-left" aria-label="Scroll left" onclick="document.getElementById('statsMarquee').scrollBy({left: -682, behavior: 'smooth'})">←</button>
              <div class="stats-marquee" id="statsMarquee">
                <div class="stats-track" id="statsTrack">
                  ${items.map(statHTML).join("")}
-                 ${items.map(statHTML).join("")}
                </div>
              </div>
-             <button class="nav-arrow nav-arrow-right" aria-label="Scroll right">→</button>
+             <button class="nav-arrow nav-arrow-right" aria-label="Scroll right" onclick="document.getElementById('statsMarquee').scrollBy({left: 682, behavior: 'smooth'})">→</button>
            </div>`
         : emptyState("No stats screenshots added yet.")}
       ${data.note ? `<p class="service-note reveal" style="margin-top:24px;">${esc(data.note)}</p>` : ""}
@@ -402,7 +404,6 @@ function renderAbout(data) {
       <div class="about-list reveal" style="transition-delay:120ms;">
         ${renderPairList("Education", education)}
         ${renderPairList("Certifications", certifications)}
-        ${renderPairList("Languages", languages)}
       </div>
     </div>`;
 }
@@ -820,7 +821,6 @@ async function init() {
   renderSection("services",     renderServices,     data.services);
   renderSection("skills",       renderSkills,       data.skills);
   renderSection("stats",        renderStats,        data.stats);
-  initMarquee("statsMarquee", "statsTrack", 0.20);
   renderSection("testimonials", renderTestimonials, data.testimonials);
   renderSection("about",        renderAbout,        data.about);
   renderSection("contact",      renderContact,      data.contact);

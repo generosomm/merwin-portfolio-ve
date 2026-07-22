@@ -3,10 +3,10 @@
 /* Variables */
 :root {
   /* Core palette */
-  --bg:         #0A0A0D;
-  --surface:    #111115;
-  --surface-2:  #18181F;
-  --line:       #242430;
+  --bg:         #000000;
+  --surface:    #0a0a0a;
+  --surface-2:  #111111;
+  --line:       #202020;
   --text:       #F0F0EE;
   --text-dim:   #7A7A88;
   --text-muted: #3E3E50;
@@ -79,13 +79,7 @@ h1, h2, h3, h4 { font-family: 'Archivo Black', sans-serif; font-weight: 400; let
   background: linear-gradient(90deg, transparent, var(--line) 25%, var(--line) 75%, transparent);
 }
 .bg-glow::after {
-  content: ''; position: absolute; top: -400px; right: -300px;
-  width: 900px; height: 900px;
-  background: radial-gradient(circle at 40% 40%,
-    rgba(61,92,255,0.22) 0%,
-    rgba(61,92,255,0.06) 45%,
-    transparent 70%);
-  filter: blur(12px);
+  display: none;
 }
 
 /* Cursor */

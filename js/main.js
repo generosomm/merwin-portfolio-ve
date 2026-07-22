@@ -419,8 +419,10 @@ function renderContact(data) {
     data.phone     ? `<a href="tel:${esc(phoneHref)}">${esc(data.phone)}</a>`                                       : "",
     data.linkedin  ? `<a href="${esc(data.linkedin)}"  target="_blank" rel="noopener">LinkedIn</a>`                 : "",
     data.github    ? `<a href="${esc(data.github)}"    target="_blank" rel="noopener">GitHub</a>`                   : "",
-    data.tiktok    ? `<a href="${esc(data.tiktok)}"    target="_blank" rel="noopener">TikTok</a>`                   : "",
+    data.facebook  ? `<a href="${esc(data.facebook)}"  target="_blank" rel="noopener">Facebook</a>`                 : "",
     data.instagram ? `<a href="${esc(data.instagram)}" target="_blank" rel="noopener">Instagram</a>`               : "",
+    data.tiktok    ? `<a href="${esc(data.tiktok)}"    target="_blank" rel="noopener">TikTok</a>`                   : "",
+    data.threads   ? `<a href="${esc(data.threads)}"   target="_blank" rel="noopener">Threads</a>`                  : "",
     data.location  ? `<span>${esc(data.location)}</span>`                                                           : "",
   ].filter(Boolean).join("");
 
@@ -428,7 +430,6 @@ function renderContact(data) {
     ${sectionHead(8, "Contact", data)}
     <div class="contact-actions reveal" style="transition-delay:80ms;">
       ${data.email    ? `<a href="mailto:${esc(data.email)}" class="btn-primary">SEND ME A MESSAGE  →</a>` : ""}
-      ${data.linktree ? `<a href="${esc(data.linktree)}" class="btn-ghost" target="_blank" rel="noopener">All My Socials →</a>` : ""}
     </div>
     ${metaLinks ? `<div class="contact-meta reveal" style="transition-delay:150ms;">${metaLinks}</div>` : ""}
     ${data.availability

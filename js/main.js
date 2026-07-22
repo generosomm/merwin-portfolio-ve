@@ -432,6 +432,7 @@ function renderContact(data) {
     ${sectionHead(8, "Contact", data)}
     <div class="contact-actions reveal" style="transition-delay:80ms;">
       ${data.email    ? `<a href="mailto:${esc(data.email)}" class="btn-primary">EMAIL ME →</a>` : ""}
+      ${data.resume   ? `<button class="btn-ghost" onclick="openResumeModal('${esc(data.resume)}')">VIEW RESUME</button>` : ""}
     </div>
     ${metaLinks ? `<div class="contact-meta reveal" style="transition-delay:150ms;">${metaLinks}</div>` : ""}
     ${data.availability
@@ -873,6 +874,43 @@ document.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && imageModal && imageModal.classList.contains("open")) {
     closeImageModal();
+  }
+});
+
+// Resume Modal
+const resumeModal = document.getElementById("resumeModal");
+const resumeModalIframe = document.getElementById("resumeModalIframe");
+const resumeDownloadBtn = document.getElementById("resumeDownloadBtn");
+const resumeFallbackBtn = document.getElementById("resumeFallbackBtn");
+
+window.openResumeModal = function(src) {
+  if (!resumeModal || !resumeModalIframe) return;
+  // Update src and download links
+  resumeModalIframe.src = src + "#toolbar=0";
+  if (resumeDownloadBtn) resumeDownloadBtn.href = src;
+  if (resumeFallbackBtn) resumeFallbackBtn.href = src;
+  
+  resumeModal.classList.add("open");
+  resumeModal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeResumeModal() {
+  if (!resumeModal || !resumeModalIframe) return;
+  resumeModal.classList.remove("open");
+  resumeModal.setAttribute("aria-hidden", "true");
+  setTimeout(() => { resumeModalIframe.src = ""; }, 300);
+  document.body.style.overflow = "";
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.matches("[data-resume-close]")) {
+    closeResumeModal();
+  }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && resumeModal && resumeModal.classList.contains("open")) {
+    closeResumeModal();
   }
 });
 

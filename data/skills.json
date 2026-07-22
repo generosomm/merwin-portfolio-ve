@@ -2,8 +2,34 @@
   "sectionEyebrow": "Toolkit",
   "heading": "What I use to get it done.",
   "groups": [
-    { "title": "Video Editing", "items": ["Adobe Premiere Pro", "Adobe After Effects", "CapCut", "Basic Photoshop", "Canva"] },
-    { "title": "Content Operations", "items": ["Notion / Trello", "Google Workspace", "Social Media Management", "Content Calendars"] },
-    { "title": "Paid Social & Ads", "items": ["Meta Ads Manager", "Audience Targeting", "Campaign Reporting", "Ad Creative Coordination"] }
+    {
+      "title": "Video Editing",
+      "items": [
+        "Adobe Premiere Pro",
+        "Adobe After Effects",
+        "CapCut",
+        "Topaz Video Enhancer AI",
+        "Basic Photoshop",
+        "Canva"
+      ]
+    },
+    {
+      "title": "Content Operations",
+      "items": [
+        "Notion / Trello",
+        "Google Workspace",
+        "Social Media Management",
+        "Content Calendars"
+      ]
+    },
+    {
+      "title": "Paid Social & Ads",
+      "items": [
+        "Meta Ads Manager",
+        "Audience Targeting",
+        "Campaign Reporting",
+        "Ad Creative Coordination"
+      ]
+    }
   ]
 }

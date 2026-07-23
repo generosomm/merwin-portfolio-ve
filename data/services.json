@@ -1,18 +1,31 @@
 {
   "sectionEyebrow": "Services",
   "heading": "What I can do for you.",
-  "sub": "Everything from the initial cut to the final campaign. Built for creators and brands who want to scale their content without losing their minds.",
+  "sub": "Video editing, virtual assistance, and web development. End-to-end, remote-ready, and built around your workflow.",
   "items": [
-    { "title": "Video Editing", "desc": "High-retention edits in Premiere Pro & After Effects. I don't just cut footage; I build pacing that keeps people watching." },
-    { "title": "Content Operations", "desc": "Managing your entire production pipeline. From organizing raw assets to scheduling the final post across platforms." },
-    { "title": "Paid Social & Ads", "desc": "Setting up and running Meta ad campaigns to guarantee your best content reaches a wider audience." }
+    {
+      "title": "Video Editing",
+      "desc": "High-retention edits in Premiere Pro & After Effects. From short-form content to full promotional videos. Paced to keep audiences watching."
+    },
+    {
+      "title": "Virtual Assistant",
+      "desc": "Administrative support, calendar & email management, internet research, documentation, digital asset organization, and project coordination. Remote, reliable, and across time zones."
+    },
+    {
+      "title": "Content Operations",
+      "desc": "Managing your full production pipeline: content calendars, publishing schedules, performance tracking, and cross-platform social media management."
+    },
+    {
+      "title": "Web Development",
+      "desc": "Full-stack web development using HTML, CSS, JavaScript, Node.js, Express, and MySQL. From landing pages to full web applications, built clean and shipped."
+    }
   ],
   "samplesHeading": "Proven Results",
   "samples": [
-    "Delivered a commissioned edit for a U.S.-based recording artist that reached 3.9M views natively.",
-    "Managed the content production schedule for a large student organization, end to end.",
-    "Ran successful Facebook ad campaigns for Tagaytay Highlands real estate, handling creatives and targeting.",
-    "Edited promotional videos from raw footage to publish, driving 124M+ cumulative views across all platforms."
+    "Delivered a commissioned edit for U.S. recording artist Gracie Abrams that reached 3.9M views and 270K likes natively.",
+    "Managed a two-part commissioned edit series end-to-end — requirements gathering, 24-hour delivery, and client handoff.",
+    "Built and contributed to the MSC NU Laguna official website backend using Node.js, Express, and MySQL.",
+    "Grew ERO | VISUALS to 124M+ cumulative views across platforms, 96%+ of reach from non-follower discovery."
   ],
-  "note": "Let's build a content system that works for you."
+  "note": "Open to additional tasks beyond this list."
 }

@@ -3,32 +3,42 @@
   "heading": "What I use to get it done.",
   "groups": [
     {
-      "title": "Video Editing",
+      "title": "Video & Design",
       "items": [
         "Adobe Premiere Pro",
         "Adobe After Effects",
         "CapCut",
-        "Topaz Video Enhancer AI",
-        "Basic Photoshop",
-        "Canva"
+        "Canva",
+        "Photoshop"
       ]
     },
     {
-      "title": "Content Operations",
+      "title": "Web Development",
       "items": [
-        "Notion / Trello",
+        "HTML / CSS / JavaScript",
+        "Node.js & Express",
+        "MySQL / SQL",
+        "Git & GitHub",
+        "VS Code"
+      ]
+    },
+    {
+      "title": "Productivity & Ops",
+      "items": [
         "Google Workspace",
-        "Social Media Management",
-        "Content Calendars"
+        "Microsoft 365",
+        "Notion / Trello",
+        "Zoom / Teams / Slack"
       ]
     },
     {
-      "title": "Paid Social & Ads",
+      "title": "AI-Assisted Workflow",
       "items": [
-        "Meta Ads Manager",
-        "Audience Targeting",
-        "Campaign Reporting",
-        "Ad Creative Coordination"
+        "Claude",
+        "ChatGPT",
+        "Gemini",
+        "Grammarly",
+        "Grok AI"
       ]
     }
   ]

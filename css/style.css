@@ -714,7 +714,8 @@ section {
 
 /* dev / also builds */
 .dev-section { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
-.dev-inner { padding: 56px 48px; }
+.dev-inner { padding: 32px 32px 40px; }
+.dev-gh-row { display: flex; justify-content: flex-end; margin-bottom: 24px; }
 .dev-head { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; margin-bottom: 40px; }
 .dev-head h2 { font-size: clamp(24px, 3vw, 34px); }
 .dev-head p { color: var(--text-dim); max-width: 500px; font-size: 15px; margin-top: 10px; line-height: 1.65; }

@@ -6,6 +6,7 @@
     { "target": "#services", "tc": "00:00:16", "label": "Services" },
     { "target": "#stats",    "tc": "00:00:28", "label": "Stats" },
     { "target": "#about",    "tc": "00:01:08", "label": "About" },
+    { "target": "#dev",      "tc": "00:01:18", "label": "Dev" },
     { "target": "#contact",  "tc": "00:01:21", "label": "Contact" }
   ],
   "cta": {

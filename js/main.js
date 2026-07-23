@@ -298,6 +298,37 @@ function renderSkills(data) {
     </div>`;
 }
 
+function renderDev(data) {
+  const el = document.getElementById("dev");
+  if (!el) return;
+  if (!data) { el.innerHTML = ""; return; }
+
+  const projects = list(data.projects);
+  if (!projects.length) { el.innerHTML = ""; return; }
+
+  el.innerHTML = `
+    <div class="section-inner">
+      ${sectionHead(4, "Also Builds", data)}
+      <div class="dev-section reveal">
+        <div class="dev-inner">
+          ${data.githubUrl ? `<div class="dev-gh-row"><a href="${esc(data.githubUrl)}" target="_blank" rel="noopener" class="gh-link">${esc(pick(data, "githubLabel", "GitHub →"))}</a></div>` : ""}
+          <div class="dev-grid">
+            ${projects.map((p, i) => `
+              <div class="dev-card reveal" style="transition-delay:${revealDelay(i)};">
+                ${p.stack ? `<div class="stack">${esc(p.stack)}</div>` : ""}
+                <h4>${esc(p.title)}</h4>
+                <p>${esc(p.desc)}</p>
+                <div class="dev-card-links">
+                  ${p.repoUrl ? `<a href="${esc(p.repoUrl)}" target="_blank" rel="noopener">Repo →</a>` : ""}
+                  ${p.liveUrl ? `<a href="${esc(p.liveUrl)}" target="_blank" rel="noopener">Live →</a>` : ""}
+                </div>
+              </div>`).join("")}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
 function renderStats(data) {
   const el = document.getElementById("stats");
   if (!el) return;
@@ -825,6 +856,7 @@ async function init() {
   renderSection("stats",        renderStats,        data.stats);
   renderSection("testimonials", renderTestimonials, data.testimonials);
   renderSection("about",        renderAbout,        data.about);
+  renderSection("dev",          renderDev,          data.dev);
   renderSection("contact",      renderContact,      data.contact);
 
   initScrollSpy();

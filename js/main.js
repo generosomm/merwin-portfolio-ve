@@ -878,6 +878,10 @@ async function init() {
   initTimeWidget();
   initStaggeredText();
   initSoundDesign();
+  initDynamicTitle();
+  initSkillHovers();
+  initDeveloperMode();
+  initMinimap();
 
   dismissLoader();
 
@@ -1075,6 +1079,129 @@ function initSoundDesign() {
   interactives.forEach(el => {
     el.addEventListener("mouseenter", playTick);
   });
+}
+
+// 0.85 Dynamic Tab Title
+function initDynamicTitle() {
+  const originalTitle = document.title;
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      document.title = "👀 Miss you! - Merwin";
+    } else {
+      document.title = originalTitle;
+    }
+  });
+}
+
+// 0.9 Floating Skill Cards
+function initSkillHovers() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) return;
+
+  const card = document.createElement("div");
+  card.className = "skill-hover-card";
+  document.body.appendChild(card);
+
+  const skills = document.querySelectorAll(".tool-card li");
+  
+  skills.forEach(li => {
+    li.addEventListener("mouseenter", () => {
+      card.textContent = li.textContent;
+      card.classList.add("active");
+    });
+    li.addEventListener("mouseleave", () => {
+      card.classList.remove("active");
+    });
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (card.classList.contains("active")) {
+      card.style.setProperty("--x", e.clientX + "px");
+      card.style.setProperty("--y", e.clientY + "px");
+    }
+  });
+}
+
+// 0.95 Secret Developer Mode
+function initDeveloperMode() {
+  let buffer = "";
+  document.addEventListener("keydown", (e) => {
+    buffer += e.key.toLowerCase();
+    if (buffer.length > 5) buffer = buffer.slice(-5);
+    if (buffer.includes("dev")) {
+      document.body.classList.toggle("dev-mode");
+      buffer = "";
+      
+      // Play a little beep sound if AudioContext is available
+      if (window.AudioContext || window.webkitAudioContext) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        osc.type = "square";
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+      }
+    }
+  });
+}
+
+// 0.98 Section Minimap Scrollbar
+function initMinimap() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) return;
+
+  // Find all sections that have a marker link pointing to them
+  const markers = Array.from(document.querySelectorAll(".marker"));
+  const targets = Array.from(new Set(markers.map(m => m.dataset.target)))
+                       .map(t => document.querySelector(t))
+                       .filter(Boolean);
+  
+  if (targets.length < 2) return;
+
+  const minimap = document.createElement("div");
+  minimap.className = "minimap";
+  
+  const track = document.createElement("div");
+  track.className = "minimap-track";
+  
+  const indicator = document.createElement("div");
+  indicator.className = "minimap-indicator";
+  track.appendChild(indicator);
+  
+  targets.forEach((sec, i) => {
+    const dot = document.createElement("div");
+    dot.className = "minimap-dot";
+    dot.addEventListener("click", () => {
+      sec.scrollIntoView({ behavior: "smooth" });
+    });
+    track.appendChild(dot);
+  });
+  
+  minimap.appendChild(track);
+  document.body.appendChild(minimap);
+
+  const dots = track.querySelectorAll(".minimap-dot");
+
+  const observer = new IntersectionObserver((entries) => {
+    let activeIndex = -1;
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        activeIndex = targets.indexOf(entry.target);
+      }
+    });
+    
+    if (activeIndex !== -1) {
+      dots.forEach((dot, i) => dot.classList.toggle("active", i === activeIndex));
+      const activeDot = dots[activeIndex];
+      if (activeDot) {
+        // center the indicator over the dot
+        indicator.style.top = (activeDot.offsetTop + (activeDot.offsetHeight / 2) - 8) + "px";
+      }
+    }
+  }, { threshold: 0.2 });
+
+  targets.forEach(t => observer.observe(t));
 }
 
 // 1. Custom Cursor (desktop/mouse only)

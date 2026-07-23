@@ -102,19 +102,48 @@ function renderNav(data) {
 
   el.innerHTML = `
     <div class="timeline-track" id="timelineTrack">
+      <div class="nav-highlighter" id="navHighlighter"></div>
       <span class="tl-brand">${brandHTML}</span>
-      ${items
-        .map((item) => {
-          if (!item || !item.target || !item.label) return "";
-          return `
-        <button class="marker" data-target="${esc(item.target)}">
-          <span class="tc">${esc(pick(item, "tc", ""))}</span>
-          <span class="label">${esc(item.label)}</span>
-        </button>`;
-        })
-        .join("")}
+      <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Menu">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <span>Menu</span>
+      </button>
+      <div class="nav-links-wrap" id="navLinksWrap">
+        ${items
+          .map((item) => {
+            if (!item || !item.target || !item.label) return "";
+            return `
+          <button class="marker" data-target="${esc(item.target)}">
+            <span class="label">${esc(item.label)}</span>
+          </button>`;
+          })
+          .join("")}
+      </div>
       ${data.cta ? `<a href="${esc(data.cta.target)}" class="btn-primary nav-cta" style="margin-left:auto; font-size:12px; padding:8px 16px;">${esc(data.cta.label)}</a>` : ""}
     </div>`;
+
+  // Mobile Nav Toggle Logic
+  setTimeout(() => {
+    const mobileNavToggle = document.getElementById("mobileNavToggle");
+    const timelineNav = document.querySelector(".timeline-nav");
+    
+    if (mobileNavToggle && timelineNav) {
+      mobileNavToggle.addEventListener("click", () => {
+        timelineNav.classList.toggle("nav-expanded");
+      });
+      
+      const markers = timelineNav.querySelectorAll(".marker");
+      markers.forEach(m => {
+        m.addEventListener("click", () => timelineNav.classList.remove("nav-expanded"));
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!timelineNav.contains(e.target)) {
+          timelineNav.classList.remove("nav-expanded");
+        }
+      });
+    }
+  }, 0);
 }
 
 function renderHero(data) {
@@ -499,6 +528,25 @@ function initScrollSpy() {
 
   if (!sections.length) return;
 
+  const track = document.getElementById("timelineTrack");
+  const highlighter = document.getElementById("navHighlighter");
+  let activeMarker = null;
+
+  function moveHighlighter(marker) {
+    if (!highlighter || !marker || !track) return;
+    const rect = marker.getBoundingClientRect();
+    const trackRect = track.getBoundingClientRect();
+    highlighter.style.width = `${rect.width}px`;
+    highlighter.style.left = `${rect.left - trackRect.left + track.scrollLeft}px`;
+  }
+
+  markers.forEach(m => {
+    m.addEventListener("mouseenter", () => moveHighlighter(m));
+    m.addEventListener("mouseleave", () => {
+      if (activeMarker) moveHighlighter(activeMarker);
+    });
+  });
+
   function updateActiveNav() {
     const scrollPos = window.scrollY + 120;
     let currentSection = sections[0];
@@ -519,6 +567,10 @@ function initScrollSpy() {
       const isActive = m.dataset.target === `#${currentSection.id}`;
       if (isActive) {
         m.classList.add("active");
+        activeMarker = m;
+        if (!track.matches(":hover")) {
+          moveHighlighter(m);
+        }
       } else {
         m.classList.remove("active");
         if (document.activeElement === m) {
@@ -529,7 +581,12 @@ function initScrollSpy() {
   }
 
   window.addEventListener("scroll", updateActiveNav, { passive: true });
-  updateActiveNav();
+  
+  // Need to wait slightly for layout to be ready for initial highlight
+  setTimeout(updateActiveNav, 100);
+  window.addEventListener("resize", () => {
+    if (activeMarker) moveHighlighter(activeMarker);
+  });
 }
 
 // Marquee scroll
@@ -790,6 +847,24 @@ function initMagneticButtons() {
   });
 }
 
+// Spotlight Flashlight Cards
+function initSpotlightCards() {
+  const cards = document.querySelectorAll(".case-card, .service-card, .dev-card");
+  cards.forEach(card => {
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty("--mouse-x", `${x}px`);
+      card.style.setProperty("--mouse-y", `${y}px`);
+    });
+  });
+}
+
+function initClock() {
+  // Clock widget removed as requested
+}
+
 // 3D Card Hover Tilt
 function initCardTilt() {
   const cards = document.querySelectorAll(".case-card, .service-card, .dev-card, .tool-card");
@@ -879,9 +954,20 @@ async function init() {
   initStaggeredText();
   initSoundDesign();
   initDynamicTitle();
-  initSkillHovers();
+  initSpotlightCards();
+  initClock();
+
+  // Scroll Progress for CV Knob
+  window.addEventListener("scroll", () => {
+    const scrollPx = document.documentElement.scrollTop;
+    const winHeight = document.documentElement.clientHeight;
+    const docHeight = document.documentElement.scrollHeight;
+    const progress = scrollPx / (docHeight - winHeight);
+    document.documentElement.style.setProperty("--scroll-progress", progress * 100 + "%");
+  }, { passive: true });
   initDeveloperMode();
   initMinimap();
+  initPullString(data);
 
   dismissLoader();
 
@@ -994,18 +1080,31 @@ function dismissLoader() {
   const bar = document.getElementById("loaderBar");
   if (!loader) return;
   
-  // Finish the progress bar, but give it a nice delay so the entrance animations can breathe
   setTimeout(() => {
     if (bar) bar.style.width = "100%";
     
-    // Wait for the bar to reach 100%, then fade out the loader
     setTimeout(() => {
+      // Restore scroll position right before the loader fades out
+      const savedScroll = sessionStorage.getItem("merwin_scroll_pos");
+      if (savedScroll !== null) {
+        window.scrollTo(0, parseInt(savedScroll, 10));
+      }
+
       loader.classList.add("is-hidden");
-      // Remove from DOM entirely after the fade out transition (0.8s)
+      
       setTimeout(() => loader.remove(), 850);
-    }, 450); // duration for the bar to slide to 100%
-  }, 1200); // Wait 1.2 seconds before starting the exit sequence
+    }, 450);
+  }, 1200);
 }
+
+// Ensure the browser doesn't try to native-scroll while the page is still 0px tall
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+window.addEventListener("beforeunload", () => {
+  sessionStorage.setItem("merwin_scroll_pos", window.scrollY);
+});
 
 // ── Creative Effects ─────────────────────────────────────────────────────────
 
@@ -1093,35 +1192,6 @@ function initDynamicTitle() {
   });
 }
 
-// 0.9 Floating Skill Cards
-function initSkillHovers() {
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduceMotion) return;
-
-  const card = document.createElement("div");
-  card.className = "skill-hover-card";
-  document.body.appendChild(card);
-
-  const skills = document.querySelectorAll(".tool-card li");
-  
-  skills.forEach(li => {
-    li.addEventListener("mouseenter", () => {
-      card.textContent = li.textContent;
-      card.classList.add("active");
-    });
-    li.addEventListener("mouseleave", () => {
-      card.classList.remove("active");
-    });
-  });
-
-  document.addEventListener("mousemove", (e) => {
-    if (card.classList.contains("active")) {
-      card.style.setProperty("--x", e.clientX + "px");
-      card.style.setProperty("--y", e.clientY + "px");
-    }
-  });
-}
-
 // 0.95 Secret Developer Mode
 function initDeveloperMode() {
   let buffer = "";
@@ -1151,9 +1221,9 @@ function initMinimap() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduceMotion) return;
 
-  // Find all sections that have a marker link pointing to them
   const markers = Array.from(document.querySelectorAll(".marker"));
   const targets = Array.from(new Set(markers.map(m => m.dataset.target)))
+                       .filter(t => t && typeof t === "string" && t.startsWith("#"))
                        .map(t => document.querySelector(t))
                        .filter(Boolean);
   
@@ -1202,6 +1272,79 @@ function initMinimap() {
   }, { threshold: 0.2 });
 
   targets.forEach(t => observer.observe(t));
+}
+
+// 0.99 Physics-Based Resume Pull String
+function initPullString(db) {
+  const resumeUrl = db && db.contact && db.contact.resume ? db.contact.resume : "#";
+  
+  const wrap = document.createElement("div");
+  wrap.className = "pull-string-wrap";
+  
+  const string = document.createElement("div");
+  string.className = "pull-string";
+  
+  const knob = document.createElement("div");
+  knob.className = "pull-knob";
+  knob.textContent = "CV";
+  
+  wrap.appendChild(string);
+  wrap.appendChild(knob);
+  document.body.appendChild(wrap);
+
+  let isDragging = false;
+  let startY = 0, currentY = 0;
+  let startX = 0, currentX = 0;
+  const maxPull = 120; 
+  const baseHeight = 100;
+
+  const onDown = (e) => {
+    isDragging = true;
+    const evt = e.touches ? e.touches[0] : e;
+    startY = evt.clientY;
+    startX = evt.clientX;
+    wrap.style.transition = "none";
+    string.style.transition = "none";
+  };
+
+  const onMove = (e) => {
+    if (!isDragging) return;
+    const evt = e.touches ? e.touches[0] : e;
+    const deltaY = Math.max(0, evt.clientY - startY);
+    const deltaX = evt.clientX - startX;
+    
+    currentY = deltaY * 0.6;
+    if (currentY > maxPull) currentY = maxPull + (currentY - maxPull) * 0.2; 
+    
+    currentX = deltaX * 0.15; 
+    const angle = Math.max(-25, Math.min(25, currentX));
+
+    string.style.height = (baseHeight + currentY) + "px";
+    wrap.style.transform = `rotate(${angle}deg)`;
+  };
+
+  const onUp = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    
+    if (currentY > 50) {
+      window.open(resumeUrl, "_blank");
+    }
+
+    wrap.style.transition = "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    string.style.transition = "height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    wrap.style.transform = "rotate(0deg)";
+    string.style.height = baseHeight + "px";
+    currentY = 0;
+    currentX = 0;
+  };
+
+  wrap.addEventListener("mousedown", onDown);
+  wrap.addEventListener("touchstart", onDown, {passive: true});
+  window.addEventListener("mousemove", onMove);
+  window.addEventListener("touchmove", onMove, {passive: true});
+  window.addEventListener("mouseup", onUp);
+  window.addEventListener("touchend", onUp);
 }
 
 // 1. Custom Cursor (desktop/mouse only)

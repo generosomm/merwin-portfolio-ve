@@ -465,6 +465,7 @@ function renderContact(data) {
       ${data.email    ? `<a href="mailto:${esc(data.email)}" class="btn-primary">EMAIL ME →</a>` : ""}
       ${data.resume   ? `<button class="btn-ghost" onclick="openResumeModal('${esc(data.resume)}')">VIEW CV</button>` : ""}
     </div>
+    <div class="time-widget reveal" id="timeWidget" style="transition-delay:120ms;"></div>
     ${metaLinks ? `<div class="contact-meta reveal" style="transition-delay:150ms;">${metaLinks}</div>` : ""}
     ${data.availability
       ? `<div class="availability reveal" style="transition-delay:220ms;"><span class="dot-live"></span>${esc(data.availability)}</div>`
@@ -760,7 +761,7 @@ function renderSection(name, fn, data) {
 
 // Magnetic Buttons
 function initMagneticButtons() {
-  const magnets = document.querySelectorAll(".marker, .btn-primary, .btn-ghost, .gh-link, .contact-meta a");
+  const magnets = document.querySelectorAll(".marker, .btn-primary, .btn-ghost, .gh-link, .contact-meta a, .timeline-nav a");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduceMotion) return;
 
@@ -811,6 +812,8 @@ function initCardTilt() {
       card.style.setProperty("--rx", rotateX + "deg");
       card.style.setProperty("--ry", rotateY + "deg");
       card.style.setProperty("--s", "1.015");
+      card.style.setProperty("--x", x + "px");
+      card.style.setProperty("--y", y + "px");
     });
     
     card.addEventListener("mouseleave", () => {
@@ -872,6 +875,9 @@ async function init() {
   initCustomCursor();
   initScrollProgress();
   initCursorGlow();
+  initTimeWidget();
+  initStaggeredText();
+  initSoundDesign();
 
   dismissLoader();
 
@@ -998,6 +1004,78 @@ function dismissLoader() {
 }
 
 // ── Creative Effects ─────────────────────────────────────────────────────────
+
+// 0. Staggered Text Reveal
+function initStaggeredText() {
+  const paragraphs = document.querySelectorAll(".about-point p, .contact p");
+  if (!paragraphs.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-revealed");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+  paragraphs.forEach(p => {
+    const text = p.innerText;
+    p.innerHTML = text.split(" ").map((word, i) => 
+      `<span class="stagger-word" style="transition-delay: ${i * 20}ms">${word}</span>`
+    ).join(" ");
+    p.classList.add("stagger-parent");
+    observer.observe(p);
+  });
+}
+
+// 0.5 Time Widget
+function initTimeWidget() {
+  const timeWidget = document.getElementById("timeWidget");
+  if (!timeWidget) return;
+
+  function updateTime() {
+    const opts = { timeZone: 'Asia/Manila', hour: 'numeric', minute: 'numeric', hour12: true };
+    const timeStr = new Intl.DateTimeFormat('en-US', opts).format(new Date());
+    timeWidget.innerHTML = `📍 Batangas, PH &bull; ${timeStr} &bull; <span class="dot-live"></span> Online`;
+  }
+  updateTime();
+  setInterval(updateTime, 60000);
+}
+
+// 0.75 Sound Design
+function initSoundDesign() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+  
+  const ctx = new AudioContext();
+  
+  function playTick() {
+    if (ctx.state === 'suspended') ctx.resume();
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.05);
+    
+    // very low volume
+    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.02, ctx.currentTime + 0.01);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+    
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.06);
+  }
+
+  const interactives = document.querySelectorAll(".marker, .btn-primary, .btn-ghost, .gh-link, .contact-meta a, .timeline-nav a");
+  interactives.forEach(el => {
+    el.addEventListener("mouseenter", playTick);
+  });
+}
 
 // 1. Custom Cursor (desktop/mouse only)
 function initCustomCursor() {

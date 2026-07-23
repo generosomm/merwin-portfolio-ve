@@ -188,9 +188,6 @@ function renderHero(data) {
              </div>`
           : ""}
       </div>
-      <div class="hero-image reveal" style="transition-delay:200ms;">
-        <img src="assets/images/my-picture.png" alt="Merwin Generoso">
-      </div>
     </div>`;
 }
 
@@ -391,21 +388,24 @@ function renderAbout(data) {
           .join("")}</ul>`
       : "";
 
+  const hasSidebar = education.length || certifications.length || languages.length;
+
   el.innerHTML = `
     ${sectionHead(7, "About", data)}
-    <div class="about-grid">
-      ${data.image ? `
-      <div class="about-image reveal">
-        <img src="${esc(data.image)}" alt="Merwin Generoso - Profile">
+    <div class="about-body${hasSidebar ? "" : " about-body--full"}">
+      <div class="about-points reveal">
+        ${paragraphs.map((p, i) => `
+          <div class="about-point" style="transition-delay:${i * 60}ms;">
+            <span class="about-point-num">${String(i + 1).padStart(2, "0")}</span>
+            <p>${esc(p)}</p>
+          </div>`).join("")}
       </div>
-      ` : ""}
-      <div class="about-copy reveal">
-        ${paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}
-      </div>
-      <div class="about-list reveal" style="transition-delay:120ms;">
+      ${hasSidebar ? `
+      <aside class="about-sidebar reveal" style="transition-delay:180ms;">
+        ${renderPairList("Languages", languages)}
         ${renderPairList("Education", education)}
         ${renderPairList("Certifications", certifications)}
-      </div>
+      </aside>` : ""}
     </div>`;
 }
 
@@ -432,7 +432,7 @@ function renderContact(data) {
     ${sectionHead(8, "Contact", data)}
     <div class="contact-actions reveal" style="transition-delay:80ms;">
       ${data.email    ? `<a href="mailto:${esc(data.email)}" class="btn-primary">EMAIL ME →</a>` : ""}
-      ${data.resume   ? `<button class="btn-ghost" onclick="openResumeModal('${esc(data.resume)}')">VIEW RESUME</button>` : ""}
+      ${data.resume   ? `<button class="btn-ghost" onclick="openResumeModal('${esc(data.resume)}')">VIEW CV</button>` : ""}
     </div>
     ${metaLinks ? `<div class="contact-meta reveal" style="transition-delay:150ms;">${metaLinks}</div>` : ""}
     ${data.availability
@@ -885,11 +885,24 @@ const resumeFallbackBtn = document.getElementById("resumeFallbackBtn");
 
 window.openResumeModal = function(src) {
   if (!resumeModal || !resumeModalIframe) return;
-  // Update src and download links
-  resumeModalIframe.src = src + "#toolbar=0";
+
+  // Build the absolute URL (needed for Google Docs Viewer)
+  const absoluteUrl = new URL(src, window.location.href).href;
+
+  // Detect mobile/tablet — iOS Safari and Android Chrome don't support inline PDF iframes
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    // Google Docs Viewer renders PDFs inline on mobile without forcing a download
+    const gdocsUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(absoluteUrl)}`;
+    resumeModalIframe.src = gdocsUrl;
+  } else {
+    resumeModalIframe.src = src + "#toolbar=0";
+  }
+
   if (resumeDownloadBtn) resumeDownloadBtn.href = src;
   if (resumeFallbackBtn) resumeFallbackBtn.href = src;
-  
+
   resumeModal.classList.add("open");
   resumeModal.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";

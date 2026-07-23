@@ -1,39 +1,36 @@
 {
-  "eyebrow": "Video Editor & Content Operator",
+  "eyebrow": "Video Editor  ·  Virtual Assistant  ·  Web Developer",
   "marquee": [
     "VIDEO EDITING",
+    "VIRTUAL ASSISTANT",
     "CONTENT OPERATIONS",
-    "CONTENT STRATEGY",
-    "RETENTION OPTIMIZATION"
+    "WEB DEVELOPMENT",
+    "CONTENT STRATEGY"
   ],
   "nameLine1": "MERWIN",
   "nameLine2Start": "GENE",
   "nameLine2Accent": "ROSO",
-  "tagline": "I edit high-retention short-form content that scales. 120M+ views driven through aggressive storytelling and data-backed pacing.",
+  "tagline": "Video editor, virtual assistant, and web developer. 124M+ views built from scratch. Available for remote work across US, UK, AU, and Asia time zones.",
   "ctaPrimary": {
     "label": "Let's Talk",
     "href": "#contact"
   },
   "stats": [
     {
-      "value": "120M+",
+      "value": "124M+",
       "label": "Cumulative Views"
     },
     {
-      "value": "230K+",
+      "value": "239K+",
       "label": "TikTok Followers"
     },
     {
-      "value": "16K+",
-      "label": "YT Subscribers"
+      "value": "21.3M+",
+      "label": "TikTok Likes"
     },
     {
-      "value": "2K+",
-      "label": "IG Followers"
-    },
-    {
-      "value": "640+",
-      "label": "YT Videos"
+      "value": "96%+",
+      "label": "Non-Follower Reach"
     }
   ]
 }

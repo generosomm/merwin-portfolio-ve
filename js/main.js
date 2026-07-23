@@ -143,6 +143,20 @@ function renderNav(data) {
         }
       });
     }
+
+    // Magnetic CTA Button
+    const navCta = timelineNav ? timelineNav.querySelector(".nav-cta") : null;
+    if (navCta) {
+      navCta.addEventListener("mousemove", (e) => {
+        const rect = navCta.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        navCta.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+      });
+      navCta.addEventListener("mouseleave", () => {
+        navCta.style.transform = `translate(0px, 0px)`;
+      });
+    }
   }, 0);
 }
 

@@ -363,11 +363,32 @@ body.custom-cursor-active * { cursor: none !important; }
   position: relative; transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), color 0.2s ease;
   text-transform: uppercase; letter-spacing: 0.04em;
   outline: none; z-index: 1;
+  opacity: 0;
+  animation: marker-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
-.marker .label { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: inherit; }
+.marker:nth-child(1) { animation-delay: 0.1s; }
+.marker:nth-child(2) { animation-delay: 0.15s; }
+.marker:nth-child(3) { animation-delay: 0.2s; }
+.marker:nth-child(4) { animation-delay: 0.25s; }
+.marker:nth-child(5) { animation-delay: 0.3s; }
+.marker:nth-child(6) { animation-delay: 0.35s; }
+
+@keyframes marker-pop-in {
+  from { opacity: 0; transform: scale(0.8) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.marker .label { 
+  font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: inherit;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); display: inline-block;
+}
 .marker:hover { color: var(--text); transform: scale(1.05); }
 .marker.active { color: var(--text); }
-.marker.active .label { color: #fff; }
+.marker.active .label { 
+  color: #fff; 
+  text-shadow: 0 0 12px rgba(90, 117, 255, 0.8);
+  transform: scale(1.1);
+}
 .marker:not(.active):not(:hover) { color: var(--text-dim); }
 .marker:not(.active):not(:hover) .label { color: inherit; }
 
@@ -1305,7 +1326,6 @@ body { -ms-overflow-style: none; scrollbar-width: none; }
   }
   .timeline-nav.nav-expanded .nav-links-wrap {
     display: grid;
-    animation: fade-in-up 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
   }
   
   .marker {

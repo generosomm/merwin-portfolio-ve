@@ -843,6 +843,7 @@ function initParallaxHero() {
 // Init
 
 async function init() {
+  initLoader();
   const { data, failed } = await loadData();
 
   renderSection("nav",          renderNav,          data.nav);
@@ -866,6 +867,13 @@ async function init() {
   
   // Phase 2 Interactive Effects
   initParallaxHero();
+
+  // Phase 3 Creative Effects
+  initCustomCursor();
+  initScrollProgress();
+  initCursorGlow();
+
+  dismissLoader();
 
   if (failed.length === Object.keys(DATA_FILES).length) {
     document.body.innerHTML = `
@@ -958,5 +966,145 @@ document.addEventListener("keydown", (e) => {
     closeResumeModal();
   }
 });
+
+// ── Loading Screen ───────────────────────────────────────────────────────────
+
+function initLoader() {
+  const bar = document.getElementById("loaderBar");
+  if (!bar) return;
+  // Start filling the bar artificially while data loads
+  bar.style.width = "40%";
+  setTimeout(() => {
+    if (bar.style.width !== "100%") bar.style.width = "75%";
+  }, 600);
+}
+
+function dismissLoader() {
+  const loader = document.getElementById("loader");
+  const bar = document.getElementById("loaderBar");
+  if (!loader) return;
+  
+  // Finish the progress bar, but give it a nice delay so the entrance animations can breathe
+  setTimeout(() => {
+    if (bar) bar.style.width = "100%";
+    
+    // Wait for the bar to reach 100%, then fade out the loader
+    setTimeout(() => {
+      loader.classList.add("is-hidden");
+      // Remove from DOM entirely after the fade out transition (0.8s)
+      setTimeout(() => loader.remove(), 850);
+    }, 450); // duration for the bar to slide to 100%
+  }, 1200); // Wait 1.2 seconds before starting the exit sequence
+}
+
+// ── Creative Effects ─────────────────────────────────────────────────────────
+
+// 1. Custom Cursor (desktop/mouse only)
+function initCustomCursor() {
+  const dot  = document.getElementById("cursorDot");
+  const ring = document.getElementById("cursorRing");
+  if (!dot || !ring) return;
+
+  // Only activate on devices with a fine pointer (mouse, not touch)
+  if (!window.matchMedia("(pointer: fine)").matches) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  document.body.classList.add("custom-cursor-active");
+
+  let ringX = 0, ringY = 0;
+  let dotX  = 0, dotY  = 0;
+  let raf;
+
+  document.addEventListener("mousemove", (e) => {
+    dotX  = e.clientX;
+    dotY  = e.clientY;
+  });
+
+  function animateCursor() {
+    // Ring lags behind the dot for a trailing effect
+    ringX += (dotX - ringX) * 0.12;
+    ringY += (dotY - ringY) * 0.12;
+
+    dot.style.left  = dotX  + "px";
+    dot.style.top   = dotY  + "px";
+    ring.style.left = ringX + "px";
+    ring.style.top  = ringY + "px";
+    raf = requestAnimationFrame(animateCursor);
+  }
+  raf = requestAnimationFrame(animateCursor);
+
+  // Hover state on interactive elements
+  const interactives = "a, button, [onclick], input, textarea, .case-frame, .stat-img-card, .marker";
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest(interactives)) {
+      dot.classList.add("is-hovering");
+      ring.classList.add("is-hovering");
+    }
+  });
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest(interactives)) {
+      dot.classList.remove("is-hovering");
+      ring.classList.remove("is-hovering");
+    }
+  });
+
+  // Click state
+  document.addEventListener("mousedown", () => {
+    dot.classList.add("is-clicking");
+    ring.classList.add("is-clicking");
+  });
+  document.addEventListener("mouseup", () => {
+    dot.classList.remove("is-clicking");
+    ring.classList.remove("is-clicking");
+  });
+
+  // Hide when leaving window
+  document.addEventListener("mouseleave", () => {
+    dot.style.opacity  = "0";
+    ring.style.opacity = "0";
+  });
+  document.addEventListener("mouseenter", () => {
+    dot.style.opacity  = "1";
+    ring.style.opacity = "1";
+  });
+}
+
+// 2. Scroll Progress Bar
+function initScrollProgress() {
+  const bar = document.getElementById("scrollProgress");
+  if (!bar) return;
+  window.addEventListener("scroll", () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = pct + "%";
+  }, { passive: true });
+}
+
+
+// 4. Mouse-tracking spotlight glow
+function initCursorGlow() {
+  const glow = document.querySelector(".bg-cursor-glow");
+  if (!glow) return;
+  if (!window.matchMedia("(pointer: fine)").matches) return;
+
+  let glowX = window.innerWidth / 2;
+  let glowY = window.innerHeight / 2;
+  let currentX = glowX, currentY = glowY;
+
+  document.addEventListener("mousemove", (e) => {
+    glowX = e.clientX;
+    glowY = e.clientY;
+    glow.style.opacity = "1";
+  }, { passive: true });
+
+  function animateGlow() {
+    currentX += (glowX - currentX) * 0.06;
+    currentY += (glowY - currentY) * 0.06;
+    glow.style.transform = `translate(${currentX - 250}px, ${currentY - 250}px)`;
+    requestAnimationFrame(animateGlow);
+  }
+  animateGlow();
+}
 
 init();

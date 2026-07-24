@@ -1,0 +1,233 @@
+/* effects.css — cursor, glow, tilt, scroll-reveal, animations, minimap, easter egg */
+
+/* ── Film Grain Texture ── */
+.grain {
+  position: fixed; inset: 0; pointer-events: none; z-index: 200;
+  opacity: 0.025; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Background Glow ── */
+.bg-glow {
+  position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+}
+.bg-glow::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 25%, var(--line) 75%, transparent);
+}
+.bg-glow::after { display: none; }
+
+/* ── Mouse-tracking cursor glow ── */
+.bg-cursor-glow {
+  position: fixed; top: 0; left: 0;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(61, 92, 255, 0.13) 0%, rgba(61, 92, 255, 0.04) 45%, transparent 70%);
+  filter: blur(20px);
+  transform: translate(-50%, -50%);
+  pointer-events: none; z-index: 1;
+  opacity: 0; transition: opacity 0.4s ease;
+}
+
+/* ── Custom Cursor ── */
+body.custom-cursor-active,
+body.custom-cursor-active * { cursor: none !important; }
+
+.c-cursor-dot {
+  position: fixed; top: 0; left: 0;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #fff;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s ease, background 0.2s ease, opacity 0.2s ease;
+  will-change: transform;
+}
+.c-cursor-ring {
+  position: fixed; top: 0; left: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+  will-change: transform;
+}
+.c-cursor-dot.is-hovering { transform: translate(-50%, -50%) scale(2); background: #fff; }
+.c-cursor-ring.is-hovering { width: 36px; height: 36px; border-color: #fff; opacity: 0.3; }
+.c-cursor-dot.is-clicking { transform: translate(-50%, -50%) scale(0.5); }
+.c-cursor-ring.is-clicking { width: 16px; height: 16px; }
+
+/* ── Scroll Progress Bar ── */
+.scroll-progress {
+  position: fixed; top: 0; left: 0;
+  width: 0%; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--teal));
+  z-index: 500; transition: width 0.05s linear;
+  transform-origin: left;
+}
+
+/* ── Card Tilt & Spotlight (3D hover) ── */
+.case-card, .service-card, .dev-card, .tool-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  position: relative; overflow: hidden;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale3d(var(--s, 1), var(--s, 1), var(--s, 1));
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), background 0.2s ease, border-color 0.15s ease, z-index 0s;
+  will-change: transform, z-index;
+}
+/* Spotlight overlay */
+.case-card::before, .service-card::before, .dev-card::before {
+  content: "";
+  position: absolute; inset: 0; border-radius: inherit;
+  background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 255, 255, 0.08), transparent 40%);
+  opacity: 0; transition: opacity 0.3s;
+  pointer-events: none; z-index: 10;
+}
+.case-card:hover::before, .service-card:hover::before, .dev-card:hover::before { opacity: 1; }
+/* Hover glow overlay */
+.case-card::after, .service-card::after, .dev-card::after, .tool-card::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  opacity: 0; transition: opacity 0.3s ease;
+  background: radial-gradient(800px circle at var(--x, 0) var(--y, 0), rgba(255, 255, 255, 0.04), transparent 40%);
+  pointer-events: none; z-index: 3;
+}
+.case-card:hover::after, .service-card:hover::after, .dev-card:hover::after, .tool-card:hover::after { opacity: 1; }
+
+/* When actively tilting — use linear for responsiveness */
+.case-card.tilting, .service-card.tilting, .dev-card.tilting, .tool-card.tilting {
+  transition: transform 0.05s linear, background 0.2s ease, border-color 0.15s ease;
+}
+
+/* Tool grid focus (dim non-hovered cards) */
+.toolkit-grid:hover .tool-card:not(:hover) { opacity: 0.7; }
+.tool-card {
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), background 0.2s ease, border-color 0.15s ease, opacity 0.3s ease !important;
+}
+
+/* ── Magnetic Button Effect ── */
+.marker, .btn-primary, .btn-ghost, .gh-link, .contact-meta a, .timeline-nav a {
+  transform: translate(var(--tx, 0px), var(--ty, 0px));
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), color 0.2s ease, border-color 0.15s ease, background 0.2s ease;
+  will-change: transform;
+}
+.marker.magneting, .btn-primary.magneting, .btn-ghost.magneting, .gh-link.magneting, .contact-meta a.magneting, .timeline-nav a.magneting {
+  transition: transform 0.05s linear, color 0.2s ease, border-color 0.15s ease, background 0.2s ease;
+}
+
+/* ── Hero Parallax ── */
+.hero-content {
+  will-change: transform;
+  transform: translateY(var(--hero-y, 0px));
+}
+
+/* ── Scroll Reveal ── */
+.reveal {
+  opacity: 0; transform: translateY(36px);
+  transition: opacity 0.85s cubic-bezier(.16,.8,.24,1), transform 0.85s cubic-bezier(.16,.8,.24,1);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* ── Staggered Word Reveal ── */
+.stagger-word {
+  display: inline-block;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform, opacity;
+}
+.stagger-parent.is-revealed .stagger-word { opacity: 1; transform: translateY(0); }
+
+/* ── Minimap ── */
+.minimap {
+  position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+  z-index: 500;
+}
+.minimap-track {
+  position: relative;
+  display: flex; flex-direction: column; gap: 16px;
+  padding: 8px 0;
+}
+.minimap-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--line); cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.minimap-dot:hover { transform: scale(1.5); background: var(--text-dim); }
+.minimap-dot.active { background: transparent; }
+.minimap-indicator {
+  position: absolute; left: -5px; width: 16px; height: 16px;
+  border: 1px solid var(--teal); border-radius: 50%;
+  transition: top 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  pointer-events: none;
+}
+
+/* ── Pull String (CV Knob) ── */
+.pull-string-wrap {
+  position: fixed; top: 0; right: 100px; z-index: 9000;
+  display: flex; flex-direction: column; align-items: center;
+  transform-origin: top center; cursor: grab;
+}
+.pull-string-wrap:active { cursor: grabbing; }
+.pull-string { width: 1px; height: 100px; background: var(--line); }
+.pull-knob {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim);
+  transition: border-color 0.3s ease, color 0.3s ease;
+  user-select: none;
+}
+.pull-string-wrap:hover .pull-knob { border-color: var(--teal); color: var(--teal); }
+
+/* ── Secret Developer Mode Easter Egg ── */
+body.dev-mode {
+  --bg: #050505 !important;
+  --text: #00ff41 !important;
+  --text-dim: #008f11 !important;
+  --text-muted: #005000 !important;
+  --line: #003b00 !important;
+  --teal: #00ff41 !important;
+  --gold: #00ff41 !important;
+}
+body.dev-mode * { font-family: 'IBM Plex Mono', monospace !important; }
+body.dev-mode::after {
+  content: "";
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1) 1px, transparent 1px, transparent 2px);
+}
+
+/* ── Stat Pop-in (hero) ── */
+.hero-stats div.stat-animate { animation: stat-pop 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes stat-pop {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.hero-stats div.stat-animate strong { animation: stat-shine 1s ease 0.4s both; }
+@keyframes stat-shine {
+  from { background-position: 100% center; }
+  to   { background-position: -100% center; }
+}
+
+/* ── Nav Float-in ── */
+@keyframes nav-float-in {
+  from { transform: translate(-50%, 150%); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* ── Marker pop-in ── */
+@keyframes marker-pop-in {
+  from { opacity: 0; transform: scale(0.8) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── Marquee scroll ── */
+@keyframes hero-marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marquee-slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

@@ -1,0 +1,203 @@
+/* theme.css — light mode variables, overrides, theme toggle, and theme prompt modal */
+
+/* ── Light Mode Variables ── */
+[data-theme="light"] {
+  --bg:         #F8FAFC;
+  --surface:    #FFFFFF;
+  --surface-2:  #F1F5F9;
+  --line:       #E2E8F0;
+  --text:       #0F172A;
+  --text-dim:   #334155;
+  --text-muted: #64748B;
+
+  --gold:       #2563EB;
+  --gold-glow:  rgba(37, 99, 235, 0.12);
+  --teal:       #1D4ED8;
+  --danger:     #DC2626;
+}
+
+/* ── Light Mode Typography ── */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4 { color: #0F172A; }
+
+[data-theme="light"] .hero-sub,
+[data-theme="light"] p { color: #334155; }
+
+/* ── Light Mode Nav ── */
+[data-theme="light"] .timeline-nav {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+}
+[data-theme="light"] .tl-brand { color: #0F172A; border-right-color: #E2E8F0; }
+[data-theme="light"] .tl-brand strong { color: #2563EB; }
+[data-theme="light"] .marker { color: #475569; font-weight: 600; }
+[data-theme="light"] .marker:hover { color: #1E40AF !important; font-weight: 700; }
+[data-theme="light"] .marker.active { color: #1D4ED8 !important; font-weight: 700; }
+[data-theme="light"] .marker .label,
+[data-theme="light"] .marker.active .label,
+[data-theme="light"] .timeline-track:hover .marker:hover .label { color: inherit !important; }
+[data-theme="light"] .nav-highlighter {
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  border-radius: var(--radius-pill);
+}
+
+/* ── Light Mode Section Labels ── */
+[data-theme="light"] .section-index,
+[data-theme="light"] .hero-index {
+  color: #1D4ED8;
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.28);
+  font-weight: 600;
+}
+
+/* ── Light Mode Time Widget ── */
+[data-theme="light"] .time-widget {
+  color: #1E293B; background: #FFFFFF;
+  border-color: #CBD5E1; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); font-weight: 500;
+}
+
+/* ── Light Mode Hero ── */
+[data-theme="light"] .hero-marquee-group span { color: #0F172A; }
+
+[data-theme="light"] .hero-stats {
+  background: #FFFFFF; border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+}
+[data-theme="light"] .hero-stats div { background: #FFFFFF; border-right-color: #E2E8F0; }
+[data-theme="light"] .hero-stats div:hover { background: #F8FAFC; }
+[data-theme="light"] .hero-stats strong {
+  color: #1E40AF !important;
+  background: linear-gradient(90deg, #1E40AF 0%, #2563EB 50%, #1D4ED8 100%) !important;
+  background-size: 200% auto;
+  -webkit-background-clip: text !important; background-clip: text !important;
+  -webkit-text-fill-color: transparent !important; font-weight: 900;
+}
+[data-theme="light"] .hero-stats span { color: #475569 !important; font-weight: 600; }
+
+/* ── Light Mode — Disable Dark Glows ── */
+[data-theme="light"] .grain { opacity: 0.01; }
+[data-theme="light"] .bg-glow,
+[data-theme="light"] .bg-cursor-glow { opacity: 0 !important; display: none !important; }
+
+/* ── Light Mode Loader ── */
+[data-theme="light"] .loader { background: #F8FAFC; }
+
+/* ── Light Mode Custom Cursor ── */
+[data-theme="light"] .c-cursor-dot { background: #0F172A; }
+[data-theme="light"] .c-cursor-ring { border-color: rgba(15, 23, 42, 0.35); }
+[data-theme="light"] .c-cursor-dot.is-hovering { background: #2563EB; }
+[data-theme="light"] .c-cursor-ring.is-hovering { border-color: #2563EB; }
+
+/* ── Light Mode Buttons ── */
+[data-theme="light"] .btn-primary { background: #2563EB; color: #FFFFFF; font-weight: 600; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3); }
+[data-theme="light"] .btn-primary:hover { background: #1D4ED8; box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4); }
+[data-theme="light"] .btn-ghost { background: #FFFFFF; border-color: #CBD5E1; color: #0F172A; font-weight: 600; }
+[data-theme="light"] .btn-ghost:hover { border-color: #2563EB; color: #2563EB; background: rgba(37, 99, 235, 0.05); }
+
+/* ── Light Mode Social & Pills ── */
+[data-theme="light"] .social-btn { background: #F1F5F9; border-color: #E2E8F0; color: #475569; }
+[data-theme="light"] .social-btn:hover { background: rgba(37, 99, 235, 0.1); border-color: #2563EB; color: #2563EB; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18); }
+[data-theme="light"] .info-pill { background: #FFFFFF; border-color: #CBD5E1; color: #475569; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03); }
+[data-theme="light"] .info-pill:hover { color: #0F172A; border-color: #94A3B8; }
+
+/* ── Light Mode Cards ── */
+[data-theme="light"] .case-card,
+[data-theme="light"] .service-card,
+[data-theme="light"] .dev-card,
+[data-theme="light"] .tool-card,
+[data-theme="light"] .about-sidebar { background: #FFFFFF; border-color: #E2E8F0; box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04); }
+[data-theme="light"] .case-card:hover,
+[data-theme="light"] .service-card:hover,
+[data-theme="light"] .dev-card:hover,
+[data-theme="light"] .tool-card:hover { border-color: #93C5FD; box-shadow: 0 12px 32px rgba(37, 99, 235, 0.08); }
+[data-theme="light"] .case-card::before, [data-theme="light"] .service-card::before,
+[data-theme="light"] .dev-card::before, [data-theme="light"] .case-card::after,
+[data-theme="light"] .service-card::after, [data-theme="light"] .dev-card::after,
+[data-theme="light"] .tool-card::after { background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(37, 99, 235, 0.05), transparent 40%); }
+
+/* ── Light Mode About ── */
+[data-theme="light"] .about-point { border-bottom-color: #E2E8F0; }
+[data-theme="light"] .about-point p { color: #334155; }
+[data-theme="light"] .about-sidebar li { border-bottom-color: #E2E8F0; }
+[data-theme="light"] .about-sidebar li span:last-child { color: #475569; }
+
+/* ── Light Mode Footer ── */
+[data-theme="light"] footer { border-top-color: #E2E8F0; color: #64748B; }
+
+/* ── Light Mode Modals ── */
+[data-theme="light"] .video-modal-backdrop,
+[data-theme="light"] .image-modal-backdrop,
+[data-theme="light"] .resume-modal-backdrop { background: rgba(241, 245, 249, 0.92); backdrop-filter: blur(16px); }
+[data-theme="light"] .resume-modal-content { background: #FFFFFF; border-color: #E2E8F0; box-shadow: 0 24px 64px rgba(15, 23, 42, 0.12); }
+
+/* ── Light Mode Section CTAs ── */
+[data-theme="light"] .section-cta { background: #FFFFFF; border-color: #E2E8F0; box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04); }
+[data-theme="light"] .section-cta:hover { border-color: #93C5FD; box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08); }
+[data-theme="light"] .section-cta-text { color: #0F172A; }
+
+/* ── Theme Toggle Button ── */
+.theme-toggle-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+  cursor: pointer; margin-left: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); flex-shrink: 0;
+}
+.theme-toggle-btn:hover { color: var(--gold); border-color: var(--gold); transform: scale(1.1) rotate(15deg); background: var(--gold-glow); }
+/* Icon swap */
+.theme-toggle-btn .sun-icon { display: block; }
+.theme-toggle-btn .moon-icon { display: none; }
+[data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
+[data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
+
+/* ── First-Time Theme Selection Modal ── */
+.theme-prompt-modal {
+  position: fixed; inset: 0; z-index: 8900;
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s ease;
+}
+.theme-prompt-modal.is-visible { opacity: 1; visibility: visible; }
+.theme-prompt-backdrop { position: absolute; inset: 0; background: rgba(4, 5, 8, 0.78); backdrop-filter: blur(16px); }
+[data-theme="light"] .theme-prompt-backdrop { background: rgba(241, 245, 249, 0.88); }
+
+.theme-prompt-card {
+  position: relative; z-index: 2;
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 16px;
+  padding: 36px 32px; max-width: 480px; width: 100%;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  transform: scale(0.94) translateY(12px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); text-align: center;
+}
+[data-theme="light"] .theme-prompt-card { background: #FFFFFF; border-color: #E2E8F0; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1); }
+.theme-prompt-modal.is-visible .theme-prompt-card { transform: scale(1) translateY(0); }
+
+.theme-prompt-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 10px; }
+.theme-prompt-card h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+.theme-prompt-card p { font-size: 13.5px; color: var(--text-dim); line-height: 1.55; margin-bottom: 24px; }
+
+.theme-options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 520px) { .theme-options { grid-template-columns: 1fr; } }
+
+.theme-option-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 20px 16px; border-radius: 12px;
+  background: var(--surface); border: 1px solid var(--line);
+  cursor: pointer; text-align: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.theme-option-btn:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 12px 28px rgba(37, 99, 235, 0.18); }
+
+.theme-preview-box { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: transform 0.25s ease; }
+.theme-option-btn:hover .theme-preview-box { transform: scale(1.1); }
+.preview-dark { background: #0A0A0D; border: 1px solid rgba(255, 255, 255, 0.15); color: #3D5CFF; }
+.preview-light { background: #F8FAFC; border: 1px solid rgba(0, 0, 0, 0.15); color: #2563EB; }
+
+.theme-option-info { display: flex; flex-direction: column; gap: 4px; }
+.theme-option-info strong { font-size: 14px; font-weight: 600; color: var(--text); }
+.theme-option-info span { font-size: 11px; color: var(--text-dim); line-height: 1.35; }

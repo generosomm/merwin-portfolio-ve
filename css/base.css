@@ -1,0 +1,138 @@
+/* base.css — variables, reset, fonts, body, loader */
+
+/* ── CSS Variables ── */
+:root {
+  --bg:         #000000;
+  --surface:    #0a0a0a;
+  --surface-2:  #111111;
+  --line:       #202020;
+  --text:       #F0F0EE;
+  --text-dim:   #7A7A88;
+  --text-muted: #9AA0C0;
+
+  /* Brand accent — electric blue */
+  --gold:       #3D5CFF;
+  --gold-glow:  rgba(61,92,255,0.18);
+  --teal:       #7C93FF;
+  --danger:     #C4633F;
+
+  /* Light section palette */
+  --light-bg:      #F4F2ED;
+  --light-surface: #ECEAE3;
+  --light-line:    #D6D3CA;
+  --light-text:    #0A0A0D;
+  --light-dim:     #5C5A55;
+
+  /* Radii */
+  --radius:     3px;
+  --radius-md:  8px;
+  --radius-pill:999px;
+
+  /* Section max width */
+  --max-w: 1200px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ── Base Typography & Body ── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection { background: var(--gold); color: #fff; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, h4 { font-family: 'Archivo Black', sans-serif; font-weight: 400; letter-spacing: -0.02em; }
+.section-head h2 { font-family: 'Helvetica', 'Arial', sans-serif; }
+.mono { font-family: 'IBM Plex Mono', monospace; }
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+/* ── Custom Scrollbar (hidden globally) ── */
+::-webkit-scrollbar { display: none; }
+body { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Loading Screen ── */
+.loader {
+  position: fixed; inset: 0; z-index: 9000;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+  transform-origin: center;
+}
+.loader.is-hidden {
+  opacity: 0;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+.loader-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  text-align: center;
+}
+.loader-brand {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(28px, 5vw, 52px);
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1;
+  animation: load-brand 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.loader-brand span { color: var(--gold); }
+.loader-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  animation: load-sub 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+.loader-bar-wrap {
+  width: 160px; height: 1px;
+  background: var(--line);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 8px;
+  animation: load-bar-wrap 1s ease 0.5s both;
+}
+.loader-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--teal));
+  border-radius: 99px;
+  transition: width 0.3s ease-out;
+}
+
+/* ── Loader Keyframes ── */
+@keyframes load-brand {
+  0% { opacity: 0; transform: translateY(10px); letter-spacing: -0.08em; filter: blur(4px); }
+  100% { opacity: 1; transform: translateY(0); letter-spacing: -0.02em; filter: blur(0); }
+}
+@keyframes load-sub {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes load-bar-wrap {
+  0% { opacity: 0; width: 0; }
+  100% { opacity: 1; width: 160px; }
+}
+
+/* ── Utility Classes ── */
+.load-msg { text-align: center; padding: 80px 24px; color: var(--text-dim); font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+.load-msg.error { color: var(--danger); }
+
+/* ── Pulse Keyframe (shared) ── */
+@keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.3; } }

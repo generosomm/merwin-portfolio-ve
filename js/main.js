@@ -174,10 +174,11 @@ function renderHero(data) {
   const marqueeItems = rawMarquee.length
     ? rawMarquee
     : [
+        "WEB DEVELOPMENT",
+        "VIDEO EDITING",
         "VIRTUAL ASSISTANT",
-        "VIDEO EDITOR",
-        "CONTENT CREATOR",
-        "CONTENT OPERATOR",
+        "CONTENT OPERATIONS",
+        "CONTENT STRATEGY"
       ];
 
   const itemHTML = (item) =>

@@ -28,7 +28,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<!-- CSS: split for maintainability -->
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/effects.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/theme.css">
 </head>
 
 <body>
@@ -132,6 +136,7 @@
       </div>
     </div>
   </div>
+</div>
 <!-- theme prompt modal (first visit only) -->
 <div class="theme-prompt-modal" id="themePromptModal" aria-hidden="true">
   <div class="theme-prompt-backdrop"></div>
@@ -164,6 +169,10 @@
   </div>
 </div>
 
+<!-- JS: split for maintainability, in dependency order -->
+<script src="js/data.js"></script>
+<script src="js/render.js"></script>
+<script src="js/interactions.js"></script>
 <script src="js/main.js"></script>
 
 </body>

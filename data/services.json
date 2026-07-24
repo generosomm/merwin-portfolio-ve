@@ -1,23 +1,23 @@
 {
   "sectionEyebrow": "Services",
   "heading": "What I can do for you.",
-  "sub": "Video editing, virtual assistance, and web development. End-to-end, remote-ready, and built around your workflow.",
+  "sub": "Web development, video editing, and virtual assistance. End-to-end, remote-ready, and built around your workflow.",
   "items": [
+    {
+      "title": "Web Development",
+      "desc": "Full-stack web development using HTML, CSS, JavaScript, Node.js, Express, and MySQL. From landing pages to full web applications, built clean and shipped."
+    },
     {
       "title": "Video Editing",
       "desc": "High-retention edits in Premiere Pro & After Effects. From short-form content to full promotional videos. Paced to keep audiences watching."
-    },
-    {
-      "title": "Virtual Assistant",
-      "desc": "Administrative support, calendar & email management, internet research, documentation, digital asset organization, and project coordination. Remote, reliable, and across time zones."
     },
     {
       "title": "Content Operations",
       "desc": "Managing your full production pipeline: content calendars, publishing schedules, performance tracking, and cross-platform social media management."
     },
     {
-      "title": "Web Development",
-      "desc": "Full-stack web development using HTML, CSS, JavaScript, Node.js, Express, and MySQL. From landing pages to full web applications, built clean and shipped."
+      "title": "Virtual Assistant",
+      "desc": "Administrative support, calendar & email management, internet research, documentation, digital asset organization, and project coordination. Remote, reliable, and across time zones."
     }
   ],
   "samplesHeading": "Proven Results",

@@ -216,7 +216,7 @@ function renderHero(data) {
 
         <h1>
           <span class="line">${esc(pick(data, "nameLine1", "MERWIN"))}</span>
-          <span class="line">${esc(pick(data, "nameLine2Start", "GENE"))}<span class="accent">${esc(pick(data, "nameLine2Accent", "ROSO"))}</span></span>
+          <span class="line"><span class="accent">${esc(pick(data, "nameLine2", "GENEROSO"))}</span></span>
         </h1>
 
         <p class="hero-sub">${esc(pick(data, "tagline", ""))}</p>
@@ -289,7 +289,11 @@ function renderWork(data) {
            </div>
            <button class="nav-arrow nav-arrow-right" aria-label="Scroll right">→</button>
          </div>`
-      : emptyState("No work added yet.")}`;
+      : emptyState("No work added yet.")}
+    <div class="section-cta reveal">
+      <span class="section-cta-text">Have a video or web project in mind?</span>
+      <a href="#contact" class="btn-ghost section-cta-btn">Start a Project →</a>
+    </div>`;
 }
 
 function renderServices(data) {
@@ -320,7 +324,11 @@ function renderServices(data) {
            <ul>${samples.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
          </div>`
       : ""}
-    ${data.note ? `<p class="service-note reveal">${esc(data.note)}</p>` : ""}`;
+    ${data.note ? `<p class="service-note reveal">${esc(data.note)}</p>` : ""}
+    <div class="section-cta reveal">
+      <span class="section-cta-text">Need custom web development or video production?</span>
+      <a href="#contact" class="btn-ghost section-cta-btn">Request a Quote →</a>
+    </div>`;
 }
 
 function renderSkills(data) {
@@ -342,6 +350,10 @@ function renderSkills(data) {
             </ul>
           </div>
         `).join("")}
+      </div>
+      <div class="section-cta reveal">
+        <span class="section-cta-text">Looking for a specific tech stack or software workflow?</span>
+        <a href="#contact" class="btn-ghost section-cta-btn">Inquire About Stack →</a>
       </div>
     </div>`;
 }
@@ -373,6 +385,10 @@ function renderDev(data) {
               </div>`).join("")}
           </div>
         </div>
+      </div>
+      <div class="section-cta reveal">
+        <span class="section-cta-text">Need a full-stack developer for your app or web tool?</span>
+        <a href="#contact" class="btn-ghost section-cta-btn">Let's Build It →</a>
       </div>
     </div>`;
 }
@@ -412,6 +428,10 @@ function renderStats(data) {
            </div>`
         : emptyState("No stats screenshots added yet.")}
       ${data.note ? `<p class="service-note reveal" style="margin-top:24px;">${esc(data.note)}</p>` : ""}
+      <div class="section-cta reveal">
+        <span class="section-cta-text">Want to scale your brand's video reach to millions?</span>
+        <a href="#contact" class="btn-ghost section-cta-btn">Scale Your Content →</a>
+      </div>
     </div>`;
 }
 
@@ -485,6 +505,13 @@ function renderAbout(data) {
         ${renderPairList("Education", education)}
         ${renderPairList("Certifications", certifications)}
       </aside>` : ""}
+    </div>
+    <div class="section-cta reveal">
+      <span class="section-cta-text">Want to review my full credentials or discuss a role?</span>
+      <div style="display:inline-flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        ${data.resume ? `<button class="btn-ghost section-cta-btn" onclick="openResumeModal('${esc(data.resume)}')">View CV (PDF) ↗</button>` : ""}
+        <a href="#contact" class="btn-primary section-cta-btn">Get In Touch →</a>
+      </div>
     </div>`;
 }
 

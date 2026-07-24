@@ -120,6 +120,10 @@ function renderNav(data) {
           .join("")}
       </div>
       ${data.cta ? `<a href="${esc(data.cta.target)}" class="btn-primary nav-cta" style="margin-left:auto; font-size:12px; padding:8px 16px;">${esc(data.cta.label)}</a>` : ""}
+      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle light or dark theme" title="Switch Theme">
+        <svg class="sun-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="moon-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
     </div>`;
 
   // Mobile Nav Toggle Logic
@@ -939,9 +943,69 @@ function initParallaxHero() {
   }, { passive: true });
 }
 
+function initTheme() {
+  const savedTheme = localStorage.getItem("portfolio-theme");
+  const modal = document.getElementById("themePromptModal");
+
+  if (savedTheme === "light") {
+    document.body.setAttribute("data-theme", "light");
+    document.documentElement.setAttribute("data-theme", "light");
+  } else {
+    document.body.removeAttribute("data-theme");
+    document.documentElement.removeAttribute("data-theme");
+  }
+
+  if (!savedTheme && modal) {
+    setTimeout(() => {
+      modal.classList.add("is-visible");
+      modal.setAttribute("aria-hidden", "false");
+    }, 1100);
+
+    const applyChoice = (choice) => {
+      if (choice === "light") {
+        document.body.setAttribute("data-theme", "light");
+        document.documentElement.setAttribute("data-theme", "light");
+        localStorage.setItem("portfolio-theme", "light");
+      } else {
+        document.body.removeAttribute("data-theme");
+        document.documentElement.removeAttribute("data-theme");
+        localStorage.setItem("portfolio-theme", "dark");
+      }
+      modal.classList.remove("is-visible");
+      modal.setAttribute("aria-hidden", "true");
+    };
+
+    modal.addEventListener("click", (e) => {
+      const selectBtn = e.target.closest("[data-select-theme]");
+      if (selectBtn) {
+        applyChoice(selectBtn.getAttribute("data-select-theme"));
+      } else if (e.target.classList.contains("theme-prompt-backdrop")) {
+        applyChoice("dark");
+      }
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("#themeToggleBtn");
+    if (!btn) return;
+
+    const isLight = document.body.getAttribute("data-theme") === "light";
+    if (isLight) {
+      document.body.removeAttribute("data-theme");
+      document.documentElement.removeAttribute("data-theme");
+      localStorage.setItem("portfolio-theme", "dark");
+    } else {
+      document.body.setAttribute("data-theme", "light");
+      document.documentElement.setAttribute("data-theme", "light");
+      localStorage.setItem("portfolio-theme", "light");
+    }
+  });
+}
+
 // Init
 
 async function init() {
+  initTheme();
   initLoader();
   const { data, failed } = await loadData();
 

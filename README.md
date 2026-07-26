@@ -1,52 +1,59 @@
-# ERO | VISUALS - Video Editor & Social Media Marketing Portfolio
+# Merwin Generoso — Portfolio
 
-My personal portfolio site showcasing my work as a Video Editor and Social Media Marketer. Built with plain HTML, CSS, and JavaScript - no frameworks.
+A proof-first digital creative portfolio featuring shipped web projects, high-performing video work, and the systems behind both.
 
-**Live site:** https://generosomm.github.io/merwin-portfolio-ve/
-**Contact:** generosomerwin10@gmail.com
+[View the live site](https://generosomm.github.io/merwin-portfolio-ve/) · [Email me](mailto:generosomerwin10@gmail.com)
 
-## How it works
+## Why this portfolio is different
 
-The whole site is data-driven. Every section (hero, work, services, stats, testimonials, skills, dev, about, contact) is rendered by `js/main.js`, which fetches its content from a matching JSON file in `data/`.
+The site is designed as a compact studio index instead of a long résumé. It leads with outcomes, keeps each project description short, and lets visitors inspect the original videos, analytics screenshots, live products, and source repositories.
 
-This means I can update almost anything on the site - text, stats, projects - just by editing a JSON file. No need to touch the HTML or JS for normal content changes.
+## Project structure
 
-```
-index.html        → page shell, section containers only
-css/style.css      → all styling
-js/main.js         → fetches data/*.json and renders each section
-data/nav.json      → nav bar links
-data/hero.json     → hero heading, tagline, stats, video frame
-data/work.json     → project/case study cards
-data/services.json → service offerings
-data/stats.json    → audience numbers and bars
-data/testimonials.json → client quotes and feedback
-data/skills.json   → toolkit/software list
-data/dev.json      → side dev projects
-data/about.json    → about text, education, certifications
-data/contact.json  → contact links and footer
+```text
+merwin-portfolio-ve/
+├── assets/
+│   ├── images/                 # Project covers, analytics, and social preview
+│   ├── videos/                 # Local portfolio video previews
+│   └── Merwin_Generoso_CV.pdf  # Downloadable résumé
+├── css/
+│   └── styles.css              # Design tokens, components, and breakpoints
+├── js/
+│   └── app.js                  # Navigation, dialogs, and scroll reveals
+├── .gitignore
+├── index.html                  # Semantic page content and metadata
+└── README.md
 ```
 
-If a JSON file is missing or malformed, that section just falls back to a small message instead of breaking the whole page.
+## Run locally
 
-## Running it locally
+There are no dependencies or build steps. Open `index.html` directly, or run a local server:
 
-This site fetches JSON files, so it needs to run from a local server (opening `index.html` directly as a file will fail due to browser fetch restrictions).
+```bash
+python -m http.server 8000
+```
 
-Easiest options:
-- VS Code "Live Server" extension → right-click `index.html` → "Open with Live Server"
-- Or run `python -m http.server` in the project folder and open `http://localhost:8000`
+Then open `http://localhost:8000`.
 
-## Tech
+## Main features
 
-- Vanilla HTML/CSS/JS, no build step, no dependencies
-- Fonts: Archivo Black, Space Grotesk, IBM Plex Mono (Google Fonts)
-- Data fetched client-side with `fetch()` and rendered into the DOM
+- Semantic, accessible HTML
+- Responsive layouts for mobile, tablet, and desktop
+- Keyboard-friendly native video and image dialogs
+- Reduced-motion support
+- Lazy-loaded portfolio evidence
+- Open Graph metadata for link previews
+- No framework and no runtime dependencies
 
-## About me
+## Updating content
 
-I am the Video Editor and Social Media Marketer behind ERO | VISUALS. I specialize in crafting engaging content, video editing, and executing social media marketing strategies to build impactful online presences.
+- Edit copy, links, and project entries in `index.html`.
+- Edit colors and spacing through the custom properties at the top of `css/styles.css`.
+- Add preview images to `assets/images/` and videos to `assets/videos/`.
+- Keep large source footage out of the repository; use compressed portfolio previews.
 
-- TikTok: [@eroedtx](https://www.tiktok.com/@eroedtx)
-- LinkedIn: [generosomm](https://linkedin.com/in/generosomm)
-- GitHub: [generosomm](https://github.com/generosomm)
+## Built with
+
+HTML5, CSS3, vanilla JavaScript, Manrope, and DM Mono.
+
+© 2026 Merwin Generoso. Designed and built from scratch.

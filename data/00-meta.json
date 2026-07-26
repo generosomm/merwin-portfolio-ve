@@ -3,5 +3,7 @@
   "description": "Merwin Generoso helps remote teams edit content, build and maintain web experiences, research information, and organize digital operations—backed by 70M+ documented views and shipped software.",
   "socialTitle": "Merwin Generoso — Digital Creative Portfolio",
   "socialDescription": "Content editing, web support, research, and reliable digital operations—backed by real work and 70M+ documented views.",
-  "socialImage": "https://generosomm.github.io/merwin-portfolio-ve/assets/images/portfolio-social-preview.png"
+  "canonicalUrl": "https://generosomm.github.io/merwin-portfolio-ve/",
+  "socialImage": "https://generosomm.github.io/merwin-portfolio-ve/assets/images/portfolio-social-preview.png",
+  "socialImageAlt": "Merwin Generoso portfolio: Digital work worth noticing, backed by 70M+ documented views"
 }

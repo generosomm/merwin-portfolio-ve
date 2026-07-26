@@ -34,8 +34,10 @@ merwin-portfolio-ve/
 ├── js/
 │   ├── content.js              # JSON loading and section rendering
 │   └── app.js                  # Navigation, dialogs, dragging, and scroll reveals
+├── scripts/
+│   └── validate-content.mjs     # JSON, container, and referenced-asset checks
 ├── .gitignore
-├── index.html                  # Semantic page content and metadata
+├── index.html                  # Empty semantic containers populated from JSON
 └── README.md
 ```
 
@@ -48,6 +50,13 @@ python -m http.server 8000
 ```
 
 Then open `http://localhost:8000`.
+
+Validate the content files before publishing:
+
+```bash
+node scripts/validate-content.mjs
+node scripts/test-rendering.mjs
+```
 
 ## Main features
 
@@ -67,9 +76,13 @@ Then open `http://localhost:8000`.
 
 - Edit copy, links, project entries, and section items in `data/*.json`.
 - Add or remove an item from its JSON array; the corresponding gallery or list updates automatically.
+- Card numbering and gallery controls recalculate automatically based on the number of JSON items.
+- Optional empty arrays and missing optional fields collapse cleanly instead of leaving broken cards.
 - `08-testimonials.json` stays hidden while `enabled` is `false`; publish only real feedback you have permission to show.
 - Keep valid JSON syntax: double-quoted keys and strings, commas between entries, and no trailing comma after the last entry.
-- `index.html` contains matching fallback content for search engines and direct file opening. The JSON data becomes the visible source when served locally or through GitHub Pages.
+- `index.html` only contains semantic containers. All portfolio copy, links, cards, statistics, credentials, and contact details come from the JSON files.
+- Run the site through a local server. Opening `index.html` directly with a `file://` URL cannot load JSON because of browser security rules.
+- Adding or removing entries inside an existing section needs no code change. A completely new section type still needs a matching container, renderer, and styles because its layout must be defined.
 - Edit colors and spacing through the custom properties at the top of `css/styles.css`.
 - Add preview images to `assets/images/` and videos to `assets/videos/`.
 - Keep large source footage out of the repository; use compressed portfolio previews.

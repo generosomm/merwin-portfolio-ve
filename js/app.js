@@ -1,5 +1,6 @@
 "use strict";
 
+function initializePortfolio() {
 const menuButton = document.querySelector(".menu-button");
 const navigation = document.querySelector(".site-nav");
 
@@ -91,7 +92,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 const revealTargets = document.querySelectorAll(
-  ".section-heading, .case-study, .repo-list article, .operations-grid, .proof-card, .about-layout, .credentials"
+  ".section-heading, .hire-menu, .case-study, .repo-list article, .operations-grid, .proof-card, .testimonial-card, .about-layout, .credentials"
 );
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -203,3 +204,10 @@ if ("IntersectionObserver" in window && !reduceMotion) {
 
 const year = document.querySelector("#year");
 if (year) year.textContent = String(new Date().getFullYear());
+}
+
+if (window.portfolioContentReady) {
+  window.portfolioContentReady.finally(initializePortfolio);
+} else {
+  initializePortfolio();
+}

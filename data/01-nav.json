@@ -1,0 +1,10 @@
+{
+  "brand": "Merwin Generoso",
+  "role": "Remote creative partner",
+  "links": [
+    { "label": "Work", "href": "#work" },
+    { "label": "Proof", "href": "#proof" },
+    { "label": "About", "href": "#about" }
+  ],
+  "cta": { "label": "Let’s talk", "href": "#contact" }
+}

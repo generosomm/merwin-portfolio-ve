@@ -2310,18 +2310,24 @@ h4 {
 }
 
 .credentials-heading {
-  display: grid;
-  grid-template-columns: 1fr minmax(260px, 0.45fr);
-  gap: 40px;
-  align-items: end;
   margin-bottom: 24px;
 }
 
-.credentials-heading .eyebrow {
+.credentials-kicker-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 8px;
 }
 
+.credentials-heading .eyebrow {
+  margin: 0;
+}
+
 .credentials-heading h3 {
+  max-width: 720px;
   margin: 0;
   font-size: clamp(28px, 3vw, 40px);
   letter-spacing: -0.045em;
@@ -3313,8 +3319,21 @@ body {
     width: calc(100% + 20px);
   }
 
+  .horizontal-track:not(.council-work-track) {
+    scroll-snap-type: inline mandatory;
+  }
+
+  .horizontal-track:not(.council-work-track) > * {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  .council-work-track {
+    scroll-snap-type: inline proximity;
+  }
+
   .case-study {
-    flex-basis: min(86vw, 340px);
+    flex-basis: min(calc(100% - 16px), 380px);
   }
 
   .case-copy > p {
@@ -3322,7 +3341,7 @@ body {
   }
 
   .repo-list article {
-    flex-basis: min(84vw, 330px);
+    flex-basis: min(calc(100% - 16px), 380px);
     min-height: 300px;
     align-items: start;
   }
@@ -3338,7 +3357,7 @@ body {
   }
 
   .operations-card {
-    flex-basis: min(84vw, 330px);
+    flex-basis: min(calc(100% - 16px), 380px);
     min-height: 320px;
   }
 
@@ -3419,17 +3438,24 @@ body {
   }
 
   .credentials-heading {
-    grid-template-columns: 1fr;
+    margin-bottom: 20px;
   }
 
-  .credentials-heading {
-    gap: 12px;
+  .credentials-kicker-row {
+    width: 100%;
+    gap: 10px;
   }
 
   .credentials-actions {
-    align-items: flex-start;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+    width: auto;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+
+  .credentials-actions > a {
+    min-height: 44px;
+    max-width: 100%;
+    padding: 7px 9px 7px 7px;
   }
 
   .certificate-card {
@@ -3460,39 +3486,60 @@ body {
   }
 
   .contact h2 {
-    font-size: clamp(49px, 14vw, 72px);
+    margin-bottom: 18px;
+    font-size: clamp(40px, 11.5vw, 52px);
+    line-height: 0.92;
+    letter-spacing: -0.06em;
   }
 
   .contact {
-    padding-top: 66px;
-    padding-bottom: 28px;
+    padding-top: 42px;
+    padding-bottom: 20px;
+  }
+
+  .contact .eyebrow {
+    margin-bottom: 12px;
+    font-size: 10px;
+  }
+
+  .contact-inner > p:not(.eyebrow) {
+    max-width: 34ch;
+    margin-bottom: 20px;
+    font-size: 15px;
+    line-height: 1.45;
   }
 
   .contact-email {
     width: 100%;
+    padding: 18px;
     grid-template-columns: 1fr auto;
+    gap: 6px 12px;
+    border-radius: 14px;
   }
 
   .contact-email strong {
-    font-size: clamp(30px, 9vw, 42px);
+    font-size: clamp(28px, 8.5vw, 36px);
   }
 
   .contact-email i {
-    width: 50px;
-    height: 50px;
-    font-size: 22px;
+    width: 44px;
+    height: 44px;
+    font-size: 19px;
   }
 
   .contact-meta {
     width: 100%;
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
-    gap: 20px;
-    margin-top: 28px;
+    gap: 22px;
+    margin-top: 18px;
+    text-align: center;
   }
 
   .contact-meta p {
-    text-align: left;
+    text-align: center;
+    font-size: 9px;
+    line-height: 1.6;
   }
 
   .contact-link-group,
@@ -3500,12 +3547,35 @@ body {
     width: 100%;
   }
 
+  .contact-link-group {
+    align-items: center;
+    gap: 10px;
+  }
+
+  .contact-links-label {
+    width: 100%;
+    text-align: center;
+  }
+
+  .contact-link-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    justify-items: center;
+  }
+
   .contact-social-links {
-    flex: 0 1 auto;
+    width: auto;
+    padding: 3px;
+    justify-content: center;
   }
 
   .contact-cv-link {
+    width: auto;
+    min-height: 44px;
     margin-left: 0;
+    padding: 7px 12px;
+    justify-content: center;
   }
 
   .contact-social-link {
@@ -3520,9 +3590,11 @@ body {
 
   .site-footer {
     min-height: 0;
-    padding: 24px 0;
+    padding: 18px 0;
     grid-template-columns: 1fr auto;
-    gap: 14px;
+    gap: 10px;
+    font-size: 9px;
+    line-height: 1.45;
   }
 
   .site-footer p:nth-child(2) {

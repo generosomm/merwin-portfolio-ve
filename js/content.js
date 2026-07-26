@@ -594,16 +594,16 @@ function renderCredentials(data) {
 
   root.innerHTML = `
     <div class="credentials-heading">
-      <div>
+      <div class="credentials-kicker-row">
         ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
-        ${hasText(data.heading) ? `<h3 id="credentials-title">${text(data.heading)}</h3>` : ""}
-      </div>
-      <div class="credentials-proof">
-        ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
         ${hasText(data.verificationLabel) && hasText(data.verificationUrl) ? `<div class="credentials-actions">
           <a href="${attr(data.verificationUrl)}" target="_blank" rel="noopener"><span class="linkedin-mark" aria-hidden="true">in</span>${text(data.verificationLabel)}<span aria-hidden="true">&nearr;</span></a>
         </div>` : ""}
       </div>
+      ${hasText(data.heading) ? `<h3 id="credentials-title">${text(data.heading)}</h3>` : ""}
+      ${hasText(data.description) ? `<div class="credentials-proof">
+        ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
+      </div>` : ""}
     </div>
     ${items.length ? `<div class="gallery-shell">
       <div class="certificate-grid horizontal-track" id="certificate-track" tabindex="0" aria-label="Certificates. Scroll horizontally to explore.">

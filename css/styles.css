@@ -603,10 +603,154 @@ h4 {
   font-weight: 500;
 }
 
+.video-social-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.video-social-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.video-social-links {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.video-social-link {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.video-social-link:hover,
+.video-social-link:focus-visible {
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.video-social-link svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
 .drag-hint {
   color: var(--muted);
   font-size: 9px;
   white-space: nowrap;
+}
+
+.role-spotlight {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(28px, 5vw, 70px);
+  margin-bottom: 34px;
+  padding: clamp(22px, 3vw, 34px);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.role-spotlight-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.role-spotlight .eyebrow {
+  margin-bottom: 10px;
+}
+
+.role-spotlight h3 {
+  margin-bottom: 7px;
+  font-size: clamp(27px, 3vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.role-organization {
+  max-width: 470px;
+  margin: 0 0 9px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.role-organization-link {
+  display: inline-flex;
+  padding-bottom: 2px;
+  border-bottom: 1px solid;
+  color: var(--accent-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.role-period {
+  display: inline-flex;
+  padding: 7px 9px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  border-radius: 999px;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.role-spotlight-details > p {
+  max-width: 680px;
+  margin-bottom: 18px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.role-links > span {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--accent-dark);
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.055em;
+}
+
+.role-links > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.role-links a {
+  display: inline-flex;
+  min-height: 40px;
+  padding: 9px 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.role-links a:hover {
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
 }
 
 .scroll-controls {
@@ -808,7 +952,7 @@ h4 {
 
 .case-result-badge strong {
   color: var(--accent-bright);
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.1;
   letter-spacing: -0.025em;
 }
@@ -817,7 +961,7 @@ h4 {
   overflow: hidden;
   color: #d8d5cd;
   font-family: "DM Mono", monospace;
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.4;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -828,49 +972,37 @@ h4 {
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding-top: 20px;
+  padding-top: 17px;
 }
 
-.case-label {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 24px;
+.case-copy .case-category {
+  min-height: 0;
+  align-self: flex-start;
+  margin: 0 0 10px;
+  padding: 6px 9px;
+  background: var(--accent-soft);
   color: var(--accent-dark);
+  border-radius: 999px;
   font-family: "DM Mono", monospace;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.045em;
 }
 
 .case-copy h3 {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   font-size: clamp(20px, 2vw, 29px);
   line-height: 1.08;
   letter-spacing: -0.045em;
 }
 
 .case-copy > p {
-  min-height: 62px;
-  margin-bottom: 16px;
+  min-height: 48px;
+  margin-bottom: 14px;
   color: var(--muted);
-  font-size: 13px;
-}
-
-.case-copy .case-scope {
-  min-height: 0;
-  margin: -4px 0 16px;
-  color: #77736c;
-  font-family: "DM Mono", monospace;
-  font-size: 9px;
-  line-height: 1.55;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
-}
-
-.case-scope strong {
-  margin-right: 5px;
-  color: var(--accent-dark);
-  font-weight: 500;
+  font-size: 15px;
 }
 
 .case-copy > a {
@@ -878,7 +1010,7 @@ h4 {
   margin-top: auto;
   padding-bottom: 2px;
   border-bottom: 1px solid;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -1056,6 +1188,28 @@ h4 {
   margin: 0;
   color: var(--muted);
   font-size: 12px;
+}
+
+.operations-tags {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-content: flex-start;
+  list-style: none;
+}
+
+.operations-tags li {
+  padding: 11px 14px;
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
 }
 
 .operations-footer {
@@ -1664,6 +1818,149 @@ h4 {
   transform: none;
 }
 
+/* Readability scale for client-friendly scanning */
+body {
+  font-size: 16px;
+}
+
+.brand strong {
+  font-size: 14px;
+}
+
+.brand small {
+  font-size: 11px;
+}
+
+.site-nav {
+  font-size: 14px;
+}
+
+.availability,
+.eyebrow {
+  font-size: 12px;
+}
+
+.button {
+  font-size: 14px;
+}
+
+.hero-services li {
+  font-size: 11px;
+}
+
+.receipt-top,
+.receipt-stats div {
+  font-size: 11px;
+}
+
+.receipt-caption {
+  font-size: 15px;
+}
+
+.hero-receipt > a {
+  font-size: 14px;
+}
+
+.section-heading > p,
+.section-heading-aside > p,
+.dev-intro p {
+  font-size: 16px;
+}
+
+.hire-menu-summary {
+  font-size: 12px;
+}
+
+.hire-menu-grid article > span,
+.hire-menu-grid a {
+  font-size: 11px;
+}
+
+.hire-menu-grid h4 {
+  font-size: 23px;
+}
+
+.hire-menu-grid p {
+  font-size: 15px;
+}
+
+.subsection-title {
+  font-size: 12px;
+}
+
+.drag-hint {
+  font-size: 10px;
+}
+
+.repo-index,
+.repo-list article p {
+  font-size: 11px;
+}
+
+.repo-list h4 {
+  font-size: 23px;
+}
+
+.repo-list article span {
+  font-size: 14px;
+}
+
+.repo-links a {
+  font-size: 12px;
+}
+
+.operations-statement > p:last-child {
+  font-size: 15px;
+}
+
+.operations-list strong {
+  font-size: 16px;
+}
+
+.operations-list p {
+  font-size: 14px;
+}
+
+.proof-card-top small,
+.proof-card-bottom {
+  font-size: 11px;
+}
+
+.about-copy > p {
+  font-size: clamp(18px, 1.6vw, 21px);
+}
+
+.about-facts div {
+  font-size: 14px;
+}
+
+.credentials-proof > p {
+  font-size: 15px;
+}
+
+.credentials-actions > a,
+.certificate-meta small,
+.certificate-meta i {
+  font-size: 11px;
+}
+
+.certificate-meta strong {
+  font-size: 15px;
+}
+
+.contact-inner > p:not(.eyebrow) {
+  font-size: 17px;
+}
+
+.contact-meta a {
+  font-size: 14px;
+}
+
+.contact-meta p,
+.site-footer {
+  font-size: 11px;
+}
+
 @media (max-width: 960px) {
   :root {
     --page: min(calc(100% - 36px), 760px);
@@ -1675,6 +1972,7 @@ h4 {
   .dev-intro,
   .operations-grid,
   .about-layout,
+  .role-spotlight,
   .operations-footer {
     grid-template-columns: 1fr;
   }
@@ -1822,9 +2120,32 @@ h4 {
     gap: 7px;
   }
 
+  .role-spotlight-heading {
+    flex-direction: column;
+  }
+
+  .role-period {
+    font-size: 11px;
+  }
+
+  .role-links a {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .subsection-side {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .video-social-group {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .video-social-label {
+    font-size: 12px;
   }
 
   .drag-hint {

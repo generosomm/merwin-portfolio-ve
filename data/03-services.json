@@ -1,29 +1,29 @@
 {
-  "eyebrow": "Ways I can help",
-  "heading": "One connected digital workflow.",
-  "summary": "Create the content → build the destination → organize the delivery.",
+  "eyebrow": "How I can help",
+  "heading": "Practical support for your content and online presence.",
+  "summary": "Create content → build pages → keep delivery organized.",
   "items": [
     {
       "index": "01",
       "category": "Content",
-      "title": "Edit and repurpose",
-      "description": "Short-form edits, trailers, social cutdowns, pacing, audio sync, quality checks, and publishing support.",
+      "title": "Edit your content",
+      "description": "Short-form edits, trailers, and social cutdowns.",
       "linkLabel": "See editing proof",
       "linkHref": "#editing"
     },
     {
       "index": "02",
       "category": "Web",
-      "title": "Build and maintain",
-      "description": "Landing pages, responsive interfaces, content updates, bug fixes, APIs, database-backed tools, and deployment support.",
+      "title": "Build your web presence",
+      "description": "Responsive websites and useful online tools.",
       "linkLabel": "See shipped work",
       "linkHref": "#development"
     },
     {
       "index": "03",
       "category": "Support",
-      "title": "Research and organize",
-      "description": "Web research, data cleanup, documentation, content calendars, file organization, reporting, and repeatable workflows.",
+      "title": "Keep projects organized",
+      "description": "Research, publishing, documentation, and reporting.",
       "linkLabel": "See support scope",
       "linkHref": "#operations"
     }

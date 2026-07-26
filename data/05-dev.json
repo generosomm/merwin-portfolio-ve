@@ -1,47 +1,49 @@
 {
-  "label": "Software development",
-  "externalLabel": "GitHub profile",
+  "label": "Web projects",
+  "externalLabel": "View GitHub",
   "externalUrl": "https://github.com/generosomm",
-  "heading": "I don’t only design the page. I ship the working version.",
-  "description": "Working products built for real users—from interactive front ends to authenticated workflows, data systems, and deployment.",
+  "heading": "Websites and systems built to work.",
+  "description": "From simple websites to tools that help teams manage everyday work.",
+  "repoLabel": "View code",
+  "liveLabel": "View website",
   "projects": [
     {
       "stack": "HTML / CSS / JavaScript",
       "title": "Zero to Deploy",
-      "description": "Turns unclear client ideas into an approved, build-ready plan through guided discovery, live documentation, and a reusable delivery system.",
-      "features": ["Guided discovery that reduces scope gaps", "Live docs, portable backups & project-kit export"],
+      "description": "Helps clients turn an idea into a clear and approved project plan.",
+      "features": [],
       "repoUrl": "https://github.com/generosomm/ZeroToDeploy",
       "liveUrl": "https://generosomm.github.io/ZeroToDeploy/"
     },
     {
       "stack": "HTML / CSS / JavaScript",
       "title": "This portfolio",
-      "description": "A proof-first portfolio that brings creative performance, technical work, and verified results into one focused hiring experience.",
-      "features": ["70M+ performance evidence & playable work", "Fast, responsive & keyboard-friendly browsing"],
+      "description": "A fast portfolio that makes creative work and results easy to explore.",
+      "features": [],
       "repoUrl": "https://github.com/generosomm/merwin-portfolio-ve",
       "liveUrl": "https://generosomm.github.io/merwin-portfolio-ve/"
     },
     {
       "stack": "Node.js / Express / MySQL",
       "title": "MSC NU Laguna website",
-      "description": "Production backend work for a student developer community, powering member access, event publishing, and guild content.",
-      "features": ["Authentication & REST API workflows", "Team-built platform deployed in production"],
+      "description": "A live community website for members, events, and published updates.",
+      "features": [],
       "repoUrl": "https://github.com/mscnulaguna/MSC-Official-Website",
       "liveUrl": "https://mscnulaguna.org/"
     },
         {
       "stack": "HTML / CSS / JavaScript",
       "title": "Nexus Pass",
-      "description": "An immersive 3D credential experience that turns a digital pass into a memorable, interactive browser showcase.",
-      "features": ["Interactive 3D presentation", "Responsive, installation-free experience"],
+      "description": "An interactive digital pass that works directly in the browser.",
+      "features": [],
       "repoUrl": "https://github.com/generosomm/nexus-pass",
       "liveUrl": "https://generosomm.github.io/nexus-pass/"
     },
     {
       "stack": "PHP / MySQL",
       "title": "Document Tracking & Analytics",
-      "description": "A role-based government workflow that makes document routing, status history, reporting, and follow-ups easier to track.",
-      "features": ["Controlled routing with traceable timelines", "PDF reporting & email notifications"],
+      "description": "A system that helps offices track documents, updates, and reports.",
+      "features": [],
       "repoUrl": "https://github.com/generosomm/Document-Tracker"
     }
   ]

@@ -1,10 +1,10 @@
 {
   "availability": "Open to part-time and full-time remote roles",
-  "eyebrow": "Creative + technical partner",
+  "eyebrow": "Video editor + digital partner",
   "title": "Digital work",
   "titleAccent": "worth noticing.",
-  "intro": "I help remote teams create content people notice, build the digital destination behind it, and organize the work that gets it published.",
-  "primaryCta": { "label": "Let’s talk", "href": "#contact" },
+  "intro": "I create high-performing short-form content and build the digital systems behind it.",
+  "primaryCta": { "label": "Start a project", "href": "#contact" },
   "secondaryCta": { "label": "View my CV", "href": "assets/Merwin_Generoso_CV.pdf" },
   "services": ["Content editing", "Web support", "Research & operations"],
   "receipt": {

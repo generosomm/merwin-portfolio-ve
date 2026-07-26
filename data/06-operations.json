@@ -1,16 +1,80 @@
 {
-  "label": "Project support",
-  "status": "Remote, flexible, and reliable",
-  "eyebrow": "Extra support when you need it",
-  "heading": "I help keep your projects moving.",
-  "description": "I confirm the expected result, learn the workflow quickly, and keep progress visible.",
+  "label": "Creative & e-commerce VA",
+  "mobileLabel": "Creative VA",
+  "status": "For small brands, creators, and remote teams",
+  "mobileStatus": "Small brands & teams",
+  "roleSpotlight": {
+    "eyebrow": "Remote support",
+    "title": "Keep daily work moving",
+    "period": "Available for remote projects",
+    "organization": "Creative, e-commerce, and admin support",
+    "detailEyebrow": "What clients get",
+    "detailTitle": "Clear priorities and reliable follow-through",
+    "summary": "I organize recurring tasks, keep priorities visible, and flag issues early for small brands, creators, and remote teams."
+  },
+  "eyebrow": "",
+  "heading": "",
+  "description": "",
+  "galleryLabel": "Workflow samples",
+  "sampleLabel": "Workflow demo",
   "items": [
-    { "title": "Research" },
-    { "title": "Data cleanup" },
-    { "title": "Publishing support" },
-    { "title": "Documentation" },
-    { "title": "Reporting" },
-    { "title": "File organization" }
+    {
+      "icon": "store",
+      "category": "E-commerce operations",
+      "title": "Keep product and order information accurate",
+      "problem": "Problem: listing errors and delayed order updates",
+      "deliverablesLabel": "How I solve it",
+      "deliverables": [
+        "Standardize titles, variants, prices, and images",
+        "Keep order, inventory, and fulfillment trackers current",
+        "Flag missing details, delays, and refund requests early"
+      ],
+      "outcome": "Result: fewer catalog errors and faster customer updates",
+      "tools": [
+        { "name": "Shopify", "icon": "shopify" },
+        { "name": "Google Sheets", "icon": "sheets" },
+        { "name": "Gmail", "icon": "gmail" },
+        { "name": "Canva", "icon": "canva" }
+      ]
+    },
+    {
+      "icon": "inbox",
+      "category": "Admin coordination",
+      "title": "Keep requests, meetings, and follow-ups under control",
+      "problem": "Problem: important messages and deadlines get buried",
+      "deliverablesLabel": "How I solve it",
+      "deliverables": [
+        "Organize messages using labels and priority rules",
+        "Draft replies and confirm meeting details",
+        "Maintain follow-up tracking and daily priorities"
+      ],
+      "outcome": "Result: fewer missed requests, meetings, and deadlines",
+      "tools": [
+        { "name": "Gmail", "icon": "gmail" },
+        { "name": "Google Calendar", "icon": "calendar" },
+        { "name": "Google Sheets", "icon": "sheets" },
+        { "name": "Trello", "icon": "trello" }
+      ]
+    },
+    {
+      "icon": "content",
+      "category": "Content operations",
+      "title": "Keep approved content moving on schedule",
+      "problem": "Problem: assets sit in folders and posting becomes inconsistent",
+      "deliverablesLabel": "How I solve it",
+      "deliverables": [
+        "Adapt captions and assets for each platform",
+        "Schedule approved posts and organize files",
+        "Update the publishing tracker and weekly metrics"
+      ],
+      "outcome": "Result: consistent publishing with clear progress visibility",
+      "tools": [
+        { "name": "Canva", "icon": "canva" },
+        { "name": "Google Drive", "icon": "drive" },
+        { "name": "Meta Business Suite", "icon": "meta" },
+        { "name": "CapCut", "icon": "capcut" }
+      ]
+    }
   ],
   "tools": "",
   "approach": ""

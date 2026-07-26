@@ -15,7 +15,7 @@
     { "label": "Instagram", "href": "https://www.instagram.com/eroedtx/" },
     { "label": "TikTok", "href": "https://www.tiktok.com/@eroedtx" },
     { "label": "YouTube", "href": "https://www.youtube.com/@eroedtx" },
-    { "label": "CV", "href": "assets/Merwin_Generoso_CV.pdf" }
+    { "label": "View CV", "icon": "cv", "href": "assets/Merwin_Generoso_CV.pdf" }
   ],
   "locationLines": ["Sto. Tomas City, Batangas", "Philippines / GMT+8"],
   "footer": {

@@ -383,7 +383,9 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
     const trackWidth = track.clientWidth;
     const firstWidth = items[0].getBoundingClientRect().width;
     const lastWidth = items.at(-1).getBoundingClientRect().width;
-    const centerSingleCard = window.innerWidth <= 700;
+    const centerSingleCard =
+      window.innerWidth <= 700 &&
+      !track.classList.contains("council-work-track");
 
     track.style.paddingLeft = centerSingleCard
       ? `${Math.max((trackWidth - firstWidth) / 2, 0)}px`

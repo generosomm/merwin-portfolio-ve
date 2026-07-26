@@ -238,6 +238,8 @@ assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /Res
 assert.doesNotMatch(normal.selectors.get('[data-content="operations"]').innerHTML, /Practice scope|Sample deliverables|paid-client results/);
 assert.doesNotMatch(normal.selectors.get('[data-content="operations"]').innerHTML, /Portfolio exercises using demo data/);
 assert.doesNotMatch(normal.selectors.get('[data-content="about"]').innerHTML, /student|Batangas/i);
+assert.match(normal.selectors.get('[data-content="credentials"]').innerHTML, /class="credentials-kicker-row"[\s\S]*Training and certifications[\s\S]*class="credentials-actions"/);
+assert.match(normal.selectors.get('[data-content="credentials"]').innerHTML, /Skills backed by recognized credentials\./);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-linkedin"/);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-links-label">Connect with me/);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-youtube"/);

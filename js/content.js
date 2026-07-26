@@ -183,6 +183,19 @@ function socialIcon(name) {
   return icons[name] || icons.reels;
 }
 
+function technologyIcon(name) {
+  const icons = {
+    html: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 3h22l-2 23-9 3-9-3L5 3Z"/><path class="tech-icon-detail" d="M10 9h12l-.3 3H13l.2 3h8.2l-.7 8-4.7 1.6-4.7-1.6-.3-4h3l.2 1.8 1.8.6 1.8-.6.2-2.8H10.4L10 9Z"/></svg>`,
+    css: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 3h22l-2 23-9 3-9-3L5 3Z"/><path class="tech-icon-detail" d="M10 9h12l-.3 3-7.6 3h7.3l-.7 8-4.7 1.6-4.7-1.6-.3-4h3l.2 1.8 1.8.6 1.8-.6.2-2.8h-8.2l-.2-3 7.7-3H10.3L10 9Z"/></svg>`,
+    javascript: `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="3" width="26" height="26" rx="3"/><path class="tech-icon-detail" d="M16.8 22.7c.7 1.2 1.6 1.8 2.8 1.8s1.9-.6 1.9-1.4c0-1-.8-1.3-2.1-1.9l-.7-.3c-2.1-.9-3.5-2-3.5-4.3 0-2.1 1.6-3.8 4.2-3.8 1.8 0 3.1.6 4.1 2.3l-2.2 1.4c-.5-.9-1.1-1.2-1.9-1.2-.9 0-1.4.5-1.4 1.2 0 .8.5 1.2 1.8 1.8l.7.3c2.5 1.1 3.9 2.2 3.9 4.5 0 2.6-2 4-4.8 4-2.7 0-4.4-1.3-5.2-3.1l2.4-1.3ZM7.8 13h2.9v9.2c0 2.4-1 3-3.3 2.6v-2.3c.8.1 1.1 0 1.1-.7V13Z"/></svg>`,
+    node: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m16 2.5 12 6.8v13.4l-12 6.8-12-6.8V9.3L16 2.5Z"/><path class="tech-icon-detail" d="M12 22V10h3l5 7.3V10h3v12h-3l-5-7.2V22h-3Z"/></svg>`,
+    express: `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="26" height="18" rx="5"/><path class="tech-icon-detail" d="M8 12h8v2.4h-5v1.5h4.5v2.3H11v1.5h5.2V22H8V12Zm9.5 0h3l1.7 2.7 1.7-2.7h3l-3.2 4.8L27 22h-3l-1.9-3-1.9 3h-3l3.4-5.2-3.1-4.8Z"/></svg>`,
+    mysql: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C9.4 3 4 5.2 4 8v16c0 2.8 5.4 5 12 5s12-2.2 12-5V8c0-2.8-5.4-5-12-5Z"/><path class="tech-icon-detail" d="M16 6c5.5 0 9 1.5 9 2s-3.5 2-9 2-9-1.5-9-2 3.5-2 9-2Zm-9 6c2.2.9 5.4 1.4 9 1.4s6.8-.5 9-1.4v3.3c-.6.7-3.8 1.8-9 1.8s-8.4-1.1-9-1.8V12Zm0 7.2c2.2.9 5.4 1.4 9 1.4s6.8-.5 9-1.4v4.4c-.6.7-3.8 1.8-9 1.8s-8.4-1.1-9-1.8v-4.4Z"/></svg>`,
+    php: `<svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="16" rx="14" ry="9"/><path class="tech-icon-detail" d="M6.8 12h4.6c2.7 0 4.1 1.2 3.7 3.5-.4 2.6-2 3.7-4.8 3.7H9.1L8.7 22H5.8l1-10Zm3.6 2.2h-1l-.3 2.9h1c1.2 0 1.8-.4 2-1.5.2-1-.3-1.4-1.7-1.4Zm5.7-4h2.8l-.3 2.5c.8-.6 1.7-.9 2.8-.9 2.1 0 3.1 1.1 2.8 3.2l-.7 4.2h-2.9l.6-3.7c.2-1-.2-1.4-1.1-1.4-1.1 0-1.8.6-2 1.8l-.5 3.3h-2.9l1.4-9Z"/></svg>`
+  };
+  return icons[name] || `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="3" width="26" height="26" rx="5"/><path class="tech-icon-detail" d="m13 10-6 6 6 6 2-2-4-4 4-4-2-2Zm6 0-2 2 4 4-4 4 2 2 6-6-6-6Z"/></svg>`;
+}
+
 function renderWork(data) {
   const heading = document.querySelector('[data-content="work-heading"]');
   const root = document.querySelector('[data-content="work"]');
@@ -213,27 +226,27 @@ function renderWork(data) {
           ${hasText(data.socialLinksLabel) ? `<span class="video-social-label">${text(data.socialLinksLabel)}</span>` : ""}
           <div class="video-social-links" aria-label="Video channels">${socialLinks.map((link) => `<a class="video-social-link" href="${attr(link.href)}" target="_blank" rel="noopener" aria-label="${attr(link.label)}" title="${attr(link.label)}">${socialIcon(link.icon)}</a>`).join("")}</div>
         </div>` : ""}
-        ${items.length > 1 ? `<span class="drag-hint" aria-hidden="true">Drag to explore &rarr;</span>` : ""}
       </div>
     </div>
     ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight" aria-label="${attr(role.title || "Featured role")}">
       <div class="role-spotlight-heading">
-        <div>
-          ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
+        ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
+        <div class="role-title-row">
           ${hasText(role.title) ? `<h3>${text(role.title)}</h3>` : ""}
-          ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
-          ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${text(role.organizationLinkLabel)} &nearr;</a>` : ""}
+          ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
         </div>
-        ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
+        ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
+        ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${text(role.organizationLinkLabel)} &nearr;</a>` : ""}
       </div>
       <div class="role-spotlight-details">
         ${hasText(role.summary) ? `<p>${text(role.summary)}</p>` : ""}
         ${roleLinks.length ? `<div class="role-links">
           ${hasText(role.linksLabel) ? `<span>${text(role.linksLabel)}</span>` : ""}
-          <div>${roleLinks.map((link) => `<a class="selected-role-link" href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
+          <div class="council-work-track horizontal-track" id="council-work-track" tabindex="0" aria-label="Council work. Scroll horizontally to explore.">${roleLinks.map((link) => `<a class="selected-role-link" href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
         </div>` : ""}
       </div>
     </aside>` : ""}
+    ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
     ${items.length ? `<div class="gallery-shell">
       <div class="video-grid horizontal-track" id="video-track" tabindex="0" aria-label="Video projects. Scroll horizontally to explore.">
         ${items.map((item, index) => {
@@ -289,10 +302,12 @@ function renderDevelopment(data) {
     </div>` : ""}
     ${projects.length ? `<div class="gallery-shell">
       <div class="repo-list horizontal-track" id="project-track" tabindex="0" aria-label="Software projects. Scroll horizontally to explore.">
-        ${projects.map((project, index) => `<article>
+        ${projects.map((project, index) => {
+          const technologies = records(project?.technologies).filter((technology) => hasText(technology.name));
+          return `<article>
           <div class="repo-index">${pad(index)}</div>
           <div>
-            ${hasText(project?.stack) ? `<p>${text(project.stack)}</p>` : ""}
+            ${technologies.length ? `<ul class="tech-icons" aria-label="Technologies used">${technologies.map((technology) => `<li aria-label="${attr(technology.name)}" title="${attr(technology.name)}">${technologyIcon(technology.icon)}</li>`).join("")}</ul>` : ""}
             ${hasText(project?.title) ? `<h4>${text(project.title)}</h4>` : ""}
             ${hasText(project?.description) ? `<span>${text(project.description)}</span>` : ""}
             ${list(project?.features).length ? `<ul class="repo-features">${list(project.features).map((feature) => `<li>${text(feature)}</li>`).join("")}</ul>` : ""}
@@ -301,7 +316,8 @@ function renderDevelopment(data) {
             ${hasText(project.liveUrl) ? `<a href="${attr(project.liveUrl)}" target="_blank" rel="noopener">${text(project.liveLabel || data.liveLabel || "View website")} &nearr;</a>` : ""}
             ${hasText(project.repoUrl) ? `<a href="${attr(project.repoUrl)}" target="_blank" rel="noopener">${text(project.repoLabel || data.repoLabel || "View code")} &nearr;</a>` : ""}
           </div>` : ""}
-        </article>`).join("")}
+        </article>`;
+        }).join("")}
       </div>
       ${galleryControls("project-track", "Software project", projects.length)}
     </div>` : ""}`;

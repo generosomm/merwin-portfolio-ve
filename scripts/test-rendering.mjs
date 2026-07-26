@@ -129,7 +129,14 @@ assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /cla
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /Film promo/);
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /Video Production Officer/);
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /June 2025/);
-assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="selected-role-link"/g), 6);
+assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="selected-role-link"/g), 15);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="council-work-track horizontal-track"/);
+assert.ok(
+  normal.selectors.get('[data-content="work"]').innerHTML.indexOf("BBQ Night 2026 Highlights")
+    < normal.selectors.get('[data-content="work"]').innerHTML.indexOf("AlNUsalan 2025 Launch")
+);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /Selected Editing Work/);
+assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /Drag to explore/);
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="video-social-link"/g), 4);
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /Watch more of my work/);
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /aria-label="YouTube"/);
@@ -138,6 +145,11 @@ assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /View all 
 assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /class="role-reels-link"/);
 assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, />\s*Play (TikTok|Short|Edit|Reel)\s*</);
 assert.equal(count(normal.selectors.get('[data-content="dev"]').innerHTML, /<article>/g), 5);
+assert.equal(count(normal.selectors.get('[data-content="dev"]').innerHTML, /class="tech-icons"/g), 5);
+assert.equal(count(normal.selectors.get('[data-content="dev"]').innerHTML, /aria-label="HTML5"/g), 3);
+assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /aria-label="Node\.js"/);
+assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /aria-label="PHP"/);
+assert.doesNotMatch(normal.selectors.get('[data-content="dev"]').innerHTML, /HTML\s*\/\s*CSS/);
 assert.doesNotMatch(normal.selectors.get('[data-content="dev"]').innerHTML, /class="repo-features"/);
 assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /View website/);
 assert.equal(count(normal.selectors.get('[data-content="stats"]').innerHTML, /class="proof-card image-trigger"/g), 5);
@@ -155,10 +167,14 @@ const added = await renderWith((data) => {
     { ...data["03-services.json"].items[0], title: "Fourth service" },
     { ...data["03-services.json"].items[0], title: "Fifth service" }
   );
+  data["05-dev.json"].projects[0].technologies.push({ name: "PHP", icon: "php" });
+  data["05-dev.json"].projects[1].technologies = [];
 });
 assert.equal(count(added.selectors.get('[data-content="work"]').innerHTML, /class="case-study"/g), 9);
 assert.match(added.selectors.get('[data-content="work"]').innerHTML, /Temporary ninth project/);
 assert.equal(count(added.selectors.get('[data-content="services"]').innerHTML, /class="service-strip-link"/g), 5);
+assert.equal(count(added.selectors.get('[data-content="dev"]').innerHTML, /class="tech-icons"/g), 4);
+assert.equal(count(added.selectors.get('[data-content="dev"]').innerHTML, /aria-label="PHP"/g), 2);
 
 const removed = await renderWith((data) => {
   data["04-work.json"].items = [];

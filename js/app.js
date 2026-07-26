@@ -96,6 +96,97 @@ const revealTargets = document.querySelectorAll(
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+document.querySelectorAll("[data-scroll-target]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const targetId = button.dataset.scrollTarget;
+    const direction = Number(button.dataset.scrollDirection);
+    const track = targetId ? document.getElementById(targetId) : null;
+
+    if (!track || !direction) return;
+
+    track.scrollBy({
+      left: direction * Math.max(track.clientWidth * 0.82, 280),
+      behavior: reduceMotion ? "auto" : "smooth"
+    });
+  });
+});
+
+document.querySelectorAll(".horizontal-track").forEach((track) => {
+  let isDragging = false;
+  let startX = 0;
+  let startScrollLeft = 0;
+  let moved = false;
+  let blockClick = false;
+
+  function updateControls() {
+    if (!track.id) return;
+
+    const controls = document.querySelectorAll(`[data-scroll-target="${track.id}"]`);
+    const atStart = track.scrollLeft <= 2;
+    const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+
+    controls.forEach((control) => {
+      const direction = Number(control.dataset.scrollDirection);
+      control.disabled = direction < 0 ? atStart : atEnd;
+    });
+  }
+
+  track.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+
+    isDragging = true;
+    moved = false;
+    startX = event.clientX;
+    startScrollLeft = track.scrollLeft;
+  });
+
+  track.addEventListener("pointermove", (event) => {
+    if (!isDragging) return;
+
+    const distance = event.clientX - startX;
+    if (Math.abs(distance) > 4 && !moved) {
+      moved = true;
+      track.setPointerCapture(event.pointerId);
+      track.classList.add("is-dragging");
+    }
+    track.scrollLeft = startScrollLeft - distance;
+
+    if (moved) event.preventDefault();
+  });
+
+  function finishDrag(event) {
+    if (!isDragging) return;
+
+    isDragging = false;
+    blockClick = moved;
+    track.classList.remove("is-dragging");
+
+    if (track.hasPointerCapture(event.pointerId)) {
+      track.releasePointerCapture(event.pointerId);
+    }
+
+    window.setTimeout(() => {
+      blockClick = false;
+    }, 0);
+  }
+
+  track.addEventListener("pointerup", finishDrag);
+  track.addEventListener("pointercancel", finishDrag);
+  track.addEventListener("pointerleave", (event) => {
+    if (isDragging && !moved) finishDrag(event);
+  });
+  track.addEventListener("click", (event) => {
+    if (!blockClick) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
+
+  track.addEventListener("scroll", updateControls, { passive: true });
+  window.addEventListener("resize", updateControls);
+  window.addEventListener("load", updateControls, { once: true });
+  updateControls();
+});
+
 if ("IntersectionObserver" in window && !reduceMotion) {
   revealTargets.forEach((target) => target.classList.add("reveal"));
 

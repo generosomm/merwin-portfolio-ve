@@ -1,9 +1,10 @@
 {
-  "sectionEyebrow": "Featured projects",
-  "sectionHeading": "See what I can create.",
-  "sectionDescription": "Real projects with clear, measurable results.",
+  "sectionEyebrow": "Portfolio",
+  "sectionHeading": "Selected work.",
+  "sectionDescription": "Video editing, web projects, and digital support, organized by focus.",
   "label": "Video editing",
   "galleryLabel": "Selected Editing Work",
+  "watchLabel": "Watch",
   "socialLinksLabel": "Watch more of my work",
   "socialLinks": [
     {
@@ -27,15 +28,25 @@
       "icon": "facebook"
     }
   ],
+  "creatorSpotlight": {
+    "eyebrow": "Video editing & content growth",
+    "title": "Short-form edits built to earn attention",
+    "organization": "ERO | VISUALS",
+    "period": "2022 – Present",
+    "actionLabel": "View analytics",
+    "actionHref": "#proof"
+  },
   "roleSpotlight": {
     "eyebrow": "Creative leadership",
     "title": "Video Production Officer",
     "organization": "NU Laguna School of Computer Studies Student Council",
     "organizationLinkLabel": "View all council reels",
+    "organizationLinkIcon": "facebook",
     "organizationUrl": "https://www.facebook.com/NULagunaSCSSC/reels/",
-    "period": "June 2025 – Present",
+    "period": "2025 – Present",
     "summary": "Plan, schedule, and deliver multimedia content for university events while keeping production files organized for smooth team collaboration.",
     "linksLabel": "Council work",
+    "linksSummary": "Browse council work",
     "links": [
       {
         "label": "BBQ Night 2026 Highlights",
@@ -101,12 +112,13 @@
   },
   "items": [
     {
+      "platform": "TikTok",
       "category": "TikTok",
       "title": "Glass Child — Seven Sundays",
       "description": "A dialogue-led film edit built around an immediate emotional hook.",
       "focus": "Dialogue hook · emotional pacing · film storytelling",
       "result": "14M views",
-      "resultDetail": "TikTok",
+      "resultDetail": "MOST-VIEWED",
       "image": "assets/images/seven-sundays-thumb.jpg",
       "imageAlt": "Frame from the Glass Child Seven Sundays TikTok edit",
       "video": "assets/videos/seven-sundays.mp4",
@@ -114,12 +126,13 @@
       "actionLabel": "Play TikTok"
     },
     {
+      "platform": "YouTube",
       "category": "YouTube Short",
       "title": "The Blueprint of the Trend",
       "description": "A trend-led Short built for fast discovery and retention.",
       "focus": "Short-form hook · trend timing · retention pacing",
       "result": "12.7M views",
-      "resultDetail": "YouTube",
+      "resultDetail": "MOST-VIEWED",
       "image": "assets/images/youtube-blueprint-thumb.jpg",
       "imageAlt": "Frame from The Blueprint of the Trend YouTube Short",
       "video": "assets/videos/the-blueprint-of-the-trend.mp4",
@@ -127,54 +140,59 @@
       "actionLabel": "Play Short"
     },
     {
+      "platform": "TikTok",
       "category": "Music promotion",
       "title": "“That’s So True” — Gracie Abrams edit",
       "description": "A music-synced edit shaped around familiar film moments.",
       "focus": "Hook pacing · music sync · vertical delivery",
       "result": "3.9M views",
-      "resultDetail": "Music promo",
+      "resultDetail": "MOST-VIEWED",
       "image": "assets/images/thats-so-true-thumb.jpg",
       "imageAlt": "Frame from the That's So True music promotion edit",
       "video": "assets/videos/thats-so-true.mp4",
       "postUrl": "https://www.tiktok.com/@eroedtx/video/7439577492840647943"
     },
     {
+      "platform": "TikTok",
       "category": "Film promo",
       "title": "Home Along Da Riles",
       "description": "A fast-cut trailer that establishes the story quickly.",
       "focus": "Story selection · pacing · text treatment",
       "result": "3.5M views",
-      "resultDetail": "Film promo",
+      "resultDetail": "MOST-VIEWED",
       "image": "assets/images/home-along-da-riles-thumb.jpg",
       "imageAlt": "Frame from the Home Along Da Riles trailer edit",
       "video": "assets/videos/home-along-da-riles.mp4",
       "postUrl": "https://www.tiktok.com/@eroedtx/video/7649449441484655893"
     },
     {
+      "platform": "Instagram",
       "category": "Instagram Reel",
       "title": "Always Check Your Weather App",
       "description": "A humor-led Reel built around a fast setup and visual punchline.",
       "focus": "Comedic timing · text punchline · discovery pacing",
       "result": "1.1M views",
-      "resultDetail": "Instagram",
+      "resultDetail": "MOST-VIEWED",
       "image": "assets/images/instagram-weather-app-thumb.jpg",
       "imageAlt": "Frame from the Always Check Your Weather App Instagram Reel",
       "video": "assets/videos/instagram-weather-app-reel.mp4",
       "postUrl": "https://www.instagram.com/reel/DQg23ilEj9r/"
     },
     {
+      "platform": "Facebook",
       "category": "Facebook Reel",
       "title": "Communication Without Understanding",
       "description": "A dialogue-led Reel paced around one clear emotional idea.",
       "focus": "Dialogue pacing · emotional beat · cross-platform cut",
       "result": "898K views",
-      "resultDetail": "Facebook",
+      "resultDetail": "MOST-VIEWED",
       "image": "assets/images/facebook-loved-one-thumb.jpg",
       "imageAlt": "Frame from The Loved One Facebook Reel",
       "video": "assets/videos/the-loved-one.mp4",
       "postUrl": "https://www.facebook.com/reel/1565125114712353"
     },
     {
+      "platform": "TikTok",
       "category": "Film promo",
       "title": "Midnight Girls",
       "description": "A pre-release teaser combining dialogue with audio-synced cuts.",
@@ -187,6 +205,7 @@
       "postUrl": "https://www.tiktok.com/@eroedtx/video/7628194341139549461"
     },
     {
+      "platform": "TikTok",
       "category": "MUSIC PROMO | US CLIENT",
       "title": "The Chosen: Judas",
       "description": "A two-part commission delivered from brief to approval in 24 hours.",

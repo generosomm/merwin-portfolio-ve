@@ -1,8 +1,19 @@
 {
   "brand": "Merwin Generoso",
+  "brandImage": "assets/images/og-cover.jpg",
+  "brandImageAlt": "ERO Visuals logo",
   "role": "Video editor & digital partner",
   "links": [
-    { "label": "Work", "href": "#work" },
+    { "label": "Home", "href": "#top" },
+    {
+      "label": "Work",
+      "href": "#work",
+      "children": [
+        { "index": "01", "label": "Video Editing", "href": "#editing" },
+        { "index": "02", "label": "Web Projects", "href": "#development" },
+        { "index": "03", "label": "Project Support", "href": "#operations" }
+      ]
+    },
     { "label": "Results", "href": "#proof" },
     { "label": "About", "href": "#about" }
   ],

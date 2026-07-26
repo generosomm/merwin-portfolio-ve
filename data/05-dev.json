@@ -1,24 +1,27 @@
 {
   "label": "Web projects",
   "externalLabel": "View GitHub",
+  "externalIcon": "github",
   "externalUrl": "https://github.com/generosomm",
-  "heading": "Websites and systems built to work.",
-  "description": "From simple websites to tools that help teams manage everyday work.",
+  "heading": "",
+  "description": "",
+  "galleryLabel": "Selected web projects",
+  "detailsLabel": "Project details",
   "repoLabel": "View code",
   "liveLabel": "View website",
+  "roleSpotlight": {
+    "eyebrow": "Technical leadership",
+    "title": "Web Development Lead",
+    "organization": "Microsoft Student Community - NU Laguna",
+    "period": "June 2025 – July 2026",
+    "detailEyebrow": "Project outcome",
+    "detailTitle": "Backend v1 launched at SparkPoint 2026",
+    "summary": "Led backend development for the first version of the MSC NU Laguna website and supported its official launch at SparkPoint 2026.",
+    "organizationLinkLabel": "View our page",
+    "organizationLinkIcon": "facebook",
+    "organizationUrl": "https://www.facebook.com/groups/636622759112057/"
+  },
   "projects": [
-    {
-      "technologies": [
-        { "name": "HTML5", "icon": "html" },
-        { "name": "CSS3", "icon": "css" },
-        { "name": "JavaScript", "icon": "javascript" }
-      ],
-      "title": "Zero to Deploy",
-      "description": "Helps clients turn an idea into a clear and approved project plan.",
-      "features": [],
-      "repoUrl": "https://github.com/generosomm/ZeroToDeploy",
-      "liveUrl": "https://generosomm.github.io/ZeroToDeploy/"
-    },
     {
       "technologies": [
         { "name": "HTML5", "icon": "html" },
@@ -42,6 +45,18 @@
       "features": [],
       "repoUrl": "https://github.com/mscnulaguna/MSC-Official-Website",
       "liveUrl": "https://mscnulaguna.org/"
+    },
+        {
+      "technologies": [
+        { "name": "HTML5", "icon": "html" },
+        { "name": "CSS3", "icon": "css" },
+        { "name": "JavaScript", "icon": "javascript" }
+      ],
+      "title": "Zero to Deploy",
+      "description": "Helps clients turn an idea into a clear and approved project plan.",
+      "features": [],
+      "repoUrl": "https://github.com/generosomm/ZeroToDeploy",
+      "liveUrl": "https://generosomm.github.io/ZeroToDeploy/"
     },
     {
       "technologies": [

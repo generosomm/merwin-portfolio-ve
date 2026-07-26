@@ -90,7 +90,7 @@ function renderNavigation(data) {
 
   root.innerHTML = `
     <a class="brand" href="#top" aria-label="${attr(data.brand || "Portfolio")}, home">
-      <span class="brand-mark">${text(data.brandMark || "MG")}</span>
+      <span class="brand-mark">${hasText(data.brandImage) ? `<img src="${attr(data.brandImage)}" alt="${attr(data.brandImageAlt || "")}">` : text(data.brandMark || "MG")}</span>
       <span>
         ${hasText(data.brand) ? `<strong>${text(data.brand)}</strong>` : ""}
         ${hasText(data.role) ? `<small>${text(data.role)}</small>` : ""}
@@ -100,7 +100,23 @@ function renderNavigation(data) {
       <span class="sr-only">Toggle navigation</span><span></span><span></span>
     </button>
     <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
-      ${links.map((link) => `<a href="${attr(link.href)}">${text(link.label)}</a>`).join("")}
+      ${links.map((link) => {
+        const children = records(link.children).filter((child) => hasText(child.label) && hasText(child.href));
+        if (!children.length) return `<a href="${attr(link.href)}">${text(link.label)}</a>`;
+
+        return `<div class="nav-dropdown">
+          <a class="nav-dropdown-trigger" href="${attr(link.href)}" aria-haspopup="true">
+            <span>${text(link.label)}</span><i aria-hidden="true">&darr;</i>
+          </a>
+          <div class="nav-dropdown-menu" aria-label="${attr(link.label)} sections">
+            ${children.map((child) => `<a href="${attr(child.href)}">
+              ${hasText(child.index) ? `<span>${text(child.index)}</span>` : ""}
+              <strong>${text(child.label)}</strong>
+              <i aria-hidden="true">&darr;</i>
+            </a>`).join("")}
+          </div>
+        </div>`;
+      }).join("")}
       ${cta}
     </nav>`;
 }
@@ -156,7 +172,7 @@ function renderServices(data) {
         ${hasText(data.eyebrow) ? `<span>${text(data.eyebrow)}</span>` : ""}
         ${hasText(data.heading) ? `<strong id="hire-menu-title">${text(data.heading)}</strong>` : ""}
       </div>
-      ${items.length ? `<nav class="service-strip-links" aria-label="Services">
+      ${items.length ? `<nav class="service-strip-links" aria-label="Portfolio sections">
         ${items.map((item) => hasText(item?.linkHref) ? `<a class="service-strip-link" href="${attr(item.linkHref)}">
           <span>${text(item.index)}</span>${text(item.shortLabel || item.title)}<i aria-hidden="true">&darr;</i>
         </a>` : "").join("")}
@@ -174,10 +190,12 @@ function galleryControls(target, label, count) {
 
 function socialIcon(name) {
   const icons = {
+    linkedin: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.4 7.8H2.2V22h3.2V7.8ZM3.8 2A1.9 1.9 0 1 0 3.8 5.8 1.9 1.9 0 0 0 3.8 2ZM22 13.8c0-4.3-2.3-6.3-5.4-6.3a4.7 4.7 0 0 0-4.2 2.3v-2H9.2V22h3.2v-7c0-1.8.4-3.6 2.7-3.6 2.3 0 2.3 2.1 2.3 3.7V22h3.2l1.4-8.2Z"/></svg>`,
     tiktok: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3v11.1a4.6 4.6 0 1 1-3.8-4.5v3.1a1.7 1.7 0 1 0 .8 1.4V3h3Zm0 0c.4 2.2 1.7 3.6 4 4.1v3.1a8.2 8.2 0 0 1-4-1.8V3Z"/></svg>`,
     youtube: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 6.5a2.7 2.7 0 0 0-1.9-1.9C17.8 4.2 12 4.2 12 4.2s-5.8 0-7.5.4a2.7 2.7 0 0 0-1.9 1.9A28 28 0 0 0 2.2 12c0 1.9.1 3.7.4 5.5a2.7 2.7 0 0 0 1.9 1.9c1.7.4 7.5.4 7.5.4s5.8 0 7.5-.4a2.7 2.7 0 0 0 1.9-1.9c.3-1.8.4-3.6.4-5.5s-.1-3.7-.4-5.5ZM10 15.4V8.6l5.8 3.4-5.8 3.4Z"/></svg>`,
     instagram: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7.2 2h9.6A5.2 5.2 0 0 1 22 7.2v9.6a5.2 5.2 0 0 1-5.2 5.2H7.2A5.2 5.2 0 0 1 2 16.8V7.2A5.2 5.2 0 0 1 7.2 2Zm0 2A3.2 3.2 0 0 0 4 7.2v9.6A3.2 3.2 0 0 0 7.2 20h9.6a3.2 3.2 0 0 0 3.2-3.2V7.2A3.2 3.2 0 0 0 16.8 4H7.2Zm10.1 1.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>`,
     facebook: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.8 22v-9h3l.5-3.5h-3.5V7.3c0-1 .3-1.8 1.8-1.8h1.9V2.4c-.3 0-1.5-.1-2.8-.1-2.8 0-4.7 1.7-4.7 4.8v2.4H7V13h3v9h3.8Z"/></svg>`,
+    github: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.9c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 0 1.6 1 1.6 1 .9 1.6 2.4 1.1 2.9.9.1-.7.4-1.1.7-1.3-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7.9.7 1.8V21c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg>`,
     reels: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5 3h14a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Zm0 2h2.2l2 3H4V6a1 1 0 0 1 1-1Zm4.6 0h3.1l2 3h-3.1l-2-3Zm5.5 0H19a1 1 0 0 1 1 1v2h-2.9l-2-3ZM4 10v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8H4Zm6 2.2 5 2.8-5 2.8v-5.6Z"/></svg>`
   };
   return icons[name] || icons.reels;
@@ -196,11 +214,17 @@ function technologyIcon(name) {
   return icons[name] || `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="3" width="26" height="26" rx="5"/><path class="tech-icon-detail" d="m13 10-6 6 6 6 2-2-4-4 4-4-2-2Zm6 0-2 2 4 4-4 4 2 2 6-6-6-6Z"/></svg>`;
 }
 
+function technologyKey(value) {
+  return hasText(value) ? value.toLowerCase().replace(/[^a-z0-9-]/g, "") : "code";
+}
+
 function renderWork(data) {
   const heading = document.querySelector('[data-content="work-heading"]');
   const root = document.querySelector('[data-content="work"]');
   const items = records(data?.items);
   const socialLinks = records(data?.socialLinks).filter((link) => hasText(link.label) && hasText(link.href));
+  const creator = data?.creatorSpotlight;
+  const creatorProofs = list(creator?.proofs).filter(hasText);
   const role = data?.roleSpotlight;
   const roleLinks = records(role?.links).filter((link) => hasText(link.label) && hasText(link.href));
   const headingVisible = data && (hasText(data.sectionHeading) || hasText(data.sectionDescription));
@@ -218,6 +242,23 @@ function renderWork(data) {
   }
   if (!contentVisible) return;
 
+  const councilDetails = roleLinks.length ? `<details class="content-details council-details">
+    <summary><span>${text(role.linksSummary || role.linksLabel || "Browse council work")} <b>${roleLinks.length}</b></span></summary>
+    <div class="content-details-panel role-links">
+      ${creator && (hasText(role.summary) || (hasText(role.organizationLinkLabel) && hasText(role.organizationUrl))) ? `<div class="council-details-copy">
+        ${hasText(role.summary) ? `<p class="council-details-summary">${text(role.summary)}</p>` : ""}
+        ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${hasText(role.organizationLinkIcon) ? `<span class="role-organization-icon" aria-hidden="true">${socialIcon(role.organizationLinkIcon)}</span>` : ""}<span>${text(role.organizationLinkLabel)}</span> <span aria-hidden="true">&nearr;</span></a>` : ""}
+      </div>` : ""}
+      <div class="role-links-header">
+        ${roleLinks.length > 1 ? `<div class="scroll-controls council-work-controls" role="group" aria-label="Council work controls">
+          <button type="button" data-scroll-target="council-work-track" data-scroll-direction="-1" aria-label="Scroll council work left">&larr;</button>
+          <button type="button" data-scroll-target="council-work-track" data-scroll-direction="1" aria-label="Scroll council work right">&rarr;</button>
+        </div>` : ""}
+      </div>
+      <div class="role-links-track council-work-track horizontal-track" id="council-work-track" tabindex="0" aria-label="Council work. Scroll horizontally to explore.">${roleLinks.map((link) => `<a class="selected-role-link" href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
+    </div>
+  </details>` : "";
+
   root.innerHTML = `
     <div class="subsection-title">
       <p><span>01</span> ${text(data.label)}</p>
@@ -228,23 +269,39 @@ function renderWork(data) {
         </div>` : ""}
       </div>
     </div>
-    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight" aria-label="${attr(role.title || "Featured role")}">
-      <div class="role-spotlight-heading">
+    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card${creator && hasText(creator.title) ? " video-spotlight" : ""}" aria-label="${attr(creator?.title || role.title || "Featured role")}">
+      <div class="role-spotlight-heading header-card-primary">
+        ${creator && hasText(creator.title) ? `
+        ${hasText(creator.eyebrow) ? `<p class="eyebrow">${text(creator.eyebrow)}</p>` : ""}
+        <div class="role-title-row">
+          <h3>${text(creator.title)}</h3>
+          ${hasText(creator.period) ? `<span class="role-period">${text(creator.period)}</span>` : ""}
+        </div>
+        ${hasText(creator.organization) ? `<p class="role-organization">${text(creator.organization)}</p>` : ""}
+        ${hasText(creator.actionLabel) && hasText(creator.actionHref) ? `<div class="creator-action-row"><a class="header-card-action" href="${attr(creator.actionHref)}">${text(creator.actionLabel)} <span aria-hidden="true">&darr;</span></a></div>` : ""}
+        ${creatorProofs.length ? `<ul class="creator-proof-list" aria-label="Creator results">${creatorProofs.map((proof) => `<li class="creator-proof">${text(proof)}</li>`).join("")}</ul>` : ""}` : `
         ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
         <div class="role-title-row">
           ${hasText(role.title) ? `<h3>${text(role.title)}</h3>` : ""}
           ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
         </div>
         ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
-        ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${text(role.organizationLinkLabel)} &nearr;</a>` : ""}
+        ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${hasText(role.organizationLinkIcon) ? `<span class="role-organization-icon" aria-hidden="true">${socialIcon(role.organizationLinkIcon)}</span>` : ""}<span>${text(role.organizationLinkLabel)}</span> <span aria-hidden="true">&nearr;</span></a>` : ""}
+        `}
       </div>
-      <div class="role-spotlight-details">
-        ${hasText(role.summary) ? `<p>${text(role.summary)}</p>` : ""}
-        ${roleLinks.length ? `<div class="role-links">
-          ${hasText(role.linksLabel) ? `<span>${text(role.linksLabel)}</span>` : ""}
-          <div class="council-work-track horizontal-track" id="council-work-track" tabindex="0" aria-label="Council work. Scroll horizontally to explore.">${roleLinks.map((link) => `<a class="selected-role-link" href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
-        </div>` : ""}
+      <div class="role-spotlight-details header-card-secondary${creator && hasText(creator.title) ? " video-role-details" : ""}">
+        ${creator && hasText(creator.title) ? `
+        ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
+        <div class="role-title-row header-card-secondary-title">
+          ${hasText(role.title) ? `<h4>${text(role.title)}</h4>` : ""}
+          ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
+        </div>
+        ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
+        ${councilDetails}
+        ` : ""}
+        ${!creator && hasText(role.summary) ? `<p>${text(role.summary)}</p>` : ""}
       </div>
+      ${!creator ? councilDetails : ""}
     </aside>` : ""}
     ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
     ${items.length ? `<div class="gallery-shell">
@@ -265,14 +322,16 @@ function renderWork(data) {
                   ${resultBadge}
                   <span class="play-pill" aria-hidden="true"><i></i></span>
                 </a>`
-              : "";
+            : "";
           return `<article class="case-study">
             ${media}
             <div class="case-copy">
-              ${hasText(item?.category) ? `<p class="case-category">${text(item.category)}</p>` : ""}
+              ${hasText(item?.category) || hasText(item?.postUrl) ? `<div class="case-meta-row">
+                ${hasText(item?.category) ? `<p class="case-category">${hasText(item.platform) ? `<span class="case-platform-icon case-platform-${attr(technologyKey(item.platform))}" role="img" aria-label="${attr(item.platform)}" title="${attr(item.platform)}">${socialIcon(technologyKey(item.platform))}</span>` : ""}<span>${text(item.category)}</span></p>` : ""}
+                ${hasText(item?.postUrl) ? `<a class="case-original-link" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="Watch original: ${attr(item.title)}">${text(item.linkLabel || data.watchLabel || "Watch")} <span aria-hidden="true">&nearr;</span></a>` : ""}
+              </div>` : ""}
               ${hasText(item?.title) ? `<h3>${text(item.title)}</h3>` : ""}
               ${hasText(item?.description) ? `<p>${text(item.description)}</p>` : ""}
-              ${hasText(item?.postUrl) ? `<a href="${attr(item.postUrl)}" target="_blank" rel="noopener">${text(item.linkLabel || "Watch original")} &nearr;</a>` : ""}
             </div>
           </article>`;
         }).join("")}
@@ -284,7 +343,9 @@ function renderWork(data) {
 function renderDevelopment(data) {
   const root = document.querySelector('[data-content="dev"]');
   const projects = records(data?.projects);
-  const visible = data && (hasText(data.heading) || projects.length);
+  const role = data?.roleSpotlight;
+  const roleLinks = records(role?.links).filter((link) => hasText(link.label) && hasText(link.href));
+  const visible = data && (hasText(data.heading) || projects.length || hasText(role?.title) || hasText(role?.organization));
   setVisible(root, visible);
   if (!visible) return;
 
@@ -292,14 +353,34 @@ function renderDevelopment(data) {
     <div class="subsection-title">
       <p><span>02</span> ${text(data.label)}</p>
       <div class="subsection-side">
-        ${hasText(data.externalLabel) && hasText(data.externalUrl) ? `<a href="${attr(data.externalUrl)}" target="_blank" rel="noopener">${text(data.externalLabel)} &nearr;</a>` : ""}
-        ${projects.length > 1 ? `<span class="drag-hint" aria-hidden="true">Drag to explore &rarr;</span>` : ""}
+        ${hasText(data.externalLabel) && hasText(data.externalUrl) ? `<a class="external-project-link" href="${attr(data.externalUrl)}" target="_blank" rel="noopener">${hasText(data.externalIcon) ? `<span class="external-project-icon" aria-hidden="true">${socialIcon(data.externalIcon)}</span>` : ""}<span>${text(data.externalLabel)}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
       </div>
     </div>
+    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card development-role" aria-label="${attr(role.title || "Featured web role")}">
+      <div class="role-spotlight-heading header-card-primary">
+        ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
+        <div class="role-title-row">
+          ${hasText(role.title) ? `<h3>${text(role.title)}</h3>` : ""}
+          ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
+        </div>
+        ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
+        ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${hasText(role.organizationLinkIcon) ? `<span class="role-organization-icon" aria-hidden="true">${socialIcon(role.organizationLinkIcon)}</span>` : ""}<span>${text(role.organizationLinkLabel)}</span> <span aria-hidden="true">&nearr;</span></a>` : ""}
+      </div>
+      <div class="role-spotlight-details header-card-secondary">
+        ${hasText(role.detailEyebrow) ? `<p class="eyebrow">${text(role.detailEyebrow)}</p>` : ""}
+        ${hasText(role.detailTitle) ? `<div class="role-title-row header-card-secondary-title"><h4>${text(role.detailTitle)}</h4></div>` : ""}
+        ${hasText(role.summary) ? `<p>${text(role.summary)}</p>` : ""}
+        ${roleLinks.length ? `<div class="role-links">
+          ${hasText(role.linksLabel) ? `<span>${text(role.linksLabel)}</span>` : ""}
+          <div>${roleLinks.map((link) => `<a href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
+        </div>` : ""}
+      </div>
+    </aside>` : ""}
     ${hasText(data.heading) || hasText(data.description) ? `<div class="dev-intro">
       ${hasText(data.heading) ? `<h3>${text(data.heading)}</h3>` : ""}
       ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
     </div>` : ""}
+    ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
     ${projects.length ? `<div class="gallery-shell">
       <div class="repo-list horizontal-track" id="project-track" tabindex="0" aria-label="Software projects. Scroll horizontally to explore.">
         ${projects.map((project, index) => {
@@ -307,10 +388,16 @@ function renderDevelopment(data) {
           return `<article>
           <div class="repo-index">${pad(index)}</div>
           <div>
-            ${technologies.length ? `<ul class="tech-icons" aria-label="Technologies used">${technologies.map((technology) => `<li aria-label="${attr(technology.name)}" title="${attr(technology.name)}">${technologyIcon(technology.icon)}</li>`).join("")}</ul>` : ""}
+            ${technologies.length ? `<ul class="tech-icons" aria-label="Technologies used">${technologies.map((technology) => {
+              const iconKey = technologyKey(technology.icon);
+              return `<li class="tech-icon tech-icon-${attr(iconKey)}" aria-label="${attr(technology.name)}" title="${attr(technology.name)}">${technologyIcon(iconKey)}</li>`;
+            }).join("")}</ul>` : ""}
             ${hasText(project?.title) ? `<h4>${text(project.title)}</h4>` : ""}
             ${hasText(project?.description) ? `<span>${text(project.description)}</span>` : ""}
-            ${list(project?.features).length ? `<ul class="repo-features">${list(project.features).map((feature) => `<li>${text(feature)}</li>`).join("")}</ul>` : ""}
+            ${list(project?.features).length ? `<details class="content-details repo-details">
+              <summary>${text(project.detailsLabel || data.detailsLabel || "Project details")}</summary>
+              <div class="content-details-panel"><ul class="repo-features">${list(project.features).map((feature) => `<li>${text(feature)}</li>`).join("")}</ul></div>
+            </details>` : ""}
           </div>
           ${hasText(project?.repoUrl) || hasText(project?.liveUrl) ? `<div class="repo-links">
             ${hasText(project.liveUrl) ? `<a href="${attr(project.liveUrl)}" target="_blank" rel="noopener">${text(project.liveLabel || data.liveLabel || "View website")} &nearr;</a>` : ""}
@@ -323,34 +410,104 @@ function renderDevelopment(data) {
     </div>` : ""}`;
 }
 
+function vaToolIcon(name) {
+  const latestIcons = {
+    shopify: "https://api.iconify.design/logos:shopify.svg",
+    sheets: "https://api.iconify.design/simple-icons:googlesheets.svg?color=%2334A853",
+    gmail: "https://api.iconify.design/logos:google-gmail.svg",
+    canva: "https://api.iconify.design/devicon:canva.svg",
+    calendar: "https://api.iconify.design/logos:google-calendar.svg",
+    trello: "https://api.iconify.design/logos:trello.svg",
+    drive: "https://api.iconify.design/logos:google-drive.svg",
+    meta: "https://api.iconify.design/logos:meta-icon.svg",
+    capcut: "https://api.iconify.design/hugeicons:capcut.svg?color=%23111111"
+  };
+  if (latestIcons[name]) {
+    return `<img src="${attr(latestIcons[name])}" alt="" width="20" height="20" loading="lazy" decoding="async">`;
+  }
+
+  const icons = {
+    shopify: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#95BF47" d="m5 7 2-1.2C7.7 3.4 9.1 2 11 2c.5 0 1 .2 1.3.5.5-.2.9-.3 1.4-.3 1.5 0 2.5 1.2 3 3.2L19 7l-1.5 14.5L6.2 19.4 5 7Z"/><path fill="#5E8E3E" d="m16.7 6.4 2.3.6-1.5 14.5-2.2-.4 1.4-14.7Z"/><path fill="#fff" d="M13.8 8.8c-.5-.3-1.2-.5-1.8-.5-1.4 0-1.5.9-1.5 1.1 0 1.2 3.2 1.7 3.2 4.5 0 2.2-1.4 3.6-3.4 3.6-2.4 0-3.6-1.5-3.6-1.5l.7-2.1s1.2 1.1 2.2 1.1c.7 0 .9-.5.9-.9 0-1.6-2.6-1.7-2.6-4.3 0-2.2 1.6-4.3 4.8-4.3 1.2 0 1.8.4 1.8.4l-.7 2.9Z"/></svg>`,
+    sheets: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F9D58" d="M5 2h9l5 5v15H5V2Z"/><path fill="#87CEAC" d="M14 2v5h5l-5-5Z"/><path fill="#fff" d="M8 10h8v8H8v-8Zm1.5 1.5v1.2h2v-1.2h-2Zm3.4 0v1.2h1.6v-1.2h-1.6Zm-3.4 2.6v1.2h2v-1.2h-2Zm3.4 0v1.2h1.6v-1.2h-1.6Zm-3.4 2.6v.8h2v-.8h-2Zm3.4 0v.8h1.6v-.8h-1.6Z"/></svg>`,
+    gmail: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M3 6.5 7 9.4V19H4a1 1 0 0 1-1-1V6.5Z"/><path fill="#34A853" d="M17 9.4 21 6.5V18a1 1 0 0 1-1 1h-3V9.4Z"/><path fill="#EA4335" d="M3.7 5.1A2 2 0 0 1 6 5.3l6 4.4 6-4.4a2 2 0 0 1 3 .9l-9 6.6-9-6.6c.1-.4.3-.8.7-1.1Z"/><path fill="#FBBC04" d="m3 6.2 4 3v3.1l-4-3V6.2Z"/><path fill="#C5221F" d="m21 6.2-4 3v3.1l4-3V6.2Z"/></svg>`,
+    canva: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#00C4CC"/><path fill="#fff" d="M15.7 15.4c-1.1 1.1-2.3 1.7-3.7 1.7-2.7 0-4.5-1.8-4.5-4.6 0-3.2 2.3-5.7 5.5-5.7 1.4 0 2.6.5 3.4 1.4l-1.2 1.6c-.7-.6-1.4-.9-2.2-.9-1.8 0-3.1 1.5-3.1 3.5 0 1.6.9 2.6 2.4 2.6.9 0 1.7-.4 2.5-1.1l.9 1.5Z"/></svg>`,
+    calendar: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path fill="#fff" d="M7 8h10v9H7V8Z"/><path fill="#EA4335" d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3H3V5Z"/><path fill="#188038" d="M3 14h4v7H5a2 2 0 0 1-2-2v-5Z"/><path fill="#FBBC04" d="M17 14h4v5a2 2 0 0 1-2 2h-2v-7Z"/><path fill="#4285F4" d="M9 10h6v5H9v-5Z"/><path fill="#fff" d="M11 11h2v3h-2v-3Z"/></svg>`,
+    trello: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4" fill="#0052CC"/><rect x="6" y="6" width="5" height="11" rx="1" fill="#fff"/><rect x="13" y="6" width="5" height="8" rx="1" fill="#fff"/></svg>`,
+    drive: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F9D58" d="m8.2 3 3.1 5.4L5.2 19H2l6.2-10.7L5.1 3h3.1Z"/><path fill="#F4B400" d="M8.2 3h7.5l3.1 5.4h-7.5L8.2 3Z"/><path fill="#4285F4" d="M11.3 8.4h7.5L22 14l-3 5H5.2l6.1-10.6Z"/></svg>`,
+    meta: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#0668E1"/><path fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" d="M5.5 14.8c1.4-5.2 3-7.5 4.6-7.5 2.4 0 3.9 8.5 6.4 8.5 1.1 0 1.8-1 2-2.3.4-2.4-.4-5.8-2.5-5.8-2.7 0-5.2 8.1-8 8.1-1.2 0-2.1-.6-2.5-1Z"/></svg>`,
+    capcut: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4" fill="#111"/><path fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M6 8h12l-4 4 4 4H6l4-4-4-4Zm0-2 12 12M18 6 6 18"/></svg>`
+  };
+  return icons[name] || technologyIcon("code");
+}
+
 function renderOperations(data) {
   const root = document.querySelector('[data-content="operations"]');
   const items = records(data?.items);
-  const visible = data && (hasText(data.heading) || items.length);
+  const role = data?.roleSpotlight;
+  const visible = data && (hasText(data.heading) || items.length || hasText(role?.title));
   setVisible(root, visible);
   if (!visible) return;
 
   root.innerHTML = `
     <div class="subsection-title">
-      <p><span>03</span> ${text(data.label)}</p>
-      ${hasText(data.status) ? `<span>${text(data.status)}</span>` : ""}
+      <p><span>03</span> <span class="operations-label-full">${text(data.label)}</span>${hasText(data.mobileLabel) ? `<span class="operations-label-mobile">${text(data.mobileLabel)}</span>` : ""}</p>
+      ${hasText(data.status) ? `<span class="operations-status-full">${text(data.status)}</span>` : ""}
+      ${hasText(data.mobileStatus) ? `<span class="operations-status-mobile">${text(data.mobileStatus)}</span>` : ""}
     </div>
-    <div class="operations-grid">
+    ${role && hasText(role.title) ? `<aside class="role-spotlight header-card operations-role" aria-label="${attr(role.title)}">
+      <div class="role-spotlight-heading header-card-primary">
+        ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
+        <div class="role-title-row">
+          <h3>${text(role.title)}</h3>
+          ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
+        </div>
+        ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
+      </div>
+      <div class="role-spotlight-details header-card-secondary">
+        ${hasText(role.detailEyebrow) ? `<p class="eyebrow">${text(role.detailEyebrow)}</p>` : ""}
+        ${hasText(role.detailTitle) ? `<div class="role-title-row header-card-secondary-title"><h4>${text(role.detailTitle)}</h4></div>` : ""}
+        ${hasText(role.summary) ? `<p>${text(role.summary)}</p>` : ""}
+        ${items.length && hasText(role.actionLabel) && hasText(role.actionHref) ? `<a class="role-organization-link" href="${attr(role.actionHref)}">${text(role.actionLabel)} <span aria-hidden="true">&darr;</span></a>` : ""}
+      </div>
+    </aside>` : ""}
+    ${hasText(data.eyebrow) || hasText(data.heading) || hasText(data.description) ? `<div class="operations-intro">
       <div class="operations-statement">
         ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
         ${hasText(data.heading) ? `<h3>${text(data.heading)}</h3>` : ""}
-        ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
       </div>
-      ${items.length ? items.every((item) => !hasText(item.description))
-        ? `<ul class="operations-tags">${items.map((item) => `<li>${text(item.title)}</li>`).join("")}</ul>`
-        : `<ol class="operations-list">${items.map((item, index) => `<li>
-            <span>${pad(index)}</span><div><strong>${text(item.title)}</strong>${hasText(item.description) ? `<p>${text(item.description)}</p>` : ""}</div>
-          </li>`).join("")}</ol>`
-        : ""}
-    </div>
+      ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
+    </div>` : ""}
+    ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
+    ${items.length ? `<div class="gallery-shell" id="operations-workflows">
+      <div class="operations-cards horizontal-track" id="operations-track" tabindex="0" aria-label="VA workflow samples. Scroll horizontally to explore.">${items.map((item, index) => {
+      const deliverables = list(item?.deliverables).filter(hasText);
+      const tools = records(item?.tools).filter((tool) => hasText(tool.name));
+      return `<article class="operations-card">
+        <div class="operations-card-top">
+          <span class="operations-card-number">${pad(index)}</span>
+          ${hasText(data.sampleLabel) ? `<span class="operations-sample-label">${text(data.sampleLabel)}</span>` : ""}
+        </div>
+        ${hasText(item.category) ? `<p class="operations-category">${text(item.category)}</p>` : ""}
+        ${hasText(item.title) ? `<h4>${text(item.title)}</h4>` : ""}
+        ${hasText(item.problem) ? `<p class="operations-scope">${text(item.problem)}</p>` : ""}
+        ${hasText(item.outcome) ? `<p class="operations-outcome">${text(item.outcome)}</p>` : ""}
+        ${deliverables.length ? `<details class="content-details operations-details">
+          <summary>${text(item.deliverablesLabel || "View details")}</summary>
+          <div class="content-details-panel operations-deliverables">
+            <ul>${deliverables.map((deliverable) => `<li>${text(deliverable)}</li>`).join("")}</ul>
+          </div>
+        </details>` : ""}
+        ${tools.length ? `<ul class="operations-tools" aria-label="Tools used in this workflow">${tools.map((tool) => {
+          const iconKey = technologyKey(tool.icon);
+          return `<li class="operations-tool operations-tool-${attr(iconKey)}" aria-label="${attr(tool.name)}" title="${attr(tool.name)}"><span class="operations-tool-icon" aria-hidden="true">${vaToolIcon(iconKey)}</span><span class="sr-only">${text(tool.name)}</span></li>`;
+        }).join("")}</ul>` : ""}
+      </article>`;
+    }).join("")}</div>
+      ${galleryControls("operations-track", "VA workflow", items.length)}
+    </div>` : ""}
     ${hasText(data.tools) || hasText(data.approach) ? `<div class="operations-footer">
       ${hasText(data.tools) ? `<p class="operations-note">Tools: ${text(data.tools)}</p>` : ""}
-      ${hasText(data.approach) ? `<p class="operations-disclosure"><strong>My approach:</strong> ${text(data.approach)}</p>` : ""}
+      ${hasText(data.approach) ? `<p class="operations-disclosure">${text(data.approach)}</p>` : ""}
     </div>` : ""}`;
 }
 
@@ -419,7 +576,11 @@ function renderAbout(data) {
       ${hasText(data.heading) ? `<h2 id="about-title">${text(data.heading)}</h2>` : ""}
     </div>
     <div class="about-copy">
-      ${paragraphs.map((paragraph) => `<p>${text(paragraph)}</p>`).join("")}
+      ${paragraphs.length ? `<p>${text(paragraphs[0])}</p>` : ""}
+      ${paragraphs.length > 1 ? `<details class="content-details about-details">
+        <summary>${text(data.detailsLabel || "More about me")}</summary>
+        <div class="content-details-panel">${paragraphs.slice(1).map((paragraph) => `<p>${text(paragraph)}</p>`).join("")}</div>
+      </details>` : ""}
       ${facts.length ? `<div class="about-facts">${facts.map((fact) => `<div><span>${text(fact?.label)}</span><strong>${text(fact?.value)}</strong></div>`).join("")}</div>` : ""}
     </div>`;
 }
@@ -466,6 +627,8 @@ function renderContact(data) {
   const subject = encodeURIComponent(data.emailSubject || "");
   const body = encodeURIComponent(data.emailBody || "");
   const links = records(data.links).filter((link) => hasText(link.label) && hasText(link.href));
+  const cvLink = links.find((link) => technologyKey(link.icon || link.label) === "cv");
+  const socialLinks = links.filter((link) => link !== cvLink);
   const locationLines = list(data.locationLines).filter(hasText);
 
   root.innerHTML = `<div class="contact-inner">
@@ -474,7 +637,16 @@ function renderContact(data) {
     ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
     ${hasText(data.email) ? `<a class="contact-email" href="mailto:${attr(data.email)}?subject=${subject}&amp;body=${body}"><span>${text(data.emailAction || "Start a conversation")}</span><strong>${text(data.emailLabel || data.email)}</strong><i aria-hidden="true">&nearr;</i></a>` : ""}
     ${links.length || locationLines.length ? `<div class="contact-meta">
-      ${links.length ? `<div>${links.map((link) => `<a href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>` : ""}
+      ${links.length ? `<div class="contact-link-group">
+        <span class="contact-links-label">Connect with me</span>
+        <div class="contact-link-row">
+          ${socialLinks.length ? `<div class="contact-social-links" aria-label="Social profiles">${socialLinks.map((link) => {
+            const iconKey = technologyKey(link.icon || link.label);
+            return `<a class="contact-social-link contact-social-${attr(iconKey)}" href="${attr(link.href)}" target="_blank" rel="noopener" aria-label="${attr(link.label)}" title="${attr(link.label)}">${socialIcon(iconKey)}</a>`;
+          }).join("")}</div>` : ""}
+          ${cvLink ? `<a class="contact-cv-link" href="${attr(cvLink.href)}" target="_blank" rel="noopener">${text(cvLink.label || "View CV")} <span aria-hidden="true">&nearr;</span></a>` : ""}
+        </div>
+      </div>` : ""}
       ${locationLines.length ? `<p>${locationLines.map(text).join("<br>")}</p>` : ""}
     </div>` : ""}
   </div>`;

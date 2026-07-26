@@ -1,0 +1,58 @@
+{
+  "sectionEyebrow": "Selected work",
+  "sectionHeading": "Start with the output.",
+  "sectionDescription": "Real edits, live products, and working repositories. Short on promises; specific on results.",
+  "label": "Video editing",
+  "externalLabel": "More on TikTok",
+  "externalUrl": "https://www.tiktok.com/@eroedtx",
+  "items": [
+    {
+      "category": "Music promotion",
+      "title": "“That’s So True” — Gracie Abrams edit",
+      "description": "Trend-aware music sync built from familiar film moments.",
+      "focus": "Hook pacing · music sync · vertical delivery",
+      "result": "3.9M views",
+      "resultDetail": "270K likes",
+      "image": "assets/images/thats-so-true-thumb.jpg",
+      "imageAlt": "Frame from the That's So True music promotion edit",
+      "video": "assets/videos/thats-so-true.mp4",
+      "postUrl": "https://www.tiktok.com/@eroedtx/video/7439577492840647943"
+    },
+    {
+      "category": "Film promo",
+      "title": "Home Along Da Riles",
+      "description": "A fast-cut trailer edit that establishes the story quickly and holds attention through the final beat.",
+      "focus": "Story selection · pacing · text treatment",
+      "result": "3.5M views",
+      "resultDetail": "in 7 days",
+      "image": "assets/images/home-along-da-riles-thumb.jpg",
+      "imageAlt": "Frame from the Home Along Da Riles trailer edit",
+      "video": "assets/videos/home-along-da-riles.mp4",
+      "postUrl": "https://www.tiktok.com/@eroedtx/video/7649449441484655893"
+    },
+    {
+      "category": "Film promo",
+      "title": "Midnight Girls",
+      "description": "A pre-release teaser combining key dialogue with audio-synced cuts designed for organic sharing.",
+      "focus": "Dialogue edit · audio sync · teaser structure",
+      "result": "700K+ views",
+      "resultDetail": "organic reach",
+      "image": "assets/images/midnight-girls-thumb.jpg",
+      "imageAlt": "Frame from the Midnight Girls teaser edit",
+      "video": "assets/videos/midnight-girls.mp4",
+      "postUrl": "https://www.tiktok.com/@eroedtx/video/7628194341139549461"
+    },
+    {
+      "category": "Client commission",
+      "title": "The Chosen: Judas",
+      "description": "A two-part commission taken from creative brief to approved delivery within a 24-hour turnaround.",
+      "focus": "Client brief · two-part delivery · revision-ready handoff",
+      "result": "24h delivery",
+      "resultDetail": "2-part series",
+      "image": "assets/images/the-chosen-judas-thumb.jpg",
+      "imageAlt": "Frame from The Chosen Judas commissioned edit",
+      "video": "assets/videos/the-chosen-judas.mp4",
+      "postUrl": "https://vt.tiktok.com/ZSHC135P5/"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "eyebrow": "Receipts, not claims",
+  "heading": "The numbers are real.",
+  "description": "Original, uncropped analytics from the channels I built and managed. The available screenshots document more than 70M views.",
+  "items": [
+    {
+      "value": "57.9M",
+      "detail": "TikTok / last 365 days",
+      "title": "TikTok overview",
+      "image": "assets/images/stat-1.png",
+      "alt": "TikTok Studio overview showing 57.9 million views, 4.8 million likes, and 317.1 thousand shares"
+    },
+    {
+      "value": "7.2M",
+      "detail": "Top single post",
+      "title": "Top content",
+      "image": "assets/images/stat-2.png",
+      "alt": "TikTok Studio top posts showing multiple videos between 3.4 and 7.2 million views"
+    },
+    {
+      "value": "16.4M",
+      "detail": "YouTube / lifetime",
+      "title": "Channel growth",
+      "image": "assets/images/stat-3.png",
+      "alt": "YouTube Studio analytics showing 16.4 million lifetime views and 16.7 thousand subscribers"
+    },
+    {
+      "value": "4M",
+      "detail": "Monthly audience",
+      "title": "Audience reach",
+      "image": "assets/images/stat-4.png",
+      "alt": "YouTube Studio audience analytics showing a monthly audience of 4 million"
+    }
+  ],
+  "totalLabel": "Directly visible in available dashboards",
+  "total": "70,000,000+",
+  "totalDetail": "documented views"
+}

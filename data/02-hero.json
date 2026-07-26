@@ -1,0 +1,24 @@
+{
+  "availability": "Open to part-time and full-time remote roles",
+  "eyebrow": "Creative + technical partner",
+  "title": "Digital work",
+  "titleAccent": "worth noticing.",
+  "intro": "I help remote teams turn unfinished ideas into published content, working web experiences, and organized day-to-day operations.",
+  "primaryCta": { "label": "Let’s talk", "href": "#contact" },
+  "secondaryCta": { "label": "View my CV", "href": "assets/Merwin_Generoso_CV.pdf" },
+  "services": ["Content editing", "Web support", "Research & operations"],
+  "receipt": {
+    "label": "Selected proof",
+    "year": "2026",
+    "value": "70M",
+    "suffix": "+",
+    "caption": "Documented views across the available TikTok and YouTube analytics.",
+    "stats": [
+      { "label": "Documented reach", "value": "70M+ views" },
+      { "label": "TikTok screenshot", "value": "Last 365 days" },
+      { "label": "YouTube screenshot", "value": "Lifetime" }
+    ],
+    "linkLabel": "See the receipts",
+    "linkHref": "#proof"
+  }
+}

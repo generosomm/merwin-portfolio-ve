@@ -1,0 +1,15 @@
+{
+  "label": "Remote support & research",
+  "status": "Remote / flexible / reliable",
+  "eyebrow": "Behind the creative",
+  "heading": "I keep the moving parts from becoming messy.",
+  "description": "Useful for founders, creators, and small teams who need a dependable extra pair of hands—not another layer of management.",
+  "items": [
+    { "title": "Research", "description": "Find, compare, verify, and summarize online information with source links and clear takeaways." },
+    { "title": "Organize", "description": "Clean spreadsheets, files, raw assets, schedules, and shared workspaces using a consistent system." },
+    { "title": "Publish & check", "description": "Prepare uploads, captions, formatting, links, and final quality checks before content goes live." },
+    { "title": "Document & report", "description": "Turn repeated work into checklists or SOPs, then send concise progress updates and next steps." }
+  ],
+  "tools": "Google Workspace, Microsoft 365, Notion, Trello, Slack, Teams, Canva, and Adobe Creative Cloud.",
+  "approach": "I can study a new workflow, document what I learn, ask focused questions, and keep the work visible. For unfamiliar tasks, I confirm the expected output before starting."
+}

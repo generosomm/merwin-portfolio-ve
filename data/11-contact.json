@@ -1,0 +1,22 @@
+{
+  "eyebrow": "Available for remote work",
+  "heading": "Need someone who can",
+  "headingAccent": "figure things out?",
+  "description": "Send the goal, deadline, and any useful links. I’ll reply with the clearest next step—usually within 24 hours.",
+  "email": "generosomerwin10@gmail.com",
+  "emailLabel": "Email me",
+  "emailSubject": "Remote work inquiry",
+  "emailBody": "Hi Merwin,\n\nHere's what I need help with:\n\nTarget deadline:\nUseful links:\n\nThank you.",
+  "links": [
+    { "label": "LinkedIn", "href": "https://linkedin.com/in/generosomm" },
+    { "label": "GitHub", "href": "https://github.com/generosomm" },
+    { "label": "TikTok", "href": "https://www.tiktok.com/@eroedtx" },
+    { "label": "CV", "href": "assets/Merwin_Generoso_CV.pdf" }
+  ],
+  "locationLines": ["Sto. Tomas City, Batangas", "Philippines / GMT+8"],
+  "footer": {
+    "copyright": "Merwin Generoso",
+    "note": "Designed and built from scratch.",
+    "backToTop": "Back to top"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "label": "Software development",
+  "externalLabel": "GitHub profile",
+  "externalUrl": "https://github.com/generosomm",
+  "heading": "I don’t only design the page. I ship the working version.",
+  "description": "Hands-on work across front-end builds, REST APIs, databases, and deployment.",
+  "projects": [
+    {
+      "stack": "HTML / CSS / JavaScript",
+      "title": "This portfolio",
+      "description": "Responsive, accessible, and built without a framework.",
+      "features": ["Native media dialogs", "Mouse, touch & keyboard galleries"],
+      "repoUrl": "https://github.com/generosomm/merwin-portfolio-ve",
+      "liveUrl": "https://generosomm.github.io/merwin-portfolio-ve/"
+    },
+    {
+      "stack": "Node.js / Express / MySQL",
+      "title": "MSC NU Laguna website",
+      "description": "Backend contribution: authentication, events, and guild API endpoints.",
+      "features": ["Team repository", "Deployed organization website"],
+      "repoUrl": "https://github.com/mscnulaguna/MSC-Official-Website",
+      "liveUrl": "https://mscnulaguna.org/"
+    },
+    {
+      "stack": "PHP / MySQL",
+      "title": "Document Tracking & Analytics",
+      "description": "Workflow system built for the City Government of Sto. Tomas.",
+      "features": ["Role-based document routing", "Timeline, PDF & email features"],
+      "repoUrl": "https://github.com/generosomm/Document-Tracker"
+    },
+    {
+      "stack": "HTML / CSS / JavaScript",
+      "title": "Nexus Pass",
+      "description": "Interactive 3D digital credential experience.",
+      "features": ["Interactive interface", "Responsive browser experience"],
+      "repoUrl": "https://github.com/generosomm/nexus-pass"
+    }
+  ]
+}

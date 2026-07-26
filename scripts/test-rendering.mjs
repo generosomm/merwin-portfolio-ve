@@ -123,10 +123,28 @@ assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /cla
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-result-badge"/g), 8);
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="play-pill"/g), 8);
 assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-result"/);
+assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-label"/);
+assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-scope"/);
+assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-category"/g), 8);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /Film promo/);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /Video Production Officer/);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /June 2025/);
+assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="selected-role-link"/g), 6);
+assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="video-social-link"/g), 4);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /Watch more of my work/);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /aria-label="YouTube"/);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="role-organization-link"/);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /View all council reels/);
+assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /class="role-reels-link"/);
 assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, />\s*Play (TikTok|Short|Edit|Reel)\s*</);
 assert.equal(count(normal.selectors.get('[data-content="dev"]').innerHTML, /<article>/g), 5);
+assert.doesNotMatch(normal.selectors.get('[data-content="dev"]').innerHTML, /class="repo-features"/);
+assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /View website/);
 assert.equal(count(normal.selectors.get('[data-content="stats"]').innerHTML, /class="proof-card image-trigger"/g), 5);
 assert.equal(normal.selectors.get('[data-content="testimonials"]').hidden, true);
+assert.equal(count(normal.selectors.get('[data-content="operations"]').innerHTML, /<li>/g), 6);
+assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /class="operations-tags"/);
+assert.doesNotMatch(normal.selectors.get('[data-content="about"]').innerHTML, /student|Batangas/i);
 
 const added = await renderWith((data) => {
   data["04-work.json"].items.push({
@@ -139,7 +157,7 @@ const added = await renderWith((data) => {
   );
 });
 assert.equal(count(added.selectors.get('[data-content="work"]').innerHTML, /class="case-study"/g), 9);
-assert.match(added.selectors.get('[data-content="work"]').innerHTML, /09 \/ 09/);
+assert.match(added.selectors.get('[data-content="work"]').innerHTML, /Temporary ninth project/);
 assert.equal(count(added.selectors.get('[data-content="services"]').innerHTML, /<article>/g), 5);
 
 const removed = await renderWith((data) => {

@@ -175,10 +175,24 @@ function galleryControls(target, label, count) {
   </div>`;
 }
 
+function socialIcon(name) {
+  const icons = {
+    tiktok: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3v11.1a4.6 4.6 0 1 1-3.8-4.5v3.1a1.7 1.7 0 1 0 .8 1.4V3h3Zm0 0c.4 2.2 1.7 3.6 4 4.1v3.1a8.2 8.2 0 0 1-4-1.8V3Z"/></svg>`,
+    youtube: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 6.5a2.7 2.7 0 0 0-1.9-1.9C17.8 4.2 12 4.2 12 4.2s-5.8 0-7.5.4a2.7 2.7 0 0 0-1.9 1.9A28 28 0 0 0 2.2 12c0 1.9.1 3.7.4 5.5a2.7 2.7 0 0 0 1.9 1.9c1.7.4 7.5.4 7.5.4s5.8 0 7.5-.4a2.7 2.7 0 0 0 1.9-1.9c.3-1.8.4-3.6.4-5.5s-.1-3.7-.4-5.5ZM10 15.4V8.6l5.8 3.4-5.8 3.4Z"/></svg>`,
+    instagram: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7.2 2h9.6A5.2 5.2 0 0 1 22 7.2v9.6a5.2 5.2 0 0 1-5.2 5.2H7.2A5.2 5.2 0 0 1 2 16.8V7.2A5.2 5.2 0 0 1 7.2 2Zm0 2A3.2 3.2 0 0 0 4 7.2v9.6A3.2 3.2 0 0 0 7.2 20h9.6a3.2 3.2 0 0 0 3.2-3.2V7.2A3.2 3.2 0 0 0 16.8 4H7.2Zm10.1 1.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>`,
+    facebook: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.8 22v-9h3l.5-3.5h-3.5V7.3c0-1 .3-1.8 1.8-1.8h1.9V2.4c-.3 0-1.5-.1-2.8-.1-2.8 0-4.7 1.7-4.7 4.8v2.4H7V13h3v9h3.8Z"/></svg>`,
+    reels: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5 3h14a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Zm0 2h2.2l2 3H4V6a1 1 0 0 1 1-1Zm4.6 0h3.1l2 3h-3.1l-2-3Zm5.5 0H19a1 1 0 0 1 1 1v2h-2.9l-2-3ZM4 10v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8H4Zm6 2.2 5 2.8-5 2.8v-5.6Z"/></svg>`
+  };
+  return icons[name] || icons.reels;
+}
+
 function renderWork(data) {
   const heading = document.querySelector('[data-content="work-heading"]');
   const root = document.querySelector('[data-content="work"]');
   const items = records(data?.items);
+  const socialLinks = records(data?.socialLinks).filter((link) => hasText(link.label) && hasText(link.href));
+  const role = data?.roleSpotlight;
+  const roleLinks = records(role?.links).filter((link) => hasText(link.label) && hasText(link.href));
   const headingVisible = data && (hasText(data.sectionHeading) || hasText(data.sectionDescription));
   const contentVisible = data && (hasText(data.label) || items.length);
   setVisible(heading, headingVisible);
@@ -198,10 +212,31 @@ function renderWork(data) {
     <div class="subsection-title">
       <p><span>01</span> ${text(data.label)}</p>
       <div class="subsection-side">
-        ${hasText(data.externalLabel) && hasText(data.externalUrl) ? `<a href="${attr(data.externalUrl)}" target="_blank" rel="noopener">${text(data.externalLabel)} &nearr;</a>` : ""}
+        ${socialLinks.length ? `<div class="video-social-group">
+          ${hasText(data.socialLinksLabel) ? `<span class="video-social-label">${text(data.socialLinksLabel)}</span>` : ""}
+          <div class="video-social-links" aria-label="Video channels">${socialLinks.map((link) => `<a class="video-social-link" href="${attr(link.href)}" target="_blank" rel="noopener" aria-label="${attr(link.label)}" title="${attr(link.label)}">${socialIcon(link.icon)}</a>`).join("")}</div>
+        </div>` : ""}
         ${items.length > 1 ? `<span class="drag-hint" aria-hidden="true">Drag to explore &rarr;</span>` : ""}
       </div>
     </div>
+    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight" aria-label="${attr(role.title || "Featured role")}">
+      <div class="role-spotlight-heading">
+        <div>
+          ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
+          ${hasText(role.title) ? `<h3>${text(role.title)}</h3>` : ""}
+          ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
+          ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${text(role.organizationLinkLabel)} &nearr;</a>` : ""}
+        </div>
+        ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
+      </div>
+      <div class="role-spotlight-details">
+        ${hasText(role.summary) ? `<p>${text(role.summary)}</p>` : ""}
+        ${roleLinks.length ? `<div class="role-links">
+          ${hasText(role.linksLabel) ? `<span>${text(role.linksLabel)}</span>` : ""}
+          <div>${roleLinks.map((link) => `<a class="selected-role-link" href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
+        </div>` : ""}
+      </div>
+    </aside>` : ""}
     ${items.length ? `<div class="gallery-shell">
       <div class="video-grid horizontal-track" id="video-track" tabindex="0" aria-label="Video projects. Scroll horizontally to explore.">
         ${items.map((item, index) => {
@@ -224,10 +259,9 @@ function renderWork(data) {
           return `<article class="case-study">
             ${media}
             <div class="case-copy">
-              <div class="case-label"><span>${text(item?.category)}</span><span>${pad(index)} / ${String(items.length).padStart(2, "0")}</span></div>
+              ${hasText(item?.category) ? `<p class="case-category">${text(item.category)}</p>` : ""}
               ${hasText(item?.title) ? `<h3>${text(item.title)}</h3>` : ""}
               ${hasText(item?.description) ? `<p>${text(item.description)}</p>` : ""}
-              ${hasText(item?.focus) ? `<p class="case-scope"><strong>Focus</strong> ${text(item.focus)}</p>` : ""}
               ${hasText(item?.postUrl) ? `<a href="${attr(item.postUrl)}" target="_blank" rel="noopener">${text(item.linkLabel || "Watch original")} &nearr;</a>` : ""}
             </div>
           </article>`;
@@ -267,8 +301,8 @@ function renderDevelopment(data) {
             ${list(project?.features).length ? `<ul class="repo-features">${list(project.features).map((feature) => `<li>${text(feature)}</li>`).join("")}</ul>` : ""}
           </div>
           ${hasText(project?.repoUrl) || hasText(project?.liveUrl) ? `<div class="repo-links">
-            ${hasText(project.repoUrl) ? `<a href="${attr(project.repoUrl)}" target="_blank" rel="noopener">${text(project.repoLabel || "Repository")} &nearr;</a>` : ""}
-            ${hasText(project.liveUrl) ? `<a href="${attr(project.liveUrl)}" target="_blank" rel="noopener">${text(project.liveLabel || "Live site")} &nearr;</a>` : ""}
+            ${hasText(project.liveUrl) ? `<a href="${attr(project.liveUrl)}" target="_blank" rel="noopener">${text(project.liveLabel || data.liveLabel || "View website")} &nearr;</a>` : ""}
+            ${hasText(project.repoUrl) ? `<a href="${attr(project.repoUrl)}" target="_blank" rel="noopener">${text(project.repoLabel || data.repoLabel || "View code")} &nearr;</a>` : ""}
           </div>` : ""}
         </article>`).join("")}
       </div>
@@ -294,9 +328,12 @@ function renderOperations(data) {
         ${hasText(data.heading) ? `<h3>${text(data.heading)}</h3>` : ""}
         ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
       </div>
-      ${items.length ? `<ol class="operations-list">${items.map((item, index) => `<li>
-        <span>${pad(index)}</span><div><strong>${text(item?.title)}</strong>${hasText(item?.description) ? `<p>${text(item.description)}</p>` : ""}</div>
-      </li>`).join("")}</ol>` : ""}
+      ${items.length ? items.every((item) => !hasText(item.description))
+        ? `<ul class="operations-tags">${items.map((item) => `<li>${text(item.title)}</li>`).join("")}</ul>`
+        : `<ol class="operations-list">${items.map((item, index) => `<li>
+            <span>${pad(index)}</span><div><strong>${text(item.title)}</strong>${hasText(item.description) ? `<p>${text(item.description)}</p>` : ""}</div>
+          </li>`).join("")}</ol>`
+        : ""}
     </div>
     ${hasText(data.tools) || hasText(data.approach) ? `<div class="operations-footer">
       ${hasText(data.tools) ? `<p class="operations-note">Tools: ${text(data.tools)}</p>` : ""}

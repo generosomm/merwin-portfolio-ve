@@ -1,12 +1,10 @@
 {
-  "eyebrow": "A little context",
-  "heading": "Creative instinct. Technical follow-through.",
+  "eyebrow": "About me",
+  "heading": "Creative ideas, handled from start to finish.",
   "paragraphs": [
-    "I’m Merwin, a digital creative from Batangas and the person behind ERO | VISUALS. I grew a solo content operation from zero while building software that solves real problems.",
-    "That experience taught me how to learn independently, work through unclear problems, document decisions, and deliver without needing constant supervision."
+    "I’m Merwin, the person behind ERO | VISUALS. I create high-performing social content and dependable web experiences for clients and teams."
   ],
   "facts": [
-    { "label": "Based in", "value": "Sto. Tomas, Batangas, PH" },
     { "label": "Languages", "value": "English & Filipino" },
     { "label": "Availability", "value": "Remote across US, UK, AU & Asia" }
   ]

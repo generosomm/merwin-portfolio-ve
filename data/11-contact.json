@@ -1,8 +1,8 @@
 {
   "eyebrow": "Available for remote work",
-  "heading": "Need someone who can",
-  "headingAccent": "figure things out?",
-  "description": "Send the goal, deadline, and any useful links. I’ll reply with the clearest next step—usually within 24 hours.",
+  "heading": "Have a project in mind?",
+  "headingAccent": "Let’s make it happen.",
+  "description": "Tell me what you need, your deadline, and useful links. I’ll reply with a clear next step.",
   "email": "generosomerwin10@gmail.com",
   "emailAction": "Start a conversation",
   "emailLabel": "Email me",
@@ -11,9 +11,10 @@
   "links": [
     { "label": "LinkedIn", "href": "https://linkedin.com/in/generosomm" },
     { "label": "GitHub", "href": "https://github.com/generosomm" },
-    { "label": "Facebook", "href": "https://www.facebook.com/@eroedtx" },
-    { "label": "Instagram", "href": "https://www.instagram.com/@eroedtx" },
+    { "label": "Facebook", "href": "https://www.facebook.com/eroedtx" },
+    { "label": "Instagram", "href": "https://www.instagram.com/eroedtx/" },
     { "label": "TikTok", "href": "https://www.tiktok.com/@eroedtx" },
+    { "label": "YouTube", "href": "https://www.youtube.com/@eroedtx" },
     { "label": "CV", "href": "assets/Merwin_Generoso_CV.pdf" }
   ],
   "locationLines": ["Sto. Tomas City, Batangas", "Philippines / GMT+8"],

@@ -7,6 +7,32 @@
   "externalUrl": "https://www.tiktok.com/@eroedtx",
   "items": [
     {
+      "category": "TikTok — Most viewed",
+      "title": "Glass Child — Seven Sundays",
+      "description": "A dialogue-led Seven Sundays scene edit shaped around an immediate emotional hook and a memorable family moment.",
+      "focus": "Dialogue hook · emotional pacing · film storytelling",
+      "result": "14M views",
+      "resultDetail": "most-viewed TikTok",
+      "image": "assets/images/seven-sundays-thumb.jpg",
+      "imageAlt": "Frame from the Glass Child Seven Sundays TikTok edit",
+      "video": "assets/videos/seven-sundays.mp4",
+      "postUrl": "https://www.tiktok.com/@eroedtx/video/7493375615706467592",
+      "actionLabel": "Play TikTok"
+    },
+    {
+      "category": "YouTube Short",
+      "title": "The Blueprint of the Trend",
+      "description": "A 34-second trend-led edit built around a recognizable Diary of a Wimpy Kid moment for fast Shorts discovery.",
+      "focus": "Short-form hook · trend timing · retention pacing",
+      "result": "12.7M views",
+      "resultDetail": "+8.9K subscribers",
+      "image": "assets/images/youtube-blueprint-thumb.jpg",
+      "imageAlt": "Frame from The Blueprint of the Trend YouTube Short",
+      "video": "assets/videos/the-blueprint-of-the-trend.mp4",
+      "postUrl": "https://youtube.com/shorts/dIMQwAMAzeQ",
+      "actionLabel": "Play Short"
+    },
+    {
       "category": "Music promotion",
       "title": "“That’s So True” — Gracie Abrams edit",
       "description": "Trend-aware music sync built from familiar film moments.",
@@ -29,6 +55,32 @@
       "imageAlt": "Frame from the Home Along Da Riles trailer edit",
       "video": "assets/videos/home-along-da-riles.mp4",
       "postUrl": "https://www.tiktok.com/@eroedtx/video/7649449441484655893"
+    },
+    {
+      "category": "Instagram Reel",
+      "title": "Always Check Your Weather App",
+      "description": "A humor-led scene edit from The Delivery Rider, shaped around a fast setup and visual punchline for broad discovery.",
+      "focus": "Comedic timing · text punchline · discovery pacing",
+      "result": "1.1M views",
+      "resultDetail": "99.7% non-followers",
+      "image": "assets/images/instagram-weather-app-thumb.jpg",
+      "imageAlt": "Frame from the Always Check Your Weather App Instagram Reel",
+      "video": "assets/videos/instagram-weather-app-reel.mp4",
+      "postUrl": "https://www.instagram.com/reel/DQg23ilEj9r/",
+      "actionLabel": "Play Reel"
+    },
+    {
+      "category": "Facebook Reel",
+      "title": "Communication Without Understanding",
+      "description": "A dialogue-centered scene edit from The Loved One, paced to carry an emotional idea clearly in a short social format.",
+      "focus": "Dialogue pacing · emotional beat · cross-platform cut",
+      "result": "898K views",
+      "resultDetail": "Facebook Reel",
+      "image": "assets/images/facebook-loved-one-thumb.jpg",
+      "imageAlt": "Frame from The Loved One Facebook Reel",
+      "video": "assets/videos/the-loved-one.mp4",
+      "postUrl": "https://www.facebook.com/reel/1565125114712353",
+      "actionLabel": "Play Reel"
     },
     {
       "category": "Film promo",

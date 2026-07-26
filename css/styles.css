@@ -479,6 +479,21 @@ h4 {
   letter-spacing: -0.05em;
 }
 
+.hire-menu-summary {
+  margin: 13px 0 0;
+  color: #515b7d;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.hire-menu-summary span {
+  margin: 0 4px;
+  color: var(--accent-dark);
+}
+
 .hire-menu-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -686,6 +701,7 @@ h4 {
 
 .case-media {
   position: relative;
+  display: block;
   width: 100%;
   padding: 0;
   overflow: hidden;

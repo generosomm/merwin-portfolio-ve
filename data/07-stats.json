@@ -25,6 +25,13 @@
       "alt": "YouTube Studio analytics showing 16.4 million lifetime views and 16.7 thousand subscribers"
     },
     {
+      "value": "12.7M",
+      "detail": "Highest YouTube Short",
+      "title": "Top Shorts performance",
+      "image": "assets/images/stat-5-youtube-top-short.png",
+      "alt": "YouTube Studio Shorts list showing The Blueprint of the Trend as the highest-viewed Short with 12,653,962 views"
+    },
+    {
       "value": "4M",
       "detail": "Monthly audience",
       "title": "Audience reach",

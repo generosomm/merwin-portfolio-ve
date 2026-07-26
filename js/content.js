@@ -102,7 +102,13 @@ function renderServices(data) {
   const root = document.querySelector(".hire-menu");
   if (!root) return;
   root.innerHTML = `
-    <div class="hire-menu-heading"><p class="eyebrow">${text(data.eyebrow)}</p><h3 id="hire-menu-title">${text(data.heading)}</h3></div>
+    <div class="hire-menu-heading">
+      <p class="eyebrow">${text(data.eyebrow)}</p>
+      <div>
+        <h3 id="hire-menu-title">${text(data.heading)}</h3>
+        <p class="hire-menu-summary">${text(data.summary)}</p>
+      </div>
+    </div>
     <div class="hire-menu-grid">${data.items.map((item) => `
       <article>
         <span>${text(item.index)} / ${text(item.category)}</span>
@@ -128,10 +134,15 @@ function renderWork(data) {
       <div class="video-grid horizontal-track" id="video-track" tabindex="0" aria-label="Video projects. Scroll horizontally to explore.">
         ${data.items.map((item, index) => `
           <article class="case-study">
-            <button class="case-media video-trigger" type="button" data-video="${attr(item.video)}" aria-label="Play ${attr(item.title)}">
-              <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
-              <span class="play-pill" aria-hidden="true"><i></i> ${index ? "Play" : "Play edit"}</span>
-            </button>
+            ${item.video ? `
+              <button class="case-media video-trigger" type="button" data-video="${attr(item.video)}" aria-label="Play ${attr(item.title)}">
+                <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
+                <span class="play-pill" aria-hidden="true"><i></i> ${text(item.actionLabel || "Play edit")}</span>
+              </button>` : `
+              <a class="case-media" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(item.actionLabel || "Watch original")} — ${attr(item.title)}">
+                <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
+                <span class="play-pill" aria-hidden="true"><i></i> ${text(item.actionLabel || "Watch")}</span>
+              </a>`}
             <div class="case-copy">
               <div class="case-label"><span>${text(item.category)}</span><span>${pad(index)} / ${String(data.items.length).padStart(2, "0")}</span></div>
               <h3>${text(item.title)}</h3><p>${text(item.description)}</p>

@@ -158,7 +158,7 @@ const added = await renderWith((data) => {
 });
 assert.equal(count(added.selectors.get('[data-content="work"]').innerHTML, /class="case-study"/g), 9);
 assert.match(added.selectors.get('[data-content="work"]').innerHTML, /Temporary ninth project/);
-assert.equal(count(added.selectors.get('[data-content="services"]').innerHTML, /<article>/g), 5);
+assert.equal(count(added.selectors.get('[data-content="services"]').innerHTML, /class="service-strip-link"/g), 5);
 
 const removed = await renderWith((data) => {
   data["04-work.json"].items = [];

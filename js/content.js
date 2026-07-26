@@ -151,20 +151,17 @@ function renderServices(data) {
   if (!visible) return;
 
   root.innerHTML = `
-    <div class="hire-menu-heading">
-      ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
-      <div>
-        ${hasText(data.heading) ? `<h3 id="hire-menu-title">${text(data.heading)}</h3>` : ""}
-        ${hasText(data.summary) ? `<p class="hire-menu-summary">${text(data.summary)}</p>` : ""}
+    <div class="service-strip">
+      <div class="service-strip-heading">
+        ${hasText(data.eyebrow) ? `<span>${text(data.eyebrow)}</span>` : ""}
+        ${hasText(data.heading) ? `<strong id="hire-menu-title">${text(data.heading)}</strong>` : ""}
       </div>
-    </div>
-    ${items.length ? `<div class="hire-menu-grid">${items.map((item, index) => `
-      <article>
-        <span>${text(item?.index || pad(index))}${hasText(item?.category) ? ` / ${text(item.category)}` : ""}</span>
-        ${hasText(item?.title) ? `<h4>${text(item.title)}</h4>` : ""}
-        ${hasText(item?.description) ? `<p>${text(item.description)}</p>` : ""}
-        ${hasText(item?.linkLabel) && hasText(item?.linkHref) ? `<a href="${attr(item.linkHref)}">${text(item.linkLabel)} <span aria-hidden="true">&darr;</span></a>` : ""}
-      </article>`).join("")}</div>` : ""}`;
+      ${items.length ? `<nav class="service-strip-links" aria-label="Services">
+        ${items.map((item) => hasText(item?.linkHref) ? `<a class="service-strip-link" href="${attr(item.linkHref)}">
+          <span>${text(item.index)}</span>${text(item.shortLabel || item.title)}<i aria-hidden="true">&darr;</i>
+        </a>` : "").join("")}
+      </nav>` : ""}
+    </div>`;
 }
 
 function galleryControls(target, label, count) {

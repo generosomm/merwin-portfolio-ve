@@ -1,11 +1,12 @@
 {
-  "eyebrow": "How I can help",
-  "heading": "Practical support for your content and online presence.",
-  "summary": "Create content → build pages → keep delivery organized.",
+  "eyebrow": "Services",
+  "heading": "I can help with",
+  "summary": "",
   "items": [
     {
       "index": "01",
       "category": "Content",
+      "shortLabel": "Video Editing",
       "title": "Edit your content",
       "description": "Short-form edits, trailers, and social cutdowns.",
       "linkLabel": "See editing proof",
@@ -14,6 +15,7 @@
     {
       "index": "02",
       "category": "Web",
+      "shortLabel": "Web Projects",
       "title": "Build your web presence",
       "description": "Responsive websites and useful online tools.",
       "linkLabel": "See shipped work",
@@ -22,6 +24,7 @@
     {
       "index": "03",
       "category": "Support",
+      "shortLabel": "Project Support",
       "title": "Keep projects organized",
       "description": "Research, publishing, documentation, and reporting.",
       "linkLabel": "See support scope",

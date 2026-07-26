@@ -16,7 +16,8 @@ const contentFiles = [
   "08-testimonials.json",
   "09-about.json",
   "10-credentials.json",
-  "11-contact.json"
+  "11-contact.json",
+  "12-ui.json"
 ];
 
 const errors = [];
@@ -83,8 +84,28 @@ try {
   if (/<article[\s>]/i.test(index)) {
     errors.push("index.html: contains a content card; cards must be rendered from JSON");
   }
+
+  const body = index.match(/<body[\s\S]*<\/body>/i)?.[0] || "";
+  const bodyText = [...body.matchAll(/>([^<]+)</g)]
+    .map((match) => match[1].trim())
+    .filter(Boolean);
+  if (bodyText.length) {
+    errors.push(`index.html: visible text must come from data JSON, found: ${bodyText.join(", ")}`);
+  }
 } catch (error) {
   errors.push(`index.html: ${error.message}`);
+}
+
+try {
+  const renderer = await readFile(path.join(root, "js", "content.js"), "utf8");
+  const literalTextNodes = [...renderer.matchAll(/>\s*([A-Za-z][^<${}\r\n`]*)</g)]
+    .map((match) => match[1].trim())
+    .filter(Boolean);
+  if (literalTextNodes.length) {
+    errors.push(`js/content.js: visible text must come from data JSON, found: ${literalTextNodes.join(", ")}`);
+  }
+} catch (error) {
+  errors.push(`js/content.js: ${error.message}`);
 }
 
 if (errors.length) {

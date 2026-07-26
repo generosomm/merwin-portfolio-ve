@@ -12,8 +12,11 @@ const CONTENT_FILES = Object.freeze({
   testimonials: "08-testimonials.json",
   about: "09-about.json",
   credentials: "10-credentials.json",
-  contact: "11-contact.json"
+  contact: "11-contact.json",
+  ui: "12-ui.json"
 });
+
+let interfaceText = {};
 
 function escapeHTML(value = "") {
   return String(value)
@@ -30,6 +33,15 @@ const list = (value) => Array.isArray(value) ? value : [];
 const records = (value) => list(value).filter((item) => item && typeof item === "object" && !Array.isArray(item));
 const hasText = (value) => typeof value === "string" && value.trim().length > 0;
 const pad = (index) => String(index + 1).padStart(2, "0");
+const ui = (path) => {
+  const value = path.split(".").reduce((current, key) => current?.[key], interfaceText);
+  return hasText(value) ? value : "";
+};
+const formatUi = (path, values = {}) =>
+  Object.entries(values).reduce(
+    (output, [key, value]) => output.replaceAll(`{${key}}`, String(value)),
+    ui(path)
+  );
 
 function setVisible(element, visible) {
   if (!element) return;
@@ -77,6 +89,29 @@ function renderMeta(data) {
   setMeta('link[rel="canonical"]', data.canonicalUrl, "href");
 }
 
+function renderInterface(data) {
+  interfaceText = data || {};
+
+  const skipLink = document.querySelector("#skip-link");
+  if (skipLink) skipLink.textContent = ui("skipLink");
+
+  const videoDialog = document.querySelector("#video-dialog");
+  const imageDialog = document.querySelector("#image-dialog");
+  const videoClose = document.querySelector("#video-dialog-close");
+  const imageClose = document.querySelector("#image-dialog-close");
+
+  if (videoDialog) videoDialog.setAttribute("aria-label", ui("dialogs.videoLabel"));
+  if (imageDialog) imageDialog.setAttribute("aria-label", ui("dialogs.imageLabel"));
+  if (videoClose) {
+    videoClose.setAttribute("aria-label", ui("dialogs.closeVideoLabel"));
+    videoClose.innerHTML = `${text(ui("dialogs.closeButton"))} &times;`;
+  }
+  if (imageClose) {
+    imageClose.setAttribute("aria-label", ui("dialogs.closeImageLabel"));
+    imageClose.innerHTML = `${text(ui("dialogs.closeButton"))} &times;`;
+  }
+}
+
 function renderNavigation(data) {
   const root = document.querySelector('[data-content="nav"]');
   const links = records(data?.links).filter((link) => hasText(link.label) && hasText(link.href));
@@ -89,17 +124,17 @@ function renderNavigation(data) {
     : "";
 
   root.innerHTML = `
-    <a class="brand" href="#top" aria-label="${attr(data.brand || "Portfolio")}, home">
-      <span class="brand-mark">${hasText(data.brandImage) ? `<img src="${attr(data.brandImage)}" alt="${attr(data.brandImageAlt || "")}">` : text(data.brandMark || "MG")}</span>
+    <a class="brand" href="#top" aria-label="${attr(data.brand || ui("navigation.brandFallback"))}, ${attr(ui("navigation.homeSuffix"))}">
+      <span class="brand-mark">${hasText(data.brandImage) ? `<img src="${attr(data.brandImage)}" alt="${attr(data.brandImageAlt || "")}">` : text(data.brandMark || ui("navigation.brandMarkFallback"))}</span>
       <span>
         ${hasText(data.brand) ? `<strong>${text(data.brand)}</strong>` : ""}
         ${hasText(data.role) ? `<small>${text(data.role)}</small>` : ""}
       </span>
     </a>
     <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
-      <span class="sr-only">Toggle navigation</span><span></span><span></span>
+      <span class="sr-only">${text(ui("navigation.toggleLabel"))}</span><span></span><span></span>
     </button>
-    <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+    <nav class="site-nav" id="site-nav" aria-label="${attr(ui("navigation.primaryLabel"))}">
       ${links.map((link) => {
         const children = records(link.children).filter((child) => hasText(child.label) && hasText(child.href));
         if (!children.length) return `<a href="${attr(link.href)}">${text(link.label)}</a>`;
@@ -108,7 +143,7 @@ function renderNavigation(data) {
           <a class="nav-dropdown-trigger" href="${attr(link.href)}" aria-haspopup="true">
             <span>${text(link.label)}</span><i aria-hidden="true">&darr;</i>
           </a>
-          <div class="nav-dropdown-menu" aria-label="${attr(link.label)} sections">
+          <div class="nav-dropdown-menu" aria-label="${attr(link.label)} ${attr(ui("navigation.sectionsSuffix"))}">
             ${children.map((child) => `<a href="${attr(child.href)}">
               ${hasText(child.index) ? `<span>${text(child.index)}</span>` : ""}
               <strong>${text(child.label)}</strong>
@@ -136,7 +171,7 @@ function renderHero(data) {
     ? `<a class="button button-text" href="${attr(data.secondaryCta.href)}" target="_blank" rel="noopener">${text(data.secondaryCta.label)} <span aria-hidden="true">&nearr;</span></a>`
     : "";
   const receipt = data.receipt && (hasText(data.receipt.value) || receiptStats.length)
-    ? `<aside class="hero-receipt" aria-label="Career highlights">
+    ? `<aside class="hero-receipt" aria-label="${attr(ui("labels.careerHighlights"))}">
         <div class="receipt-top"><span>${text(data.receipt.label)}</span><span>${text(data.receipt.year)}</span></div>
         ${hasText(data.receipt.value) ? `<p class="receipt-number">${text(data.receipt.value)}<span>${text(data.receipt.suffix)}</span></p>` : ""}
         ${hasText(data.receipt.caption) ? `<p class="receipt-caption">${text(data.receipt.caption)}</p>` : ""}
@@ -153,7 +188,7 @@ function renderHero(data) {
         <h1 id="hero-title">${text(data.title)}${hasText(data.titleAccent) ? `<br><em>${text(data.titleAccent)}</em>` : ""}</h1>
         ${hasText(data.intro) ? `<p class="hero-intro">${text(data.intro)}</p>` : ""}
         ${primaryCta || secondaryCta ? `<div class="hero-actions">${primaryCta}${secondaryCta}</div>` : ""}
-        ${services.length ? `<ul class="hero-services" aria-label="Available services">${services.map((service) => `<li>${text(service)}</li>`).join("")}</ul>` : ""}
+        ${services.length ? `<ul class="hero-services" aria-label="${attr(ui("labels.availableServices"))}">${services.map((service) => `<li>${text(service)}</li>`).join("")}</ul>` : ""}
       </div>
       ${receipt}
     </div>`;
@@ -172,7 +207,7 @@ function renderServices(data) {
         ${hasText(data.eyebrow) ? `<span>${text(data.eyebrow)}</span>` : ""}
         ${hasText(data.heading) ? `<strong id="hire-menu-title">${text(data.heading)}</strong>` : ""}
       </div>
-      ${items.length ? `<nav class="service-strip-links" aria-label="Portfolio sections">
+      ${items.length ? `<nav class="service-strip-links" aria-label="${attr(ui("labels.portfolioSections"))}">
         ${items.map((item) => hasText(item?.linkHref) ? `<a class="service-strip-link" href="${attr(item.linkHref)}">
           <span>${text(item.index)}</span>${text(item.shortLabel || item.title)}<i aria-hidden="true">&darr;</i>
         </a>` : "").join("")}
@@ -182,9 +217,9 @@ function renderServices(data) {
 
 function galleryControls(target, label, count) {
   if (count < 2) return "";
-  return `<div class="scroll-controls gallery-controls" role="group" aria-label="${attr(label)} controls">
-    <button type="button" data-scroll-target="${attr(target)}" data-scroll-direction="-1" aria-label="Scroll ${attr(label)}s left">&larr;</button>
-    <button type="button" data-scroll-target="${attr(target)}" data-scroll-direction="1" aria-label="Scroll ${attr(label)}s right">&rarr;</button>
+  return `<div class="scroll-controls gallery-controls" role="group" aria-label="${attr(formatUi("gallery.controlsTemplate", { label }))}">
+    <button type="button" data-scroll-target="${attr(target)}" data-scroll-direction="-1" aria-label="${attr(formatUi("gallery.scrollLeftTemplate", { label }))}">&larr;</button>
+    <button type="button" data-scroll-target="${attr(target)}" data-scroll-direction="1" aria-label="${attr(formatUi("gallery.scrollRightTemplate", { label }))}">&rarr;</button>
   </div>`;
 }
 
@@ -243,33 +278,33 @@ function renderWork(data) {
   if (!contentVisible) return;
 
   const councilDetails = roleLinks.length ? `<details class="content-details council-details">
-    <summary><span>${text(role.linksSummary || role.linksLabel || "Browse council work")} <b>${roleLinks.length}</b></span></summary>
+    <summary><span>${text(role.linksSummary || role.linksLabel || ui("labels.browseCouncilWork"))} <b>${roleLinks.length}</b></span></summary>
     <div class="content-details-panel role-links">
       ${creator && (hasText(role.summary) || (hasText(role.organizationLinkLabel) && hasText(role.organizationUrl))) ? `<div class="council-details-copy">
         ${hasText(role.summary) ? `<p class="council-details-summary">${text(role.summary)}</p>` : ""}
         ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${hasText(role.organizationLinkIcon) ? `<span class="role-organization-icon" aria-hidden="true">${socialIcon(role.organizationLinkIcon)}</span>` : ""}<span>${text(role.organizationLinkLabel)}</span> <span aria-hidden="true">&nearr;</span></a>` : ""}
       </div>` : ""}
       <div class="role-links-header">
-        ${roleLinks.length > 1 ? `<div class="scroll-controls council-work-controls" role="group" aria-label="Council work controls">
-          <button type="button" data-scroll-target="council-work-track" data-scroll-direction="-1" aria-label="Scroll council work left">&larr;</button>
-          <button type="button" data-scroll-target="council-work-track" data-scroll-direction="1" aria-label="Scroll council work right">&rarr;</button>
+        ${roleLinks.length > 1 ? `<div class="scroll-controls council-work-controls" role="group" aria-label="${attr(ui("labels.councilWorkControls"))}">
+          <button type="button" data-scroll-target="council-work-track" data-scroll-direction="-1" aria-label="${attr(ui("labels.scrollCouncilWorkLeft"))}">&larr;</button>
+          <button type="button" data-scroll-target="council-work-track" data-scroll-direction="1" aria-label="${attr(ui("labels.scrollCouncilWorkRight"))}">&rarr;</button>
         </div>` : ""}
       </div>
-      <div class="role-links-track council-work-track horizontal-track" id="council-work-track" tabindex="0" aria-label="Council work. Scroll horizontally to explore.">${roleLinks.map((link) => `<a class="selected-role-link" href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
+      <div class="role-links-track council-work-track horizontal-track" id="council-work-track" tabindex="0" aria-label="${attr(ui("labels.councilWorkTrack"))}">${roleLinks.map((link) => `<a class="selected-role-link" href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
     </div>
   </details>` : "";
 
   root.innerHTML = `
     <div class="subsection-title">
-      <p><span>01</span> ${text(data.label)}</p>
+      <p><span>${text(ui("sectionIndexes.video"))}</span> ${text(data.label)}</p>
       <div class="subsection-side">
         ${socialLinks.length ? `<div class="video-social-group">
           ${hasText(data.socialLinksLabel) ? `<span class="video-social-label">${text(data.socialLinksLabel)}</span>` : ""}
-          <div class="video-social-links" aria-label="Video channels">${socialLinks.map((link) => `<a class="video-social-link" href="${attr(link.href)}" target="_blank" rel="noopener" aria-label="${attr(link.label)}" title="${attr(link.label)}">${socialIcon(link.icon)}</a>`).join("")}</div>
+          <div class="video-social-links" aria-label="${attr(ui("labels.videoChannels"))}">${socialLinks.map((link) => `<a class="video-social-link" href="${attr(link.href)}" target="_blank" rel="noopener" aria-label="${attr(link.label)}" title="${attr(link.label)}">${socialIcon(link.icon)}</a>`).join("")}</div>
         </div>` : ""}
       </div>
     </div>
-    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card${creator && hasText(creator.title) ? " video-spotlight" : ""}" aria-label="${attr(creator?.title || role.title || "Featured role")}">
+    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card${creator && hasText(creator.title) ? " video-spotlight" : ""}" aria-label="${attr(creator?.title || role.title || ui("labels.featuredRole"))}">
       <div class="role-spotlight-heading header-card-primary">
         ${creator && hasText(creator.title) ? `
         ${hasText(creator.eyebrow) ? `<p class="eyebrow">${text(creator.eyebrow)}</p>` : ""}
@@ -279,7 +314,7 @@ function renderWork(data) {
         </div>
         ${hasText(creator.organization) ? `<p class="role-organization">${text(creator.organization)}</p>` : ""}
         ${hasText(creator.actionLabel) && hasText(creator.actionHref) ? `<div class="creator-action-row"><a class="header-card-action" href="${attr(creator.actionHref)}">${text(creator.actionLabel)} <span aria-hidden="true">&darr;</span></a></div>` : ""}
-        ${creatorProofs.length ? `<ul class="creator-proof-list" aria-label="Creator results">${creatorProofs.map((proof) => `<li class="creator-proof">${text(proof)}</li>`).join("")}</ul>` : ""}` : `
+        ${creatorProofs.length ? `<ul class="creator-proof-list" aria-label="${attr(ui("labels.creatorResults"))}">${creatorProofs.map((proof) => `<li class="creator-proof">${text(proof)}</li>`).join("")}</ul>` : ""}` : `
         ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
         <div class="role-title-row">
           ${hasText(role.title) ? `<h3>${text(role.title)}</h3>` : ""}
@@ -305,19 +340,19 @@ function renderWork(data) {
     </aside>` : ""}
     ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
     ${items.length ? `<div class="gallery-shell">
-      <div class="video-grid horizontal-track" id="video-track" tabindex="0" aria-label="Video projects. Scroll horizontally to explore.">
+      <div class="video-grid horizontal-track" id="video-track" tabindex="0" aria-label="${attr(ui("labels.videoProjectsTrack"))}">
         ${items.map((item, index) => {
           const resultBadge = hasText(item?.result)
             ? `<span class="case-result-badge"><strong>${text(item.result)}</strong>${hasText(item.resultDetail) ? `<small>${text(item.resultDetail)}</small>` : ""}</span>`
             : "";
           const media = hasText(item?.video)
-            ? `<button class="case-media video-trigger" type="button" data-video="${attr(item.video)}" aria-label="Play ${attr(item.title)}">
+            ? `<button class="case-media video-trigger" type="button" data-video="${attr(item.video)}" aria-label="${attr(ui("labels.playPrefix"))} ${attr(item.title)}">
                 <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
                 ${resultBadge}
                 <span class="play-pill" aria-hidden="true"><i></i></span>
               </button>`
             : hasText(item?.image) && hasText(item?.postUrl)
-              ? `<a class="case-media" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(item.actionLabel || "Watch original")}: ${attr(item.title)}">
+              ? `<a class="case-media" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(item.actionLabel || ui("labels.watchOriginal"))}: ${attr(item.title)}">
                   <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
                   ${resultBadge}
                   <span class="play-pill" aria-hidden="true"><i></i></span>
@@ -328,7 +363,7 @@ function renderWork(data) {
             <div class="case-copy">
               ${hasText(item?.category) || hasText(item?.postUrl) ? `<div class="case-meta-row">
                 ${hasText(item?.category) ? `<p class="case-category">${hasText(item.platform) ? `<span class="case-platform-icon case-platform-${attr(technologyKey(item.platform))}" role="img" aria-label="${attr(item.platform)}" title="${attr(item.platform)}">${socialIcon(technologyKey(item.platform))}</span>` : ""}<span>${text(item.category)}</span></p>` : ""}
-                ${hasText(item?.postUrl) ? `<a class="case-original-link" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="Watch original: ${attr(item.title)}">${text(item.linkLabel || data.watchLabel || "Watch")} <span aria-hidden="true">&nearr;</span></a>` : ""}
+                ${hasText(item?.postUrl) ? `<a class="case-original-link" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(ui("labels.watchOriginal"))}: ${attr(item.title)}">${text(item.linkLabel || data.watchLabel || ui("labels.watch"))} <span aria-hidden="true">&nearr;</span></a>` : ""}
               </div>` : ""}
               ${hasText(item?.title) ? `<h3>${text(item.title)}</h3>` : ""}
               ${hasText(item?.description) ? `<p>${text(item.description)}</p>` : ""}
@@ -336,7 +371,7 @@ function renderWork(data) {
           </article>`;
         }).join("")}
       </div>
-      ${galleryControls("video-track", "Video project", items.length)}
+      ${galleryControls("video-track", ui("gallery.videoProject"), items.length)}
     </div>` : ""}`;
 }
 
@@ -351,12 +386,12 @@ function renderDevelopment(data) {
 
   root.innerHTML = `
     <div class="subsection-title">
-      <p><span>02</span> ${text(data.label)}</p>
+      <p><span>${text(ui("sectionIndexes.development"))}</span> ${text(data.label)}</p>
       <div class="subsection-side">
         ${hasText(data.externalLabel) && hasText(data.externalUrl) ? `<a class="external-project-link" href="${attr(data.externalUrl)}" target="_blank" rel="noopener">${hasText(data.externalIcon) ? `<span class="external-project-icon" aria-hidden="true">${socialIcon(data.externalIcon)}</span>` : ""}<span>${text(data.externalLabel)}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
       </div>
     </div>
-    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card development-role" aria-label="${attr(role.title || "Featured web role")}">
+    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card development-role" aria-label="${attr(role.title || ui("labels.featuredWebRole"))}">
       <div class="role-spotlight-heading header-card-primary">
         ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
         <div class="role-title-row">
@@ -382,31 +417,31 @@ function renderDevelopment(data) {
     </div>` : ""}
     ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
     ${projects.length ? `<div class="gallery-shell">
-      <div class="repo-list horizontal-track" id="project-track" tabindex="0" aria-label="Software projects. Scroll horizontally to explore.">
+      <div class="repo-list horizontal-track" id="project-track" tabindex="0" aria-label="${attr(ui("labels.softwareProjectsTrack"))}">
         ${projects.map((project, index) => {
           const technologies = records(project?.technologies).filter((technology) => hasText(technology.name));
           return `<article>
           <div class="repo-index">${pad(index)}</div>
           <div>
-            ${technologies.length ? `<ul class="tech-icons" aria-label="Technologies used">${technologies.map((technology) => {
+            ${technologies.length ? `<ul class="tech-icons" aria-label="${attr(ui("labels.technologiesUsed"))}">${technologies.map((technology) => {
               const iconKey = technologyKey(technology.icon);
               return `<li class="tech-icon tech-icon-${attr(iconKey)}" aria-label="${attr(technology.name)}" title="${attr(technology.name)}">${technologyIcon(iconKey)}</li>`;
             }).join("")}</ul>` : ""}
             ${hasText(project?.title) ? `<h4>${text(project.title)}</h4>` : ""}
             ${hasText(project?.description) ? `<span>${text(project.description)}</span>` : ""}
             ${list(project?.features).length ? `<details class="content-details repo-details">
-              <summary>${text(project.detailsLabel || data.detailsLabel || "Project details")}</summary>
+              <summary>${text(project.detailsLabel || data.detailsLabel || ui("labels.projectDetails"))}</summary>
               <div class="content-details-panel"><ul class="repo-features">${list(project.features).map((feature) => `<li>${text(feature)}</li>`).join("")}</ul></div>
             </details>` : ""}
           </div>
           ${hasText(project?.repoUrl) || hasText(project?.liveUrl) ? `<div class="repo-links">
-            ${hasText(project.liveUrl) ? `<a href="${attr(project.liveUrl)}" target="_blank" rel="noopener">${text(project.liveLabel || data.liveLabel || "View website")} &nearr;</a>` : ""}
-            ${hasText(project.repoUrl) ? `<a href="${attr(project.repoUrl)}" target="_blank" rel="noopener">${text(project.repoLabel || data.repoLabel || "View code")} &nearr;</a>` : ""}
+            ${hasText(project.liveUrl) ? `<a href="${attr(project.liveUrl)}" target="_blank" rel="noopener">${text(project.liveLabel || data.liveLabel || ui("labels.viewWebsite"))} &nearr;</a>` : ""}
+            ${hasText(project.repoUrl) ? `<a href="${attr(project.repoUrl)}" target="_blank" rel="noopener">${text(project.repoLabel || data.repoLabel || ui("labels.viewCode"))} &nearr;</a>` : ""}
           </div>` : ""}
         </article>`;
         }).join("")}
       </div>
-      ${galleryControls("project-track", "Software project", projects.length)}
+      ${galleryControls("project-track", ui("gallery.softwareProject"), projects.length)}
     </div>` : ""}`;
 }
 
@@ -450,7 +485,7 @@ function renderOperations(data) {
 
   root.innerHTML = `
     <div class="subsection-title">
-      <p><span>03</span> <span class="operations-label-full">${text(data.label)}</span>${hasText(data.mobileLabel) ? `<span class="operations-label-mobile">${text(data.mobileLabel)}</span>` : ""}</p>
+      <p><span>${text(ui("sectionIndexes.operations"))}</span> <span class="operations-label-full">${text(data.label)}</span>${hasText(data.mobileLabel) ? `<span class="operations-label-mobile">${text(data.mobileLabel)}</span>` : ""}</p>
       ${hasText(data.status) ? `<span class="operations-status-full">${text(data.status)}</span>` : ""}
       ${hasText(data.mobileStatus) ? `<span class="operations-status-mobile">${text(data.mobileStatus)}</span>` : ""}
     </div>
@@ -479,7 +514,7 @@ function renderOperations(data) {
     </div>` : ""}
     ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
     ${items.length ? `<div class="gallery-shell" id="operations-workflows">
-      <div class="operations-cards horizontal-track" id="operations-track" tabindex="0" aria-label="VA workflow samples. Scroll horizontally to explore.">${items.map((item, index) => {
+      <div class="operations-cards horizontal-track" id="operations-track" tabindex="0" aria-label="${attr(ui("labels.workflowSamplesTrack"))}">${items.map((item, index) => {
       const deliverables = list(item?.deliverables).filter(hasText);
       const tools = records(item?.tools).filter((tool) => hasText(tool.name));
       return `<article class="operations-card">
@@ -492,21 +527,21 @@ function renderOperations(data) {
         ${hasText(item.problem) ? `<p class="operations-scope">${text(item.problem)}</p>` : ""}
         ${hasText(item.outcome) ? `<p class="operations-outcome">${text(item.outcome)}</p>` : ""}
         ${deliverables.length ? `<details class="content-details operations-details">
-          <summary>${text(item.deliverablesLabel || "View details")}</summary>
+          <summary>${text(item.deliverablesLabel || ui("labels.viewDetails"))}</summary>
           <div class="content-details-panel operations-deliverables">
             <ul>${deliverables.map((deliverable) => `<li>${text(deliverable)}</li>`).join("")}</ul>
           </div>
         </details>` : ""}
-        ${tools.length ? `<ul class="operations-tools" aria-label="Tools used in this workflow">${tools.map((tool) => {
+        ${tools.length ? `<ul class="operations-tools" aria-label="${attr(ui("labels.toolsUsed"))}">${tools.map((tool) => {
           const iconKey = technologyKey(tool.icon);
           return `<li class="operations-tool operations-tool-${attr(iconKey)}" aria-label="${attr(tool.name)}" title="${attr(tool.name)}"><span class="operations-tool-icon" aria-hidden="true">${vaToolIcon(iconKey)}</span><span class="sr-only">${text(tool.name)}</span></li>`;
         }).join("")}</ul>` : ""}
       </article>`;
     }).join("")}</div>
-      ${galleryControls("operations-track", "VA workflow", items.length)}
+      ${galleryControls("operations-track", ui("gallery.workflow"), items.length)}
     </div>` : ""}
     ${hasText(data.tools) || hasText(data.approach) ? `<div class="operations-footer">
-      ${hasText(data.tools) ? `<p class="operations-note">Tools: ${text(data.tools)}</p>` : ""}
+      ${hasText(data.tools) ? `<p class="operations-note">${text(ui("labels.toolsPrefix"))} ${text(data.tools)}</p>` : ""}
       ${hasText(data.approach) ? `<p class="operations-disclosure">${text(data.approach)}</p>` : ""}
     </div>` : ""}`;
 }
@@ -527,14 +562,14 @@ function renderStats(data) {
       ${hasText(data.description) ? `<div class="section-heading-aside"><p>${text(data.description)}</p></div>` : ""}
     </div>
     ${items.length ? `<div class="gallery-shell">
-      <div class="proof-grid horizontal-track" id="proof-track" tabindex="0" aria-label="Analytics proof. Scroll horizontally to explore.">
+      <div class="proof-grid horizontal-track" id="proof-track" tabindex="0" aria-label="${attr(ui("labels.analyticsProofTrack"))}">
         ${items.map((item) => `<button class="proof-card image-trigger" type="button" data-image="${attr(item?.image)}" data-alt="${attr(item?.alt)}">
           <span class="proof-card-top"><strong>${text(item?.value)}</strong><small>${text(item?.detail)}</small></span>
           ${hasText(item?.image) ? `<img src="${attr(item.image)}" alt="${attr(item.alt)}" loading="lazy">` : ""}
-          <span class="proof-card-bottom">${text(item?.title)} <i>Expand &nearr;</i></span>
+          <span class="proof-card-bottom">${text(item?.title)} <i>${text(ui("labels.expand"))} &nearr;</i></span>
         </button>`).join("")}
       </div>
-      ${galleryControls("proof-track", "Analytics proof", items.length)}
+      ${galleryControls("proof-track", ui("gallery.analyticsProof"), items.length)}
     </div>` : ""}
     ${hasText(data.total) ? `<p class="proof-total"><span>${text(data.totalLabel)}</span><strong>${text(data.total)} ${hasText(data.totalDetail) ? `<small>${text(data.totalDetail)}</small>` : ""}</strong></p>` : ""}`;
 }
@@ -552,13 +587,13 @@ function renderTestimonials(data) {
       ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
     </div>
     <div class="gallery-shell">
-      <div class="testimonial-track horizontal-track" id="testimonial-track" tabindex="0" aria-label="Client testimonials. Scroll horizontally to explore.">
+      <div class="testimonial-track horizontal-track" id="testimonial-track" tabindex="0" aria-label="${attr(ui("labels.clientTestimonialsTrack"))}">
         ${items.map((item) => `<figure class="testimonial-card">
           <blockquote>&ldquo;${text(item?.quote)}&rdquo;</blockquote>
           <figcaption><strong>${text(item?.name)}</strong>${hasText(item?.role) ? `<span>${text(item.role)}</span>` : ""}</figcaption>
         </figure>`).join("")}
       </div>
-      ${galleryControls("testimonial-track", "Client testimonial", items.length)}
+      ${galleryControls("testimonial-track", ui("gallery.clientTestimonial"), items.length)}
     </div>`;
 }
 
@@ -578,7 +613,7 @@ function renderAbout(data) {
     <div class="about-copy">
       ${paragraphs.length ? `<p>${text(paragraphs[0])}</p>` : ""}
       ${paragraphs.length > 1 ? `<details class="content-details about-details">
-        <summary>${text(data.detailsLabel || "More about me")}</summary>
+        <summary>${text(data.detailsLabel || ui("labels.moreAboutMe"))}</summary>
         <div class="content-details-panel">${paragraphs.slice(1).map((paragraph) => `<p>${text(paragraph)}</p>`).join("")}</div>
       </details>` : ""}
       ${facts.length ? `<div class="about-facts">${facts.map((fact) => `<div><span>${text(fact?.label)}</span><strong>${text(fact?.value)}</strong></div>`).join("")}</div>` : ""}
@@ -597,7 +632,7 @@ function renderCredentials(data) {
       <div class="credentials-kicker-row">
         ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
         ${hasText(data.verificationLabel) && hasText(data.verificationUrl) ? `<div class="credentials-actions">
-          <a href="${attr(data.verificationUrl)}" target="_blank" rel="noopener"><span class="linkedin-mark" aria-hidden="true">in</span>${text(data.verificationLabel)}<span aria-hidden="true">&nearr;</span></a>
+          <a href="${attr(data.verificationUrl)}" target="_blank" rel="noopener"><span class="linkedin-mark" aria-hidden="true">${text(ui("labels.linkedinMark"))}</span>${text(data.verificationLabel)}<span aria-hidden="true">&nearr;</span></a>
         </div>` : ""}
       </div>
       ${hasText(data.heading) ? `<h3 id="credentials-title">${text(data.heading)}</h3>` : ""}
@@ -606,13 +641,13 @@ function renderCredentials(data) {
       </div>` : ""}
     </div>
     ${items.length ? `<div class="gallery-shell">
-      <div class="certificate-grid horizontal-track" id="certificate-track" tabindex="0" aria-label="Certificates. Scroll horizontally to explore.">
+      <div class="certificate-grid horizontal-track" id="certificate-track" tabindex="0" aria-label="${attr(ui("labels.certificatesTrack"))}">
         ${items.map((item) => `<button class="certificate-card image-trigger" type="button" data-image="${attr(item?.image)}" data-alt="${attr(item?.alt)}">
           <span class="certificate-image">${hasText(item?.image) ? `<img src="${attr(item.image)}" alt="${attr(item.alt)}" loading="lazy">` : ""}</span>
-          <span class="certificate-meta"><span><small>${text(item?.issuer)}${hasText(item?.year) ? ` / ${text(item.year)}` : ""}</small><strong>${text(item?.title)}</strong></span><i>Expand &nearr;</i></span>
+          <span class="certificate-meta"><span><small>${text(item?.issuer)}${hasText(item?.year) ? ` / ${text(item.year)}` : ""}</small><strong>${text(item?.title)}</strong></span><i>${text(ui("labels.expand"))} &nearr;</i></span>
         </button>`).join("")}
       </div>
-      ${galleryControls("certificate-track", "Certificate", items.length)}
+      ${galleryControls("certificate-track", ui("gallery.certificate"), items.length)}
     </div>` : ""}`;
 }
 
@@ -635,16 +670,16 @@ function renderContact(data) {
     ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
     ${hasText(data.heading) ? `<h2 id="contact-title">${text(data.heading)}${hasText(data.headingAccent) ? `<br><em>${text(data.headingAccent)}</em>` : ""}</h2>` : ""}
     ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
-    ${hasText(data.email) ? `<a class="contact-email" href="mailto:${attr(data.email)}?subject=${subject}&amp;body=${body}"><span>${text(data.emailAction || "Start a conversation")}</span><strong>${text(data.emailLabel || data.email)}</strong><i aria-hidden="true">&nearr;</i></a>` : ""}
+    ${hasText(data.email) ? `<a class="contact-email" href="mailto:${attr(data.email)}?subject=${subject}&amp;body=${body}"><span>${text(data.emailAction || ui("labels.startConversation"))}</span><strong>${text(data.emailLabel || data.email)}</strong><i aria-hidden="true">&nearr;</i></a>` : ""}
     ${links.length || locationLines.length ? `<div class="contact-meta">
       ${links.length ? `<div class="contact-link-group">
-        <span class="contact-links-label">Connect with me</span>
+        <span class="contact-links-label">${text(ui("labels.connectWithMe"))}</span>
         <div class="contact-link-row">
-          ${socialLinks.length ? `<div class="contact-social-links" aria-label="Social profiles">${socialLinks.map((link) => {
+          ${socialLinks.length ? `<div class="contact-social-links" aria-label="${attr(ui("labels.socialProfiles"))}">${socialLinks.map((link) => {
             const iconKey = technologyKey(link.icon || link.label);
             return `<a class="contact-social-link contact-social-${attr(iconKey)}" href="${attr(link.href)}" target="_blank" rel="noopener" aria-label="${attr(link.label)}" title="${attr(link.label)}">${socialIcon(iconKey)}</a>`;
           }).join("")}</div>` : ""}
-          ${cvLink ? `<a class="contact-cv-link" href="${attr(cvLink.href)}" target="_blank" rel="noopener">${text(cvLink.label || "View CV")} <span aria-hidden="true">&nearr;</span></a>` : ""}
+          ${cvLink ? `<a class="contact-cv-link" href="${attr(cvLink.href)}" target="_blank" rel="noopener">${text(cvLink.label || ui("labels.viewCv"))} <span aria-hidden="true">&nearr;</span></a>` : ""}
         </div>
       </div>` : ""}
       ${locationLines.length ? `<p>${locationLines.map(text).join("<br>")}</p>` : ""}
@@ -653,7 +688,7 @@ function renderContact(data) {
 
   if (data.footer && footer) {
     footer.innerHTML = `
-      <p>&copy; <span id="year">${new Date().getFullYear()}</span> ${text(data.footer.copyright)}</p>
+      <p>&copy; <span id="year">${text(data.footer.year)}</span> ${text(data.footer.copyright)}</p>
       <p>${text(data.footer.note)}</p>
       ${hasText(data.footer.backToTop) ? `<a href="#top">${text(data.footer.backToTop)} &uarr;</a>` : ""}`;
   }
@@ -673,6 +708,7 @@ function updateCompositeSections() {
 
 function renderPortfolio(payload) {
   const { data, errors } = payload;
+  renderInterface(data.ui);
   const renderers = [
     ["meta", renderMeta],
     ["nav", renderNavigation],
@@ -701,7 +737,7 @@ function renderPortfolio(payload) {
   if (errors.length) {
     const status = document.querySelector("#content-status");
     if (status) {
-      status.textContent = "Some portfolio content could not be loaded. Please refresh the page.";
+      status.textContent = ui("contentError");
       status.hidden = false;
     }
   }

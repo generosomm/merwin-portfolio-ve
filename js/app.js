@@ -490,8 +490,6 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
   updateControls();
 });
 
-const year = document.querySelector("#year");
-if (year) year.textContent = String(new Date().getFullYear());
 }
 
 if (window.portfolioContentReady) {

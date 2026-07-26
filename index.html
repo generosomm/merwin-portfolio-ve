@@ -23,12 +23,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css?v=20260727-15">
-  <script src="js/content.js?v=20260727-5" defer></script>
-  <script src="js/app.js?v=20260727-12" defer></script>
+  <script src="js/content.js?v=20260727-6" defer></script>
+  <script src="js/app.js?v=20260727-13" defer></script>
 </head>
 
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" id="skip-link" href="#main"></a>
   <div class="content-status" id="content-status" role="status" hidden></div>
 
   <header class="site-header" data-content="nav"></header>
@@ -57,13 +57,13 @@
 
   <footer class="site-footer" data-content="footer"></footer>
 
-  <dialog class="media-dialog" id="video-dialog" aria-label="Project video">
-    <button class="dialog-close" type="button" aria-label="Close video">Close &times;</button>
+  <dialog class="media-dialog" id="video-dialog" aria-label="">
+    <button class="dialog-close" id="video-dialog-close" type="button" aria-label=""></button>
     <video controls playsinline preload="metadata"></video>
   </dialog>
 
-  <dialog class="media-dialog image-dialog" id="image-dialog" aria-label="Expanded evidence image">
-    <button class="dialog-close" type="button" aria-label="Close image">Close &times;</button>
+  <dialog class="media-dialog image-dialog" id="image-dialog" aria-label="">
+    <button class="dialog-close" id="image-dialog-close" type="button" aria-label=""></button>
     <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="">
   </dialog>
 </body>

@@ -17,7 +17,8 @@ const filenames = [
   "08-testimonials.json",
   "09-about.json",
   "10-credentials.json",
-  "11-contact.json"
+  "11-contact.json",
+  "12-ui.json"
 ];
 
 const baseline = Object.fromEntries(
@@ -80,6 +81,11 @@ async function renderWith(mutate = () => {}) {
   getElement("#work");
   getElement("#about");
   getElement("#content-status");
+  getElement("#skip-link");
+  getElement("#video-dialog");
+  getElement("#image-dialog");
+  getElement("#video-dialog-close");
+  getElement("#image-dialog-close");
   getElement('meta[name="description"]');
   getElement('meta[property="og:title"]');
   getElement('meta[property="og:description"]');
@@ -119,6 +125,8 @@ async function renderWith(mutate = () => {}) {
 }
 
 const normal = await renderWith();
+assert.equal(normal.selectors.get("#skip-link").textContent, "Skip to content");
+assert.match(normal.selectors.get("#video-dialog-close").innerHTML, /Close &times;/);
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /assets\/images\/og-cover\.jpg/);
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /alt="ERO Visuals logo"/);
 assert.doesNotMatch(normal.selectors.get('[data-content="nav"]').innerHTML, />MG</);
@@ -246,6 +254,13 @@ assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class=
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-cv-link"[^>]*>View CV/);
 assert.doesNotMatch(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-cv"/);
 assert.doesNotMatch(normal.selectors.get('[data-content="contact"]').innerHTML, />LinkedIn &nearr;</);
+
+const revisedInterface = await renderWith((data) => {
+  data["12-ui.json"].labels.connectWithMe = "Professional links";
+  data["12-ui.json"].labels.expand = "Open proof";
+});
+assert.match(revisedInterface.selectors.get('[data-content="contact"]').innerHTML, /Professional links/);
+assert.match(revisedInterface.selectors.get('[data-content="stats"]').innerHTML, /Open proof/);
 
 const added = await renderWith((data) => {
   data["04-work.json"].items.push({

@@ -1,0 +1,72 @@
+{
+  "skipLink": "Skip to content",
+  "navigation": {
+    "brandFallback": "Portfolio",
+    "brandMarkFallback": "MG",
+    "homeSuffix": "home",
+    "toggleLabel": "Toggle navigation",
+    "primaryLabel": "Primary navigation",
+    "sectionsSuffix": "sections"
+  },
+  "dialogs": {
+    "videoLabel": "Project video",
+    "imageLabel": "Expanded evidence image",
+    "closeVideoLabel": "Close video",
+    "closeImageLabel": "Close image",
+    "closeButton": "Close"
+  },
+  "sectionIndexes": {
+    "video": "01",
+    "development": "02",
+    "operations": "03"
+  },
+  "labels": {
+    "careerHighlights": "Career highlights",
+    "availableServices": "Available services",
+    "portfolioSections": "Portfolio sections",
+    "browseCouncilWork": "Browse council work",
+    "councilWorkControls": "Council work controls",
+    "councilWorkTrack": "Council work. Scroll horizontally to explore.",
+    "scrollCouncilWorkLeft": "Scroll council work left",
+    "scrollCouncilWorkRight": "Scroll council work right",
+    "videoChannels": "Video channels",
+    "featuredRole": "Featured role",
+    "featuredWebRole": "Featured web role",
+    "creatorResults": "Creator results",
+    "videoProjectsTrack": "Video projects. Scroll horizontally to explore.",
+    "playPrefix": "Play",
+    "watchOriginal": "Watch original",
+    "watch": "Watch",
+    "softwareProjectsTrack": "Software projects. Scroll horizontally to explore.",
+    "technologiesUsed": "Technologies used",
+    "projectDetails": "Project details",
+    "viewWebsite": "View website",
+    "viewCode": "View code",
+    "workflowSamplesTrack": "VA workflow samples. Scroll horizontally to explore.",
+    "viewDetails": "View details",
+    "toolsUsed": "Tools used in this workflow",
+    "toolsPrefix": "Tools:",
+    "analyticsProofTrack": "Analytics proof. Scroll horizontally to explore.",
+    "expand": "Expand",
+    "clientTestimonialsTrack": "Client testimonials. Scroll horizontally to explore.",
+    "moreAboutMe": "More about me",
+    "certificatesTrack": "Certificates. Scroll horizontally to explore.",
+    "startConversation": "Start a conversation",
+    "connectWithMe": "Connect with me",
+    "socialProfiles": "Social profiles",
+    "viewCv": "View CV",
+    "linkedinMark": "in"
+  },
+  "gallery": {
+    "controlsTemplate": "{label} controls",
+    "scrollLeftTemplate": "Scroll {label}s left",
+    "scrollRightTemplate": "Scroll {label}s right",
+    "videoProject": "Video project",
+    "softwareProject": "Software project",
+    "workflow": "VA workflow",
+    "analyticsProof": "Analytics proof",
+    "clientTestimonial": "Client testimonial",
+    "certificate": "Certificate"
+  },
+  "contentError": "Some portfolio content could not be loaded. Please refresh the page."
+}

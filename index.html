@@ -96,10 +96,13 @@
       <div class="subsection" id="editing">
         <div class="subsection-title">
           <p><span>02</span> Video editing</p>
-          <a href="https://www.tiktok.com/@eroedtx" target="_blank" rel="noopener">More on TikTok ↗</a>
+          <div class="subsection-side">
+            <a href="https://www.tiktok.com/@eroedtx" target="_blank" rel="noopener">More on TikTok ↗</a>
+          </div>
         </div>
 
-        <div class="video-grid">
+        <div class="gallery-shell">
+          <div class="video-grid horizontal-track" id="video-track" tabindex="0" aria-label="Video projects. Scroll horizontally to explore.">
           <article class="case-study">
             <button class="case-media video-trigger" type="button" data-video="assets/videos/thats-so-true.mp4" aria-label="Play the That's So True edit">
               <img src="assets/images/thats-so-true-thumb.jpg" alt="Frame from the That's So True music promotion edit" width="720" height="900">
@@ -155,13 +158,20 @@
               <a href="https://vt.tiktok.com/ZSHC135P5/" target="_blank" rel="noopener">Watch original ↗</a>
             </div>
           </article>
+          </div>
+          <div class="scroll-controls gallery-controls" role="group" aria-label="Video project controls">
+            <button type="button" data-scroll-target="video-track" data-scroll-direction="-1" aria-label="Scroll video projects left">←</button>
+            <button type="button" data-scroll-target="video-track" data-scroll-direction="1" aria-label="Scroll video projects right">→</button>
+          </div>
         </div>
       </div>
 
       <div class="subsection development" id="development">
         <div class="subsection-title">
           <p><span>01</span> Software development</p>
-          <a href="https://github.com/generosomm" target="_blank" rel="noopener">GitHub profile ↗</a>
+          <div class="subsection-side">
+            <a href="https://github.com/generosomm" target="_blank" rel="noopener">GitHub profile ↗</a>
+          </div>
         </div>
 
         <div class="dev-intro">
@@ -169,7 +179,8 @@
           <p>Hands-on work across front-end builds, REST APIs, databases, and deployment.</p>
         </div>
 
-        <div class="repo-list">
+        <div class="gallery-shell">
+          <div class="repo-list horizontal-track" id="project-track" tabindex="0" aria-label="Software projects. Scroll horizontally to explore.">
           <article>
             <div class="repo-index">01</div>
             <div>
@@ -216,6 +227,11 @@
               <a href="https://github.com/generosomm/nexus-pass" target="_blank" rel="noopener">Repository ↗</a>
             </div>
           </article>
+          </div>
+          <div class="scroll-controls gallery-controls" role="group" aria-label="Software project controls">
+            <button type="button" data-scroll-target="project-track" data-scroll-direction="-1" aria-label="Scroll software projects left">←</button>
+            <button type="button" data-scroll-target="project-track" data-scroll-direction="1" aria-label="Scroll software projects right">→</button>
+          </div>
         </div>
       </div>
 
@@ -247,10 +263,13 @@
           <p class="eyebrow">Receipts, not claims</p>
           <h2 id="proof-title">The numbers are real.</h2>
         </div>
-        <p>Original, uncropped analytics from the channels I built and managed. The available screenshots document more than 70M views.</p>
+        <div class="section-heading-aside">
+          <p>Original, uncropped analytics from the channels I built and managed. The available screenshots document more than 70M views.</p>
+        </div>
       </div>
 
-      <div class="proof-grid">
+      <div class="gallery-shell">
+        <div class="proof-grid horizontal-track" id="proof-track" tabindex="0" aria-label="Analytics proof. Scroll horizontally to explore.">
         <button class="proof-card image-trigger" type="button" data-image="assets/images/stat-1.png" data-alt="TikTok Studio overview showing 57.9 million views, 4.8 million likes, and 317.1 thousand shares">
           <span class="proof-card-top"><strong>57.9M</strong><small>TikTok / last 365 days</small></span>
           <img src="assets/images/stat-1.png" alt="TikTok Studio analytics overview" width="1874" height="954" loading="lazy">
@@ -271,6 +290,11 @@
           <img src="assets/images/stat-4.png" alt="YouTube Studio monthly audience analytics" width="1874" height="954" loading="lazy">
           <span class="proof-card-bottom">Audience reach <i>Expand ↗</i></span>
         </button>
+        </div>
+        <div class="scroll-controls gallery-controls" role="group" aria-label="Analytics proof controls">
+          <button type="button" data-scroll-target="proof-track" data-scroll-direction="-1" aria-label="Scroll analytics left">←</button>
+          <button type="button" data-scroll-target="proof-track" data-scroll-direction="1" aria-label="Scroll analytics right">→</button>
+        </div>
       </div>
       <p class="proof-total">
         <span>Directly visible in available dashboards</span>
@@ -303,14 +327,17 @@
           </div>
           <div class="credentials-proof">
             <p>The complete landscape certificates are visible here. Select one only if you want a closer look.</p>
-            <a href="https://www.linkedin.com/in/generosomm/details/certifications/" target="_blank" rel="noopener">
-              <span class="linkedin-mark" aria-hidden="true">in</span>
-              Verify on LinkedIn
-              <span aria-hidden="true">↗</span>
-            </a>
+            <div class="credentials-actions">
+              <a href="https://www.linkedin.com/in/generosomm/details/certifications/" target="_blank" rel="noopener">
+                <span class="linkedin-mark" aria-hidden="true">in</span>
+                Verify on LinkedIn
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
           </div>
         </div>
-        <div class="certificate-grid">
+        <div class="gallery-shell">
+          <div class="certificate-grid horizontal-track" id="certificate-track" tabindex="0" aria-label="Certificates. Scroll horizontally to explore.">
           <button class="certificate-card image-trigger" type="button" data-image="assets/images/Information Technology Specialist - Network Security.jpg" data-alt="Information Technology Specialist Network Security certificate awarded to Merwin Generoso">
             <span class="certificate-image">
               <img src="assets/images/Information Technology Specialist - Network Security.jpg" alt="Information Technology Specialist Network Security certificate" width="802" height="620" loading="lazy">
@@ -329,6 +356,11 @@
             </span>
             <span class="certificate-meta"><span><small>Salesforce / 2025</small><strong>Agentblazer Champion</strong></span><i>Expand ↗</i></span>
           </button>
+          </div>
+          <div class="scroll-controls gallery-controls" role="group" aria-label="Certificate controls">
+            <button type="button" data-scroll-target="certificate-track" data-scroll-direction="-1" aria-label="Scroll certificates left">←</button>
+            <button type="button" data-scroll-target="certificate-track" data-scroll-direction="1" aria-label="Scroll certificates right">→</button>
+          </div>
         </div>
       </section>
     </section>
@@ -340,7 +372,7 @@
         <p>Tell me what you need help with. I usually reply within 24 hours.</p>
         <a class="contact-email" href="mailto:generosomerwin10@gmail.com">
           <span>Start a conversation</span>
-          <strong>generosomerwin10@gmail.com</strong>
+          <strong>Email me</strong>
           <i aria-hidden="true">↗</i>
         </a>
         <div class="contact-meta">

@@ -40,6 +40,7 @@ Then open `http://localhost:8000`.
 - Semantic, accessible HTML
 - Responsive layouts for mobile, tablet, and desktop
 - Keyboard-friendly native video and image dialogs
+- Horizontal project galleries with mouse, keyboard, button, and touch navigation
 - Reduced-motion support
 - Lazy-loaded portfolio evidence
 - Open Graph metadata for link previews

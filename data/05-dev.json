@@ -8,7 +8,11 @@
   "liveLabel": "View website",
   "projects": [
     {
-      "stack": "HTML / CSS / JavaScript",
+      "technologies": [
+        { "name": "HTML5", "icon": "html" },
+        { "name": "CSS3", "icon": "css" },
+        { "name": "JavaScript", "icon": "javascript" }
+      ],
       "title": "Zero to Deploy",
       "description": "Helps clients turn an idea into a clear and approved project plan.",
       "features": [],
@@ -16,7 +20,11 @@
       "liveUrl": "https://generosomm.github.io/ZeroToDeploy/"
     },
     {
-      "stack": "HTML / CSS / JavaScript",
+      "technologies": [
+        { "name": "HTML5", "icon": "html" },
+        { "name": "CSS3", "icon": "css" },
+        { "name": "JavaScript", "icon": "javascript" }
+      ],
       "title": "This portfolio",
       "description": "A fast portfolio that makes creative work and results easy to explore.",
       "features": [],
@@ -24,15 +32,23 @@
       "liveUrl": "https://generosomm.github.io/merwin-portfolio-ve/"
     },
     {
-      "stack": "Node.js / Express / MySQL",
+      "technologies": [
+        { "name": "Node.js", "icon": "node" },
+        { "name": "Express", "icon": "express" },
+        { "name": "MySQL", "icon": "mysql" }
+      ],
       "title": "MSC NU Laguna website",
       "description": "A live community website for members, events, and published updates.",
       "features": [],
       "repoUrl": "https://github.com/mscnulaguna/MSC-Official-Website",
       "liveUrl": "https://mscnulaguna.org/"
     },
-        {
-      "stack": "HTML / CSS / JavaScript",
+    {
+      "technologies": [
+        { "name": "HTML5", "icon": "html" },
+        { "name": "CSS3", "icon": "css" },
+        { "name": "JavaScript", "icon": "javascript" }
+      ],
       "title": "Nexus Pass",
       "description": "An interactive digital pass that works directly in the browser.",
       "features": [],
@@ -40,7 +56,10 @@
       "liveUrl": "https://generosomm.github.io/nexus-pass/"
     },
     {
-      "stack": "PHP / MySQL",
+      "technologies": [
+        { "name": "PHP", "icon": "php" },
+        { "name": "MySQL", "icon": "mysql" }
+      ],
       "title": "Document Tracking & Analytics",
       "description": "A system that helps offices track documents, updates, and reports.",
       "features": [],

@@ -37,7 +37,7 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Smooth internal link scrolling
 - Scroll position restoration after refreshing
 - Responsive mobile, tablet, and desktop layouts
-- Mobile horizontal galleries with centered card snapping
+- Mobile horizontal galleries with centered card snapping and stable card widths during browser toolbar resizing
 - Mouse drag, touch swipe, keyboard access, and gallery controls
 - Expandable council work and project details
 - Native video and image dialogs

@@ -387,10 +387,15 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
       window.innerWidth <= 700 &&
       !track.classList.contains("council-work-track");
 
-    track.style.paddingLeft = centerSingleCard
+    // Keep percentage-based card widths independent from the centering inset.
+    // Track padding reduces the flex content box and can create a resize loop on
+    // mobile browsers as their address bar appears or disappears while scrolling.
+    track.style.paddingLeft = "0px";
+    track.style.paddingRight = "0px";
+    items[0].style.marginLeft = centerSingleCard
       ? `${Math.max((trackWidth - firstWidth) / 2, 0)}px`
       : "0px";
-    track.style.paddingRight = centerSingleCard
+    items.at(-1).style.marginRight = centerSingleCard
       ? `${Math.max((trackWidth - lastWidth) / 2, 0)}px`
       : "0px";
 

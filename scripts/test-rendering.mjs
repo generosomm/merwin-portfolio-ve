@@ -9,7 +9,6 @@ const filenames = [
   "00-meta.json",
   "01-nav.json",
   "02-hero.json",
-  "03-services.json",
   "04-work.json",
   "05-dev.json",
   "06-operations.json",
@@ -66,7 +65,6 @@ async function renderWith(mutate = () => {}) {
     "nav",
     "hero",
     "work-heading",
-    "services",
     "work",
     "dev",
     "operations",
@@ -126,6 +124,7 @@ async function renderWith(mutate = () => {}) {
 
 const normal = await renderWith();
 assert.equal(normal.selectors.get("#skip-link").textContent, "Skip to content");
+assert.match(normal.selectors.get('[data-content="hero"]').innerHTML, /Merwin<br><em>Generoso\.<\/em>/);
 assert.match(normal.selectors.get("#video-dialog-close").innerHTML, /Close &times;/);
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /assets\/images\/og-cover\.jpg/);
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /alt="ERO Visuals logo"/);
@@ -161,7 +160,8 @@ assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /cl
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-category"/g), 8);
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-meta-row"/g), 8);
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-original-link"/g), 8);
-assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, />Watch original</);
+assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, />View post <span aria-hidden="true">&nearr;<\/span><\/a>/g), 8);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /aria-label="View original post: Glass Child/);
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-platform-icon /g), 8);
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-platform-icon case-platform-tiktok" role="img" aria-label="TikTok"/);
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-platform-icon case-platform-youtube" role="img" aria-label="YouTube"/);
@@ -267,10 +267,6 @@ const added = await renderWith((data) => {
     ...data["04-work.json"].items[0],
     title: "Temporary ninth project"
   });
-  data["03-services.json"].items.push(
-    { ...data["03-services.json"].items[0], title: "Fourth service" },
-    { ...data["03-services.json"].items[0], title: "Fifth service" }
-  );
   data["05-dev.json"].projects[0].technologies.push({ name: "PHP", icon: "php" });
   data["05-dev.json"].projects[1].technologies = [];
   data["05-dev.json"].projects[0].features = ["Responsive client dashboard", "Documented handoff"];
@@ -282,7 +278,6 @@ const added = await renderWith((data) => {
 });
 assert.equal(count(added.selectors.get('[data-content="work"]').innerHTML, /class="case-study"/g), 9);
 assert.match(added.selectors.get('[data-content="work"]').innerHTML, /Temporary ninth project/);
-assert.equal(count(added.selectors.get('[data-content="services"]').innerHTML, /class="service-strip-link"/g), 5);
 assert.equal(count(added.selectors.get('[data-content="dev"]').innerHTML, /class="tech-icons"/g), 4);
 assert.equal(count(added.selectors.get('[data-content="dev"]').innerHTML, /aria-label="PHP"/g), 2);
 assert.equal(count(added.selectors.get('[data-content="operations"]').innerHTML, /class="operations-card"/g), 4);

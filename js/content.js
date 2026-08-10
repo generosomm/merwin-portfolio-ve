@@ -4,7 +4,6 @@ const CONTENT_FILES = Object.freeze({
   meta: "00-meta.json",
   nav: "01-nav.json",
   hero: "02-hero.json",
-  services: "03-services.json",
   work: "04-work.json",
   dev: "05-dev.json",
   operations: "06-operations.json",
@@ -191,27 +190,6 @@ function renderHero(data) {
         ${services.length ? `<ul class="hero-services" aria-label="${attr(ui("labels.availableServices"))}">${services.map((service) => `<li>${text(service)}</li>`).join("")}</ul>` : ""}
       </div>
       ${receipt}
-    </div>`;
-}
-
-function renderServices(data) {
-  const root = document.querySelector('[data-content="services"]');
-  const items = records(data?.items);
-  const visible = data && (hasText(data.heading) || items.length);
-  setVisible(root, visible);
-  if (!visible) return;
-
-  root.innerHTML = `
-    <div class="service-strip">
-      <div class="service-strip-heading">
-        ${hasText(data.eyebrow) ? `<span>${text(data.eyebrow)}</span>` : ""}
-        ${hasText(data.heading) ? `<strong id="hire-menu-title">${text(data.heading)}</strong>` : ""}
-      </div>
-      ${items.length ? `<nav class="service-strip-links" aria-label="${attr(ui("labels.portfolioSections"))}">
-        ${items.map((item) => hasText(item?.linkHref) ? `<a class="service-strip-link" href="${attr(item.linkHref)}">
-          <span>${text(item.index)}</span>${text(item.shortLabel || item.title)}<i aria-hidden="true">&darr;</i>
-        </a>` : "").join("")}
-      </nav>` : ""}
     </div>`;
 }
 
@@ -696,7 +674,7 @@ function renderContact(data) {
 
 function updateCompositeSections() {
   const work = document.querySelector("#work");
-  const workChildren = ["work-heading", "services", "work", "dev", "operations"]
+  const workChildren = ["work-heading", "work", "dev", "operations"]
     .map((key) => document.querySelector(`[data-content="${key}"]`));
   if (work) work.hidden = !workChildren.some((child) => child && !child.hidden);
 
@@ -713,7 +691,6 @@ function renderPortfolio(payload) {
     ["meta", renderMeta],
     ["nav", renderNavigation],
     ["hero", renderHero],
-    ["services", renderServices],
     ["work", renderWork],
     ["dev", renderDevelopment],
     ["operations", renderOperations],

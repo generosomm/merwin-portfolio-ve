@@ -23,7 +23,6 @@
   "labels": {
     "careerHighlights": "Career highlights",
     "availableServices": "Available services",
-    "portfolioSections": "Portfolio sections",
     "browseCouncilWork": "Browse council work",
     "councilWorkControls": "Council work controls",
     "councilWorkTrack": "Council work. Scroll horizontally to explore.",
@@ -35,8 +34,8 @@
     "creatorResults": "Creator results",
     "videoProjectsTrack": "Video projects. Scroll horizontally to explore.",
     "playPrefix": "Play",
-    "watchOriginal": "Watch original",
-    "watch": "Watch",
+    "watchOriginal": "View original post",
+    "watch": "View post",
     "softwareProjectsTrack": "Software projects. Scroll horizontally to explore.",
     "technologiesUsed": "Technologies used",
     "projectDetails": "Project details",

@@ -4,7 +4,7 @@
   "sectionDescription": "Video editing, web projects, and digital support, organized by focus.",
   "label": "Video editing",
   "galleryLabel": "Selected Editing Work",
-  "watchLabel": "Watch",
+  "watchLabel": "View post",
   "socialLinksLabel": "Watch more of my work",
   "socialLinks": [
     {
@@ -123,7 +123,7 @@
       "imageAlt": "Frame from the Glass Child Seven Sundays TikTok edit",
       "video": "assets/videos/seven-sundays.mp4",
       "postUrl": "https://www.tiktok.com/@eroedtx/video/7493375615706467592",
-      "actionLabel": "Play TikTok"
+      "actionLabel": "View TikTok post"
     },
     {
       "platform": "YouTube",
@@ -137,7 +137,7 @@
       "imageAlt": "Frame from The Blueprint of the Trend YouTube Short",
       "video": "assets/videos/the-blueprint-of-the-trend.mp4",
       "postUrl": "https://youtube.com/shorts/dIMQwAMAzeQ",
-      "actionLabel": "Play Short"
+      "actionLabel": "View YouTube Short"
     },
     {
       "platform": "TikTok",

@@ -15,7 +15,6 @@ This means resume-related information can be reviewed and revised without search
 | `00-meta.json` | Page title, search description, canonical URL, and social preview metadata |
 | `01-nav.json` | Brand, Home link, Work dropdown, Results, About, and contact CTA |
 | `02-hero.json` | Availability, positioning, headline, intro, CTAs, and documented proof |
-| `03-services.json` | Work index and the three portfolio focus areas |
 | `04-work.json` | Video editing work, ERO Visuals, council role, social links, results, and project descriptions |
 | `05-dev.json` | Web development role, project descriptions, technologies, live links, and repositories |
 | `06-operations.json` | Creative VA, e-commerce, admin, and content workflow samples |
@@ -41,6 +40,7 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Mouse drag, touch swipe, keyboard access, and gallery controls
 - Expandable council work and project details
 - Native video and image dialogs
+- Clear original-post links separated from local video previews
 - Verified analytics and certification evidence
 - Prefilled email inquiry
 - Reduced-motion support
@@ -62,7 +62,6 @@ merwin-portfolio-ve/
 |   |-- 00-meta.json
 |   |-- 01-nav.json
 |   |-- 02-hero.json
-|   |-- 03-services.json
 |   |-- 04-work.json
 |   |-- 05-dev.json
 |   |-- 06-operations.json

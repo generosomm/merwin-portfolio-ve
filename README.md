@@ -2,7 +2,7 @@
 
 A proof-first portfolio for Merwin Generoso, featuring short-form video editing, shipped web projects, creative and e-commerce support, verified analytics, and professional credentials.
 
-[View the live site](https://generosomm.github.io/merwin-portfolio-ve/) | [Email Merwin](mailto:generosomerwin10@gmail.com)
+[View the live site](https://generosomm.vercel.app/) | [Email Merwin](mailto:generosomerwin10@gmail.com)
 
 ## Content source of truth
 

@@ -291,7 +291,7 @@
   background: transparent;
   color: var(--ink);
   border: 1px solid var(--ink);
-  box-shadow: none;
+  box-shadow: 0 0 3px rgba(10, 10, 10, 0.07);
 }
 
 .video-social-link,
@@ -741,7 +741,7 @@
   }
 }
 
-/* Display type, media control, and soft component-edge treatment. */
+/* Display type, media control, and subtle flat outline treatment. */
 .hero h1,
 .section-heading h2,
 .about h2,

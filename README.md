@@ -52,7 +52,7 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Subtle glass blur surfaces with reduced mobile blur for smoother scrolling
 - Visible frosted-glass gradients and blur-to-sharp scroll entrances
 - Shared compact-density tokens for header, sections, panels, controls, and galleries
-- Square glass play controls and filtered blurred-edge layers across UI components
+- Square glass play controls and flat low-radius edge softness across UI components
 - Lazy-loaded images and portfolio evidence
 - Open Graph metadata
 - No framework and no runtime dependencies

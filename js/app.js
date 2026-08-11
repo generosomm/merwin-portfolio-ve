@@ -4,6 +4,14 @@ const scrollPositionKey = `portfolio-scroll:${window.location.pathname}`;
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
 function initializePortfolio() {
+window.setTimeout(() => document.documentElement.classList.remove("is-entering"), 900);
+
+document.querySelectorAll(".horizontal-track").forEach((track) => {
+  Array.from(track.children).forEach((item, index) => {
+    item.style.setProperty("--item-index", String(index));
+  });
+});
+
 const menuButton = document.querySelector(".menu-button");
 const navigation = document.querySelector(".site-nav");
 const siteHeader = document.querySelector(".site-header");
@@ -210,6 +218,41 @@ document.addEventListener("keydown", (event) => {
 });
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const revealTargets = Array.from(document.querySelectorAll([
+  ".section-heading",
+  ".subsection-title",
+  ".role-spotlight",
+  ".gallery-kicker",
+  ".horizontal-track > *",
+  ".proof-total",
+  ".about-layout",
+  ".credentials",
+  ".contact-inner > *",
+  ".site-footer > *"
+].join(",")));
+
+revealTargets.forEach((target, index) => {
+  target.classList.add("reveal");
+  target.style.setProperty("--reveal-delay", `${(index % 4) * 45}ms`);
+});
+
+if (reduceMotion || !("IntersectionObserver" in window)) {
+  revealTargets.forEach((target) => target.classList.add("is-visible"));
+} else {
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const entersFromTop = entry.boundingClientRect.top < 0;
+      entry.target.classList.toggle("reveal-from-top", entersFromTop);
+      entry.target.classList.toggle("is-visible", entry.isIntersecting);
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: "0px 0px -7% 0px"
+  });
+
+  revealTargets.forEach((target) => revealObserver.observe(target));
+}
 
 document.addEventListener("click", (event) => {
   const link = event.target.closest('a[href^="#"]');

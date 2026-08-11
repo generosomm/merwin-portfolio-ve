@@ -1,0 +1,82 @@
+/* Shared motion language for page entry, reveal, hover, and reduced motion. */
+@keyframes page-curtain {
+  0% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+}
+
+html::after {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--night);
+  content: "";
+  pointer-events: none;
+  transform: scaleY(0);
+}
+
+html.is-entering::after {
+  animation: page-curtain 820ms var(--ease-out) both;
+}
+
+.reveal {
+  filter: blur(7px);
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  will-change: filter, opacity, transform;
+  transition:
+    filter 760ms var(--ease) var(--reveal-delay, 0ms),
+    opacity 880ms var(--ease) var(--reveal-delay, 0ms),
+    transform 980ms var(--ease) var(--reveal-delay, 0ms);
+}
+
+.reveal.reveal-from-top {
+  transform: translate3d(0, -26px, 0);
+}
+
+.reveal.is-visible {
+  filter: blur(0);
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+@media (max-width: 700px) {
+  .reveal {
+    filter: blur(3px);
+  }
+
+  .reveal.is-visible {
+    filter: blur(0);
+  }
+}
+
+.horizontal-track > * {
+  transition-delay: calc(var(--item-index, 0) * 45ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html::after,
+  html.is-entering::after {
+    display: none;
+    animation: none;
+  }
+
+  .reveal,
+  .reveal.reveal-from-top,
+  .reveal.is-visible,
+  img,
+  .ui-card,
+  .ui-action,
+  .ui-icon-button {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+  }
+}

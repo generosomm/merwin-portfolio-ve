@@ -97,6 +97,11 @@
   transition: background-color 200ms ease, color 200ms ease, transform 280ms var(--ease);
 }
 
+/* The menu control is only needed when the desktop navigation collapses. */
+.menu-button.ui-icon-button {
+  display: none;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .ui-icon-button:hover,
   .scroll-controls .ui-icon-button:hover {
@@ -151,7 +156,12 @@
   height: 40px;
   background: var(--white);
   color: var(--ink);
-  border: 1px solid var(--white);
+  border: 0;
+}
+
+.brand small {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 11px;
 }
 
 .site-nav > a:not(.nav-cta)::after,
@@ -570,14 +580,14 @@
 
 .contact-email {
   padding: clamp(20px, 2.5vw, 28px);
-  background: var(--glass-dark);
+  background: var(--ink);
   color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid var(--ink);
   box-shadow: 0 0 5px rgba(10, 10, 10, 0.12);
 }
 
 .contact-email span {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .contact-email strong {
@@ -589,9 +599,13 @@
   color: var(--ink);
 }
 
+.contact-email:hover {
+  box-shadow: 0 0 6px rgba(10, 10, 10, 0.14);
+}
+
 .contact-social-links {
-  background: var(--glass-dark);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: var(--ink);
+  border-color: var(--ink);
   box-shadow: 0 0 4px rgba(10, 10, 10, 0.1);
 }
 
@@ -600,15 +614,33 @@
   border-color: transparent;
 }
 
+.contact-social-link:hover,
+.contact-social-link:focus-visible,
+.contact-social-instagram:hover,
+.contact-social-instagram:focus-visible {
+  background: var(--white);
+  color: var(--ink);
+}
+
 .contact-meta p,
 .contact-links-label {
   color: var(--muted);
 }
 
 .site-footer {
-  min-height: 82px;
-  background: var(--night);
-  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  min-height: 48px;
+  padding: 10px 0;
+  background: var(--white);
+  color: var(--ink);
+  border-top: 1px solid var(--ink);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+}
+
+.site-footer a,
+.site-footer p {
+  color: inherit;
 }
 
 .media-dialog {
@@ -649,6 +681,10 @@
 }
 
 @media (max-width: 700px) {
+  .menu-button.ui-icon-button {
+    display: inline-grid;
+  }
+
   .site-header {
     min-height: 64px;
     padding-right: 16px;
@@ -1129,7 +1165,7 @@
 }
 
 .site-footer {
-  min-height: 68px;
+  min-height: 48px;
 }
 
 @media (max-width: 960px) {
@@ -1248,7 +1284,8 @@
   }
 
   .site-footer {
-    padding-top: 14px;
-    padding-bottom: 14px;
+    min-height: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 }

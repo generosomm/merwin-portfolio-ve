@@ -1,0 +1,154 @@
+/*
+  Glacier-inspired visual tokens.
+  Keep colors, spacing, borders, typography, and easing centralized here.
+*/
+:root {
+  --paper: #f5f5f2;
+  --paper-deep: #e8e8e3;
+  --ink: #0a0a0a;
+  --muted: #60605b;
+  --line: rgba(10, 10, 10, 0.24);
+  --line-strong: #0a0a0a;
+  --accent: #0a0a0a;
+  --accent-dark: #0a0a0a;
+  --accent-soft: #e5e5e0;
+  --accent-bright: #ffffff;
+  --night: #050505;
+  --night-soft: #121212;
+  --white: #ffffff;
+  --glass-light: rgba(255, 255, 255, 0.58);
+  --glass-dark: rgba(5, 5, 5, 0.76);
+  --glass-border: rgba(255, 255, 255, 0.72);
+  --surface-shadow:
+    0 20px 56px rgba(10, 10, 10, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  --edge-blur:
+    0 0 18px rgba(10, 10, 10, 0.09),
+    inset 0 0 16px rgba(255, 255, 255, 0.16);
+  --font-display: "Manrope", sans-serif;
+  --page: min(1140px, calc(100% - 48px));
+  --header-height: 64px;
+  --section-space: clamp(48px, 5.5vw, 68px);
+  --section-gap: clamp(38px, 4.5vw, 54px);
+  --panel-padding: clamp(16px, 2vw, 22px);
+  --control-height: 42px;
+  --gallery-gap: 10px;
+  --radius: 0px;
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 72px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+html {
+  scroll-padding-top: calc(var(--header-height) + 18px);
+  background: var(--night);
+  scrollbar-color: var(--ink) var(--paper-deep);
+}
+
+body {
+  padding-top: var(--header-height);
+  background:
+    radial-gradient(circle at 12% 16%, rgba(10, 10, 10, 0.1), transparent 25%),
+    radial-gradient(circle at 86% 38%, rgba(10, 10, 10, 0.12), transparent 28%),
+    radial-gradient(circle at 30% 76%, rgba(255, 255, 255, 0.96), transparent 22%),
+    linear-gradient(90deg, transparent calc(50% - 0.5px), rgba(10, 10, 10, 0.045) 50%, transparent calc(50% + 0.5px)),
+    var(--paper);
+  color: var(--ink);
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--white);
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+img {
+  filter: none;
+  transition: transform 520ms var(--ease);
+}
+
+.eyebrow,
+.gallery-kicker,
+.subsection-title,
+.availability {
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.eyebrow::before {
+  display: inline-block;
+  width: 22px;
+  height: 1px;
+  margin-right: 10px;
+  vertical-align: middle;
+  background: currentColor;
+  content: "";
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.brand strong,
+.contact-email strong,
+.proof-total strong,
+.receipt-number {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.hero h1,
+.section-heading h2,
+.about h2,
+.contact h2 {
+  letter-spacing: -0.065em;
+}
+
+.hero h1 em,
+.contact h2 em {
+  color: inherit;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 0.045em;
+  text-underline-offset: 0.1em;
+}
+
+@media (max-width: 700px) {
+  :root {
+    --page: calc(100% - 32px);
+    --header-height: 60px;
+    --section-space: 46px;
+    --section-gap: 40px;
+    --panel-padding: 16px;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 12% 18%, rgba(10, 10, 10, 0.08), transparent 24%),
+      radial-gradient(circle at 88% 62%, rgba(10, 10, 10, 0.08), transparent 26%),
+      var(--paper);
+  }
+}

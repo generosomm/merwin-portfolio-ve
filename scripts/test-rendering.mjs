@@ -133,14 +133,14 @@ assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /<a href="#
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /class="nav-dropdown"/);
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /class="nav-dropdown-menu"/);
 assert.equal(count(normal.selectors.get('[data-content="nav"]').innerHTML, /class="nav-dropdown-menu"[\s\S]*href="#editing"[\s\S]*href="#development"[\s\S]*href="#operations"/g), 1);
-  assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-study"/g), 8);
-  assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="role-spotlight header-card video-spotlight"/);
+  assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-study ui-card"/g), 8);
+  assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="role-spotlight header-card ui-card video-spotlight"/);
   assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /Short-form edits built to earn attention/);
   assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /124M\+ combined views|TikTok followers|YouTube subscribers|Creating since 2022/);
-  assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="header-card-action" href="#proof">View analytics/);
+  assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="header-card-action ui-action ui-action-outline" href="#proof"><span>View analytics<\/span>/);
   assert.match(
     normal.selectors.get('[data-content="work"]').innerHTML,
-    /class="creator-action-row"><a class="header-card-action" href="#proof">View analytics/
+    /class="creator-action-row"><a class="header-card-action ui-action ui-action-outline" href="#proof"><span>View analytics<\/span>/
   );
   assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /2022 – Present/);
   assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /2025 – Present/);
@@ -159,8 +159,9 @@ assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /cl
 assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-scope"/);
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-category"/g), 8);
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-meta-row"/g), 8);
-assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-original-link"/g), 8);
-assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, />View post <span aria-hidden="true">&nearr;<\/span><\/a>/g), 8);
+assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-original-link ui-action ui-action-outline"/g), 8);
+assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /<span>View post<\/span><span aria-hidden="true">&nearr;<\/span><\/a>/g), 8);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /immediate emotional hook\.<\/p>\s*<div class="case-actions"><a class="case-original-link/);
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /aria-label="View original post: Glass Child/);
 assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-platform-icon /g), 8);
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-platform-icon case-platform-tiktok" role="img" aria-label="TikTok"/);
@@ -201,7 +202,7 @@ assert.doesNotMatch(normal.selectors.get('[data-content="dev"]').innerHTML, /Vie
   assert.equal(count(normal.selectors.get('[data-content="dev"]').innerHTML, /class="tech-icons"/g), 5);
   assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /class="gallery-kicker">Selected web projects/);
   assert.doesNotMatch(normal.selectors.get('[data-content="dev"]').innerHTML, /class="dev-intro"/);
-  assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /class="role-spotlight header-card development-role"/);
+  assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /class="role-spotlight header-card development-role ui-card"/);
   assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /Backend v1 launched at SparkPoint 2026/);
 assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /class="tech-icon tech-icon-html"/);
 assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /class="tech-icon tech-icon-javascript"/);
@@ -211,12 +212,12 @@ assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /aria-label
 assert.doesNotMatch(normal.selectors.get('[data-content="dev"]').innerHTML, /HTML\s*\/\s*CSS/);
 assert.doesNotMatch(normal.selectors.get('[data-content="dev"]').innerHTML, /class="repo-features"/);
 assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /View website/);
-assert.equal(count(normal.selectors.get('[data-content="stats"]').innerHTML, /class="proof-card image-trigger"/g), 5);
+assert.equal(count(normal.selectors.get('[data-content="stats"]').innerHTML, /class="proof-card image-trigger ui-card"/g), 5);
 assert.equal(normal.selectors.get('[data-content="testimonials"]').hidden, true);
-assert.equal(count(normal.selectors.get('[data-content="operations"]').innerHTML, /class="operations-card"/g), 3);
+assert.equal(count(normal.selectors.get('[data-content="operations"]').innerHTML, /class="operations-card ui-card"/g), 3);
 assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /class="operations-label-mobile">Creative VA/);
 assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /class="operations-status-mobile">Small brands &amp; teams/);
-assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /class="role-spotlight header-card operations-role"/);
+assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /class="role-spotlight header-card operations-role ui-card"/);
 assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /Keep daily work moving/);
 assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /Clear priorities and reliable follow-through/);
 assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /Available for remote projects/);
@@ -251,7 +252,7 @@ assert.match(normal.selectors.get('[data-content="credentials"]').innerHTML, /Sk
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-linkedin"/);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-links-label">Connect with me/);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-youtube"/);
-assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-cv-link"[^>]*>View CV/);
+assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-cv-link ui-action ui-action-outline"[^>]*><span>View CV<\/span>/);
 assert.doesNotMatch(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-cv"/);
 assert.doesNotMatch(normal.selectors.get('[data-content="contact"]').innerHTML, />LinkedIn &nearr;</);
 
@@ -276,11 +277,11 @@ const added = await renderWith((data) => {
   });
   data["09-about.json"].paragraphs.push("Temporary extended about paragraph.");
 });
-assert.equal(count(added.selectors.get('[data-content="work"]').innerHTML, /class="case-study"/g), 9);
+assert.equal(count(added.selectors.get('[data-content="work"]').innerHTML, /class="case-study ui-card"/g), 9);
 assert.match(added.selectors.get('[data-content="work"]').innerHTML, /Temporary ninth project/);
 assert.equal(count(added.selectors.get('[data-content="dev"]').innerHTML, /class="tech-icons"/g), 4);
 assert.equal(count(added.selectors.get('[data-content="dev"]').innerHTML, /aria-label="PHP"/g), 2);
-assert.equal(count(added.selectors.get('[data-content="operations"]').innerHTML, /class="operations-card"/g), 4);
+assert.equal(count(added.selectors.get('[data-content="operations"]').innerHTML, /class="operations-card ui-card"/g), 4);
 assert.match(added.selectors.get('[data-content="operations"]').innerHTML, /Temporary fourth VA workflow/);
 assert.match(added.selectors.get('[data-content="dev"]').innerHTML, /class="content-details repo-details"/);
 assert.match(added.selectors.get('[data-content="dev"]').innerHTML, /Project details/);
@@ -294,9 +295,9 @@ const removed = await renderWith((data) => {
   data["07-stats.json"].items = [];
   data["10-credentials.json"].items = [];
 });
-assert.doesNotMatch(removed.selectors.get('[data-content="work"]').innerHTML, /class="case-study"/);
+assert.doesNotMatch(removed.selectors.get('[data-content="work"]').innerHTML, /class="case-study ui-card"/);
 assert.doesNotMatch(removed.selectors.get('[data-content="dev"]').innerHTML, /class="repo-list/);
-assert.doesNotMatch(removed.selectors.get('[data-content="operations"]').innerHTML, /class="operations-card"/);
+assert.doesNotMatch(removed.selectors.get('[data-content="operations"]').innerHTML, /class="operations-card ui-card"/);
 assert.doesNotMatch(removed.selectors.get('[data-content="stats"]').innerHTML, /class="proof-grid/);
 assert.doesNotMatch(removed.selectors.get('[data-content="credentials"]').innerHTML, /class="certificate-grid/);
 
@@ -304,7 +305,7 @@ const malformedOptionalItems = await renderWith((data) => {
   data["04-work.json"].items.push(null, "invalid item");
   data["05-dev.json"].projects.push(null);
 });
-assert.equal(count(malformedOptionalItems.selectors.get('[data-content="work"]').innerHTML, /class="case-study"/g), 8);
+assert.equal(count(malformedOptionalItems.selectors.get('[data-content="work"]').innerHTML, /class="case-study ui-card"/g), 8);
 assert.equal(count(malformedOptionalItems.selectors.get('[data-content="dev"]').innerHTML, /<article>/g), 5);
 
 const testimonial = await renderWith((data) => {
@@ -314,7 +315,7 @@ const testimonial = await renderWith((data) => {
   ];
 });
 assert.equal(testimonial.selectors.get('[data-content="testimonials"]').hidden, false);
-assert.equal(count(testimonial.selectors.get('[data-content="testimonials"]').innerHTML, /class="testimonial-card"/g), 1);
+assert.equal(count(testimonial.selectors.get('[data-content="testimonials"]').innerHTML, /class="testimonial-card ui-card"/g), 1);
 assert.doesNotMatch(testimonial.selectors.get('[data-content="testimonials"]').innerHTML, /gallery-controls/);
 
 console.log("Rendering tests passed: baseline, added items, removed items, and optional testimonials checked.");

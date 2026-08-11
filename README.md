@@ -44,6 +44,15 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Verified analytics and certification evidence
 - Prefilled email inquiry
 - Reduced-motion support
+- Reusable square-edge UI primitives for cards, actions, chips, and icon buttons
+- Black-and-white interface system that keeps portfolio media in full color
+- Compact page rhythm with consistent spacing between headings, cards, and sections
+- Smooth page-entry curtain and bidirectional scroll reveals
+- Lightweight IntersectionObserver scroll reveals using opacity and GPU-friendly transforms
+- Subtle glass blur surfaces with reduced mobile blur for smoother scrolling
+- Visible frosted-glass gradients and blur-to-sharp scroll entrances
+- Shared compact-density tokens for header, sections, panels, controls, and galleries
+- Square glass play controls and filtered blurred-edge layers across UI components
 - Lazy-loaded images and portfolio evidence
 - Open Graph metadata
 - No framework and no runtime dependencies
@@ -57,7 +66,11 @@ merwin-portfolio-ve/
 |   |-- videos/                  # Local portfolio video previews
 |   `-- Merwin_Generoso_CV.pdf   # Downloadable CV
 |-- css/
-|   `-- styles.css               # Design system, layouts, components, and responsive rules
+|   |-- styles.css               # Ordered stylesheet entry point
+|   |-- layout.css               # Structural layouts and section-specific responsive rules
+|   |-- design-system.css        # Color, spacing, type, border, and easing tokens
+|   |-- components.css           # Reusable cards, actions, chips, controls, and section themes
+|   `-- motion.css               # Curtain, reveal, and reduced-motion behavior
 |-- data/
 |   |-- 00-meta.json
 |   |-- 01-nav.json
@@ -114,6 +127,6 @@ Adding or removing entries inside an existing JSON array automatically updates i
 
 ## Built with
 
-HTML5, CSS3, vanilla JavaScript, Manrope, and DM Mono.
+HTML5, modular CSS3, vanilla JavaScript, Manrope, and DM Mono.
 
 Copyright 2026 Merwin Generoso. Designed and built from scratch.

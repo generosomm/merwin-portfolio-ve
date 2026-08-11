@@ -119,7 +119,7 @@ function renderNavigation(data) {
   if (!visible) return;
 
   const cta = hasText(data.cta?.label) && hasText(data.cta?.href)
-    ? `<a class="nav-cta" href="${attr(data.cta.href)}">${text(data.cta.label)} <span aria-hidden="true">&nearr;</span></a>`
+    ? `<a class="nav-cta ui-action ui-action-inverse" href="${attr(data.cta.href)}">${text(data.cta.label)} <span aria-hidden="true">&nearr;</span></a>`
     : "";
 
   root.innerHTML = `
@@ -130,7 +130,7 @@ function renderNavigation(data) {
         ${hasText(data.role) ? `<small>${text(data.role)}</small>` : ""}
       </span>
     </a>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+    <button class="menu-button ui-icon-button" type="button" aria-expanded="false" aria-controls="site-nav">
       <span class="sr-only">${text(ui("navigation.toggleLabel"))}</span><span></span><span></span>
     </button>
     <nav class="site-nav" id="site-nav" aria-label="${attr(ui("navigation.primaryLabel"))}">
@@ -164,13 +164,13 @@ function renderHero(data) {
   const services = list(data.services).filter(hasText);
   const receiptStats = records(data.receipt?.stats);
   const primaryCta = hasText(data.primaryCta?.label) && hasText(data.primaryCta?.href)
-    ? `<a class="button button-dark" href="${attr(data.primaryCta.href)}">${text(data.primaryCta.label)} <span aria-hidden="true">&darr;</span></a>`
+    ? `<a class="button button-dark ui-action ui-action-solid" href="${attr(data.primaryCta.href)}">${text(data.primaryCta.label)} <span aria-hidden="true">&darr;</span></a>`
     : "";
   const secondaryCta = hasText(data.secondaryCta?.label) && hasText(data.secondaryCta?.href)
-    ? `<a class="button button-text" href="${attr(data.secondaryCta.href)}" target="_blank" rel="noopener">${text(data.secondaryCta.label)} <span aria-hidden="true">&nearr;</span></a>`
+    ? `<a class="button button-text ui-action ui-action-text" href="${attr(data.secondaryCta.href)}" target="_blank" rel="noopener">${text(data.secondaryCta.label)} <span aria-hidden="true">&nearr;</span></a>`
     : "";
   const receipt = data.receipt && (hasText(data.receipt.value) || receiptStats.length)
-    ? `<aside class="hero-receipt" aria-label="${attr(ui("labels.careerHighlights"))}">
+    ? `<aside class="hero-receipt ui-card ui-card-inverse" aria-label="${attr(ui("labels.careerHighlights"))}">
         <div class="receipt-top"><span>${text(data.receipt.label)}</span><span>${text(data.receipt.year)}</span></div>
         ${hasText(data.receipt.value) ? `<p class="receipt-number">${text(data.receipt.value)}<span>${text(data.receipt.suffix)}</span></p>` : ""}
         ${hasText(data.receipt.caption) ? `<p class="receipt-caption">${text(data.receipt.caption)}</p>` : ""}
@@ -187,7 +187,7 @@ function renderHero(data) {
         <h1 id="hero-title">${text(data.title)}${hasText(data.titleAccent) ? `<br><em>${text(data.titleAccent)}</em>` : ""}</h1>
         ${hasText(data.intro) ? `<p class="hero-intro">${text(data.intro)}</p>` : ""}
         ${primaryCta || secondaryCta ? `<div class="hero-actions">${primaryCta}${secondaryCta}</div>` : ""}
-        ${services.length ? `<ul class="hero-services" aria-label="${attr(ui("labels.availableServices"))}">${services.map((service) => `<li>${text(service)}</li>`).join("")}</ul>` : ""}
+    ${services.length ? `<ul class="hero-services" aria-label="${attr(ui("labels.availableServices"))}">${services.map((service) => `<li class="ui-chip">${text(service)}</li>`).join("")}</ul>` : ""}
       </div>
       ${receipt}
     </div>`;
@@ -196,8 +196,8 @@ function renderHero(data) {
 function galleryControls(target, label, count) {
   if (count < 2) return "";
   return `<div class="scroll-controls gallery-controls" role="group" aria-label="${attr(formatUi("gallery.controlsTemplate", { label }))}">
-    <button type="button" data-scroll-target="${attr(target)}" data-scroll-direction="-1" aria-label="${attr(formatUi("gallery.scrollLeftTemplate", { label }))}">&larr;</button>
-    <button type="button" data-scroll-target="${attr(target)}" data-scroll-direction="1" aria-label="${attr(formatUi("gallery.scrollRightTemplate", { label }))}">&rarr;</button>
+      <button class="ui-icon-button" type="button" data-scroll-target="${attr(target)}" data-scroll-direction="-1" aria-label="${attr(formatUi("gallery.scrollLeftTemplate", { label }))}">&larr;</button>
+      <button class="ui-icon-button" type="button" data-scroll-target="${attr(target)}" data-scroll-direction="1" aria-label="${attr(formatUi("gallery.scrollRightTemplate", { label }))}">&rarr;</button>
   </div>`;
 }
 
@@ -282,21 +282,21 @@ function renderWork(data) {
         </div>` : ""}
       </div>
     </div>
-    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card${creator && hasText(creator.title) ? " video-spotlight" : ""}" aria-label="${attr(creator?.title || role.title || ui("labels.featuredRole"))}">
+    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card ui-card${creator && hasText(creator.title) ? " video-spotlight" : ""}" aria-label="${attr(creator?.title || role.title || ui("labels.featuredRole"))}">
       <div class="role-spotlight-heading header-card-primary">
         ${creator && hasText(creator.title) ? `
         ${hasText(creator.eyebrow) ? `<p class="eyebrow">${text(creator.eyebrow)}</p>` : ""}
         <div class="role-title-row">
           <h3>${text(creator.title)}</h3>
-          ${hasText(creator.period) ? `<span class="role-period">${text(creator.period)}</span>` : ""}
+          ${hasText(creator.period) ? `<span class="role-period ui-chip">${text(creator.period)}</span>` : ""}
         </div>
         ${hasText(creator.organization) ? `<p class="role-organization">${text(creator.organization)}</p>` : ""}
-        ${hasText(creator.actionLabel) && hasText(creator.actionHref) ? `<div class="creator-action-row"><a class="header-card-action" href="${attr(creator.actionHref)}">${text(creator.actionLabel)} <span aria-hidden="true">&darr;</span></a></div>` : ""}
+        ${hasText(creator.actionLabel) && hasText(creator.actionHref) ? `<div class="creator-action-row"><a class="header-card-action ui-action ui-action-outline" href="${attr(creator.actionHref)}"><span>${text(creator.actionLabel)}</span><span aria-hidden="true">&darr;</span></a></div>` : ""}
         ${creatorProofs.length ? `<ul class="creator-proof-list" aria-label="${attr(ui("labels.creatorResults"))}">${creatorProofs.map((proof) => `<li class="creator-proof">${text(proof)}</li>`).join("")}</ul>` : ""}` : `
         ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
         <div class="role-title-row">
           ${hasText(role.title) ? `<h3>${text(role.title)}</h3>` : ""}
-          ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
+          ${hasText(role.period) ? `<span class="role-period ui-chip">${text(role.period)}</span>` : ""}
         </div>
         ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
         ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${hasText(role.organizationLinkIcon) ? `<span class="role-organization-icon" aria-hidden="true">${socialIcon(role.organizationLinkIcon)}</span>` : ""}<span>${text(role.organizationLinkLabel)}</span> <span aria-hidden="true">&nearr;</span></a>` : ""}
@@ -307,7 +307,7 @@ function renderWork(data) {
         ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
         <div class="role-title-row header-card-secondary-title">
           ${hasText(role.title) ? `<h4>${text(role.title)}</h4>` : ""}
-          ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
+          ${hasText(role.period) ? `<span class="role-period ui-chip">${text(role.period)}</span>` : ""}
         </div>
         ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
         ${councilDetails}
@@ -336,15 +336,15 @@ function renderWork(data) {
                   <span class="play-pill" aria-hidden="true"><i></i></span>
                 </a>`
             : "";
-          return `<article class="case-study">
+          return `<article class="case-study ui-card">
             ${media}
             <div class="case-copy">
-              ${hasText(item?.category) || hasText(item?.postUrl) ? `<div class="case-meta-row">
+              ${hasText(item?.category) ? `<div class="case-meta-row">
                 ${hasText(item?.category) ? `<p class="case-category">${hasText(item.platform) ? `<span class="case-platform-icon case-platform-${attr(technologyKey(item.platform))}" role="img" aria-label="${attr(item.platform)}" title="${attr(item.platform)}">${socialIcon(technologyKey(item.platform))}</span>` : ""}<span>${text(item.category)}</span></p>` : ""}
-                ${hasText(item?.postUrl) ? `<a class="case-original-link" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(ui("labels.watchOriginal"))}: ${attr(item.title)}">${text(item.linkLabel || data.watchLabel || ui("labels.watch"))} <span aria-hidden="true">&nearr;</span></a>` : ""}
               </div>` : ""}
               ${hasText(item?.title) ? `<h3>${text(item.title)}</h3>` : ""}
               ${hasText(item?.description) ? `<p>${text(item.description)}</p>` : ""}
+              ${hasText(item?.postUrl) ? `<div class="case-actions"><a class="case-original-link ui-action ui-action-outline" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(ui("labels.watchOriginal"))}: ${attr(item.title)}"><span>${text(item.linkLabel || data.watchLabel || ui("labels.watch"))}</span><span aria-hidden="true">&nearr;</span></a></div>` : ""}
             </div>
           </article>`;
         }).join("")}
@@ -369,12 +369,12 @@ function renderDevelopment(data) {
         ${hasText(data.externalLabel) && hasText(data.externalUrl) ? `<a class="external-project-link" href="${attr(data.externalUrl)}" target="_blank" rel="noopener">${hasText(data.externalIcon) ? `<span class="external-project-icon" aria-hidden="true">${socialIcon(data.externalIcon)}</span>` : ""}<span>${text(data.externalLabel)}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
       </div>
     </div>
-    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card development-role" aria-label="${attr(role.title || ui("labels.featuredWebRole"))}">
+    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card development-role ui-card" aria-label="${attr(role.title || ui("labels.featuredWebRole"))}">
       <div class="role-spotlight-heading header-card-primary">
         ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
         <div class="role-title-row">
           ${hasText(role.title) ? `<h3>${text(role.title)}</h3>` : ""}
-          ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
+          ${hasText(role.period) ? `<span class="role-period ui-chip">${text(role.period)}</span>` : ""}
         </div>
         ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
         ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${hasText(role.organizationLinkIcon) ? `<span class="role-organization-icon" aria-hidden="true">${socialIcon(role.organizationLinkIcon)}</span>` : ""}<span>${text(role.organizationLinkLabel)}</span> <span aria-hidden="true">&nearr;</span></a>` : ""}
@@ -413,8 +413,8 @@ function renderDevelopment(data) {
             </details>` : ""}
           </div>
           ${hasText(project?.repoUrl) || hasText(project?.liveUrl) ? `<div class="repo-links">
-            ${hasText(project.liveUrl) ? `<a href="${attr(project.liveUrl)}" target="_blank" rel="noopener">${text(project.liveLabel || data.liveLabel || ui("labels.viewWebsite"))} &nearr;</a>` : ""}
-            ${hasText(project.repoUrl) ? `<a href="${attr(project.repoUrl)}" target="_blank" rel="noopener">${text(project.repoLabel || data.repoLabel || ui("labels.viewCode"))} &nearr;</a>` : ""}
+            ${hasText(project.liveUrl) ? `<a class="ui-action ui-action-outline" href="${attr(project.liveUrl)}" target="_blank" rel="noopener"><span>${text(project.liveLabel || data.liveLabel || ui("labels.viewWebsite"))}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
+            ${hasText(project.repoUrl) ? `<a class="ui-action ui-action-outline" href="${attr(project.repoUrl)}" target="_blank" rel="noopener"><span>${text(project.repoLabel || data.repoLabel || ui("labels.viewCode"))}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
           </div>` : ""}
         </article>`;
         }).join("")}
@@ -467,12 +467,12 @@ function renderOperations(data) {
       ${hasText(data.status) ? `<span class="operations-status-full">${text(data.status)}</span>` : ""}
       ${hasText(data.mobileStatus) ? `<span class="operations-status-mobile">${text(data.mobileStatus)}</span>` : ""}
     </div>
-    ${role && hasText(role.title) ? `<aside class="role-spotlight header-card operations-role" aria-label="${attr(role.title)}">
+    ${role && hasText(role.title) ? `<aside class="role-spotlight header-card operations-role ui-card" aria-label="${attr(role.title)}">
       <div class="role-spotlight-heading header-card-primary">
         ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
         <div class="role-title-row">
           <h3>${text(role.title)}</h3>
-          ${hasText(role.period) ? `<span class="role-period">${text(role.period)}</span>` : ""}
+          ${hasText(role.period) ? `<span class="role-period ui-chip">${text(role.period)}</span>` : ""}
         </div>
         ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
       </div>
@@ -495,7 +495,7 @@ function renderOperations(data) {
       <div class="operations-cards horizontal-track" id="operations-track" tabindex="0" aria-label="${attr(ui("labels.workflowSamplesTrack"))}">${items.map((item, index) => {
       const deliverables = list(item?.deliverables).filter(hasText);
       const tools = records(item?.tools).filter((tool) => hasText(tool.name));
-      return `<article class="operations-card">
+      return `<article class="operations-card ui-card">
         <div class="operations-card-top">
           <span class="operations-card-number">${pad(index)}</span>
           ${hasText(data.sampleLabel) ? `<span class="operations-sample-label">${text(data.sampleLabel)}</span>` : ""}
@@ -541,7 +541,7 @@ function renderStats(data) {
     </div>
     ${items.length ? `<div class="gallery-shell">
       <div class="proof-grid horizontal-track" id="proof-track" tabindex="0" aria-label="${attr(ui("labels.analyticsProofTrack"))}">
-        ${items.map((item) => `<button class="proof-card image-trigger" type="button" data-image="${attr(item?.image)}" data-alt="${attr(item?.alt)}">
+        ${items.map((item) => `<button class="proof-card image-trigger ui-card" type="button" data-image="${attr(item?.image)}" data-alt="${attr(item?.alt)}">
           <span class="proof-card-top"><strong>${text(item?.value)}</strong><small>${text(item?.detail)}</small></span>
           ${hasText(item?.image) ? `<img src="${attr(item.image)}" alt="${attr(item.alt)}" loading="lazy">` : ""}
           <span class="proof-card-bottom">${text(item?.title)} <i>${text(ui("labels.expand"))} &nearr;</i></span>
@@ -566,7 +566,7 @@ function renderTestimonials(data) {
     </div>
     <div class="gallery-shell">
       <div class="testimonial-track horizontal-track" id="testimonial-track" tabindex="0" aria-label="${attr(ui("labels.clientTestimonialsTrack"))}">
-        ${items.map((item) => `<figure class="testimonial-card">
+        ${items.map((item) => `<figure class="testimonial-card ui-card">
           <blockquote>&ldquo;${text(item?.quote)}&rdquo;</blockquote>
           <figcaption><strong>${text(item?.name)}</strong>${hasText(item?.role) ? `<span>${text(item.role)}</span>` : ""}</figcaption>
         </figure>`).join("")}
@@ -610,7 +610,7 @@ function renderCredentials(data) {
       <div class="credentials-kicker-row">
         ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
         ${hasText(data.verificationLabel) && hasText(data.verificationUrl) ? `<div class="credentials-actions">
-          <a href="${attr(data.verificationUrl)}" target="_blank" rel="noopener"><span class="linkedin-mark" aria-hidden="true">${text(ui("labels.linkedinMark"))}</span>${text(data.verificationLabel)}<span aria-hidden="true">&nearr;</span></a>
+          <a class="ui-action ui-action-outline" href="${attr(data.verificationUrl)}" target="_blank" rel="noopener"><span class="linkedin-mark" aria-hidden="true">${text(ui("labels.linkedinMark"))}</span><span>${text(data.verificationLabel)}</span><span aria-hidden="true">&nearr;</span></a>
         </div>` : ""}
       </div>
       ${hasText(data.heading) ? `<h3 id="credentials-title">${text(data.heading)}</h3>` : ""}
@@ -620,7 +620,7 @@ function renderCredentials(data) {
     </div>
     ${items.length ? `<div class="gallery-shell">
       <div class="certificate-grid horizontal-track" id="certificate-track" tabindex="0" aria-label="${attr(ui("labels.certificatesTrack"))}">
-        ${items.map((item) => `<button class="certificate-card image-trigger" type="button" data-image="${attr(item?.image)}" data-alt="${attr(item?.alt)}">
+        ${items.map((item) => `<button class="certificate-card image-trigger ui-card" type="button" data-image="${attr(item?.image)}" data-alt="${attr(item?.alt)}">
           <span class="certificate-image">${hasText(item?.image) ? `<img src="${attr(item.image)}" alt="${attr(item.alt)}" loading="lazy">` : ""}</span>
           <span class="certificate-meta"><span><small>${text(item?.issuer)}${hasText(item?.year) ? ` / ${text(item.year)}` : ""}</small><strong>${text(item?.title)}</strong></span><i>${text(ui("labels.expand"))} &nearr;</i></span>
         </button>`).join("")}
@@ -657,7 +657,7 @@ function renderContact(data) {
             const iconKey = technologyKey(link.icon || link.label);
             return `<a class="contact-social-link contact-social-${attr(iconKey)}" href="${attr(link.href)}" target="_blank" rel="noopener" aria-label="${attr(link.label)}" title="${attr(link.label)}">${socialIcon(iconKey)}</a>`;
           }).join("")}</div>` : ""}
-          ${cvLink ? `<a class="contact-cv-link" href="${attr(cvLink.href)}" target="_blank" rel="noopener">${text(cvLink.label || ui("labels.viewCv"))} <span aria-hidden="true">&nearr;</span></a>` : ""}
+          ${cvLink ? `<a class="contact-cv-link ui-action ui-action-outline" href="${attr(cvLink.href)}" target="_blank" rel="noopener"><span>${text(cvLink.label || ui("labels.viewCv"))}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
         </div>
       </div>` : ""}
       ${locationLines.length ? `<p>${locationLines.map(text).join("<br>")}</p>` : ""}

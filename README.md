@@ -55,7 +55,7 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Black-and-white interface system that keeps portfolio media in full color
 - Compact page rhythm with consistent spacing between headings, cards, and sections
 - Single-line responsive credentials heading with tighter card spacing
-- Smooth page-entry curtain and bidirectional scroll reveals
+- Bidirectional scroll reveals for downward and upward scrolling
 - Session-only ERO | VISUALS “Finalizing the cut” loader with a sub-1.2-second timeline and reduced-motion fade
 - Lightweight IntersectionObserver scroll reveals using opacity and GPU-friendly transforms
 - Subtle glass blur surfaces with reduced mobile blur for smoother scrolling

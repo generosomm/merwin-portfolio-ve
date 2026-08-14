@@ -396,10 +396,9 @@ function renderDevelopment(data) {
     ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
     ${projects.length ? `<div class="gallery-shell">
       <div class="repo-list horizontal-track" id="project-track" tabindex="0" aria-label="${attr(ui("labels.softwareProjectsTrack"))}">
-        ${projects.map((project, index) => {
+        ${projects.map((project) => {
           const technologies = records(project?.technologies).filter((technology) => hasText(technology.name));
           return `<article>
-          <div class="repo-index">${pad(index)}</div>
           <div>
             ${technologies.length ? `<ul class="tech-icons" aria-label="${attr(ui("labels.technologiesUsed"))}">${technologies.map((technology) => {
               const iconKey = technologyKey(technology.icon);

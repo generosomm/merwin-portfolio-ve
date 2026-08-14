@@ -30,6 +30,7 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 ## Current features
 
 - Fixed desktop and mobile navbar
+- Compact opaque mobile navigation with accessible tap targets and a clear menu-to-close control
 - Home, Work, Results, About, and Start a project navigation
 - Active navbar highlighting based on the current section
 - Work dropdown with direct links to Video Editing, Web Projects, and Project Support
@@ -37,6 +38,12 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Scroll position restoration after refreshing
 - Responsive density tiers for small phones, regular phones, tablets, and desktop layouts
 - Mobile horizontal galleries with centered card snapping and stable card widths during browser toolbar resizing
+- Overflow-aware gallery arrows that stay hidden when there is nothing left to browse
+- Slow seamless desktop carousels with Editing Work moving left and Web Projects moving right
+- Compact mobile Editing Work and Web Project carousels with centered snapping, manual swipe, and left/right arrow controls
+- Consistent mobile carousel side gutters so navigation controls do not touch project cards
+- Arrow-free Editing Work and Web Project galleries with smooth glow-free edge fades
+- Hidden Video, Web Project, and Workflow scrollbars while preserving mouse drag, touch swipe, links, and keyboard access
 - Mouse drag, touch swipe, keyboard access, and gallery controls
 - Expandable council work and project details
 - Native video and image dialogs
@@ -47,14 +54,18 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Reusable square-edge UI primitives for cards, actions, chips, and icon buttons
 - Black-and-white interface system that keeps portfolio media in full color
 - Compact page rhythm with consistent spacing between headings, cards, and sections
+- Single-line responsive credentials heading with tighter card spacing
 - Smooth page-entry curtain and bidirectional scroll reveals
 - Lightweight IntersectionObserver scroll reveals using opacity and GPU-friendly transforms
 - Subtle glass blur surfaces with reduced mobile blur for smoother scrolling
 - Visible frosted-glass gradients and blur-to-sharp scroll entrances
 - Shared compact-density tokens for header, sections, panels, controls, and galleries
 - Shared content wrappers, heading measures, wrapping rules, and work-card sizing across every section
+- Simple compact panels and consistent spacing across roles, projects, supporting information, and responsive layouts
+- Shared minimal hover and keyboard-focus feedback across Video, Web Project, and Workflow cards
 - Square play controls, flat low-radius edge softness, and high-contrast black-and-white component surfaces
 - Compact light footer and a desktop navigation that only shows the menu control on mobile
+- Compact contact email action instead of a full-width promotional banner
 - Lazy-loaded images and portfolio evidence
 - Open Graph metadata
 - No framework and no runtime dependencies

@@ -189,7 +189,14 @@ assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /View all 
 assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="role-organization-icon"/);
 assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, /class="role-reels-link"/);
 assert.doesNotMatch(normal.selectors.get('[data-content="work"]').innerHTML, />\s*Play (TikTok|Short|Edit|Reel)\s*</);
+assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /data-scroll-target="video-track"/g), 2);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /aria-label="Scroll Video projects left"/);
+assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /aria-label="Scroll Video projects right"/);
 assert.equal(count(normal.selectors.get('[data-content="dev"]').innerHTML, /<article>/g), 5);
+assert.doesNotMatch(normal.selectors.get('[data-content="dev"]').innerHTML, /class="repo-index"/);
+assert.equal(count(normal.selectors.get('[data-content="dev"]').innerHTML, /data-scroll-target="project-track"/g), 2);
+assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /aria-label="Scroll Software projects left"/);
+assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /aria-label="Scroll Software projects right"/);
 assert.doesNotMatch(normal.selectors.get('[data-content="dev"]').innerHTML, /Drag to explore/);
 assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /class="external-project-icon"/);
 assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /View GitHub/);

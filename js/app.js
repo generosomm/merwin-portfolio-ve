@@ -358,7 +358,11 @@ document.querySelectorAll("[data-scroll-target]").forEach((button) => {
     const targetId = button.dataset.scrollTarget;
     const direction = Number(button.dataset.scrollDirection);
     const track = targetId ? document.getElementById(targetId) : null;
-    const items = track ? Array.from(track.children).filter((item) => item instanceof HTMLElement) : [];
+    const items = track
+      ? Array.from(track.children).filter(
+          (item) => item instanceof HTMLElement && !item.hasAttribute("data-carousel-clone")
+        )
+      : [];
 
     if (!track || !direction || !items.length) return;
 
@@ -373,7 +377,10 @@ document.querySelectorAll("[data-scroll-target]").forEach((button) => {
     }, 0);
     const savedIndex = Number.parseInt(track.dataset.activeIndex, 10);
     const currentIndex = Number.isInteger(savedIndex) ? savedIndex : nearestIndex;
-    const nextIndex = Math.max(0, Math.min(items.length - 1, currentIndex + direction));
+    const wraps = track.classList.contains("is-auto-carousel");
+    const nextIndex = wraps
+      ? (currentIndex + direction + items.length) % items.length
+      : Math.max(0, Math.min(items.length - 1, currentIndex + direction));
     const nextItem = items[nextIndex];
     const nextRect = nextItem.getBoundingClientRect();
     const centeredLeft =
@@ -396,11 +403,58 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
   let startScrollLeft = 0;
   let moved = false;
   let blockClick = false;
+  let controlsSyncTimer = null;
   let scrollSyncTimer = null;
   let lastTrackWidth = 0;
+  let carouselTimer = null;
+  let carouselFrame = null;
+  let carouselLastTime = 0;
+  let carouselPosition = 0;
+  let carouselHoverPaused = false;
+  let carouselFocusPaused = false;
+  let carouselPointerPaused = false;
+  const isAutoCarousel = ["video-track", "project-track"].includes(track.id) && !reduceMotion;
+  const carouselDirection = track.id === "project-track" ? -1 : 1;
+  const carouselInteractionSurface = track.closest(".gallery-shell") || track;
+
+  if (isAutoCarousel && !track.querySelector("[data-carousel-clone]")) {
+    Array.from(track.children).forEach((item) => {
+      if (!(item instanceof HTMLElement)) return;
+
+      const clone = item.cloneNode(true);
+      clone.setAttribute("data-carousel-clone", "");
+      clone.setAttribute("aria-hidden", "true");
+      clone.inert = true;
+      clone.classList.remove("reveal", "reveal-from-top", "is-visible");
+      clone.style.removeProperty("--reveal-delay");
+      clone.querySelectorAll("a, button, input, select, textarea, [tabindex]").forEach((control) => {
+        control.setAttribute("tabindex", "-1");
+      });
+      track.append(clone);
+    });
+  }
 
   function getItems() {
-    return Array.from(track.children).filter((item) => item instanceof HTMLElement);
+    return Array.from(track.children).filter(
+      (item) => item instanceof HTMLElement && !item.hasAttribute("data-carousel-clone")
+    );
+  }
+
+  function hasTrackOverflow() {
+    const items = getItems();
+    if (!items.length || !track.clientWidth) return false;
+
+    const firstItem = items[0];
+    const lastItem = items.at(-1);
+    const contentWidth = lastItem.offsetLeft + lastItem.offsetWidth - firstItem.offsetLeft;
+    return contentWidth > track.clientWidth + 2;
+  }
+
+  function getCarouselLoopPoint() {
+    const firstItem = getItems()[0];
+    const firstClone = track.querySelector("[data-carousel-clone]");
+    if (!(firstItem instanceof HTMLElement) || !(firstClone instanceof HTMLElement)) return 0;
+    return Math.max(firstClone.offsetLeft - firstItem.offsetLeft, 0);
   }
 
   function nearestItemIndex() {
@@ -429,18 +483,26 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
     const centerSingleCard =
       window.innerWidth <= 700 &&
       !track.classList.contains("council-work-track");
+    const firstInset = centerSingleCard
+      ? `${Math.max((trackWidth - firstWidth) / 2, 0)}px`
+      : "0px";
+    const lastInset = centerSingleCard
+      ? `${Math.max((trackWidth - lastWidth) / 2, 0)}px`
+      : "0px";
 
     // Keep percentage-based card widths independent from the centering inset.
     // Track padding reduces the flex content box and can create a resize loop on
     // mobile browsers as their address bar appears or disappears while scrolling.
     track.style.paddingLeft = "0px";
     track.style.paddingRight = "0px";
-    items[0].style.marginLeft = centerSingleCard
-      ? `${Math.max((trackWidth - firstWidth) / 2, 0)}px`
-      : "0px";
-    items.at(-1).style.marginRight = centerSingleCard
-      ? `${Math.max((trackWidth - lastWidth) / 2, 0)}px`
-      : "0px";
+    items[0].style.marginLeft = firstInset;
+    items.at(-1).style.marginRight = lastInset;
+
+    const clones = Array.from(track.querySelectorAll("[data-carousel-clone]"));
+    if (clones.length) {
+      clones[0].style.marginLeft = firstInset;
+      clones.at(-1).style.marginRight = lastInset;
+    }
 
     if (widthChanged) track.scrollLeft = 0;
     lastTrackWidth = trackWidth;
@@ -451,16 +513,135 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
     if (!track.id) return;
 
     const controls = document.querySelectorAll(`[data-scroll-target="${track.id}"]`);
+    const controlsGroup = controls[0]?.closest(".gallery-controls");
+    const hasOverflow = hasTrackOverflow();
     const atStart = track.scrollLeft <= 2;
     const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
 
+    if (controlsGroup) controlsGroup.hidden = !hasOverflow;
+    track.querySelectorAll("[data-carousel-clone]").forEach((clone) => {
+      clone.hidden = !hasOverflow;
+    });
+
     controls.forEach((control) => {
       const direction = Number(control.dataset.scrollDirection);
-      control.disabled = direction < 0 ? atStart : atEnd;
+      const unavailable = !hasOverflow || (!isAutoCarousel && (direction < 0 ? atStart : atEnd));
+      control.disabled = unavailable;
+      control.hidden = unavailable;
+    });
+  }
+
+  function canRunAutoCarousel() {
+    return (
+      isAutoCarousel &&
+      !document.hidden &&
+      !carouselHoverPaused &&
+      !carouselFocusPaused &&
+      !carouselPointerPaused &&
+      window.innerWidth > 700 &&
+      hasTrackOverflow()
+    );
+  }
+
+  function clearAutoCarousel() {
+    window.clearTimeout(carouselTimer);
+    window.cancelAnimationFrame(carouselFrame);
+    carouselTimer = null;
+    carouselFrame = null;
+    carouselLastTime = 0;
+  }
+
+  function runAutoCarousel(timestamp) {
+    if (!canRunAutoCarousel()) {
+      clearAutoCarousel();
+      return;
+    }
+
+    if (!carouselLastTime) carouselLastTime = timestamp;
+    const elapsed = Math.min(timestamp - carouselLastTime, 64);
+    const loopPoint = getCarouselLoopPoint();
+    if (!loopPoint) {
+      clearAutoCarousel();
+      return;
+    }
+
+    const speed = 28;
+    let nextScroll = carouselPosition + carouselDirection * speed * (elapsed / 1000);
+
+    if (nextScroll >= loopPoint) nextScroll -= loopPoint;
+    if (nextScroll < 0) nextScroll += loopPoint;
+
+    carouselPosition = nextScroll;
+    track.scrollLeft = carouselPosition;
+    carouselLastTime = timestamp;
+    carouselFrame = window.requestAnimationFrame(runAutoCarousel);
+  }
+
+  function scheduleAutoCarousel(delay = 900) {
+    clearAutoCarousel();
+    if (!canRunAutoCarousel()) return;
+
+    carouselTimer = window.setTimeout(() => {
+      carouselTimer = null;
+      if (!canRunAutoCarousel()) return;
+      carouselLastTime = 0;
+      const loopPoint = getCarouselLoopPoint();
+      if (!loopPoint) return;
+
+      carouselPosition = track.scrollLeft % loopPoint;
+      if (carouselDirection < 0 && carouselPosition <= 1) {
+        carouselPosition = loopPoint;
+        track.scrollLeft = carouselPosition;
+      }
+      carouselFrame = window.requestAnimationFrame(runAutoCarousel);
+    }, delay);
+  }
+
+  if (isAutoCarousel) {
+    track.classList.add("is-auto-carousel");
+
+    function hasKeyboardFocusWithinCarousel() {
+      const activeElement = document.activeElement;
+      return (
+        activeElement instanceof HTMLElement &&
+        carouselInteractionSurface.contains(activeElement) &&
+        activeElement.matches(":focus-visible")
+      );
+    }
+
+    carouselInteractionSurface.addEventListener("mouseenter", () => {
+      carouselHoverPaused = true;
+      clearAutoCarousel();
+    });
+    carouselInteractionSurface.addEventListener("mouseleave", () => {
+      carouselHoverPaused = false;
+      carouselFocusPaused = hasKeyboardFocusWithinCarousel();
+      scheduleAutoCarousel(0);
+    });
+    carouselInteractionSurface.addEventListener("focusin", (event) => {
+      carouselFocusPaused =
+        event.target instanceof HTMLElement && event.target.matches(":focus-visible");
+      if (carouselFocusPaused) clearAutoCarousel();
+    });
+    carouselInteractionSurface.addEventListener("focusout", (event) => {
+      if (
+        event.relatedTarget instanceof Node &&
+        carouselInteractionSurface.contains(event.relatedTarget)
+      ) return;
+      carouselFocusPaused = false;
+      scheduleAutoCarousel(1400);
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) clearAutoCarousel();
+      else scheduleAutoCarousel(1400);
     });
   }
 
   track.addEventListener("pointerdown", (event) => {
+    if (isAutoCarousel) {
+      carouselPointerPaused = true;
+      clearAutoCarousel();
+    }
     if (event.pointerType !== "mouse" || event.button !== 0) return;
 
     isDragging = true;
@@ -485,6 +666,11 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
   });
 
   function finishDrag(event) {
+    if (isAutoCarousel) {
+      carouselPointerPaused = false;
+      scheduleAutoCarousel(1800);
+    }
+
     if (!isDragging) return;
 
     isDragging = false;
@@ -512,7 +698,12 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
   }, true);
 
   track.addEventListener("scroll", () => {
-    updateControls();
+    if (!controlsSyncTimer) {
+      controlsSyncTimer = window.setTimeout(() => {
+        controlsSyncTimer = null;
+        updateControls();
+      }, 80);
+    }
     window.clearTimeout(scrollSyncTimer);
     scrollSyncTimer = window.setTimeout(() => {
       track.dataset.activeIndex = String(nearestItemIndex());
@@ -529,13 +720,16 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
   window.addEventListener("resize", () => {
     updateTrackInsets();
     updateControls();
+    scheduleAutoCarousel(1400);
   });
   window.addEventListener("load", () => {
     updateTrackInsets();
     updateControls();
+    scheduleAutoCarousel(600);
   }, { once: true });
   updateTrackInsets();
   updateControls();
+  scheduleAutoCarousel(600);
 });
 
 }

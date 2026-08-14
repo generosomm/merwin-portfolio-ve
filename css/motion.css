@@ -149,12 +149,27 @@ html.loader-exiting .portfolio-loader {
 }
 
 @media (max-width: 700px) {
+  .status-dot,
+  .contact-availability::before {
+    animation: none;
+  }
+
   .reveal {
-    filter: blur(3px);
+    filter: none;
+    transform: translate3d(0, 16px, 0);
+    will-change: opacity, transform;
+    transition:
+      opacity 420ms var(--ease) var(--reveal-delay, 0ms),
+      transform 520ms var(--ease) var(--reveal-delay, 0ms);
+  }
+
+  .reveal.reveal-from-top {
+    transform: translate3d(0, -16px, 0);
   }
 
   .reveal.is-visible {
-    filter: blur(0);
+    filter: none;
+    transform: translate3d(0, 0, 0);
   }
 }
 

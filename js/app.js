@@ -69,7 +69,7 @@ const navigationSections = navigationLinks
   })
   .filter(Boolean);
 let navigationFrame = null;
-let scrollSaveFrame = null;
+let scrollSaveTimer = null;
 
 function updateActiveNavigation() {
   navigationFrame = null;
@@ -103,7 +103,8 @@ function scheduleActiveNavigation() {
 }
 
 function saveScrollPosition() {
-  scrollSaveFrame = null;
+  window.clearTimeout(scrollSaveTimer);
+  scrollSaveTimer = null;
   try {
     sessionStorage.setItem(scrollPositionKey, String(window.scrollY));
   } catch {
@@ -112,8 +113,8 @@ function saveScrollPosition() {
 }
 
 function scheduleScrollSave() {
-  if (scrollSaveFrame !== null) return;
-  scrollSaveFrame = window.requestAnimationFrame(saveScrollPosition);
+  window.clearTimeout(scrollSaveTimer);
+  scrollSaveTimer = window.setTimeout(saveScrollPosition, 180);
 }
 
 window.addEventListener("scroll", () => {
@@ -403,6 +404,7 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
   let controlsSyncTimer = null;
   let scrollSyncTimer = null;
   let lastTrackWidth = 0;
+  let lastViewportWidth = window.innerWidth;
   let carouselTimer = null;
   let carouselFrame = null;
   let carouselLastTime = 0;
@@ -715,6 +717,8 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
     }
   });
   window.addEventListener("resize", () => {
+    if (window.innerWidth === lastViewportWidth) return;
+    lastViewportWidth = window.innerWidth;
     updateTrackInsets();
     updateControls();
     scheduleAutoCarousel(1400);

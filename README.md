@@ -57,8 +57,10 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Single-line responsive credentials heading with tighter card spacing
 - Bidirectional scroll reveals for downward and upward scrolling
 - Session-only ERO | VISUALS “Finalizing the cut” loader with a sub-1.2-second timeline and reduced-motion fade
+- Critical loader fallback that keeps its text hidden if imported motion styles are stale or delayed
 - Lightweight IntersectionObserver scroll reveals using opacity and GPU-friendly transforms
-- Subtle glass blur surfaces with reduced mobile blur for smoother scrolling
+- Desktop glass blur with lightweight matching mobile surfaces for smoother scrolling
+- Mobile performance mode replaces live backdrop blur with matching solid glass surfaces and debounces scroll persistence
 - Visible frosted-glass gradients and blur-to-sharp scroll entrances
 - Shared compact-density tokens for header, sections, panels, controls, and galleries
 - Shared content wrappers, heading measures, wrapping rules, and work-card sizing across every section

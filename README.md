@@ -62,6 +62,9 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Shared compact-density tokens for header, sections, panels, controls, and galleries
 - Shared content wrappers, heading measures, wrapping rules, and work-card sizing across every section
 - Simple compact panels and consistent spacing across roles, projects, supporting information, and responsive layouts
+- Scoped liquid-glass surfaces that preserve the compact layout and can be disabled from one root class
+- Blinking green availability indicators with a reduced-motion fallback
+- Minimal divider footer with always-visible copyright, build note, and back-to-top link
 - Shared minimal hover and keyboard-focus feedback across Video, Web Project, and Workflow cards
 - Square play controls, flat low-radius edge softness, and high-contrast black-and-white component surfaces
 - Compact light footer and a desktop navigation that only shows the menu control on mobile
@@ -84,7 +87,8 @@ merwin-portfolio-ve/
 |   |-- design-system.css        # Color, spacing, type, border, and easing tokens
 |   |-- components.css           # Reusable cards, actions, chips, controls, and section themes
 |   |-- consistency.css          # Final wrapper, typography, card, and responsive consistency layer
-|   `-- motion.css               # Curtain, reveal, and reduced-motion behavior
+|   |-- motion.css               # Curtain, reveal, and reduced-motion behavior
+|   `-- liquid-glass.css         # Scoped glass surfaces, mobile tuning, and transparency fallbacks
 |-- data/
 |   |-- 00-meta.json
 |   |-- 01-nav.json

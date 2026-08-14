@@ -260,8 +260,13 @@ assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class=
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-links-label">Connect with me/);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-youtube"/);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-cv-link ui-action ui-action-outline"[^>]*><span>View CV<\/span>/);
+assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="eyebrow contact-availability">Available for remote work/);
 assert.doesNotMatch(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-cv"/);
 assert.doesNotMatch(normal.selectors.get('[data-content="contact"]').innerHTML, />LinkedIn &nearr;</);
+assert.match(normal.selectors.get('[data-content="footer"]').innerHTML, /2026/);
+assert.match(normal.selectors.get('[data-content="footer"]').innerHTML, /Merwin Generoso/);
+assert.match(normal.selectors.get('[data-content="footer"]').innerHTML, /Designed and built from scratch\./);
+assert.match(normal.selectors.get('[data-content="footer"]').innerHTML, /Back to top/);
 
 const revisedInterface = await renderWith((data) => {
   data["12-ui.json"].labels.connectWithMe = "Professional links";

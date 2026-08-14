@@ -91,6 +91,19 @@ function renderMeta(data) {
 function renderInterface(data) {
   interfaceText = data || {};
 
+  const loader = document.querySelector("#portfolio-loader");
+  const loaderBrand = document.querySelector("#portfolio-loader-brand");
+  const loaderStatuses = document.querySelector("#portfolio-loader-statuses");
+  const statuses = list(data?.loader?.statuses).filter(hasText).slice(0, 3);
+
+  if (loader) loader.setAttribute("aria-label", ui("loader.ariaLabel"));
+  if (loaderBrand) loaderBrand.textContent = ui("loader.brand");
+  if (loaderStatuses) {
+    loaderStatuses.innerHTML = statuses
+      .map((status) => `<span>${text(status)}</span>`)
+      .join("");
+  }
+
   const skipLink = document.querySelector("#skip-link");
   if (skipLink) skipLink.textContent = ui("skipLink");
 

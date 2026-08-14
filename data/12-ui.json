@@ -1,5 +1,14 @@
 {
   "skipLink": "Skip to content",
+  "loader": {
+    "brand": "ERO | VISUALS",
+    "ariaLabel": "ERO | VISUALS. Finalizing the cut.",
+    "statuses": [
+      "Organizing the story",
+      "Building the system",
+      "Finalizing the cut..."
+    ]
+  },
   "navigation": {
     "brandFallback": "Portfolio",
     "brandMarkFallback": "MG",

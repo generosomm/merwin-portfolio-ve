@@ -1,27 +1,129 @@
-/* Shared motion language for page entry, reveal, hover, and reduced motion. */
-@keyframes page-curtain {
-  0% {
-    transform: scaleY(1);
-    transform-origin: top;
-  }
-  100% {
-    transform: scaleY(0);
-    transform-origin: top;
-  }
-}
-
-html::after {
+/* Shared motion language for the session loader, reveals, hover, and reduced motion. */
+.portfolio-loader {
   position: fixed;
   inset: 0;
-  z-index: 1000;
-  background: var(--night);
-  content: "";
+  z-index: 2000;
+  display: none;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.08), transparent 32%),
+    radial-gradient(circle at 78% 72%, rgba(255, 255, 255, 0.05), transparent 30%),
+    rgba(5, 5, 5, 0.96);
+  color: var(--white);
   pointer-events: none;
-  transform: scaleY(0);
+  transition:
+    opacity 240ms var(--ease-out),
+    transform 240ms var(--ease-out);
 }
 
-html.is-entering::after {
-  animation: page-curtain 820ms var(--ease-out) both;
+html.loader-pending,
+html.loader-pending body {
+  overflow: hidden;
+}
+
+html.loader-pending .portfolio-loader {
+  display: grid;
+}
+
+html.loader-exiting .portfolio-loader {
+  opacity: 0;
+  transform: translate3d(0, -100%, 0);
+}
+
+.portfolio-loader::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.045) 50%, transparent 80%);
+  content: "";
+  transform: translate3d(-45%, 0, 0);
+  animation: loader-glass-sheen 900ms var(--ease-out) both;
+}
+
+.portfolio-loader-panel {
+  position: relative;
+  width: min(280px, calc(100vw - 48px));
+  padding: 24px 20px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 24px 70px rgba(0, 0, 0, 0.38);
+  text-align: center;
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+}
+
+.portfolio-loader-brand {
+  display: block;
+  font: 700 0.74rem/1 var(--font-display);
+  letter-spacing: 0.18em;
+}
+
+.portfolio-loader-statuses {
+  position: relative;
+  height: 18px;
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.68);
+  font: 500 0.68rem/18px "DM Mono", monospace;
+}
+
+.portfolio-loader-statuses span {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translate3d(0, 5px, 0);
+}
+
+.portfolio-loader-statuses span:nth-child(1) {
+  animation: loader-status-first 300ms var(--ease-out) 40ms both;
+}
+
+.portfolio-loader-statuses span:nth-child(2) {
+  animation: loader-status-middle 300ms var(--ease-out) 300ms both;
+}
+
+.portfolio-loader-statuses span:nth-child(3) {
+  animation: loader-status-final 360ms var(--ease-out) 560ms both;
+}
+
+.portfolio-loader-timeline {
+  height: 1px;
+  margin-top: 17px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.portfolio-loader-timeline span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--white);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: loader-timeline 760ms var(--ease-out) 80ms both;
+}
+
+@keyframes loader-glass-sheen {
+  to { transform: translate3d(45%, 0, 0); }
+}
+
+@keyframes loader-status-first {
+  0%, 100% { opacity: 0; transform: translate3d(0, 5px, 0); }
+  22%, 78% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes loader-status-middle {
+  0%, 100% { opacity: 0; transform: translate3d(0, 5px, 0); }
+  22%, 78% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes loader-status-final {
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes loader-timeline {
+  to { transform: scaleX(1); }
 }
 
 .reveal {
@@ -61,10 +163,32 @@ html.is-entering::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html::after,
-  html.is-entering::after {
-    display: none;
+  .portfolio-loader {
+    transition: opacity 140ms linear;
+  }
+
+  html.loader-exiting .portfolio-loader {
+    transform: none;
+  }
+
+  .portfolio-loader::before,
+  .portfolio-loader-statuses span,
+  .portfolio-loader-timeline span {
     animation: none;
+  }
+
+  .portfolio-loader-statuses span {
+    display: none;
+  }
+
+  .portfolio-loader-statuses span:last-child {
+    display: block;
+    opacity: 1;
+    transform: none;
+  }
+
+  .portfolio-loader-timeline span {
+    transform: scaleX(1);
   }
 
   .reveal,

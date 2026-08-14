@@ -4,8 +4,6 @@ const scrollPositionKey = `portfolio-scroll:${window.location.pathname}`;
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
 function initializePortfolio() {
-window.setTimeout(() => document.documentElement.classList.remove("is-entering"), 900);
-
 document.querySelectorAll(".horizontal-track").forEach((track) => {
   Array.from(track.children).forEach((item, index) => {
     item.style.setProperty("--item-index", String(index));

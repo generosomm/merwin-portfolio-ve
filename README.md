@@ -56,6 +56,7 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Compact page rhythm with consistent spacing between headings, cards, and sections
 - Single-line responsive credentials heading with tighter card spacing
 - Smooth page-entry curtain and bidirectional scroll reveals
+- Session-only ERO | VISUALS “Finalizing the cut” loader with a sub-1.2-second timeline and reduced-motion fade
 - Lightweight IntersectionObserver scroll reveals using opacity and GPU-friendly transforms
 - Subtle glass blur surfaces with reduced mobile blur for smoother scrolling
 - Visible frosted-glass gradients and blur-to-sharp scroll entrances
@@ -87,7 +88,7 @@ merwin-portfolio-ve/
 |   |-- design-system.css        # Color, spacing, type, border, and easing tokens
 |   |-- components.css           # Reusable cards, actions, chips, controls, and section themes
 |   |-- consistency.css          # Final wrapper, typography, card, and responsive consistency layer
-|   |-- motion.css               # Curtain, reveal, and reduced-motion behavior
+|   |-- motion.css               # Session loader, reveal, and reduced-motion behavior
 |   `-- liquid-glass.css         # Scoped glass surfaces, mobile tuning, and transparency fallbacks
 |-- data/
 |   |-- 00-meta.json

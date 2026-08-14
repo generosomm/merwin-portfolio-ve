@@ -1,0 +1,528 @@
+/*
+  Final consistency layer.
+  This file normalizes shared wrappers, type rhythm, card behavior, and
+  responsive rules after the section-specific styles have been applied.
+*/
+
+:root {
+  --display-measure: 15ch;
+  --copy-measure: 62ch;
+  --work-card-width: clamp(280px, 27vw, 320px);
+  --content-gap: clamp(16px, 2vw, 24px);
+  --card-copy-size: 14px;
+  --card-copy-leading: 1.55;
+}
+
+/* Keep every full-width section aligned to one content wrapper. */
+.hero,
+.section,
+.contact-inner,
+.site-footer {
+  width: var(--page);
+  max-width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.proof {
+  width: 100%;
+  max-width: none;
+  padding-right: max(24px, calc((100% - 1140px) / 2));
+  padding-left: max(24px, calc((100% - 1140px) / 2));
+}
+
+.hero-copy,
+.section-heading > *,
+.role-spotlight > *,
+.about-layout > *,
+.contact-inner,
+.contact-email,
+.contact-meta {
+  min-width: 0;
+}
+
+/* Use predictable wrapping rules for each level of the type hierarchy. */
+.hero h1,
+.section-heading h2,
+.about h2,
+.contact h2 {
+  max-inline-size: var(--display-measure);
+  overflow-wrap: normal;
+  text-wrap: balance;
+}
+
+.hero h1 {
+  max-inline-size: 11ch;
+}
+
+.contact h2 {
+  max-inline-size: 17ch;
+}
+
+.role-spotlight h3,
+.role-spotlight h4,
+.case-copy h3,
+.repo-list h4,
+.operations-card h4,
+.credentials-heading h3,
+.testimonial-card blockquote {
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+.hero-intro,
+.section-heading > p,
+.section-heading-aside > p,
+.role-organization,
+.role-spotlight-details > p,
+.case-copy > p,
+.repo-list article > span,
+.operations-scope,
+.operations-outcome,
+.about-copy > p,
+.about-details .content-details-panel > p,
+.credentials-proof > p,
+.contact-inner > p:not(.eyebrow) {
+  max-inline-size: var(--copy-measure);
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+/* Give every section heading the same layout and supporting-copy rhythm. */
+.section-heading {
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  gap: clamp(24px, 4vw, 48px);
+  align-items: end;
+}
+
+.section-heading > p,
+.section-heading-aside > p {
+  margin-bottom: 2px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.eyebrow,
+.gallery-kicker,
+.subsection-title {
+  line-height: 1.4;
+}
+
+.eyebrow,
+.gallery-kicker {
+  margin-bottom: 12px;
+}
+
+.subsection-title {
+  min-height: 44px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* Normalize the three work headers before their galleries. */
+.role-spotlight {
+  gap: var(--content-gap);
+  margin-bottom: 20px;
+  padding: var(--panel-padding);
+}
+
+.role-spotlight h3,
+.role-spotlight h4,
+.header-card-secondary-title h4 {
+  font-size: clamp(22px, 2.2vw, 28px);
+  line-height: 1.1;
+}
+
+.role-title-row,
+.header-card-secondary-title {
+  margin-bottom: 8px;
+}
+
+.role-organization,
+.role-spotlight-details > p {
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.content-details summary {
+  min-height: 44px;
+}
+
+/* Make Video, Web, and Workflow cards feel like one component family. */
+.case-study,
+.repo-list article,
+.operations-card {
+  flex-basis: var(--work-card-width);
+  min-width: 0;
+  padding: 16px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.38)),
+    var(--glass-light);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  box-shadow: var(--surface-shadow), var(--edge-blur);
+}
+
+.case-copy {
+  padding: 14px 0 0;
+}
+
+.case-copy h3,
+.repo-list h4,
+.operations-card h4 {
+  display: block;
+  min-height: 0;
+  margin-bottom: 8px;
+  overflow: visible;
+  font-size: clamp(19px, 1.7vw, 22px);
+  line-height: 1.18;
+  -webkit-line-clamp: initial;
+}
+
+.case-copy > p,
+.repo-list article > span,
+.operations-scope,
+.operations-outcome {
+  min-height: 0;
+  font-size: var(--card-copy-size);
+  line-height: var(--card-copy-leading);
+}
+
+.case-copy > p {
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: initial;
+}
+
+.case-actions,
+.repo-links,
+.operations-tools {
+  margin-top: auto;
+}
+
+.case-original-link,
+.repo-links .ui-action,
+.header-card-action.ui-action,
+.credentials-actions > .ui-action,
+.contact-cv-link.ui-action {
+  min-height: 42px;
+}
+
+.case-study:focus-within,
+.repo-list article:focus-within,
+.operations-card:focus-within {
+  background: var(--white);
+  border-color: var(--ink);
+  box-shadow: 0 0 6px rgba(10, 10, 10, 0.13);
+  transform: translateY(-3px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .case-study:hover,
+  .repo-list article:hover,
+  .operations-card:hover {
+    background: var(--white);
+    border-color: var(--ink);
+    box-shadow: 0 0 6px rgba(10, 10, 10, 0.13);
+    transform: translateY(-3px);
+  }
+}
+
+/* Align the supporting panels and contact area to the same spacing language. */
+.about-layout,
+.credentials {
+  padding: var(--panel-padding);
+}
+
+.credentials-heading h3 {
+  max-inline-size: var(--display-measure);
+  line-height: 1.15;
+}
+
+.contact-email strong {
+  line-height: 1.05;
+}
+
+.site-footer {
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  .hero-layout,
+  .role-spotlight,
+  .about-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-layout {
+    gap: 24px;
+    align-items: start;
+  }
+
+  .hero-copy {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  .hero-receipt {
+    width: min(100%, 560px);
+    max-width: 560px;
+    transform: none;
+  }
+
+  .section-heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .section-heading > p,
+  .section-heading-aside > p {
+    max-width: 46ch;
+  }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --work-card-width: min(calc(100% - 28px), 330px);
+    --card-copy-size: 14px;
+    --section-space: 44px;
+    --section-gap: 42px;
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  .site-header {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .brand,
+  .brand strong {
+    min-width: 0;
+  }
+
+  .brand strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .menu-button.ui-icon-button {
+    flex: 0 0 44px;
+  }
+
+  .hero {
+    padding-top: 24px;
+    padding-bottom: 40px;
+  }
+
+  .availability {
+    margin-bottom: 22px;
+    padding-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .hero-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .hero-copy,
+  .hero-receipt {
+    width: 100%;
+    max-width: none;
+  }
+
+  .hero h1 {
+    margin-bottom: 16px;
+    font-size: clamp(44px, 12.5vw, 54px);
+    line-height: 0.94;
+  }
+
+  .hero-intro {
+    max-width: 36ch;
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .hero-actions .ui-action {
+    width: 100%;
+    min-height: 44px;
+    padding-right: 12px;
+    padding-left: 12px;
+    gap: 10px;
+  }
+
+  .hero-services {
+    margin-top: 14px;
+  }
+
+  .hero-receipt {
+    padding: 14px;
+  }
+
+  .receipt-top {
+    margin-bottom: 16px;
+  }
+
+  .receipt-number {
+    margin-bottom: 8px;
+    font-size: clamp(44px, 13vw, 56px);
+  }
+
+  .receipt-caption {
+    max-width: 34ch;
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .receipt-stats {
+    margin-bottom: 12px;
+  }
+
+  .receipt-stats div {
+    gap: 10px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+
+  .section {
+    padding-top: var(--section-space);
+    padding-bottom: var(--section-space);
+  }
+
+  .proof {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .section-heading {
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+
+  .section-heading h2,
+  .about h2 {
+    max-inline-size: 13ch;
+  }
+
+  .contact h2 {
+    max-inline-size: 15ch;
+  }
+
+  .section-heading > p,
+  .section-heading-aside > p {
+    max-width: 34ch;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .role-spotlight {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    padding: 16px;
+  }
+
+  .role-title-row {
+    gap: 8px;
+  }
+
+  .case-study,
+  .repo-list article,
+  .operations-card {
+    flex-basis: var(--work-card-width);
+    min-height: 0;
+    padding: 14px;
+  }
+
+  .case-copy {
+    padding-top: 14px;
+  }
+
+  .gallery-kicker {
+    margin-bottom: 10px;
+  }
+
+  .subsection-title {
+    margin-bottom: 14px;
+  }
+
+  .case-original-link,
+  .repo-links .ui-action,
+  .header-card-action.ui-action,
+  .credentials-actions > .ui-action,
+  .contact-cv-link.ui-action {
+    min-height: 44px;
+  }
+
+  .about-layout,
+  .credentials {
+    padding: 16px;
+  }
+
+  .contact {
+    padding-top: 40px;
+    padding-bottom: 18px;
+  }
+
+  .contact-inner > p:not(.eyebrow) {
+    max-width: 34ch;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .contact-email strong {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 380px) {
+  :root {
+    --page: calc(100% - 28px);
+    --section-space: 40px;
+  }
+
+  .site-header {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .hero {
+    padding-top: 20px;
+    padding-bottom: 36px;
+  }
+
+  .hero h1 {
+    font-size: clamp(42px, 13vw, 48px);
+  }
+
+  .hero-actions {
+    gap: 6px;
+  }
+
+  .hero-actions .ui-action {
+    padding-right: 9px;
+    padding-left: 9px;
+    font-size: 11px;
+  }
+
+  .hero-receipt {
+    padding: 12px;
+  }
+
+  .section-heading h2,
+  .about h2 {
+    font-size: clamp(34px, 11vw, 42px);
+  }
+}

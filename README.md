@@ -35,7 +35,7 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Work dropdown with direct links to Video Editing, Web Projects, and Project Support
 - Smooth internal link scrolling
 - Scroll position restoration after refreshing
-- Responsive mobile, tablet, and desktop layouts
+- Responsive density tiers for small phones, regular phones, tablets, and desktop layouts
 - Mobile horizontal galleries with centered card snapping and stable card widths during browser toolbar resizing
 - Mouse drag, touch swipe, keyboard access, and gallery controls
 - Expandable council work and project details
@@ -52,6 +52,7 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Subtle glass blur surfaces with reduced mobile blur for smoother scrolling
 - Visible frosted-glass gradients and blur-to-sharp scroll entrances
 - Shared compact-density tokens for header, sections, panels, controls, and galleries
+- Shared content wrappers, heading measures, wrapping rules, and work-card sizing across every section
 - Square play controls, flat low-radius edge softness, and high-contrast black-and-white component surfaces
 - Compact light footer and a desktop navigation that only shows the menu control on mobile
 - Lazy-loaded images and portfolio evidence
@@ -71,6 +72,7 @@ merwin-portfolio-ve/
 |   |-- layout.css               # Structural layouts and section-specific responsive rules
 |   |-- design-system.css        # Color, spacing, type, border, and easing tokens
 |   |-- components.css           # Reusable cards, actions, chips, controls, and section themes
+|   |-- consistency.css          # Final wrapper, typography, card, and responsive consistency layer
 |   `-- motion.css               # Curtain, reveal, and reduced-motion behavior
 |-- data/
 |   |-- 00-meta.json

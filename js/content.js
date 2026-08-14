@@ -644,7 +644,7 @@ function renderContact(data) {
   const locationLines = list(data.locationLines).filter(hasText);
 
   root.innerHTML = `<div class="contact-inner">
-    ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
+    ${hasText(data.eyebrow) ? `<p class="eyebrow contact-availability">${text(data.eyebrow)}</p>` : ""}
     ${hasText(data.heading) ? `<h2 id="contact-title">${text(data.heading)}${hasText(data.headingAccent) ? `<br><em>${text(data.headingAccent)}</em>` : ""}</h2>` : ""}
     ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
     ${hasText(data.email) ? `<a class="contact-email" href="mailto:${attr(data.email)}?subject=${subject}&amp;body=${body}"><span>${text(data.emailAction || ui("labels.startConversation"))}</span><strong>${text(data.emailLabel || data.email)}</strong><i aria-hidden="true">&nearr;</i></a>` : ""}

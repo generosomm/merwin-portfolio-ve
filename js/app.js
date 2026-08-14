@@ -228,8 +228,7 @@ const revealTargets = Array.from(document.querySelectorAll([
   ".proof-total",
   ".about-layout",
   ".credentials",
-  ".contact-inner > *",
-  ".site-footer > *"
+  ".contact-inner > *"
 ].join(",")));
 
 revealTargets.forEach((target, index) => {

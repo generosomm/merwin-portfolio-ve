@@ -286,11 +286,12 @@ html.liquid-glass .media-dialog {
     background-attachment: scroll;
   }
 
+  html.liquid-glass .site-header,
   html.liquid-glass .site-nav {
-    background: rgba(8, 13, 16, 0.96);
+    background: rgba(8, 13, 16, 0.98);
     border-bottom-color: rgba(255, 255, 255, 0.22);
-    -webkit-backdrop-filter: blur(14px) saturate(120%);
-    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   html.liquid-glass .site-nav .nav-dropdown-menu {
@@ -309,17 +310,34 @@ html.liquid-glass .media-dialog {
   html.liquid-glass .credentials,
   html.liquid-glass .certificate-card,
   html.liquid-glass .testimonial-card {
-    background: rgba(255, 255, 255, 0.74);
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(241, 246, 247, 0.9)),
+      #f8f9f9;
     box-shadow: 0 8px 20px rgba(18, 31, 38, 0.08), var(--glass-inset);
-    -webkit-backdrop-filter: blur(10px) saturate(112%);
-    backdrop-filter: blur(10px) saturate(112%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  html.liquid-glass .hero-receipt,
+  html.liquid-glass .contact,
+  html.liquid-glass .contact-email,
+  html.liquid-glass .contact-email i,
+  html.liquid-glass .contact-social-links,
+  html.liquid-glass .proof .proof-card,
+  html.liquid-glass .ui-action,
+  html.liquid-glass .ui-icon-button,
+  html.liquid-glass .ui-chip,
+  html.liquid-glass .tech-icon,
+  html.liquid-glass .case-category,
+  html.liquid-glass .play-pill,
+  html.liquid-glass .gallery-controls button {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   html.liquid-glass .gallery-controls button {
     background: rgba(255, 255, 255, 0.9);
     border-color: rgba(11, 17, 20, 0.4);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
   }
 }
 

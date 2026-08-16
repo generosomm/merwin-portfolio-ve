@@ -32,6 +32,7 @@
   "labels": {
     "careerHighlights": "Career highlights",
     "availableServices": "Available services",
+    "featuredWorkPreview": "Featured editing work preview",
     "browseCouncilWork": "Browse council work",
     "councilWorkControls": "Council work controls",
     "councilWorkTrack": "Council work. Scroll horizontally to explore.",
@@ -52,6 +53,8 @@
     "viewCode": "View code",
     "workflowSamplesTrack": "VA workflow samples. Scroll horizontally to explore.",
     "viewDetails": "View details",
+    "showDropdown": "Show",
+    "hideDropdown": "Hide",
     "toolsUsed": "Tools used in this workflow",
     "toolsPrefix": "Tools:",
     "analyticsProofTrack": "Analytics proof. Scroll horizontally to explore.",

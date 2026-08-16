@@ -42,9 +42,10 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Slow seamless desktop carousels with Editing Work moving left and Web Projects moving right
 - Compact mobile Editing Work and Web Project carousels with centered snapping, manual swipe, and left/right arrow controls
 - Consistent mobile carousel side gutters so navigation controls do not touch project cards
-- Arrow-free Editing Work and Web Project galleries with smooth glow-free edge fades
+- Arrow-free desktop Editing Work and Web Project galleries with unclipped cards and fully visible hover markers
 - Hidden Video, Web Project, and Workflow scrollbars while preserving mouse drag, touch swipe, links, and keyboard access
 - Mouse drag, touch swipe, keyboard access, and gallery controls
+- Infinite-carousel duplicates mirror hover feedback and forward pointer activation to their original accessible controls
 - Expandable council work and project details
 - Native video and image dialogs
 - Clear original-post links separated from local video previews
@@ -56,20 +57,29 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Compact page rhythm with consistent spacing between headings, cards, and sections
 - Single-line responsive credentials heading with tighter card spacing
 - Bidirectional scroll reveals for downward and upward scrolling
-- Fast GSAP hero sequencing plus reusable selector-based section motion: heading masks, project-card alternation, proof scaling and counter settling, operations and certificate rotation, media wipes, expandable panels, desktop card depth, magnetic CTAs, active navigation feedback, gallery selection feedback, tactile controls, footer entrance, and dialog entrances
+- Fast GSAP hero sequencing plus three reusable motion families: heading cuts, card and panel lifts, and metadata staggers
+- Short media wipes, analytics counters, expandable-panel entrances, dialog entrances, and restrained arrow feedback
 - Scroll performance mode avoids continuous scrub animations, fixed page backgrounds, permanent compositor layers, and sticky-header backdrop blur
 - Central reusable motion configuration with no visible copy stored in JavaScript
 - Lightweight motion mode for data-saver and lower-memory or lower-core devices
-- Session-only ERO | VISUALS “Finalizing the cut” loader with a sub-1.2-second timeline and reduced-motion fade
+- Session-only ERO | VISUALS "Finalizing the cut" loader with a sub-one-second timeline and reduced-motion fade
 - Critical loader fallback that keeps its text hidden if imported motion styles are stale or delayed
 - Lightweight IntersectionObserver scroll reveals using opacity and GPU-friendly transforms
-- Liquid-glass colors and surfaces without background blur on content sections
-- Mobile performance mode uses matching solid glass surfaces and debounces scroll persistence
-- Visible frosted-glass gradients with restrained transform-and-opacity entrances
+- ERO | VISUALS editorial production-desk system with sharp frames, section rails, timeline-style service labels, a split About panel, reliable signal-green states, and a compact contact action
+- Full-bleed cinematic hero with a JSON-driven editing wall assembled from the first three portfolio projects, plus a layered proof receipt
+- Collision-safe compact proof panel below the editing wall, including narrow-desktop and mobile layouts
+- Dark credentials masthead with a reusable certificate index system and a clean paper gallery surface
+- Plain subsection labels with the signal-green accent reserved for section numbers only
+- Default-collapsed Creative & E-commerce VA disclosure that keeps Section 03 available without dominating the Work section
+- One reusable dropdown control across Section 03, workflow cards, project details, council work, and About, with JSON-driven Show and Hide labels plus a shared chevron state
+- Always-visible credentials panel with a high-contrast LinkedIn verification action
+- Lightweight reading-progress line integrated with the existing scheduled navigation update
+- Solid mobile surfaces and debounced scroll persistence for smoother low-end performance
+- No backdrop blur, floating gradient blobs, rounded glass cards, or decorative shadow stacks
 - Shared compact-density tokens for header, sections, panels, controls, and galleries
 - Shared content wrappers, heading measures, wrapping rules, and work-card sizing across every section
 - Simple compact panels and consistent spacing across roles, projects, supporting information, and responsive layouts
-- Scoped liquid-glass surfaces that preserve the compact layout and can be disabled from one root class
+- Scoped editorial theme that preserves the compact layout and can be disabled from one root class
 - Blinking green availability indicators with a reduced-motion fallback
 - Minimal divider footer with always-visible copyright, build note, and back-to-top link
 - Shared minimal hover and keyboard-focus feedback across Video, Web Project, and Workflow cards
@@ -95,7 +105,7 @@ merwin-portfolio-ve/
 |   |-- components.css           # Reusable cards, actions, chips, controls, and section themes
 |   |-- consistency.css          # Final wrapper, typography, card, and responsive consistency layer
 |   |-- motion.css               # Session loader, reveal, and reduced-motion behavior
-|   `-- liquid-glass.css         # Scoped glass surfaces, mobile tuning, and transparency fallbacks
+|   `-- editorial-cut.css        # Scoped ERO editorial surfaces, frame markers, and responsive theme
 |-- data/
 |   |-- 00-meta.json
 |   |-- 01-nav.json
@@ -116,7 +126,7 @@ merwin-portfolio-ve/
 |-- scripts/
 |   |-- validate-content.mjs      # Validates JSON, assets, containers, and JSON-only visible text
 |   |-- test-rendering.mjs        # Tests normal, revised, added, removed, and optional content
-|   `-- test-motion.mjs           # Tests dependency order, fallback, reduced motion, and blur removal
+|   `-- test-motion.mjs           # Tests dependency order, fallback, motion families, and editorial theme
 |-- index.html                    # Semantic containers with no hardcoded page copy
 |-- README.md
 `-- .gitignore

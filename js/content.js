@@ -42,6 +42,23 @@ const formatUi = (path, values = {}) =>
     ui(path)
   );
 
+function dropdownChevron() {
+  return '<span class="ui-chevron" aria-hidden="true"></span>';
+}
+
+function disclosureControl() {
+  return `<span class="ui-disclosure-control" aria-hidden="true">
+    <span class="ui-disclosure-state ui-disclosure-state-closed">${text(ui("labels.showDropdown"))}</span>
+    <span class="ui-disclosure-state ui-disclosure-state-open">${text(ui("labels.hideDropdown"))}</span>
+    ${dropdownChevron()}
+  </span>`;
+}
+
+function disclosureSummary(content, className = "") {
+  const classAttribute = hasText(className) ? ` class="${attr(className)}"` : "";
+  return `<summary${classAttribute}>${content}${disclosureControl()}</summary>`;
+}
+
 function setVisible(element, visible) {
   if (!element) return;
   element.hidden = !visible;
@@ -153,7 +170,7 @@ function renderNavigation(data) {
 
         return `<div class="nav-dropdown">
           <a class="nav-dropdown-trigger" href="${attr(link.href)}" aria-haspopup="true">
-            <span>${text(link.label)}</span><i aria-hidden="true">&darr;</i>
+            <span>${text(link.label)}</span>${dropdownChevron()}
           </a>
           <div class="nav-dropdown-menu" aria-label="${attr(link.label)} ${attr(ui("navigation.sectionsSuffix"))}">
             ${children.map((child) => `<a href="${attr(child.href)}">
@@ -168,7 +185,7 @@ function renderNavigation(data) {
     </nav>`;
 }
 
-function renderHero(data) {
+function renderHero(data, workData = {}) {
   const root = document.querySelector('[data-content="hero"]');
   const visible = data && (hasText(data.title) || hasText(data.intro));
   setVisible(root, visible);
@@ -176,6 +193,9 @@ function renderHero(data) {
 
   const services = list(data.services).filter(hasText);
   const receiptStats = records(data.receipt?.stats);
+  const featuredFrames = records(workData?.items)
+    .filter((item) => hasText(item.image) && hasText(item.title))
+    .slice(0, 3);
   const primaryCta = hasText(data.primaryCta?.label) && hasText(data.primaryCta?.href)
     ? `<a class="button button-dark ui-action ui-action-solid" href="${attr(data.primaryCta.href)}">${text(data.primaryCta.label)} <span aria-hidden="true">&darr;</span></a>`
     : "";
@@ -191,10 +211,19 @@ function renderHero(data) {
         ${hasText(data.receipt.linkLabel) && hasText(data.receipt.linkHref) ? `<a href="${attr(data.receipt.linkHref)}">${text(data.receipt.linkLabel)} <span aria-hidden="true">&searr;</span></a>` : ""}
       </aside>`
     : "";
+  const visualReel = featuredFrames.length
+    ? `<div class="hero-reel" aria-label="${attr(ui("labels.featuredWorkPreview"))}">
+        ${featuredFrames.map((item, index) => `<a class="hero-frame" href="#editing" aria-label="${attr(item.title)}">
+          <img src="${attr(item.image)}" alt="${attr(item.imageAlt || item.title)}" ${index ? 'loading="lazy"' : ""}>
+          <span class="hero-frame-index" aria-hidden="true">${pad(index)}</span>
+          <span class="hero-frame-caption"><strong>${text(item.title)}</strong>${hasText(item.result) ? `<small>${text(item.result)}</small>` : ""}</span>
+        </a>`).join("")}
+      </div>`
+    : "";
 
   root.innerHTML = `
     ${hasText(data.availability) ? `<div class="availability"><span class="status-dot" aria-hidden="true"></span>${text(data.availability)}</div>` : ""}
-    <div class="hero-layout${receipt ? "" : " hero-layout-single"}">
+    <div class="hero-layout${receipt || visualReel ? "" : " hero-layout-single"}">
       <div class="hero-copy">
         ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
         <h1 id="hero-title">${text(data.title)}${hasText(data.titleAccent) ? `<br><em>${text(data.titleAccent)}</em>` : ""}</h1>
@@ -202,7 +231,7 @@ function renderHero(data) {
         ${primaryCta || secondaryCta ? `<div class="hero-actions">${primaryCta}${secondaryCta}</div>` : ""}
     ${services.length ? `<ul class="hero-services" aria-label="${attr(ui("labels.availableServices"))}">${services.map((service) => `<li class="ui-chip">${text(service)}</li>`).join("")}</ul>` : ""}
       </div>
-      ${receipt}
+      ${visualReel || receipt ? `<div class="hero-visual-stack">${visualReel}${receipt}</div>` : ""}
     </div>`;
 }
 
@@ -269,7 +298,7 @@ function renderWork(data) {
   if (!contentVisible) return;
 
   const councilDetails = roleLinks.length ? `<details class="content-details council-details">
-    <summary><span>${text(role.linksSummary || role.linksLabel || ui("labels.browseCouncilWork"))} <b>${roleLinks.length}</b></span></summary>
+    ${disclosureSummary(`<span>${text(role.linksSummary || role.linksLabel || ui("labels.browseCouncilWork"))} <b>${roleLinks.length}</b></span>`)}
     <div class="content-details-panel role-links">
       ${creator && (hasText(role.summary) || (hasText(role.organizationLinkLabel) && hasText(role.organizationUrl))) ? `<div class="council-details-copy">
         ${hasText(role.summary) ? `<p class="council-details-summary">${text(role.summary)}</p>` : ""}
@@ -420,7 +449,7 @@ function renderDevelopment(data) {
             ${hasText(project?.title) ? `<h4>${text(project.title)}</h4>` : ""}
             ${hasText(project?.description) ? `<span>${text(project.description)}</span>` : ""}
             ${list(project?.features).length ? `<details class="content-details repo-details">
-              <summary>${text(project.detailsLabel || data.detailsLabel || ui("labels.projectDetails"))}</summary>
+              ${disclosureSummary(text(project.detailsLabel || data.detailsLabel || ui("labels.projectDetails")))}
               <div class="content-details-panel"><ul class="repo-features">${list(project.features).map((feature) => `<li>${text(feature)}</li>`).join("")}</ul></div>
             </details>` : ""}
           </div>
@@ -473,12 +502,13 @@ function renderOperations(data) {
   setVisible(root, visible);
   if (!visible) return;
 
-  root.innerHTML = `
-    <div class="subsection-title">
+  root.innerHTML = `<details class="operations-section-details content-details">
+    ${disclosureSummary(`
       <p><span>${text(ui("sectionIndexes.operations"))}</span> <span class="operations-label-full">${text(data.label)}</span>${hasText(data.mobileLabel) ? `<span class="operations-label-mobile">${text(data.mobileLabel)}</span>` : ""}</p>
       ${hasText(data.status) ? `<span class="operations-status-full">${text(data.status)}</span>` : ""}
       ${hasText(data.mobileStatus) ? `<span class="operations-status-mobile">${text(data.mobileStatus)}</span>` : ""}
-    </div>
+    `, "subsection-title operations-section-summary")}
+    <div class="operations-section-panel content-details-panel">
     ${role && hasText(role.title) ? `<aside class="role-spotlight header-card operations-role ui-card" aria-label="${attr(role.title)}">
       <div class="role-spotlight-heading header-card-primary">
         ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
@@ -517,7 +547,7 @@ function renderOperations(data) {
         ${hasText(item.problem) ? `<p class="operations-scope">${text(item.problem)}</p>` : ""}
         ${hasText(item.outcome) ? `<p class="operations-outcome">${text(item.outcome)}</p>` : ""}
         ${deliverables.length ? `<details class="content-details operations-details">
-          <summary>${text(item.deliverablesLabel || ui("labels.viewDetails"))}</summary>
+          ${disclosureSummary(text(item.deliverablesLabel || ui("labels.viewDetails")))}
           <div class="content-details-panel operations-deliverables">
             <ul>${deliverables.map((deliverable) => `<li>${text(deliverable)}</li>`).join("")}</ul>
           </div>
@@ -533,7 +563,9 @@ function renderOperations(data) {
     ${hasText(data.tools) || hasText(data.approach) ? `<div class="operations-footer">
       ${hasText(data.tools) ? `<p class="operations-note">${text(ui("labels.toolsPrefix"))} ${text(data.tools)}</p>` : ""}
       ${hasText(data.approach) ? `<p class="operations-disclosure">${text(data.approach)}</p>` : ""}
-    </div>` : ""}`;
+    </div>` : ""}
+    </div>
+  </details>`;
 }
 
 function renderStats(data) {
@@ -603,7 +635,7 @@ function renderAbout(data) {
     <div class="about-copy">
       ${paragraphs.length ? `<p>${text(paragraphs[0])}</p>` : ""}
       ${paragraphs.length > 1 ? `<details class="content-details about-details">
-        <summary>${text(data.detailsLabel || ui("labels.moreAboutMe"))}</summary>
+        ${disclosureSummary(text(data.detailsLabel || ui("labels.moreAboutMe")))}
         <div class="content-details-panel">${paragraphs.slice(1).map((paragraph) => `<p>${text(paragraph)}</p>`).join("")}</div>
       </details>` : ""}
       ${facts.length ? `<div class="about-facts">${facts.map((fact) => `<div><span>${text(fact?.label)}</span><strong>${text(fact?.value)}</strong></div>`).join("")}</div>` : ""}
@@ -626,9 +658,7 @@ function renderCredentials(data) {
         </div>` : ""}
       </div>
       ${hasText(data.heading) ? `<h3 id="credentials-title">${text(data.heading)}</h3>` : ""}
-      ${hasText(data.description) ? `<div class="credentials-proof">
-        ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
-      </div>` : ""}
+      ${hasText(data.description) ? `<div class="credentials-proof"><p>${text(data.description)}</p></div>` : ""}
     </div>
     ${items.length ? `<div class="gallery-shell">
       <div class="certificate-grid horizontal-track" id="certificate-track" tabindex="0" aria-label="${attr(ui("labels.certificatesTrack"))}">
@@ -702,7 +732,7 @@ function renderPortfolio(payload) {
   const renderers = [
     ["meta", renderMeta],
     ["nav", renderNavigation],
-    ["hero", renderHero],
+    ["hero", (heroData) => renderHero(heroData, data.work)],
     ["work", renderWork],
     ["dev", renderDevelopment],
     ["operations", renderOperations],

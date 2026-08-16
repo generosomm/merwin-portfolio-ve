@@ -8,7 +8,7 @@
   <style>.portfolio-loader { display: none; }</style>
   <script>
     (() => {
-      document.documentElement.classList.add("liquid-glass");
+      document.documentElement.classList.add("editorial-cut");
 
       try {
         const loaderSessionKey = "ero-visuals-loader-seen";
@@ -47,12 +47,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20260817-4">
-  <script src="js/content.js?v=20260814-7" defer></script>
-  <script src="js/app.js?v=20260814-14" defer></script>
+  <link rel="stylesheet" href="css/styles.css?v=20260817-17">
+  <script src="js/content.js?v=20260817-4" defer></script>
+  <script src="js/app.js?v=20260817-2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
-  <script src="js/motion.js?v=20260817-8" defer></script>
+  <script src="js/motion.js?v=20260817-9" defer></script>
 </head>
 
 <body>
@@ -68,6 +68,7 @@
   <div class="content-status" id="content-status" role="status" hidden></div>
 
   <header class="site-header" data-content="nav"></header>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
   <main id="main">
     <section class="hero" id="top" data-content="hero" aria-labelledby="hero-title"></section>

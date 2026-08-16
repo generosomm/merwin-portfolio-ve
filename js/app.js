@@ -13,6 +13,7 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
 const menuButton = document.querySelector(".menu-button");
 const navigation = document.querySelector(".site-nav");
 const siteHeader = document.querySelector(".site-header");
+const scrollProgress = document.querySelector(".scroll-progress span");
 
 function closeMenu() {
   if (!menuButton || !navigation) return;
@@ -73,6 +74,13 @@ let scrollSaveTimer = null;
 
 function updateActiveNavigation() {
   navigationFrame = null;
+
+  if (scrollProgress) {
+    const scrollableDistance = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const progress = Math.min(1, Math.max(0, window.scrollY / scrollableDistance));
+    scrollProgress.style.transform = `scaleX(${progress})`;
+  }
+
   if (!navigationSections.length) return;
 
   const headerHeight = siteHeader?.offsetHeight || 70;
@@ -415,6 +423,7 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
   const isAutoCarousel = ["video-track", "project-track"].includes(track.id) && !reduceMotion;
   const carouselDirection = track.id === "project-track" ? -1 : 1;
   const carouselInteractionSurface = track.closest(".gallery-shell") || track;
+  const carouselControlSelector = "a, button, input, select, textarea, [tabindex]";
 
   if (isAutoCarousel && !track.querySelector("[data-carousel-clone]")) {
     Array.from(track.children).forEach((item) => {
@@ -423,10 +432,9 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
       const clone = item.cloneNode(true);
       clone.setAttribute("data-carousel-clone", "");
       clone.setAttribute("aria-hidden", "true");
-      clone.inert = true;
       clone.classList.remove("reveal", "reveal-from-top", "is-visible");
       clone.style.removeProperty("--reveal-delay");
-      clone.querySelectorAll("a, button, input, select, textarea, [tabindex]").forEach((control) => {
+      clone.querySelectorAll(carouselControlSelector).forEach((control) => {
         control.setAttribute("tabindex", "-1");
       });
       track.append(clone);
@@ -437,6 +445,33 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
     return Array.from(track.children).filter(
       (item) => item instanceof HTMLElement && !item.hasAttribute("data-carousel-clone")
     );
+  }
+
+  if (isAutoCarousel) {
+    track.addEventListener("click", (event) => {
+      if (!(event.target instanceof Element)) return;
+      const clone = event.target.closest("[data-carousel-clone]");
+      if (!(clone instanceof HTMLElement) || !track.contains(clone)) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      if (blockClick) return;
+
+      const cloneControl = event.target.closest(carouselControlSelector);
+      if (!(cloneControl instanceof HTMLElement) || !clone.contains(cloneControl)) return;
+      cloneControl.blur();
+
+      const clones = Array.from(track.querySelectorAll("[data-carousel-clone]"));
+      const originals = getItems();
+      const cloneIndex = clones.indexOf(clone);
+      const original = originals[cloneIndex];
+      if (!(original instanceof HTMLElement)) return;
+
+      const cloneControls = Array.from(clone.querySelectorAll(carouselControlSelector));
+      const originalControls = Array.from(original.querySelectorAll(carouselControlSelector));
+      const controlIndex = cloneControls.indexOf(cloneControl);
+      originalControls[controlIndex]?.click();
+    }, true);
   }
 
   function hasTrackOverflow() {

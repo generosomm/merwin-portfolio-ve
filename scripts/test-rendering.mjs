@@ -125,6 +125,9 @@ async function renderWith(mutate = () => {}) {
 const normal = await renderWith();
 assert.equal(normal.selectors.get("#skip-link").textContent, "Skip to content");
 assert.match(normal.selectors.get('[data-content="hero"]').innerHTML, /Merwin<br><em>Generoso\.<\/em>/);
+assert.equal(count(normal.selectors.get('[data-content="hero"]').innerHTML, /class="hero-frame"/g), 3);
+assert.match(normal.selectors.get('[data-content="hero"]').innerHTML, /aria-label="Featured editing work preview"/);
+assert.match(normal.selectors.get('[data-content="hero"]').innerHTML, /seven-sundays-thumb\.jpg/);
 assert.match(normal.selectors.get("#video-dialog-close").innerHTML, /Close &times;/);
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /assets\/images\/og-cover\.jpg/);
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /alt="ERO Visuals logo"/);
@@ -132,6 +135,7 @@ assert.doesNotMatch(normal.selectors.get('[data-content="nav"]').innerHTML, />MG
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /<a href="#top">Home<\/a>/);
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /class="nav-dropdown"/);
 assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /class="nav-dropdown-menu"/);
+assert.match(normal.selectors.get('[data-content="nav"]').innerHTML, /class="nav-dropdown-trigger"[\s\S]*class="ui-chevron"/);
 assert.equal(count(normal.selectors.get('[data-content="nav"]').innerHTML, /class="nav-dropdown-menu"[\s\S]*href="#editing"[\s\S]*href="#development"[\s\S]*href="#operations"/g), 1);
   assert.equal(count(normal.selectors.get('[data-content="work"]').innerHTML, /class="case-study ui-card"/g), 8);
   assert.match(normal.selectors.get('[data-content="work"]').innerHTML, /class="role-spotlight header-card ui-card video-spotlight"/);
@@ -222,6 +226,9 @@ assert.match(normal.selectors.get('[data-content="dev"]').innerHTML, /View websi
 assert.equal(count(normal.selectors.get('[data-content="stats"]').innerHTML, /class="proof-card image-trigger ui-card"/g), 5);
 assert.equal(normal.selectors.get('[data-content="testimonials"]').hidden, true);
 assert.equal(count(normal.selectors.get('[data-content="operations"]').innerHTML, /class="operations-card ui-card"/g), 3);
+assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /^<details class="operations-section-details content-details">/);
+assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /<summary class="subsection-title operations-section-summary">/);
+assert.doesNotMatch(normal.selectors.get('[data-content="operations"]').innerHTML, /<details class="operations-section-details content-details"\s+open/);
 assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /class="operations-label-mobile">Creative VA/);
 assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /class="operations-status-mobile">Small brands &amp; teams/);
 assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /class="role-spotlight header-card operations-role ui-card"/);
@@ -254,8 +261,20 @@ assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /Res
 assert.doesNotMatch(normal.selectors.get('[data-content="operations"]').innerHTML, /Practice scope|Sample deliverables|paid-client results/);
 assert.doesNotMatch(normal.selectors.get('[data-content="operations"]').innerHTML, /Portfolio exercises using demo data/);
 assert.doesNotMatch(normal.selectors.get('[data-content="about"]').innerHTML, /student|Batangas/i);
+
+for (const section of ["work", "dev", "operations", "about"]) {
+  const markup = normal.selectors.get(`[data-content="${section}"]`).innerHTML;
+  assert.equal(
+    count(markup, /<summary(?:\s|>)/g),
+    count(markup, /class="ui-disclosure-control"/g),
+    `${section} must use the shared dropdown control for every disclosure`
+  );
+}
+assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /ui-disclosure-state-closed">Show</);
+assert.match(normal.selectors.get('[data-content="operations"]').innerHTML, /ui-disclosure-state-open">Hide</);
 assert.match(normal.selectors.get('[data-content="credentials"]').innerHTML, /class="credentials-kicker-row"[\s\S]*Training and certifications[\s\S]*class="credentials-actions"/);
 assert.match(normal.selectors.get('[data-content="credentials"]').innerHTML, /Skills backed by recognized credentials\./);
+assert.doesNotMatch(normal.selectors.get('[data-content="credentials"]').innerHTML, /class="credentials-details|View credentials/);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-linkedin"/);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-links-label">Connect with me/);
 assert.match(normal.selectors.get('[data-content="contact"]').innerHTML, /class="contact-social-link contact-social-youtube"/);
@@ -271,9 +290,11 @@ assert.match(normal.selectors.get('[data-content="footer"]').innerHTML, /Back to
 const revisedInterface = await renderWith((data) => {
   data["12-ui.json"].labels.connectWithMe = "Professional links";
   data["12-ui.json"].labels.expand = "Open proof";
+  data["12-ui.json"].labels.featuredWorkPreview = "Selected project frames";
 });
 assert.match(revisedInterface.selectors.get('[data-content="contact"]').innerHTML, /Professional links/);
 assert.match(revisedInterface.selectors.get('[data-content="stats"]').innerHTML, /Open proof/);
+assert.match(revisedInterface.selectors.get('[data-content="hero"]').innerHTML, /aria-label="Selected project frames"/);
 
 const added = await renderWith((data) => {
   data["04-work.json"].items.push({
@@ -308,6 +329,7 @@ const removed = await renderWith((data) => {
   data["10-credentials.json"].items = [];
 });
 assert.doesNotMatch(removed.selectors.get('[data-content="work"]').innerHTML, /class="case-study ui-card"/);
+assert.doesNotMatch(removed.selectors.get('[data-content="hero"]').innerHTML, /class="hero-reel"/);
 assert.doesNotMatch(removed.selectors.get('[data-content="dev"]').innerHTML, /class="repo-list/);
 assert.doesNotMatch(removed.selectors.get('[data-content="operations"]').innerHTML, /class="operations-card ui-card"/);
 assert.doesNotMatch(removed.selectors.get('[data-content="stats"]').innerHTML, /class="proof-grid/);

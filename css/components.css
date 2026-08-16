@@ -97,6 +97,63 @@
   transition: background-color 200ms ease, color 200ms ease, transform 280ms var(--ease);
 }
 
+.ui-chevron {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 220ms var(--ease);
+}
+
+.ui-disclosure-control {
+  display: inline-flex;
+  min-width: 76px;
+  min-height: 32px;
+  padding: 0 10px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.ui-disclosure-state-open {
+  display: none;
+}
+
+.content-details[open]:not(.is-closing) > summary .ui-disclosure-state-closed,
+.content-details.is-expanding > summary .ui-disclosure-state-closed {
+  display: none;
+}
+
+.content-details[open]:not(.is-closing) > summary .ui-disclosure-state-open,
+.content-details.is-expanding > summary .ui-disclosure-state-open {
+  display: inline;
+}
+
+.content-details[open]:not(.is-closing) > summary .ui-chevron,
+.content-details.is-expanding > summary .ui-chevron {
+  transform: rotate(225deg);
+}
+
+.content-details > summary:hover .ui-disclosure-control,
+.content-details > summary:focus-visible .ui-disclosure-control {
+  background: var(--signal);
+  color: var(--ink);
+}
+
 /* The menu control is only needed when the desktop navigation collapses. */
 .menu-button.ui-icon-button {
   display: none;
@@ -326,10 +383,6 @@
 
 .content-details {
   border-top-color: var(--ink);
-}
-
-.content-details summary::after {
-  border-color: var(--ink);
 }
 
 .role-links a,

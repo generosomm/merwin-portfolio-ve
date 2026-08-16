@@ -21,6 +21,7 @@ const contentFiles = [
 
 const errors = [];
 const assetPaths = new Set();
+let interfaceData = null;
 
 function inspectValue(value) {
   if (typeof value === "string" && value.startsWith("assets/")) {
@@ -42,9 +43,16 @@ for (const filename of contentFiles) {
   try {
     const source = await readFile(path.join(root, relativePath), "utf8");
     const data = JSON.parse(source);
+    if (filename === "12-ui.json") interfaceData = data;
     inspectValue(data);
   } catch (error) {
     errors.push(`${relativePath}: ${error.message}`);
+  }
+}
+
+for (const label of ["showDropdown", "hideDropdown"]) {
+  if (typeof interfaceData?.labels?.[label] !== "string" || !interfaceData.labels[label].trim()) {
+    errors.push(`data/12-ui.json: labels.${label} is required by the shared dropdown control`);
   }
 }
 

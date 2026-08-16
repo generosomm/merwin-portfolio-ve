@@ -26,15 +26,14 @@ html.liquid-glass body {
     radial-gradient(circle at 92% 32%, rgba(220, 205, 236, 0.38), transparent 27%),
     radial-gradient(circle at 35% 82%, rgba(202, 226, 216, 0.38), transparent 26%),
     linear-gradient(145deg, #f7f9f9 0%, #e8edef 48%, #f2f4f3 100%);
-  background-attachment: fixed;
 }
 
 html.liquid-glass .site-header {
-  background: rgba(8, 13, 16, 0.82);
+  background: rgba(8, 13, 16, 0.97);
   border-bottom-color: rgba(255, 255, 255, 0.22);
   box-shadow: 0 8px 24px rgba(8, 13, 16, 0.12);
-  -webkit-backdrop-filter: blur(22px) saturate(135%);
-  backdrop-filter: blur(22px) saturate(135%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 html.liquid-glass .nav-dropdown-menu {
@@ -246,6 +245,27 @@ html.liquid-glass .contact {
   border-top: 1px solid rgba(255, 255, 255, 0.58);
   -webkit-backdrop-filter: blur(14px) saturate(115%);
   backdrop-filter: blur(14px) saturate(115%);
+}
+
+/*
+  Keep the current liquid-glass colors and surfaces, but remove background
+  blur from content sections. The header and menus retain their own treatment.
+*/
+html.liquid-glass .hero-receipt,
+html.liquid-glass .role-spotlight,
+html.liquid-glass .case-study,
+html.liquid-glass .repo-list article,
+html.liquid-glass .operations-card,
+html.liquid-glass .about-layout,
+html.liquid-glass .credentials,
+html.liquid-glass .certificate-card,
+html.liquid-glass .testimonial-card,
+html.liquid-glass .proof .proof-card,
+html.liquid-glass .contact,
+html.liquid-glass .contact-email,
+html.liquid-glass .contact-social-links {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 html.liquid-glass .site-footer {

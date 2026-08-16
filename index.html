@@ -20,10 +20,10 @@
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         window.setTimeout(() => {
           document.documentElement.classList.add("loader-exiting");
-        }, reduceMotion ? 120 : 880);
+        }, reduceMotion ? 100 : 520);
         window.setTimeout(() => {
           document.documentElement.classList.remove("loader-pending", "loader-exiting");
-        }, reduceMotion ? 260 : 1120);
+        }, reduceMotion ? 220 : 720);
       } catch {
         // Skip the session loader when browser storage is unavailable.
       }
@@ -45,10 +45,14 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23050505'/><text x='50' y='68' font-size='54' font-family='Arial,sans-serif' font-weight='700' fill='white' text-anchor='middle'>M</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20260814-26">
+  <link rel="stylesheet" href="css/styles.css?v=20260817-4">
   <script src="js/content.js?v=20260814-7" defer></script>
   <script src="js/app.js?v=20260814-14" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+  <script src="js/motion.js?v=20260817-8" defer></script>
 </head>
 
 <body>

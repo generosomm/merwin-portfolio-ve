@@ -14,7 +14,7 @@ This means resume-related information can be reviewed and revised without search
 | --- | --- |
 | `00-meta.json` | Page title, search description, canonical URL, and social preview metadata |
 | `01-nav.json` | Brand, Home link, Work dropdown, Results, About, and contact CTA |
-| `02-hero.json` | Availability, positioning, headline, intro, CTAs, and documented proof |
+| `02-hero.json` | Positioning, headline, intro, CTAs, and documented proof |
 | `04-work.json` | Video editing work, ERO Visuals, council role, social links, results, and project descriptions |
 | `05-dev.json` | Web development role, project descriptions, technologies, live links, and repositories |
 | `06-operations.json` | Creative VA, e-commerce, admin, and content workflow samples |

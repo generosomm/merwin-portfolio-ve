@@ -56,12 +56,16 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Compact page rhythm with consistent spacing between headings, cards, and sections
 - Single-line responsive credentials heading with tighter card spacing
 - Bidirectional scroll reveals for downward and upward scrolling
+- Fast GSAP hero sequencing plus reusable selector-based section motion: heading masks, project-card alternation, proof scaling and counter settling, operations and certificate rotation, media wipes, expandable panels, desktop card depth, magnetic CTAs, active navigation feedback, gallery selection feedback, tactile controls, footer entrance, and dialog entrances
+- Scroll performance mode avoids continuous scrub animations, fixed page backgrounds, permanent compositor layers, and sticky-header backdrop blur
+- Central reusable motion configuration with no visible copy stored in JavaScript
+- Lightweight motion mode for data-saver and lower-memory or lower-core devices
 - Session-only ERO | VISUALS “Finalizing the cut” loader with a sub-1.2-second timeline and reduced-motion fade
 - Critical loader fallback that keeps its text hidden if imported motion styles are stale or delayed
 - Lightweight IntersectionObserver scroll reveals using opacity and GPU-friendly transforms
-- Desktop glass blur with lightweight matching mobile surfaces for smoother scrolling
-- Mobile performance mode replaces live backdrop blur with matching solid glass surfaces and debounces scroll persistence
-- Visible frosted-glass gradients and blur-to-sharp scroll entrances
+- Liquid-glass colors and surfaces without background blur on content sections
+- Mobile performance mode uses matching solid glass surfaces and debounces scroll persistence
+- Visible frosted-glass gradients with restrained transform-and-opacity entrances
 - Shared compact-density tokens for header, sections, panels, controls, and galleries
 - Shared content wrappers, heading measures, wrapping rules, and work-card sizing across every section
 - Simple compact panels and consistent spacing across roles, projects, supporting information, and responsive layouts
@@ -74,7 +78,7 @@ When revising resume content, start with `04-work.json`, `05-dev.json`, `06-oper
 - Compact contact email action instead of a full-width promotional banner
 - Lazy-loaded images and portfolio evidence
 - Open Graph metadata
-- No framework and no runtime dependencies
+- No framework or build step; GSAP Core and ScrollTrigger are pinned CDN runtime dependencies
 
 ## Project structure
 
@@ -107,10 +111,12 @@ merwin-portfolio-ve/
 |   `-- 12-ui.json
 |-- js/
 |   |-- content.js               # Loads JSON and renders every section
-|   `-- app.js                   # Navigation, refresh restoration, dialogs, details, and galleries
+|   |-- app.js                   # Navigation, refresh restoration, dialogs, details, and galleries
+|   `-- motion.js                # Optional GSAP enhancement with fallback and performance modes
 |-- scripts/
 |   |-- validate-content.mjs      # Validates JSON, assets, containers, and JSON-only visible text
-|   `-- test-rendering.mjs        # Tests normal, revised, added, removed, and optional content
+|   |-- test-rendering.mjs        # Tests normal, revised, added, removed, and optional content
+|   `-- test-motion.mjs           # Tests dependency order, fallback, reduced motion, and blur removal
 |-- index.html                    # Semantic containers with no hardcoded page copy
 |-- README.md
 `-- .gitignore
@@ -118,7 +124,7 @@ merwin-portfolio-ve/
 
 ## Run locally
 
-There are no dependencies or build steps. Start a local server from the project folder:
+There is no install or build step. GSAP loads from pinned CDN URLs and the original CSS/IntersectionObserver motion remains available if it cannot load. Start a local server from the project folder:
 
 ```bash
 python -m http.server 5500
@@ -131,6 +137,7 @@ Run both checks before publishing:
 ```bash
 node scripts/validate-content.mjs
 node scripts/test-rendering.mjs
+node scripts/test-motion.mjs
 ```
 
 ## Updating portfolio or resume content

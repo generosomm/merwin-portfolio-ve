@@ -1,27 +1,49 @@
 {
-  "label": "Web projects",
+  "label": "Web Systems & Backend",
   "externalLabel": "View GitHub",
   "externalIcon": "github",
   "externalUrl": "https://github.com/generosomm",
   "heading": "",
   "description": "",
-  "galleryLabel": "Selected web projects",
+  "galleryLabel": "Shipped projects",
   "detailsLabel": "Project details",
   "repoLabel": "View code",
   "liveLabel": "View website",
   "roleSpotlight": {
     "eyebrow": "Technical leadership",
     "title": "Web Development Lead",
-    "organization": "Microsoft Student Community - NU Laguna",
+    "organization": "MSC NU Laguna",
     "period": "June 2025 – July 2026",
-    "detailEyebrow": "Project outcome",
+    "detailEyebrow": "Shipped outcome",
     "detailTitle": "Backend v1 launched at SparkPoint 2026",
-    "summary": "Led backend development for the first version of the MSC NU Laguna website and supported its official launch at SparkPoint 2026.",
+    "summary": "Architected and shipped the backend for the MSC NU Laguna web platform. Live production deployment.",
     "organizationLinkLabel": "View our page",
     "organizationLinkIcon": "facebook",
     "organizationUrl": "https://www.facebook.com/groups/636622759112057/"
   },
   "projects": [
+    {
+      "technologies": [
+        { "name": "Node.js", "icon": "node" },
+        { "name": "Express", "icon": "express" },
+        { "name": "MySQL", "icon": "mysql" }
+      ],
+      "title": "MSC NU Laguna website",
+      "description": "A live community website for members, events, and published updates.",
+      "features": [],
+      "repoUrl": "https://github.com/mscnulaguna/MSC-Official-Website",
+      "liveUrl": "https://mscnulaguna.org/"
+    },
+    {
+      "technologies": [
+        { "name": "PHP", "icon": "php" },
+        { "name": "MySQL", "icon": "mysql" }
+      ],
+      "title": "Document Tracking & Analytics",
+      "description": "A system that helps offices track documents, updates, and reports.",
+      "features": [],
+      "repoUrl": "https://github.com/generosomm/Document-Tracker"
+    },
     {
       "technologies": [
         { "name": "HTML5", "icon": "html" },
@@ -35,18 +57,6 @@
       "liveUrl": "https://generosomm.vercel.app/"
     },
     {
-      "technologies": [
-        { "name": "Node.js", "icon": "node" },
-        { "name": "Express", "icon": "express" },
-        { "name": "MySQL", "icon": "mysql" }
-      ],
-      "title": "MSC NU Laguna website",
-      "description": "A live community website for members, events, and published updates.",
-      "features": [],
-      "repoUrl": "https://github.com/mscnulaguna/MSC-Official-Website",
-      "liveUrl": "https://mscnulaguna.org/"
-    },
-        {
       "technologies": [
         { "name": "HTML5", "icon": "html" },
         { "name": "CSS3", "icon": "css" },
@@ -69,16 +79,6 @@
       "features": [],
       "repoUrl": "https://github.com/generosomm/nexus-pass",
       "liveUrl": "https://generosomm.github.io/nexus-pass/"
-    },
-    {
-      "technologies": [
-        { "name": "PHP", "icon": "php" },
-        { "name": "MySQL", "icon": "mysql" }
-      ],
-      "title": "Document Tracking & Analytics",
-      "description": "A system that helps offices track documents, updates, and reports.",
-      "features": [],
-      "repoUrl": "https://github.com/generosomm/Document-Tracker"
     }
   ]
 }

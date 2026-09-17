@@ -1,6 +1,14 @@
-@import url("./layout.css");
-@import url("./design-system.css");
-@import url("./components.css?v=20260817-1");
-@import url("./consistency.css");
-@import url("./motion.css?v=20260817-5");
-@import url("./editorial-cut.css?v=20260817-13");
+/* =============================================================
+   Portfolio stylesheet entry point.
+   Import order is significant — each layer builds on the previous.
+   ============================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+@import "layout.css";
+@import "motion.css";
+@import "components.css";
+@import "design-system.css";
+@import "consistency.css";
+@import "editorial-cut.css";
+@import "carousel-glass.css";

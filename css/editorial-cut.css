@@ -426,7 +426,7 @@ html.editorial-cut .development .horizontal-track {
 
 html.editorial-cut .hero-receipt,
 html.editorial-cut .role-spotlight,
-html.editorial-cut .case-study,
+html.editorial-cut .case-study:not(.liquid-glass-card),
 html.editorial-cut .repo-list article,
 html.editorial-cut .operations-card,
 html.editorial-cut .about-layout,
@@ -449,7 +449,7 @@ html.editorial-cut .media-dialog {
 }
 
 html.editorial-cut .role-spotlight,
-html.editorial-cut .case-study,
+html.editorial-cut .case-study:not(.liquid-glass-card),
 html.editorial-cut .repo-list article,
 html.editorial-cut .operations-card,
 html.editorial-cut .about-layout,
@@ -875,11 +875,11 @@ html.editorial-cut .media-dialog {
     transform: scale(1.025);
   }
 
-  html.editorial-cut .case-study:hover,
+  html.editorial-cut .case-study:not(.liquid-glass-card):hover,
   html.editorial-cut .repo-list article:hover,
   html.editorial-cut .operations-card:hover,
   html.editorial-cut .certificate-card:hover,
-  html.editorial-cut .case-study:focus-within,
+  html.editorial-cut .case-study:not(.liquid-glass-card):focus-within,
   html.editorial-cut .repo-list article:focus-within,
   html.editorial-cut .operations-card:focus-within {
     background: var(--white);

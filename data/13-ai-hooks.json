@@ -1,0 +1,41 @@
+{
+  "label": "AI-Generated Media",
+  "heading": "Google Flow Hooks.",
+  "description": "Fully synthetic product media engineered for e-commerce conversion. Generated via Google Flow automation.",
+  "galleryLabel": "Google Flow hook library",
+  "watchLabel": "View hook",
+  "items": [
+    {
+      "category": "Tech / Hardware Hook",
+      "title": "Tenda WiFi Router",
+      "description": "A synthetic product hook built to stop the scroll for a home-networking upgrade.",
+      "image": "assets/images/ai-tenda-wifi-thumb.png",
+      "imageAlt": "AI-generated product frame for the Tenda WiFi router hook",
+      "video": "assets/videos/AI Hook Tenda WiFi router.mp4"
+    },
+    {
+      "category": "Cosmetics Hook",
+      "title": "Hair Illusion Kit",
+      "description": "A synthetic beauty hook engineered for fast recognition and add-to-cart intent.",
+      "image": "assets/images/ai-hair-illusion-thumb.png",
+      "imageAlt": "AI-generated product frame for the Hair Illusion Kit hook",
+      "video": "assets/videos/AI Hook Hair illusion kit.mp4"
+    },
+    {
+      "category": "Health-Tech Hook",
+      "title": "Red/Blue Light Therapy Cap",
+      "description": "A synthetic health-tech hook built around a clear before/after promise.",
+      "image": "assets/images/ai-light-therapy-thumb.png",
+      "imageAlt": "AI-generated product frame for the Red/Blue Light Therapy Cap hook",
+      "video": "assets/videos/AI Hook RedBlue light Therapy cap.mp4"
+    },
+    {
+      "category": "FMCG Hook",
+      "title": "Ceelike Purple Mouthwash",
+      "description": "A synthetic FMCG hook paced for shelf-stopping color and a fast payoff.",
+      "image": "assets/images/ai-mouthwash-thumb.png",
+      "imageAlt": "AI-generated product frame for the Ceelike Purple Mouthwash hook",
+      "video": "assets/videos/AI Hook Ceelike purple mouthwash.mp4"
+    }
+  ]
+}

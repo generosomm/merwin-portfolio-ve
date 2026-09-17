@@ -1,22 +1,22 @@
 {
-  "eyebrow": "Video editor + digital partner",
+  "eyebrow": "Systems Integrator & Digital Creative",
   "title": "Merwin",
   "titleAccent": "Generoso.",
-  "intro": "I create high-performing short-form content and build the digital systems behind it.",
-  "primaryCta": { "label": "Start a project", "href": "#contact" },
-  "secondaryCta": { "label": "View my CV", "href": "assets/Merwin_Generoso_CV.pdf" },
+  "intro": "Architecting secure web deployments and engineering high-retention digital media.",
+  "primaryCta": { "label": "View my work", "href": "#work" },
+  "secondaryCta": { "label": "View CV", "href": "assets/Merwin_Generoso_CV.pdf" },
   "receipt": {
-    "label": "Selected proof",
+    "label": "Verified scale",
     "year": "2026",
     "value": "70M",
     "suffix": "+",
-    "caption": "Documented views across the available TikTok and YouTube analytics.",
+    "caption": "Documented organic views across TikTok and YouTube dashboards.",
     "stats": [
-      { "label": "Documented reach", "value": "70M+ views" },
-      { "label": "TikTok screenshot", "value": "Last 365 days" },
-      { "label": "YouTube screenshot", "value": "Lifetime" }
+      { "label": "TikTok (365 days)", "value": "57.9M" },
+      { "label": "YouTube (lifetime)", "value": "16.4M" },
+      { "label": "Peak single asset", "value": "14M" }
     ],
-    "linkLabel": "See the receipts",
+    "linkLabel": "See the proof",
     "linkHref": "#proof"
   }
 }

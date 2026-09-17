@@ -420,8 +420,8 @@ document.querySelectorAll(".horizontal-track").forEach((track) => {
   let carouselHoverPaused = false;
   let carouselFocusPaused = false;
   let carouselPointerPaused = false;
-  const isAutoCarousel = ["video-track", "project-track"].includes(track.id) && !reduceMotion;
-  const carouselDirection = track.id === "project-track" ? -1 : 1;
+  const isAutoCarousel = ["video-track", "project-track", "ai-hooks-track"].includes(track.id) && !reduceMotion;
+  const carouselDirection = track.id === "project-track" || track.id === "ai-hooks-track" ? -1 : 1;
   const carouselInteractionSurface = track.closest(".gallery-shell") || track;
   const carouselControlSelector = "a, button, input, select, textarea, [tabindex]";
 

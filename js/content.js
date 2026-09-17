@@ -12,7 +12,8 @@ const CONTENT_FILES = Object.freeze({
   about: "09-about.json",
   credentials: "10-credentials.json",
   contact: "11-contact.json",
-  ui: "12-ui.json"
+  ui: "12-ui.json",
+  aiHooks: "13-ai-hooks.json"
 });
 
 let interfaceText = {};
@@ -243,6 +244,69 @@ function galleryControls(target, label, count) {
   </div>`;
 }
 
+/**
+ * Renders a single "Liquid Glass" video card. Shared by the AI-Generated
+ * Media and Video Editing sections, so both get identical markup/classes.
+ * Media is forced to a 1:1 square by css/carousel-glass.css — there is no
+ * per-item aspect ratio anymore.
+ */
+function videoCaseCard(item, index, { watchLabel } = {}) {
+  const resultBadge = hasText(item?.result)
+    ? `<span class="case-result-badge"><strong>${text(item.result)}</strong>${hasText(item.resultDetail) ? `<small>${text(item.resultDetail)}</small>` : ""}</span>`
+    : "";
+  const media = hasText(item?.video)
+    ? `<button class="case-media video-trigger" type="button" data-video="${attr(item.video)}" aria-label="${attr(ui("labels.playPrefix"))} ${attr(item.title)}">
+        <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
+        ${resultBadge}
+        <span class="play-pill" aria-hidden="true"><i></i></span>
+      </button>`
+    : hasText(item?.image) && hasText(item?.postUrl)
+      ? `<a class="case-media" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(item.actionLabel || ui("labels.watchOriginal"))}: ${attr(item.title)}">
+          <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
+          ${resultBadge}
+          <span class="play-pill" aria-hidden="true"><i></i></span>
+        </a>`
+      : "";
+  return `<article class="case-study liquid-glass-card">
+    ${media}
+    <div class="case-copy">
+      ${hasText(item?.category) ? `<div class="case-meta-row">
+        <p class="case-category">${hasText(item.platform) ? `<span class="case-platform-icon case-platform-${attr(technologyKey(item.platform))}" role="img" aria-label="${attr(item.platform)}" title="${attr(item.platform)}">${socialIcon(technologyKey(item.platform))}</span>` : ""}<span>${text(item.category)}</span></p>
+      </div>` : ""}
+      ${hasText(item?.title) ? `<h3>${text(item.title)}</h3>` : ""}
+      ${hasText(item?.description) ? `<p>${text(item.description)}</p>` : ""}
+      ${hasText(item?.postUrl) ? `<div class="case-actions"><a class="case-original-link ui-action ui-action-outline" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(ui("labels.watchOriginal"))}: ${attr(item.title)}"><span>${text(item.linkLabel || watchLabel || ui("labels.watch"))}</span><span aria-hidden="true">&nearr;</span></a></div>` : ""}
+    </div>
+  </article>`;
+}
+
+/**
+ * Renders a reusable, infinitely-looping carousel: .gallery-shell >
+ * .video-grid.horizontal-track of .case-study.liquid-glass-card items,
+ * plus prev/next controls. Shared by the AI-Generated Media section
+ * (renderAiHooks) and the Video Editing section (renderWork) — same DOM,
+ * same classes, only trackId/labels differ.
+ *
+ * The actual auto-scroll, infinite loop (clone + aria-hide + tabindex -1),
+ * hover/focus/drag pause, and native drag-to-scroll are handled by the
+ * existing .horizontal-track auto-carousel system in js/app.js — trackId
+ * just needs to be in that file's isAutoCarousel id list. Direction is
+ * driven by trackId there too ("ai-hooks-track" reverses it).
+ */
+function renderCarouselSection(data, { trackId, trackLabel, controlsLabel, watchLabel, galleryLabel } = {}) {
+  const items = records(data?.items);
+  if (!items.length) return "";
+  const cardsHtml = items.map((item, index) => videoCaseCard(item, index, { watchLabel })).join("");
+  return `
+    ${hasText(galleryLabel) ? `<p class="gallery-kicker">${text(galleryLabel)}</p>` : ""}
+    <div class="gallery-shell">
+      <div class="video-grid horizontal-track" id="${attr(trackId)}" tabindex="0" aria-label="${attr(trackLabel)}">
+        ${cardsHtml}
+      </div>
+      ${galleryControls(trackId, controlsLabel, items.length)}
+    </div>`;
+}
+
 function socialIcon(name) {
   const icons = {
     linkedin: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.4 7.8H2.2V22h3.2V7.8ZM3.8 2A1.9 1.9 0 1 0 3.8 5.8 1.9 1.9 0 0 0 3.8 2ZM22 13.8c0-4.3-2.3-6.3-5.4-6.3a4.7 4.7 0 0 0-4.2 2.3v-2H9.2V22h3.2v-7c0-1.8.4-3.6 2.7-3.6 2.3 0 2.3 2.1 2.3 3.7V22h3.2l1.4-8.2Z"/></svg>`,
@@ -358,41 +422,13 @@ function renderWork(data) {
       </div>
       ${!creator ? councilDetails : ""}
     </aside>` : ""}
-    ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
-    ${items.length ? `<div class="gallery-shell">
-      <div class="video-grid horizontal-track" id="video-track" tabindex="0" aria-label="${attr(ui("labels.videoProjectsTrack"))}">
-        ${items.map((item, index) => {
-          const resultBadge = hasText(item?.result)
-            ? `<span class="case-result-badge"><strong>${text(item.result)}</strong>${hasText(item.resultDetail) ? `<small>${text(item.resultDetail)}</small>` : ""}</span>`
-            : "";
-          const media = hasText(item?.video)
-            ? `<button class="case-media video-trigger" type="button" data-video="${attr(item.video)}" aria-label="${attr(ui("labels.playPrefix"))} ${attr(item.title)}">
-                <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
-                ${resultBadge}
-                <span class="play-pill" aria-hidden="true"><i></i></span>
-              </button>`
-            : hasText(item?.image) && hasText(item?.postUrl)
-              ? `<a class="case-media" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(item.actionLabel || ui("labels.watchOriginal"))}: ${attr(item.title)}">
-                  <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
-                  ${resultBadge}
-                  <span class="play-pill" aria-hidden="true"><i></i></span>
-                </a>`
-            : "";
-          return `<article class="case-study ui-card">
-            ${media}
-            <div class="case-copy">
-              ${hasText(item?.category) ? `<div class="case-meta-row">
-                ${hasText(item?.category) ? `<p class="case-category">${hasText(item.platform) ? `<span class="case-platform-icon case-platform-${attr(technologyKey(item.platform))}" role="img" aria-label="${attr(item.platform)}" title="${attr(item.platform)}">${socialIcon(technologyKey(item.platform))}</span>` : ""}<span>${text(item.category)}</span></p>` : ""}
-              </div>` : ""}
-              ${hasText(item?.title) ? `<h3>${text(item.title)}</h3>` : ""}
-              ${hasText(item?.description) ? `<p>${text(item.description)}</p>` : ""}
-              ${hasText(item?.postUrl) ? `<div class="case-actions"><a class="case-original-link ui-action ui-action-outline" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(ui("labels.watchOriginal"))}: ${attr(item.title)}"><span>${text(item.linkLabel || data.watchLabel || ui("labels.watch"))}</span><span aria-hidden="true">&nearr;</span></a></div>` : ""}
-            </div>
-          </article>`;
-        }).join("")}
-      </div>
-      ${galleryControls("video-track", ui("gallery.videoProject"), items.length)}
-    </div>` : ""}`;
+    ${renderCarouselSection(data, {
+      trackId: "video-track",
+      trackLabel: ui("labels.videoProjectsTrack"),
+      controlsLabel: ui("gallery.videoProject"),
+      watchLabel: data.watchLabel,
+      galleryLabel: data.galleryLabel
+    })}`;
 }
 
 function renderDevelopment(data) {
@@ -496,6 +532,7 @@ function vaToolIcon(name) {
 
 function renderOperations(data) {
   const root = document.querySelector('[data-content="operations"]');
+  if (!root) return;
   const items = records(data?.items);
   const role = data?.roleSpotlight;
   const visible = data && (hasText(data.heading) || items.length || hasText(role?.title));
@@ -638,7 +675,7 @@ function renderAbout(data) {
         ${disclosureSummary(text(data.detailsLabel || ui("labels.moreAboutMe")))}
         <div class="content-details-panel">${paragraphs.slice(1).map((paragraph) => `<p>${text(paragraph)}</p>`).join("")}</div>
       </details>` : ""}
-      ${facts.length ? `<div class="about-facts">${facts.map((fact) => `<div><span>${text(fact?.label)}</span><strong>${text(fact?.value)}</strong></div>`).join("")}</div>` : ""}
+      ${facts.length ? `<dl class="about-facts">${facts.map((fact) => `<div class="about-fact"><dt>${text(fact?.label)}</dt><dd>${text(fact?.value)}</dd></div>`).join("")}</dl>` : ""}
     </div>`;
 }
 
@@ -669,6 +706,37 @@ function renderCredentials(data) {
       </div>
       ${galleryControls("certificate-track", ui("gallery.certificate"), items.length)}
     </div>` : ""}`;
+}
+
+/**
+ * AI-Generated Media subsection — first of the three #work subsections.
+ * Uses the same subsection-title numbered badge as its siblings
+ * (renderWork, renderDevelopment) and the shared renderCarouselSection()
+ * carousel (1:1 cards, auto-scrolling right — see "ai-hooks-track" in
+ * js/app.js's isAutoCarousel direction logic).
+ */
+function renderAiHooks(data) {
+  const root = document.querySelector('[data-content="ai-hooks"]');
+  const items = records(data?.items);
+  const visible = data && (hasText(data.heading) || items.length);
+  setVisible(root, visible);
+  if (!visible) return;
+
+  root.innerHTML = `
+    <div class="subsection-title">
+      <p><span>${text(ui("sectionIndexes.aiHooks"))}</span> ${text(data.label)}</p>
+    </div>
+    ${hasText(data.heading) || hasText(data.description) ? `<div class="dev-intro">
+      ${hasText(data.heading) ? `<h3>${text(data.heading)}</h3>` : ""}
+      ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
+    </div>` : ""}
+    ${renderCarouselSection(data, {
+      trackId: "ai-hooks-track",
+      trackLabel: ui("labels.aiHooksTrack"),
+      controlsLabel: ui("gallery.aiHook"),
+      watchLabel: data.watchLabel,
+      galleryLabel: data.galleryLabel
+    })}`;
 }
 
 function renderContact(data) {
@@ -715,8 +783,9 @@ function renderContact(data) {
 }
 
 function updateCompositeSections() {
+  // Work section: 01 AI-Generated Media -> 02 Video Editing -> 03 Web Systems & Backend
   const work = document.querySelector("#work");
-  const workChildren = ["work-heading", "work", "dev", "operations"]
+  const workChildren = ["work-heading", "ai-hooks", "work", "dev"]
     .map((key) => document.querySelector(`[data-content="${key}"]`));
   if (work) work.hidden = !workChildren.some((child) => child && !child.hidden);
 
@@ -730,17 +799,18 @@ function renderPortfolio(payload) {
   const { data, errors } = payload;
   renderInterface(data.ui);
   const renderers = [
-    ["meta", renderMeta],
-    ["nav", renderNavigation],
-    ["hero", (heroData) => renderHero(heroData, data.work)],
-    ["work", renderWork],
-    ["dev", renderDevelopment],
-    ["operations", renderOperations],
-    ["stats", renderStats],
+    ["meta",         renderMeta],
+    ["nav",          renderNavigation],
+    ["hero",         (heroData) => renderHero(heroData, data.work)],
+    ["aiHooks",      renderAiHooks],
+    ["work",         renderWork],
+    ["dev",          renderDevelopment],
+    ["operations",   renderOperations],
+    ["stats",        renderStats],
     ["testimonials", renderTestimonials],
-    ["about", renderAbout],
-    ["credentials", renderCredentials],
-    ["contact", renderContact]
+    ["about",        renderAbout],
+    ["credentials",  renderCredentials],
+    ["contact",      renderContact]
   ];
 
   renderers.forEach(([key, renderer]) => {

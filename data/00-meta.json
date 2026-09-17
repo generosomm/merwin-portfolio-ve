@@ -1,9 +1,9 @@
 {
-  "title": "Merwin Generoso — Digital Creative Portfolio",
-  "description": "Merwin Generoso helps remote teams edit content, build and maintain web experiences, research information, and organize digital operations—backed by 70M+ documented views and shipped software.",
-  "socialTitle": "Merwin Generoso — Digital Creative Portfolio",
-  "socialDescription": "Content editing, web support, research, and reliable digital operations—backed by real work and 70M+ documented views.",
+  "title": "Merwin Generoso | Systems Integrator & Creative Technologist",
+  "description": "Backend architecture, EDI systems integration, and AI-generated media workflows. 70M+ documented organic views.",
+  "socialTitle": "Merwin Generoso | Systems Integrator & Creative Technologist",
+  "socialDescription": "Backend architecture, EDI integrations, and AI-generated media workflows. 70M+ documented organic views.",
   "canonicalUrl": "https://generosomm.vercel.app/",
-  "socialImage": "https://generosomm.vercel.app/assets/images/portfolio-social-preview.png",
-  "socialImageAlt": "Merwin Generoso portfolio: Digital work worth noticing, backed by 70M+ documented views"
+  "socialImage": "https://generosomm.vercel.app/assets/images/og-cover.jpg",
+  "socialImageAlt": "Merwin Generoso | Systems Integrator & Creative Technologist"
 }

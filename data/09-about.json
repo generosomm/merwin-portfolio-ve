@@ -1,12 +1,12 @@
 {
-  "eyebrow": "About me",
-  "heading": "Creative ideas, handled from start to finish.",
+  "eyebrow": "Background",
+  "heading": "Systems engineer. Creative technologist.",
   "detailsLabel": "More about me",
   "paragraphs": [
-    "I’m Merwin, the person behind ERO | VISUALS. I create high-performing social content and dependable web experiences for clients and teams."
+    "I build backend systems and generate high-performing digital media. Node.js, PHP, MySQL, EDI integrations by day. AI-directed video workflows and 70M+ organic views by result."
   ],
   "facts": [
     { "label": "Languages", "value": "English & Filipino" },
-    { "label": "Availability", "value": "Remote across US, UK, AU & Asia" }
+    { "label": "Availability", "value": "Remote, GMT+8" }
   ]
 }

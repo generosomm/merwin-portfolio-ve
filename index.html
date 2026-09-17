@@ -3,9 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050505">
+  <meta name="theme-color" content="#070a09">
   <meta name="robots" content="index, follow">
-  <style>.portfolio-loader { display: none; }</style>
   <script>
     (() => {
       document.documentElement.classList.add("editorial-cut");
@@ -20,16 +19,17 @@
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         window.setTimeout(() => {
           document.documentElement.classList.add("loader-exiting");
-        }, reduceMotion ? 100 : 520);
+        }, reduceMotion ? 100 : 460);
         window.setTimeout(() => {
           document.documentElement.classList.remove("loader-pending", "loader-exiting");
-        }, reduceMotion ? 220 : 720);
+        }, reduceMotion ? 200 : 720);
       } catch {
         // Skip the session loader when browser storage is unavailable.
       }
     })();
   </script>
 
+  <title></title>
   <meta name="description" content="">
   <meta property="og:title" content="">
   <meta property="og:description" content="">
@@ -42,17 +42,16 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="">
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23050505'/><text x='50' y='68' font-size='54' font-family='Arial,sans-serif' font-weight='700' fill='white' text-anchor='middle'>M</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23070a09'/><text x='50' y='68' font-size='54' font-family='Manrope,sans-serif' font-weight='700' fill='%2331c979' text-anchor='middle'>M</text></svg>">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20260817-17">
-  <script src="js/content.js?v=20260817-4" defer></script>
+  <link rel="stylesheet" href="css/styles.css?v=20260918-3">
+  <script src="js/content.js?v=20260918-3" defer></script>
   <script src="js/app.js?v=20260817-2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
-  <script src="js/motion.js?v=20260817-9" defer></script>
+  <script src="js/motion.js?v=20260918-3" defer></script>
 </head>
 
 <body>
@@ -71,24 +70,30 @@
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
   <main id="main">
+
+    <!-- 01 HERO -->
     <section class="hero" id="top" data-content="hero" aria-labelledby="hero-title"></section>
 
+    <!-- 02 SELECTED WORK: 01 AI-Generated Media -> 02 Video Editing -> 03 Web Systems & Backend -->
     <section class="section work" id="work" aria-labelledby="work-title">
-      <div class="section-heading" data-content="work-heading"></div>
+      <div class="section-heading" data-content="work-heading" hidden></div>
+      <div class="subsection" id="ai-hooks" data-content="ai-hooks"></div>
       <div class="subsection" id="editing" data-content="work"></div>
       <div class="subsection development" id="development" data-content="dev"></div>
-      <div class="subsection operations" id="operations" data-content="operations"></div>
     </section>
 
+    <!-- 03 SCALE & PROOF -->
     <section class="section proof" id="proof" data-content="stats" aria-labelledby="proof-title"></section>
-    <section class="section testimonials" id="testimonials" data-content="testimonials" aria-labelledby="testimonials-title" hidden></section>
 
+    <!-- 04 CREDENTIALS & ABOUT -->
     <section class="section about" id="about" aria-labelledby="about-title">
       <div class="about-layout" data-content="about"></div>
       <section class="credentials" data-content="credentials" aria-labelledby="credentials-title"></section>
     </section>
 
+    <!-- 05 CONTACT -->
     <section class="contact" id="contact" data-content="contact" aria-labelledby="contact-title"></section>
+
   </main>
 
   <footer class="site-footer" data-content="footer"></footer>

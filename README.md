@@ -1,170 +1,261 @@
-# Merwin Generoso - Remote Work Portfolio
+# Merwin Generoso | Portfolio
 
-A proof-first portfolio for Merwin Generoso, featuring short-form video editing, shipped web projects, creative and e-commerce support, verified analytics, and professional credentials.
+**Systems Integrator & Creative Technologist**
 
-[View the live site](https://generosomm.vercel.app/) | [Email Merwin](mailto:generosomerwin10@gmail.com)
+Live at [generosomm.vercel.app](https://generosomm.vercel.app/)
 
-## Content source of truth
+---
 
-All portfolio copy and user-visible interface text is stored in `data/*.json`.
+## Positioning & Copy
 
-This means resume-related information can be reviewed and revised without searching through HTML, CSS, or JavaScript. The renderer in `js/content.js` only turns the JSON content into page sections.
+All portfolio copy (hero, section headings, about, meta tags) is written for an **enterprise systems integration** audience: "Systems Integrator & Creative Technologist," backend/EDI/AI-media framing, no em dashes in generated copy. The words "student," "intern," "OJT," and "4th year" do not appear anywhere in `data/*.json` or `index.html`. The two organizations that used to be labeled with "Student" in their name are shown under the same short names the rest of the site already uses for them — `data/05-dev.json`'s `roleSpotlight.organization` is "MSC NU Laguna" (matching the `MSC NU Laguna website` project and `mscnulaguna.org` right below it) and `data/04-work.json`'s is "NU Laguna Computer Studies Council" (matching the `NULagunaSCSSC` Facebook handle it links to) — real affiliations, just without the literal word "Student" in the on-page label.
 
-| File | Content |
-| --- | --- |
-| `00-meta.json` | Page title, search description, canonical URL, and social preview metadata |
-| `01-nav.json` | Brand, Home link, Work dropdown, Results, About, and contact CTA |
-| `02-hero.json` | Positioning, headline, intro, CTAs, and documented proof |
-| `04-work.json` | Video editing work, ERO Visuals, council role, social links, results, and project descriptions |
-| `05-dev.json` | Web development role, project descriptions, technologies, live links, and repositories |
-| `06-operations.json` | Creative VA, e-commerce, admin, and content workflow samples |
-| `07-stats.json` | TikTok and YouTube analytics evidence |
-| `08-testimonials.json` | Optional verified client feedback |
-| `09-about.json` | About summary, languages, and availability |
-| `10-credentials.json` | Certifications and LinkedIn verification |
-| `11-contact.json` | Contact copy, email template, social links, CV, location, and footer |
-| `12-ui.json` | Shared interface text, accessibility labels, gallery labels, dialog text, and section numbers |
+The hero's old "Open to enterprise systems roles" availability badge has been removed from `data/02-hero.json`.
 
-When revising resume content, start with `04-work.json`, `05-dev.json`, `06-operations.json`, `07-stats.json`, `09-about.json`, and `10-credentials.json`.
+---
 
-## Current features
+## Stack
 
-- Fixed desktop and mobile navbar
-- Compact opaque mobile navigation with accessible tap targets and a clear menu-to-close control
-- Home, Work, Results, About, and Start a project navigation
-- Active navbar highlighting based on the current section
-- Work dropdown with direct links to Video Editing, Web Projects, and Project Support
-- Smooth internal link scrolling
-- Scroll position restoration after refreshing
-- Responsive density tiers for small phones, regular phones, tablets, and desktop layouts
-- Mobile horizontal galleries with centered card snapping and stable card widths during browser toolbar resizing
-- Overflow-aware gallery arrows that stay hidden when there is nothing left to browse
-- Slow seamless desktop carousels with Editing Work moving left and Web Projects moving right
-- Compact mobile Editing Work and Web Project carousels with centered snapping, manual swipe, and left/right arrow controls
-- Consistent mobile carousel side gutters so navigation controls do not touch project cards
-- Arrow-free desktop Editing Work and Web Project galleries with unclipped cards and fully visible hover markers
-- Hidden Video, Web Project, and Workflow scrollbars while preserving mouse drag, touch swipe, links, and keyboard access
-- Mouse drag, touch swipe, keyboard access, and gallery controls
-- Infinite-carousel duplicates mirror hover feedback and forward pointer activation to their original accessible controls
-- Expandable council work and project details
-- Native video and image dialogs
-- Clear original-post links separated from local video previews
-- Verified analytics and certification evidence
-- Prefilled email inquiry
-- Reduced-motion support
-- Reusable square-edge UI primitives for cards, actions, chips, and icon buttons
-- Black-and-white interface system that keeps portfolio media in full color
-- Compact page rhythm with consistent spacing between headings, cards, and sections
-- Single-line responsive credentials heading with tighter card spacing
-- Bidirectional scroll reveals for downward and upward scrolling
-- Fast GSAP hero sequencing plus three reusable motion families: heading cuts, card and panel lifts, and metadata staggers
-- Short media wipes, analytics counters, expandable-panel entrances, dialog entrances, and restrained arrow feedback
-- Scroll performance mode avoids continuous scrub animations, fixed page backgrounds, permanent compositor layers, and sticky-header backdrop blur
-- Central reusable motion configuration with no visible copy stored in JavaScript
-- Lightweight motion mode for data-saver and lower-memory or lower-core devices
-- Session-only ERO | VISUALS "Finalizing the cut" loader with a sub-one-second timeline and reduced-motion fade
-- Critical loader fallback that keeps its text hidden if imported motion styles are stale or delayed
-- Lightweight IntersectionObserver scroll reveals using opacity and GPU-friendly transforms
-- ERO | VISUALS editorial production-desk system with sharp frames, section rails, timeline-style service labels, a split About panel, reliable signal-green states, and a compact contact action
-- Full-bleed cinematic hero with a JSON-driven editing wall assembled from the first three portfolio projects, plus a layered proof receipt
-- Collision-safe compact proof panel below the editing wall, including narrow-desktop and mobile layouts
-- Dark credentials masthead with a reusable certificate index system and a clean paper gallery surface
-- Plain subsection labels with the signal-green accent reserved for section numbers only
-- Default-collapsed Creative & E-commerce VA disclosure that keeps Section 03 available without dominating the Work section
-- One reusable dropdown control across Section 03, workflow cards, project details, council work, and About, with JSON-driven Show and Hide labels plus a shared chevron state
-- Always-visible credentials panel with a high-contrast LinkedIn verification action
-- Lightweight reading-progress line integrated with the existing scheduled navigation update
-- Solid mobile surfaces and debounced scroll persistence for smoother low-end performance
-- No backdrop blur, floating gradient blobs, rounded glass cards, or decorative shadow stacks
-- Shared compact-density tokens for header, sections, panels, controls, and galleries
-- Shared content wrappers, heading measures, wrapping rules, and work-card sizing across every section
-- Simple compact panels and consistent spacing across roles, projects, supporting information, and responsive layouts
-- Scoped editorial theme that preserves the compact layout and can be disabled from one root class
-- Blinking green availability indicators with a reduced-motion fallback
-- Minimal divider footer with always-visible copyright, build note, and back-to-top link
-- Shared minimal hover and keyboard-focus feedback across Video, Web Project, and Workflow cards
-- Square play controls, flat low-radius edge softness, and high-contrast black-and-white component surfaces
-- Compact light footer and a desktop navigation that only shows the menu control on mobile
-- Compact contact email action instead of a full-width promotional banner
-- Lazy-loaded images and portfolio evidence
-- Open Graph metadata
-- No framework or build step; GSAP Core and ScrollTrigger are pinned CDN runtime dependencies
+| Layer | Technology |
+|---|---|
+| Rendering | Vanilla JS (component functions in `content.js`) |
+| Styling | Vanilla CSS (`css/styles.css`) |
+| Animations | GSAP 3 + ScrollTrigger (`js/motion.js`) |
+| Data | JSON files in `data/` (fetched at runtime) |
+| Hosting | Vercel (static) |
 
-## Project structure
+---
 
-```text
+## Architecture
+
+### Data-Content System
+
+The portfolio is **fully data-driven**. Every section reads from a JSON file in `data/`. The HTML shell (`index.html`) contains only structural anchors via `data-content` attributes. `content.js` fetches all JSON files in parallel, then each renderer injects HTML into the matching mount point.
+
+```
+index.html (structure only)
+    └── data-content="hero"        → renderHero()        ← data/02-hero.json
+    └── data-content="ai-hooks"    → renderAiHooks()     ← data/13-ai-hooks.json
+    └── data-content="work"        → renderWork()        ← data/04-work.json
+    └── data-content="dev"         → renderDevelopment() ← data/05-dev.json
+    └── data-content="stats"       → renderStats()       ← data/07-stats.json
+    └── data-content="about"       → renderAbout()       ← data/09-about.json
+    └── data-content="credentials" → renderCredentials() ← data/10-credentials.json
+    └── data-content="contact"     → renderContact()     ← data/11-contact.json
+```
+
+### Section Order
+
+```
+Hero
+ └─ #work (single section, three subsections)
+     01 AI-Generated Media (Google Flow Hooks, auto-scrolls right)
+     02 Video Editing (Selected Editing Work, auto-scrolls left)
+     03 Web Systems & Backend (View GitHub)
+ └─ Scale & Proof
+ └─ Credentials
+ └─ Contact
+```
+
+All three subsections live inside one `<section id="work">`, matching the
+site's original structure — `#work > .subsection` divs, not separate
+top-level sections. Reordering them is a matter of reordering the
+`.subsection` elements in `index.html` (and the matching numbers in
+`data/12-ui.json` → `sectionIndexes`); nothing else needs to change since
+each subsection is keyed by its own `data-content` attribute, not by
+position.
+
+---
+
+## Reusable Components
+
+### Carousel (`renderCarouselSection` + `videoCaseCard`)
+
+**AI-Generated Media** and **Video Editing** render through the *same* carousel component in `content.js`, so they share identical markup and classes:
+
+```js
+renderAiHooks(data)  → renderCarouselSection(data, { trackId: "ai-hooks-track", ... })
+renderWork(data)     → renderCarouselSection(data, { trackId: "video-track",    ... })
+```
+
+`renderCarouselSection(data, { trackId, trackLabel, controlsLabel, watchLabel, galleryLabel })` builds a plain `.gallery-shell > .video-grid.horizontal-track` of `.case-study.liquid-glass-card` items, via `videoCaseCard()`, plus prev/next `galleryControls()` — the exact same DOM every other carousel on the site uses (dev projects, proof, testimonials, certificates).
+
+The auto-scroll, infinite loop, hover/focus/drag pause, and native drag-to-scroll are **not** carousel-specific code — they're the site's existing `.horizontal-track` auto-carousel system in `js/app.js` (the same one `#project-track` on the Web Systems carousel already used). It:
+
+- clones each card once (`[data-carousel-clone]`, `aria-hidden="true"`, interactive descendants get `tabindex="-1"`) so the loop has no visible seam, and redirects a click on a clone to the real card underneath it;
+- drives the loop with real `track.scrollLeft` (via `requestAnimationFrame`), not a CSS `transform` animation — so it composes cleanly with native trackpad scroll and pointer-drag, instead of fighting them;
+- pauses on `mouseenter`/`focusin`/`pointerdown` and resumes after, respecting `prefers-reduced-motion`.
+
+To add a new auto-scrolling carousel, or reverse one's direction, edit `js/app.js`:
+
+```js
+const isAutoCarousel = ["video-track", "project-track", "ai-hooks-track"].includes(track.id) && !reduceMotion;
+const carouselDirection = track.id === "project-track" || track.id === "ai-hooks-track" ? -1 : 1;
+```
+
+`-1` visually scrolls right (used by AI-Generated Media and the Web Systems project carousel); the default `1` visually scrolls left (Video Editing).
+
+### Liquid Glass card theme (`css/carousel-glass.css`)
+
+A glassmorphism skin scoped **only** to `.liquid-glass-card` (both carousels above) — nothing else on the site is touched. Media is forced to a 1:1 square, cropped with `object-fit: cover` so nothing ever letterboxes regardless of the source image/video's native ratio:
+
+```css
+.liquid-glass-card .case-media { aspect-ratio: 1 / 1 !important; }
+.liquid-glass-card .case-media img,
+.liquid-glass-card .case-media video { object-fit: cover !important; }
+
+.liquid-glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+}
+.liquid-glass-card:hover,
+.liquid-glass-card:focus-within {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--signal);
+  box-shadow: 0 10px 40px rgba(0, 255, 102, 0.15);
+}
+```
+
+Three things needed a scoped exception rather than a rewrite of the forbidden files:
+
+- **`design-system.css`** forces `* { border-radius: 0 !important; }` sitewide for the flat editorial-cut look. `.liquid-glass-card`'s own `border-radius: 16px` needed `!important` too — a higher-specificity `!important` is the only thing that can beat that rule.
+- **`editorial-cut.css`** has three `.case-study` rules (base surface, background, `:hover`/`:focus-within`) that reset cards to a flat white surface. Those three now read `.case-study:not(.liquid-glass-card)`, so these two carousels keep their glass surface and hover glow while every other card site-wide (repo list, operations, certificates, testimonials) is unaffected.
+- **`#video-track, #ai-hooks-track`** get scoped `padding-top`/`padding-bottom: 24px` with an equal negative `margin-top`/`margin-bottom` (so the section's outer spacing doesn't shift) — room for the `translateY(-8px) scale(1.02)` hover lift to clear the track's own `overflow-y: hidden` (defined sitewide on `.horizontal-track` in `layout.css`) without its top edge clipping. The same two ids also get `scrollbar-width: none` / a hidden `::-webkit-scrollbar`, since the rest of the site's tracks keep their visible thin themed scrollbar and these two are dense enough that it read as noise.
+
+`layout.css`, `components.css`, and `styles.css` were **not** rewritten — `styles.css` only gained one `@import "carousel-glass.css";` line so the new stylesheet loads, and `js/app.js` only gained the two one-line edits above.
+
+### Other component functions
+
+| Function | Renders | Data file |
+|---|---|---|
+| `renderHero()` | Hero section with receipt card | `02-hero.json` |
+| `renderAiHooks()` | AI-Generated Media carousel (auto-scrolls right) | `13-ai-hooks.json` |
+| `renderWork()` | Video Editing carousel (auto-scrolls left) | `04-work.json` |
+| `renderDevelopment()` | Web Systems & Backend project carousel | `05-dev.json` |
+| `renderStats()` | Analytics proof gallery | `07-stats.json` |
+| `renderAbout()` | About + facts | `09-about.json` |
+| `renderCredentials()` | Certificate gallery | `10-credentials.json` |
+| `renderContact()` + footer | Contact form + footer | `11-contact.json` |
+
+---
+
+## Adding New AI Hook Videos
+
+`data/13-ai-hooks.json`'s top-level `label` ("AI-Generated Media") feeds the `01` subsection badge; `heading`/`description` feed the intro block above the carousel. Every card is cropped to a 1:1 square by `css/carousel-glass.css` regardless of the source image's native ratio, so there's no aspect-ratio field to set.
+
+1. **Drop the video file** into `assets/videos/`. Accepted filename format: `AI Hook [Product Name].mp4`
+
+2. **Generate a thumbnail** and save it to `assets/images/`. Any ratio works — `object-fit: cover` crops it to a square automatically. A roughly square source (e.g. `1080x1080px`) crops the least.
+
+3. **Edit `data/13-ai-hooks.json`** — add a new item object (same shape as `04-work.json` items):
+
+```json
+{
+  "category": "Product Category Hook",
+  "title": "Your Product Name",
+  "description": "One line on the hook's angle.",
+  "image": "assets/images/your-product-thumb.png",
+  "imageAlt": "Alt text describing the frame",
+  "video": "assets/videos/AI Hook Your Product Name.mp4"
+}
+```
+
+4. **Save and refresh.** The carousel updates automatically — no code changes needed.
+
+---
+
+## Adding Video Editing Edits (TikTok/Reels)
+
+Edit `data/04-work.json` → `items` array. Each item supports:
+
+```json
+{
+  "platform": "TikTok",
+  "category": "Film promo",
+  "title": "Video Title",
+  "result": "2.1M views",
+  "image": "assets/images/thumb.jpg",
+  "imageAlt": "Alt text",
+  "video": "assets/videos/video.mp4",
+  "postUrl": "https://tiktok.com/..."
+}
+```
+
+Same as the AI hooks: `image` is cropped to a 1:1 square automatically, whatever its native ratio.
+
+---
+
+## Design Tokens
+
+The palette is Green / White / Black, defined as CSS custom properties and layered across `design-system.css` → `layout.css` → `editorial-cut.css` (each file only overrides what it needs to; `editorial-cut.css`'s values win since it loads last and is always active — `index.html` adds `.editorial-cut` to `<html>` unconditionally):
+
+```css
+html.editorial-cut {
+  --paper: #eef0ec;   /* page background (light) */
+  --ink: #0a0d0c;     /* body text (near-black) */
+  --night: #070a09;   /* dark panels: nav, hero, footer */
+  --white: #ffffff;
+  --signal: #31c979;  /* the neon green accent */
+  --radius: 0px;       /* flat corners sitewide, by design */
+}
+```
+
+**`--signal` (green) usage rule:** reserved for the accent bar next to eyebrows, active nav underline, key metrics, and hover/focus glows (e.g. `.liquid-glass-card:hover`'s border and shadow). The hero, nav, and footer are intentionally dark (`--night`) panels; the rest of the page uses the light `--paper` background with `--ink` text.
+
+A sitewide `* { border-radius: 0 !important; }` in `design-system.css` enforces the flat "editorial cut" look everywhere. `.liquid-glass-card` (see above) is the one deliberate exception.
+
+---
+
+## Local Development
+
+```bash
+npx serve .
+# or
+npx -y http-server . -p 3000
+```
+
+Open `http://localhost:3000`.
+
+---
+
+## Deployment
+
+Push to `main` on GitHub. Vercel auto-deploys from the root directory.
+
+No build step required — this is a static site.
+
+---
+
+## File Map
+
+```
 merwin-portfolio-ve/
-|-- assets/
-|   |-- images/                  # Project covers, analytics, certificates, and social preview
-|   |-- videos/                  # Local portfolio video previews
-|   `-- Merwin_Generoso_CV.pdf   # Downloadable CV
-|-- css/
-|   |-- styles.css               # Ordered stylesheet entry point
-|   |-- layout.css               # Structural layouts and section-specific responsive rules
-|   |-- design-system.css        # Color, spacing, type, border, and easing tokens
-|   |-- components.css           # Reusable cards, actions, chips, controls, and section themes
-|   |-- consistency.css          # Final wrapper, typography, card, and responsive consistency layer
-|   |-- motion.css               # Session loader, reveal, and reduced-motion behavior
-|   `-- editorial-cut.css        # Scoped ERO editorial surfaces, frame markers, and responsive theme
-|-- data/
-|   |-- 00-meta.json
-|   |-- 01-nav.json
-|   |-- 02-hero.json
-|   |-- 04-work.json
-|   |-- 05-dev.json
-|   |-- 06-operations.json
-|   |-- 07-stats.json
-|   |-- 08-testimonials.json
-|   |-- 09-about.json
-|   |-- 10-credentials.json
-|   |-- 11-contact.json
-|   `-- 12-ui.json
-|-- js/
-|   |-- content.js               # Loads JSON and renders every section
-|   |-- app.js                   # Navigation, refresh restoration, dialogs, details, and galleries
-|   `-- motion.js                # Optional GSAP enhancement with fallback and performance modes
-|-- scripts/
-|   |-- validate-content.mjs      # Validates JSON, assets, containers, and JSON-only visible text
-|   |-- test-rendering.mjs        # Tests normal, revised, added, removed, and optional content
-|   `-- test-motion.mjs           # Tests dependency order, fallback, motion families, and editorial theme
-|-- index.html                    # Semantic containers with no hardcoded page copy
-|-- README.md
-`-- .gitignore
+├── index.html              # HTML shell — structure only
+├── css/
+│   ├── styles.css          # Import manifest (Green/White/Black design system)
+│   └── carousel-glass.css  # Marquee animation + Liquid Glass carousel cards
+├── js/
+│   ├── content.js          # All renderer functions + data fetch
+│   ├── app.js              # Scroll, nav, dialog, carousel logic
+│   └── motion.js           # GSAP scroll reveal animations
+├── data/
+│   ├── 00-meta.json        # SEO / OG tags
+│   ├── 01-nav.json         # Navigation links
+│   ├── 02-hero.json        # Hero copy + receipt card
+│   ├── 04-work.json        # Portrait TikTok edits
+│   ├── 05-dev.json         # Web systems projects
+│   ├── 06-operations.json  # VA workflow samples (renderer is wired but no longer mounted in index.html)
+│   ├── 07-stats.json       # Analytics proof screenshots
+│   ├── 09-about.json       # About copy + facts
+│   ├── 10-credentials.json # Certiport / Salesforce certs
+│   ├── 11-contact.json     # Contact + footer
+│   ├── 12-ui.json          # UI labels / strings
+│   └── 13-ai-hooks.json    # AI-generated landscape video hooks
+└── assets/
+    ├── Merwin_Generoso_CV.pdf
+    ├── images/             # Thumbnails, certs, analytics screenshots
+    └── videos/             # MP4 files (portrait edits + AI hooks)
 ```
-
-## Run locally
-
-There is no install or build step. GSAP loads from pinned CDN URLs and the original CSS/IntersectionObserver motion remains available if it cannot load. Start a local server from the project folder:
-
-```bash
-python -m http.server 5500
-```
-
-Open `http://127.0.0.1:5500/`.
-
-Run both checks before publishing:
-
-```bash
-node scripts/validate-content.mjs
-node scripts/test-rendering.mjs
-node scripts/test-motion.mjs
-```
-
-## Updating portfolio or resume content
-
-1. Open the matching file in `data/`.
-2. Update the copy, dates, metrics, links, or project entries.
-3. Keep valid JSON syntax with double quotes and no trailing comma.
-4. Add new images to `assets/images/` and videos to `assets/videos/`.
-5. Run the validation and rendering checks.
-6. Refresh the local page.
-
-Adding or removing entries inside an existing JSON array automatically updates its gallery or list. A completely new section type still needs a semantic container, renderer, and styles.
-
-`08-testimonials.json` remains hidden while `enabled` is `false`. Publish testimonials only when the feedback is real and you have permission to show it.
-
-## Built with
-
-HTML5, modular CSS3, vanilla JavaScript, Manrope, and DM Mono.
-
-Copyright 2026 Merwin Generoso. Designed and built from scratch.

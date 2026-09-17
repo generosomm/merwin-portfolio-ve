@@ -1,21 +1,20 @@
 {
   "brand": "Merwin Generoso",
-  "brandImage": "assets/images/og-cover.jpg",
-  "brandImageAlt": "ERO Visuals logo",
-  "role": "Video editor & digital partner",
+  "brandMark": "MG",
+  "role": "Systems Integrator & Creative Technologist",
   "links": [
     { "label": "Home", "href": "#top" },
     {
       "label": "Work",
       "href": "#work",
       "children": [
-        { "index": "01", "label": "Video Editing", "href": "#editing" },
-        { "index": "02", "label": "Web Projects", "href": "#development" },
-        { "index": "03", "label": "Project Support", "href": "#operations" }
+        { "index": "01", "label": "AI Media Hooks", "href": "#ai-hooks" },
+        { "index": "02", "label": "High-Retention Edits", "href": "#editing" },
+        { "index": "03", "label": "Web Systems", "href": "#development" }
       ]
     },
-    { "label": "Results", "href": "#proof" },
-    { "label": "About", "href": "#about" }
+    { "label": "Scale", "href": "#proof" },
+    { "label": "Credentials", "href": "#about" }
   ],
-  "cta": { "label": "Start a project", "href": "#contact" }
+  "cta": { "label": "Hire me", "href": "#contact" }
 }

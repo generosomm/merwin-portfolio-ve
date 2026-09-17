@@ -25,9 +25,9 @@
     "closeButton": "Close"
   },
   "sectionIndexes": {
-    "video": "01",
-    "development": "02",
-    "operations": "03"
+    "aiHooks": "01",
+    "video": "02",
+    "development": "03"
   },
   "labels": {
     "careerHighlights": "Career highlights",
@@ -43,6 +43,7 @@
     "featuredWebRole": "Featured web role",
     "creatorResults": "Creator results",
     "videoProjectsTrack": "Video projects. Scroll horizontally to explore.",
+    "aiHooksTrack": "AI-generated product hooks. Scroll horizontally to explore.",
     "playPrefix": "Play",
     "watchOriginal": "View original post",
     "watch": "View post",
@@ -73,6 +74,7 @@
     "scrollLeftTemplate": "Scroll {label}s left",
     "scrollRightTemplate": "Scroll {label}s right",
     "videoProject": "Video project",
+    "aiHook": "AI hook",
     "softwareProject": "Software project",
     "workflow": "VA workflow",
     "analyticsProof": "Analytics proof",

@@ -17,6 +17,16 @@
           "name": "JavaScript",
           "icon": "assets/icons/stack/javascript.svg",
           "color": "#F7DF1E"
+        },
+        {
+          "name": "TypeScript",
+          "icon": "assets/icons/stack/typescript.svg",
+          "color": "#3178C6"
+        },
+        {
+          "name": "React",
+          "icon": "assets/icons/stack/react.svg",
+          "color": "#61DAFB"
         }
       ]
     },
@@ -66,8 +76,8 @@
           "color": "#D97757"
         },
         {
-          "name": "ChatGPT",
-          "icon": "assets/icons/stack/chatgpt.svg",
+          "name": "OpenAI",
+          "icon": "assets/icons/stack/openai.svg",
           "mono": true,
           "color": "#FFFFFF"
         },
@@ -129,6 +139,11 @@
           "name": "Canva",
           "icon": "assets/icons/stack/canva.svg",
           "color": "#00C4CC"
+        },
+        {
+          "name": "Picsart",
+          "icon": "assets/icons/stack/picsart.svg",
+          "color": "#C209C1"
         },
         {
           "name": "Google Flow",

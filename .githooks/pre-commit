@@ -1,0 +1,9 @@
+#!/bin/sh
+# Before every commit: rebuild data/site.json from data/*.json (the
+# live site loads that one file), include it in the commit, and stop
+# the commit if the content checks fail.
+# Enabled once per clone with:  git config core.hooksPath .githooks
+
+node scripts/build-data.mjs || exit 1
+git add data/site.json
+node scripts/validate-content.mjs || exit 1

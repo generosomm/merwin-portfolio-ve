@@ -422,9 +422,11 @@
       ready
     };
 
-    /* Failsafe: if the motion layer never boots (CDN down, JS error),
-       un-hide the hero rather than leaving it invisible. */
+    /* The hero entrance is CSS (css/hero.css): it plays as soon as the
+       page is ready, without waiting for the animation library. Once
+       it has finished, the start pose is dropped. */
     ready.then(() => {
+      root.classList.add("hero-play");
       window.setTimeout(() => root.classList.remove("hero-armed"), 2500);
     });
 

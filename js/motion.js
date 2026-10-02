@@ -57,9 +57,8 @@
     closingStatement(gsap);
     stackWave(gsap);
 
-    /* The hero plays as the preloader wipes away, not after it. */
-    const ready = site.ready?.then ? site.ready : Promise.resolve();
-    ready.then(() => heroTimeline(gsap));
+    /* The hero entrance is CSS now (css/hero.css, triggered by
+       js/site.js), so it never waits for this file or GSAP. */
   }
 
   /* ---- About ---------------------------------------------------
@@ -304,48 +303,6 @@
       stagger: 0.08,
       scrollTrigger: { trigger: ".tracks", start: "top 85%", once: true }
     });
-  }
-
-  /* ---- Hero -----------------------------------------------------
-     Lines rise out of their own overflow mask, the portrait settles
-     in behind them, then the intro and buttons arrive.
-  ---------------------------------------------------------------- */
-
-  function heroTimeline(gsap) {
-    const lines = document.querySelectorAll(".hero-line-inner");
-    if (!lines.length) {
-      document.documentElement.classList.remove("hero-armed");
-      return;
-    }
-
-    const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-    /* Cleared immediately before the tweens are built: gsap writes
-       its own inline start values in the same frame, so the hero
-       never flashes its final position. */
-    document.documentElement.classList.remove("hero-armed");
-
-    timeline
-      .from(lines, {
-        yPercent: 115,
-        duration: 1,
-        /* Keyed to the line, not the element: the outline twin of the
-           second line rises with its fill instead of a step behind. */
-        stagger: (index, target) => Number(target.dataset.line ?? index) * 0.09,
-        ease: "power4.out"
-      })
-      .from(
-        ".hero-portrait",
-        /* Scale only: the portrait is never hidden, so it can paint
-           the moment it loads (it is the page's largest element). */
-        { scale: 1.06, duration: 1.4, transformOrigin: "50% 100%" },
-        "-=0.72"
-      )
-      .from(
-        ".hero-foot > *",
-        { opacity: 0, y: 18, duration: 0.6, stagger: 0.08, ease: "power2.out" },
-        "-=0.6"
-      );
   }
 
   if (window.portfolioContentReady?.then) {

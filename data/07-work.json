@@ -21,7 +21,7 @@
     },
     {
       "title": "Document Tracking & Analytics",
-      "summary": "Capstone system for the City Government of Sto. Tomas to track documents, updates and reports.",
+      "summary": "A document tracking system for the City Government of Sto. Tomas: documents, updates and reports in one place.",
       "tags": [
         "PHP",
         "MySQL"

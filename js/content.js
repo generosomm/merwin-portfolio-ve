@@ -57,7 +57,30 @@ function setLabel(element, value) {
   element.setAttribute("aria-label", value);
 }
 
+/* The live site loads every data file in one request, data/site.json
+   (built by scripts/build-data.mjs). Previewing locally reads the
+   individual files instead, so an edit shows up without a rebuild,
+   and so does any host where the bundle is missing or incomplete. */
+const LOCAL_HOSTS = ["localhost", "127.0.0.1", "[::1]", ""];
+
+async function loadBundle() {
+  if (LOCAL_HOSTS.includes(window.location.hostname)) return null;
+  try {
+    const response = await fetch("data/site.json");
+    if (!response.ok) return null;
+    const bundle = await response.json();
+    const files = bundle?.files || {};
+    if (!Object.keys(CONTENT_FILES).every((key) => files[key] && typeof files[key] === "object")) return null;
+    return { data: files, errors: [] };
+  } catch {
+    return null;
+  }
+}
+
 async function loadPortfolioContent() {
+  const bundled = await loadBundle();
+  if (bundled) return bundled;
+
   const results = await Promise.all(
     Object.entries(CONTENT_FILES).map(async ([key, filename]) => {
       try {
@@ -331,7 +354,7 @@ function renderHero(data, chrome = {}) {
 
   const nameLines = lines
     .map((line, index) => {
-      const inner = `<span class="hero-line-inner" data-line="${index}">${text(line)}</span>`;
+      const inner = `<span class="hero-line-inner" data-line="${index}" style="--line: ${index}">${text(line)}</span>`;
       if (index === 0) return `<span class="hero-line hero-line-back">${inner}</span>`;
       /* The second line is drawn twice: the fill behind the portrait,
          an outline-only twin in front of it. Over the photo only the

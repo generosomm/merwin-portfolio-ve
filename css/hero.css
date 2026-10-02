@@ -380,7 +380,7 @@ html.preloading {
 .hero-intro {
   max-width: 34ch;
   margin: 0;
-  color: var(--text-mid);
+  color: var(--text);
   font-size: var(--fs-lead);
   line-height: 1.4;
   text-wrap: balance;
@@ -435,10 +435,16 @@ html.preloading {
   color: var(--accent);
 }
 
-/* ---- Armed state ----------------------------------------------
-   Hides the hero before GSAP takes over, so there is no flash of
-   the final layout. js/site.js clears this after a failsafe delay
-   if the motion layer never boots.
+/* ---- Entrance ---------------------------------------------------
+   html.hero-armed (set before first paint by index.html) holds the
+   hero in its start pose; js/site.js adds html.hero-play the moment
+   the page is ready (as the render screen wipes away, or at once if
+   there is none). Plain CSS, so the hero never waits for GSAP to
+   download:
+   - the name lines rise out of their masks, 0.09s apart
+   - the portrait settles from 106%, starting at 0.37s
+   - the intro, buttons and socials fade up from 1.17s, 0.08s apart
+   Reduced motion never arms the hero, so it is simply there.
 ---------------------------------------------------------------- */
 
 html.hero-armed .hero-line-inner {
@@ -447,6 +453,58 @@ html.hero-armed .hero-line-inner {
 
 html.hero-armed .hero-foot > * {
   opacity: 0;
+}
+
+html.hero-play .hero-line-inner {
+  /* power4.out */
+  animation: hero-line-rise 1s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+  animation-delay: calc(var(--line, 0) * 90ms);
+}
+
+html.hero-play .hero-portrait {
+  /* power3.out */
+  animation: hero-portrait-settle 1.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0.37s both;
+  transform-origin: 50% 100%;
+}
+
+html.hero-play .hero-foot > * {
+  /* power2.out */
+  animation: hero-foot-in 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation-delay: 1.17s;
+}
+
+html.hero-play .hero-foot > :nth-child(2) {
+  animation-delay: 1.25s;
+}
+
+html.hero-play .hero-foot > :nth-child(3) {
+  animation-delay: 1.33s;
+}
+
+@keyframes hero-line-rise {
+  from {
+    transform: translateY(115%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-portrait-settle {
+  from {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes hero-foot-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ---- Breakpoints ---------------------------------------------- */

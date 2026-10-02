@@ -2,6 +2,7 @@ import { readFile, access, readdir } from "node:fs/promises";
 import { constants } from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { buildBundle } from "./build-data.mjs";
 
 /* =============================================================
    Content validation.
@@ -97,12 +98,10 @@ try {
     }
   });
 
-  /* Every wired data file is preloaded in <head>, so it downloads in
+  /* The data bundle is preloaded in <head>, so it downloads in
      parallel with the CSS and JS instead of after content.js runs. */
-  wiredFiles.forEach((filename) => {
-    const tag = `<link rel="preload" href="data/${filename}" as="fetch" crossorigin>`;
-    if (!index.includes(tag)) errors.push(`index.html: missing ${tag}`);
-  });
+  const bundleTag = `<link rel="preload" href="data/site.json" as="fetch" crossorigin>`;
+  if (!index.includes(bundleTag)) errors.push(`index.html: missing ${bundleTag}`);
 
   const body = index.match(/<body[\s\S]*<\/body>/i)?.[0] || "";
   const bodyText = [...body.matchAll(/>([^<]+)</g)]
@@ -136,6 +135,18 @@ for (const filename of jsFiles) {
   } catch (error) {
     errors.push(`js/${filename}: ${error.message}`);
   }
+}
+
+/* ---- data/site.json matches the files it was built from ------- */
+
+try {
+  const expected = await buildBundle();
+  const actual = JSON.parse(await readFile(path.join(root, "data", "site.json"), "utf8"));
+  if (actual.sources !== expected.sources) {
+    errors.push("data/site.json: out of date with data/*.json, run: node scripts/build-data.mjs");
+  }
+} catch (error) {
+  errors.push(`data/site.json: ${error.code === "ENOENT" ? "missing, run: node scripts/build-data.mjs" : error.message}`);
 }
 
 if (errors.length) {

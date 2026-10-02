@@ -24,6 +24,11 @@
   --accent: #2bd47d;           /* 10.2:1 on --ink-900 — AAA at any size */
   --accent-wash: rgba(43, 212, 125, 0.14);
 
+  /* ---- Pointer (js/cursor.js) --------------------------------- */
+  --cursor-dot: rgba(242, 242, 240, 0.3);     /* the resting dot */
+  --cursor-wrap: rgba(242, 242, 240, 0.12);   /* highlight behind a control */
+  --cursor-bar: rgba(242, 242, 240, 0.75);    /* the text bar */
+
   /* ---- 3D scene ----------------------------------------------
      js/scene/ reads these at runtime, so the WebGL materials stay
      in sync with the page. Graphite and bone only; the accent is

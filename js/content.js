@@ -954,6 +954,10 @@ function renderStack(data) {
     )
     .join("");
 
+  /* The GitHub card is an empty frame here: js/interactions.js fills
+     it from the snapshot (month ruler, weekday labels, the graph, a
+     hover playhead with a tooltip, three stats), and leaves it hidden
+     if the snapshot is missing. */
   const github = data.github || {};
   const link = github.link || {};
 
@@ -961,15 +965,24 @@ function renderStack(data) {
     <div class="section-inner">
       ${sectionTitle("stack")}
       <dl class="stack-groups">${groups}</dl>
-      <div class="github" data-snapshot="${attr(github.snapshot)}" data-summary="${attr(github.summary)}">
+      <div class="github" data-snapshot="${attr(github.snapshot)}"
+        data-labels="${attr(JSON.stringify({ tooltip: github.tooltip || {}, stats: github.stats || {} }))}">
         <div class="github-head">
           <h3 class="proof-heading">${text(github.heading)}</h3>
           ${hasText(link.href) ? `<a class="text-link" href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">${text(link.label)}${ARROW}</a>` : ""}
         </div>
         <div class="github-scroll" hidden>
-          <div class="github-graph" role="img" aria-label="${attr(github.graphLabel)}"></div>
+          <div class="gh-ruler" aria-hidden="true"></div>
+          <div class="gh-body">
+            <div class="gh-days" aria-hidden="true"></div>
+            <div class="gh-grid-wrap">
+              <div class="github-graph" role="img" aria-label="${attr(github.graphLabel)}"></div>
+              <span class="gh-playhead" aria-hidden="true"></span>
+              <span class="gh-tip" aria-hidden="true"></span>
+            </div>
+          </div>
+          <dl class="gh-stats"></dl>
         </div>
-        <p class="github-summary" hidden></p>
       </div>
     </div>`;
 }

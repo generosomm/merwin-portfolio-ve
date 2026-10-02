@@ -781,6 +781,122 @@
     observer.observe(box);
   }
 
+  /* ---- Project brief form ----------------------------------------------
+     With an access key (data/11-contact.json), the brief is posted to
+     Web3Forms and lands in the inbox. Without one, the visitor's email
+     app opens with the brief already written, so the form works from
+     day one with no account. The browser's own validation messages
+     cover empty or malformed fields.
+  ---------------------------------------------------------------- */
+
+  function initProjectForm() {
+    const form = document.querySelector("#project-brief");
+    const status = form?.querySelector(".brief-status");
+    if (!form || !status) return;
+
+    let messages = {};
+    try {
+      messages = JSON.parse(form.dataset.messages || "{}");
+    } catch {
+      messages = {};
+    }
+
+    const say = (key, state) => {
+      status.textContent = messages[key] || "";
+      status.dataset.state = state;
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const fields = Object.fromEntries(new FormData(form).entries());
+      const serviceLabel = form.querySelector('select[name="service"]')?.selectedOptions[0]?.textContent || fields.service;
+      const subject = String(messages.subject || "").replace("{service}", serviceLabel);
+      const lines = [
+        [messages.name, fields.name],
+        [messages.replyTo, fields.email],
+        [messages.service, serviceLabel],
+        [messages.deadline, fields.deadline],
+        [messages.message, fields.message]
+      ].filter(([, value]) => value).map(([label, value]) => `${label}: ${value}`);
+
+      const key = form.dataset.key;
+      if (!key) {
+        const address = form.dataset.address;
+        window.location.href = `mailto:${address}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n\n"))}`;
+        say("mailtoSent", "info");
+        return;
+      }
+
+      const button = form.querySelector('button[type="submit"]');
+      button.disabled = true;
+      say("sending", "info");
+      try {
+        const response = await fetch(form.dataset.endpoint || "https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ access_key: key, subject, from_name: fields.name, email: fields.email, message: lines.join("\n\n") })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || result.success === false) throw new Error("rejected");
+        form.reset();
+        say("sent", "ok");
+      } catch {
+        say("failed", "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+
+  /* ---- Service cards taller than the screen ----------------------------
+     The cards pin near the top while the next one slides over. A card
+     taller than the screen would be pinned with its bottom (and its
+     "Start a project" button) still off-screen, and then covered.
+     Such a card pins later instead: when its bottom edge reaches the
+     bottom of the screen, so all of it is seen first.
+  ---------------------------------------------------------------- */
+
+  function initStackFit() {
+    const cards = Array.from(document.querySelectorAll(".practice-card"));
+    if (!cards.length) return;
+
+    function fit() {
+      cards.forEach((card) => {
+        card.style.removeProperty("top");
+        const top = parseFloat(getComputedStyle(card).top);
+        if (!Number.isFinite(top)) return;
+        const height = card.offsetHeight;
+        const room = window.innerHeight - 16;
+        if (top + height > room) card.style.top = `${Math.round(room - height)}px`;
+      });
+      window.ScrollTrigger?.refresh();
+    }
+
+    fit();
+    let timer = 0;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(fit, 150);
+    }, { passive: true });
+    if (document.fonts?.ready) document.fonts.ready.then(fit);
+  }
+
+  /* A service card's "Start a project" preselects that service in the
+     form; the jump itself is the normal in-page link. */
+  function initServiceLinks() {
+    const select = document.querySelector('#project-brief select[name="service"]');
+    if (!select) return;
+    document.querySelectorAll(".service-cta[data-service]").forEach((link) => {
+      link.addEventListener("click", () => {
+        if ([...select.options].some((option) => option.value === link.dataset.service)) {
+          select.value = link.dataset.service;
+        }
+      });
+    });
+  }
+
   /* ---- Local time beside the location --------------------------------- */
 
   function initLocalTime() {
@@ -816,6 +932,9 @@
     initStackLogos();
     initGithubGraph();
     initLocalTime();
+    initProjectForm();
+    initServiceLinks();
+    initStackFit();
   }
 
   if (window.portfolioContentReady?.then) {

@@ -23,6 +23,7 @@
   /* ---- Accent ------------------------------------------------- */
   --accent: #2bd47d;           /* 10.2:1 on --ink-900 — AAA at any size */
   --accent-wash: rgba(43, 212, 125, 0.14);
+  --danger: #ff8a7a;           /* form errors: 8.6:1 on --ink-850 */
 
   /* ---- Pointer (js/cursor.js) --------------------------------- */
   --cursor-dot: rgba(242, 242, 240, 0.3);     /* the resting dot */
@@ -48,11 +49,11 @@
      keep growing. Nothing on the site is set below 12px.
        label    12 -> 13px    small   13 -> 14px    body  16 -> 17px
        lead     18 -> 22px    h3      20 -> 28px    h2    28 -> 48px
-       section  40 -> 76px    display 36 -> 88px    hero  name only
+       section  28 -> 52px    display 36 -> 88px    hero  name only
   ---------------------------------------------------------------- */
   --fs-hero: clamp(3.2rem, 15vw, 13rem);
   --fs-display: clamp(2.25rem, 1.03rem + 5.2vw, 5.5rem);
-  --fs-section: clamp(2.5rem, 1.39rem + 4.73vw, 4.75rem);
+  --fs-section: clamp(1.75rem, 1.2rem + 2.4vw, 3.25rem);
   --fs-h2: clamp(1.75rem, 1.13rem + 2.63vw, 3rem);
   --fs-h3: clamp(1.25rem, 1rem + 1.05vw, 1.75rem);
   --fs-lead: clamp(1.125rem, 1rem + 0.53vw, 1.375rem);

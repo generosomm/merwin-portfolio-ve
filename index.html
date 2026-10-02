@@ -60,22 +60,22 @@
 
   <!-- Parallel links, not an @import chain: each stylesheet starts
        downloading as soon as the HTML is parsed. -->
-  <link rel="stylesheet" href="css/fonts.css?v=r32">
-  <link rel="stylesheet" href="css/tokens.css?v=r32">
-  <link rel="stylesheet" href="css/base.css?v=r32">
-  <link rel="stylesheet" href="css/chrome.css?v=r32">
-  <link rel="stylesheet" href="css/sections.css?v=r32">
-  <link rel="stylesheet" href="css/hero.css?v=r32">
-  <link rel="stylesheet" href="css/story.css?v=r32">
-  <link rel="stylesheet" href="css/work.css?v=r32">
-  <link rel="stylesheet" href="css/closing.css?v=r32">
+  <link rel="stylesheet" href="css/fonts.css?v=r40">
+  <link rel="stylesheet" href="css/tokens.css?v=r40">
+  <link rel="stylesheet" href="css/base.css?v=r40">
+  <link rel="stylesheet" href="css/chrome.css?v=r40">
+  <link rel="stylesheet" href="css/sections.css?v=r40">
+  <link rel="stylesheet" href="css/hero.css?v=r40">
+  <link rel="stylesheet" href="css/story.css?v=r40">
+  <link rel="stylesheet" href="css/work.css?v=r40">
+  <link rel="stylesheet" href="css/closing.css?v=r40">
 
   <!-- Nothing appears until content.js has run with the site's data,
        so both are fetched early, right after the render-blocking CSS:
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=r32" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=r40" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -93,14 +93,14 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=r32" defer></script>
-  <script src="js/site.js?v=r32" defer></script>
-  <script src="js/interactions.js?v=r32" defer></script>
-  <script src="js/cursor.js?v=r32" defer></script>
+  <script src="js/content.js?v=r40" defer></script>
+  <script src="js/site.js?v=r40" defer></script>
+  <script src="js/interactions.js?v=r40" defer></script>
+  <script src="js/cursor.js?v=r40" defer></script>
   <script src="vendor/lenis.min.js?v=1.1.18" defer></script>
   <script src="vendor/gsap.min.js?v=3.13.0" defer></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.13.0" defer></script>
-  <script src="js/motion.js?v=r32" defer></script>
+  <script src="js/motion.js?v=r40" defer></script>
 </head>
 
 <body>
@@ -121,11 +121,11 @@
     <section class="section section-hero" id="hero" data-section="hero"></section>
     <section class="section" id="about" data-section="about"></section>
     <section class="section" id="numbers" data-section="numbers"></section>
-    <section class="section" id="experience" data-section="experience"></section>
-    <section class="section" id="practice" data-section="practice"></section>
+    <section class="section" id="services" data-section="services"></section>
     <section class="section" id="work" data-section="work"></section>
     <section class="section" id="edits" data-section="edits"></section>
     <section class="section" id="proof" data-section="proof"></section>
+    <section class="section" id="experience" data-section="experience"></section>
     <section class="section" id="stack" data-section="stack"></section>
     <section class="section" id="contact" data-section="contact"></section>
   </main>

@@ -360,6 +360,11 @@
 
   /* ---- Anchor navigation -------------------------------------- */
 
+  /* Where scroll-padding-top (css/base.css) parks an anchor target. */
+  function headerClearance() {
+    return parseFloat(getComputedStyle(root).scrollPaddingTop) || 0;
+  }
+
   function initAnchors() {
     document.addEventListener("click", (event) => {
       const link = event.target.closest('a[href^="#"]');
@@ -373,13 +378,28 @@
 
       event.preventDefault();
 
+      /* Content above the target can still grow while the page scrolls
+         to it (lazy sections such as the GitHub graph draw themselves
+         as they come near), which leaves a long jump short. When the
+         scroll settles, check where the target ended up and finish the
+         trip if it moved. Only once, so a user who scrolls away during
+         the jump is not dragged back repeatedly. */
+      const settle = () => {
+        const drift = Math.abs(target.getBoundingClientRect().top - (lenis ? 48 : headerClearance()));
+        if (drift < 24 || window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) return;
+        if (lenis) lenis.scrollTo(target, { offset: -48, immediate: true });
+        else target.scrollIntoView({ behavior: "auto", block: "start" });
+      };
+
       if (lenis) {
-        lenis.scrollTo(target, { offset: -48 });
+        lenis.scrollTo(target, { offset: -48, onComplete: settle });
       } else {
         /* No Lenis (touch, or reduced motion): the browser scrolls,
            smoothly unless motion is reduced. scroll-padding-top in
            css/base.css keeps the target clear of the header. */
         target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        if ("onscrollend" in window) window.addEventListener("scrollend", settle, { once: true });
+        else window.setTimeout(settle, 1200);
       }
 
       /* Keyboard and screen-reader users land in the section they

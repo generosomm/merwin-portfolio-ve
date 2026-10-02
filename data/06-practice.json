@@ -1,17 +1,62 @@
 {
+  "cta": {
+    "label": "Start a project",
+    "href": "#project-brief"
+  },
+  "includesLabel": "What you get",
+  "proofLabel": "Proof",
   "items": [
     {
-      "title": "Systems & Backend",
-      "text": "APIs, databases and the connections between systems. I led backend work on a live community website and built REST endpoints that pass EDI transactions between independent systems.",
-      "tags": [
-        "Node.js",
-        "Express",
-        "PHP",
-        "MySQL",
-        "Firestore",
-        "REST APIs",
-        "EDI (ANSI X12)"
+      "service": "promotion",
+      "title": "Music, Film & Brand Promotion",
+      "text": "Your release, edited for short-form and posted to an audience that has reached 70M+ views.",
+      "audience": {
+        "total": "272K+",
+        "label": "followers across my channels",
+        "asOf": "as of Oct 2026",
+        "platforms": [
+          {
+            "name": "TikTok",
+            "value": "237.8K"
+          },
+          {
+            "name": "YouTube",
+            "value": "22.8K"
+          },
+          {
+            "name": "Facebook",
+            "value": "9.9K"
+          },
+          {
+            "name": "Instagram",
+            "value": "1.8K"
+          }
+        ]
+      },
+      "includes": [
+        "An edit made for your release",
+        "Posted on my TikTok, YouTube, Facebook and Instagram",
+        "A results report: views, likes and shares"
       ],
+      "proof": "That's So True 3.9M · Home Along Da Riles 3.5M · Midnight Girls 700K",
+      "image": {
+        "src": "assets/images/edits/home-along-da-riles-thumb.webp",
+        "alt": "Frame from the Home Along Da Riles film promo edit",
+        "width": 600,
+        "height": 602
+      }
+    },
+    {
+      "service": "website",
+      "title": "Business Websites",
+      "text": "A fast, modern website for your business: designed, built and launched.",
+      "includes": [
+        "Mobile-friendly design and build",
+        "Contact or booking forms, basic Google (SEO) setup",
+        "Admin panels and databases when the business needs them",
+        "Launch and hosting setup"
+      ],
+      "proof": "MSC NU Laguna website · Document Tracking System · this portfolio",
       "image": {
         "src": "assets/images/work/msc-nu-laguna.webp",
         "alt": "The MSC NU Laguna website repository on GitHub",
@@ -20,37 +65,23 @@
       }
     },
     {
-      "title": "Video Editing & Content",
-      "text": "Short-form edits for film promos, music and trends, built around a strong opening and tight pacing. I take client briefs through revisions to delivery, on deadline.",
-      "tags": [
-        "Premiere Pro",
-        "After Effects",
-        "TikTok",
-        "YouTube Shorts",
-        "Reels"
+      "service": "editing",
+      "title": "Video Editing",
+      "text": "Short-form edits built to hold attention, for creators, brands and businesses.",
+      "includes": [
+        "TikTok, Reels and YouTube Shorts",
+        "Hooks, captions and music sync",
+        "Revisions and fast turnaround"
       ],
+      "addon": "Add-on: AI product videos for e-commerce, made with Google Flow",
+      "proof": "Seven Sundays 14M · The Chosen: Judas delivered in 24h",
       "image": {
         "src": "assets/images/seven-sundays-thumb.jpg",
         "alt": "Frame from the Glass Child: Seven Sundays edit",
         "width": 576,
         "height": 640
       }
-    },
-    {
-      "title": "AI-Generated Media",
-      "text": "Product hooks generated with Google Flow for e-commerce: short synthetic clips that show the product clearly within the first few seconds.",
-      "tags": [
-        "Google Flow",
-        "Product hooks",
-        "E-commerce"
-      ],
-      "image": {
-        "src": "assets/images/practice/ai-hook.webp",
-        "alt": "AI-generated product frame for a Tenda WiFi router hook",
-        "width": 960,
-        "height": 720
-      }
     }
   ],
-  "note": "Three cards that stack as you scroll. Keep each text to two sentences; tags are short."
+  "note": "The Services section, in order of priority. service is the value the card's button preselects in the contact form (it must match a form option). audience appears on the card that has it; update the follower counts and asOf date now and then. No prices yet: add a price line when you decide."
 }

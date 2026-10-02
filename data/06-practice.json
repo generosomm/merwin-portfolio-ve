@@ -1,0 +1,56 @@
+{
+  "items": [
+    {
+      "title": "Systems & Backend",
+      "text": "APIs, databases and the connections between systems. I led backend work on a live community website and built REST endpoints that pass EDI transactions between independent systems.",
+      "tags": [
+        "Node.js",
+        "Express",
+        "PHP",
+        "MySQL",
+        "Firestore",
+        "REST APIs",
+        "EDI (ANSI X12)"
+      ],
+      "image": {
+        "src": "assets/images/work/msc-nu-laguna.webp",
+        "alt": "The MSC NU Laguna website repository on GitHub",
+        "width": 1200,
+        "height": 750
+      }
+    },
+    {
+      "title": "Video Editing & Content",
+      "text": "Short-form edits for film promos, music and trends, built around a strong opening and tight pacing. I take client briefs through revisions to delivery, on deadline.",
+      "tags": [
+        "Premiere Pro",
+        "After Effects",
+        "TikTok",
+        "YouTube Shorts",
+        "Reels"
+      ],
+      "image": {
+        "src": "assets/images/seven-sundays-thumb.jpg",
+        "alt": "Frame from the Glass Child: Seven Sundays edit",
+        "width": 576,
+        "height": 640
+      }
+    },
+    {
+      "title": "AI-Generated Media",
+      "text": "Product hooks generated with Google Flow for e-commerce: short synthetic clips that show the product clearly within the first few seconds.",
+      "tags": [
+        "Google Flow",
+        "Product hooks",
+        "E-commerce"
+      ],
+      "image": {
+        "src": "assets/images/practice/ai-hook.webp",
+        "alt": "AI-generated product frame for a Tenda WiFi router hook",
+        "width": 960,
+        "height": 720
+      }
+    }
+  ],
+  "note": "Three cards that stack as you scroll. Keep each text to two sentences; tags are short."
+}

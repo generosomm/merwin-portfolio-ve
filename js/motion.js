@@ -1,126 +1,326 @@
+"use strict";
+
 /* =============================================================
-   MOTION — Scroll reveal + GSAP hero sequence
-   Merwin Generoso Portfolio — v20260918-3
-   Uses IntersectionObserver to drive .reveal / .is-visible
-   (defined in css/motion.css). GSAP used only for hero sequence.
+   MOTION — GSAP + ScrollTrigger, attached to the scroll layer in
+   js/site.js. Nothing here initialises under prefers-reduced-motion.
+   Phase 1 scope: plumbing only. Animations land in Phases 2-5.
    ============================================================= */
 
 (function initMotion() {
+  function boot() {
+    const site = window.portfolio;
+    if (!site || site.reduceMotion) return;
+    if (typeof window.gsap === "undefined" || typeof window.ScrollTrigger === "undefined") return;
 
-  function waitForGSAP(cb, attempts) {
-    attempts = attempts || 0;
-    if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
-      cb();
-    } else if (attempts < 60) {
-      setTimeout(function() { waitForGSAP(cb, attempts + 1); }, 50);
-    }
-  }
-
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* ----------------------------------------------------------------
-     Hero sequence — runs once on page load.
-     Animates children of the hero section using GSAP, then marks
-     the HTML element so motion.css disables transitions on .reveal
-     (they are handled by GSAP for the hero only).
-  ---------------------------------------------------------------- */
-  function bootHero() {
-    if (reduceMotion) return;
-
+    const { gsap, ScrollTrigger } = window;
     gsap.registerPlugin(ScrollTrigger);
-    document.documentElement.classList.add("gsap-motion-ready");
+    /* Mobile browsers resize the viewport as the address bar slides;
+       re-measuring every trigger on each of those makes pins and
+       scrubs jump. Only real width changes trigger a refresh. */
+    ScrollTrigger.config({ ignoreMobileResize: true });
+    document.documentElement.classList.add("motion-ready");
 
-    const heroTl = gsap.timeline({ delay: 0.05 });
+    /* Lenis runs its own rAF loop, so ScrollTrigger only needs to be
+       told when the scroll position changed. Lenis may attach after
+       this file runs, so listen for it either way. */
+    const bindLenis = () => {
+      const lenis = window.portfolio?.lenis;
+      if (lenis) lenis.on("scroll", ScrollTrigger.update);
+    };
+    bindLenis();
+    window.addEventListener("portfolio:lenis", bindLenis, { once: true });
 
-    heroTl.fromTo(
-      ".hero .availability",
-      { opacity: 0, y: 12 },
-      { opacity: 1, y: 0, duration: 0.38, ease: "power2.out" }
-    );
-    heroTl.fromTo(
-      ".hero h1",
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.52, ease: "power3.out" },
-      "-=0.22"
-    );
-    heroTl.fromTo(
-      ".hero .hero-intro",
-      { opacity: 0, y: 14 },
-      { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },
-      "-=0.32"
-    );
-    heroTl.fromTo(
-      ".hero .hero-actions",
-      { opacity: 0, y: 10 },
-      { opacity: 1, y: 0, duration: 0.36, ease: "power2.out" },
-      "-=0.25"
-    );
-    heroTl.fromTo(
-      ".hero .hero-services",
-      { opacity: 0 },
-      { opacity: 1, duration: 0.3, ease: "power1.out" },
-      "-=0.18"
-    );
-    heroTl.fromTo(
-      ".hero .hero-visual-stack",
-      { opacity: 0, x: 18 },
-      { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" },
-      "-=0.48"
+    /* Web fonts change measured heights; refresh once they land so
+       every trigger position is measured against final metrics. */
+    if (document.fonts?.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
+
+    window.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
+
+    /* Lazy images change heights below the fold as they arrive; one
+       debounced refresh after a burst of them keeps triggers honest. */
+    let refreshTimer = 0;
+    document.addEventListener("load", (event) => {
+      if (event.target.tagName !== "IMG") return;
+      window.clearTimeout(refreshTimer);
+      refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 250);
+    }, true);
+
+    /* Order matters: the About pin adds scroll length, so it is
+       created before any trigger further down the page measures
+       its position. */
+    aboutScroll(gsap);
+    sectionTitles(gsap);
+    countUps(gsap);
+    experienceTracks(gsap);
+    practiceStack(gsap);
+    entrances(gsap);
+    closingStatement(gsap);
+    stackWave(gsap);
+
+    /* The hero plays as the preloader wipes away, not after it. */
+    const ready = site.ready?.then ? site.ready : Promise.resolve();
+    ready.then(() => heroTimeline(gsap));
+  }
+
+  /* ---- About ---------------------------------------------------
+     Scrubbed to the scroll, not played once: each word starts faint,
+     blurred and slightly low, and sharpens into place as you scroll.
+     On wide screens the section pins for most of a screen's worth of
+     scrolling so the whole sentence resolves while it holds still;
+     on phones it resolves as it passes, without the pin.
+  ---------------------------------------------------------------- */
+
+  function aboutScroll(gsap) {
+    const section = document.querySelector(".section-about");
+    const words = section?.querySelectorAll(".about-word");
+    if (!words?.length) return;
+
+    /* 0.55 keeps even the green words above 3:1 at their dimmest. */
+    const from = { opacity: 0.55, filter: "blur(10px)", yPercent: 35 };
+    const to = { opacity: 1, filter: "blur(0px)", yPercent: 0, ease: "power2.out", stagger: 0.08, duration: 0.6 };
+
+    /* Pinning only where it is reliable: a laptop or desktop with a real
+       pointer. Tablets and phones get the same reveal as the section
+       passes, without holding the page still. */
+    gsap.matchMedia().add(
+      {
+        wide: "(min-width: 1024px) and (hover: hover) and (pointer: fine)",
+        narrow: "(max-width: 1023px), (hover: none), (pointer: coarse)"
+      },
+      ({ conditions }) => {
+        if (conditions.wide) {
+          gsap
+            .timeline({
+              scrollTrigger: { trigger: section, start: "top top", end: "+=90%", pin: true, scrub: 0.8 }
+            })
+            .fromTo(words, from, to);
+        } else {
+          gsap.fromTo(words, from, {
+            ...to,
+            scrollTrigger: { trigger: section.querySelector(".about-text"), start: "top 85%", end: "bottom 55%", scrub: 0.8 }
+          });
+        }
+      }
     );
   }
 
-  /* ----------------------------------------------------------------
-     IntersectionObserver scroll reveals.
-     Drives .reveal → .is-visible transitions defined in motion.css.
-     This is the canonical reveal system used by all sections.
+  /* ---- What I do: stacked cards ---------------------------------
+     CSS sticky does the stacking. This adds depth: while the next
+     card travels up to cover one, the covered card tips back a few
+     degrees, shrinks slightly and darkens, as if pushed into the
+     stack. Scrubbed, so it reverses on the way back up.
   ---------------------------------------------------------------- */
-  function bootReveal() {
-    if (!("IntersectionObserver" in window)) {
-      // Graceful degradation — make everything visible immediately.
-      document.querySelectorAll(".reveal").forEach(function(el) {
-        el.classList.add("is-visible");
+
+  function practiceStack(gsap) {
+    const cards = Array.from(document.querySelectorAll(".practice-card"));
+
+    cards.slice(0, -1).forEach((card, index) => {
+      const next = cards[index + 1];
+      const inner = card.querySelector(".practice-card-inner");
+      const shade = card.querySelector(".practice-shade");
+      if (!inner) return;
+
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: next,
+            start: "top bottom",
+            /* Ends exactly where the next card sticks. */
+            end: () => `top ${parseFloat(getComputedStyle(next).top) || 0}px`,
+            scrub: true
+          }
+        })
+        .to(inner, { scale: 0.93, rotateX: 6, ease: "none" }, 0)
+        .to(shade, { opacity: 0.55, ease: "none" }, 0);
+    });
+  }
+
+  /* ---- Entrances ---------------------------------------------------
+     Work rows and edit cards rise in once, staggered, as their list
+     reaches the screen. `from` renders the start state immediately,
+     so nothing flashes first.
+  ---------------------------------------------------------------- */
+
+  function entrances(gsap) {
+    [
+      [".work-list", ".work-row"],
+      ["#edits-panel-edits .edits-grid", ".edit-card"],
+      [".contact-list", ".contact-row"]
+    ].forEach(([listSelector, itemSelector]) => {
+      const list = document.querySelector(listSelector);
+      const items = list?.querySelectorAll(itemSelector);
+      if (!items?.length) return;
+
+      gsap.from(items, {
+        opacity: 0,
+        y: 32,
+        duration: 0.8,
+        ease: "power2.out",
+        stagger: 0.07,
+        clearProps: "opacity,transform",
+        scrollTrigger: { trigger: list, start: "top 85%", once: true }
       });
+    });
+  }
+
+  /* ---- Stack logos -------------------------------------------------
+     The logos pop in one after another, like a wave, the first time
+     the Stack section reaches the screen.
+  ---------------------------------------------------------------- */
+
+  function stackWave(gsap) {
+    const groups = document.querySelector(".stack-groups");
+    const tiles = groups?.querySelectorAll(".stack-logo, .stack-pills li");
+    if (!tiles?.length) return;
+
+    gsap.from(tiles, {
+      opacity: 0,
+      scale: 0.6,
+      y: 18,
+      duration: 0.6,
+      ease: "back.out(2.2)",
+      stagger: 0.035,
+      clearProps: "opacity,transform",
+      scrollTrigger: { trigger: groups, start: "top 80%", once: true }
+    });
+  }
+
+  /* ---- Closing statement --------------------------------------
+     The same blur-to-sharp words as About, scrubbed as the contact
+     section scrolls in, without the pin.
+  ---------------------------------------------------------------- */
+
+  function closingStatement(gsap) {
+    const statement = document.querySelector(".contact-statement");
+    const words = statement?.querySelectorAll(".about-word");
+    if (!words?.length) return;
+
+    gsap.fromTo(
+      words,
+      { opacity: 0.55, filter: "blur(10px)", yPercent: 35 },
+      {
+        opacity: 1,
+        filter: "blur(0px)",
+        yPercent: 0,
+        ease: "power2.out",
+        stagger: 0.08,
+        duration: 0.6,
+        scrollTrigger: { trigger: statement, start: "top 88%", end: "bottom 55%", scrub: 0.8 }
+      }
+    );
+  }
+
+  /* ---- Section titles ------------------------------------------
+     Every title arrives as an outline and fills in solid, left to
+     right, as it scrolls up the screen (see css/sections.css).
+  ---------------------------------------------------------------- */
+
+  function sectionTitles(gsap) {
+    document.querySelectorAll(".section-title").forEach((title) => {
+      gsap.fromTo(
+        title,
+        { "--fill": 0 },
+        {
+          "--fill": 1,
+          ease: "none",
+          scrollTrigger: { trigger: title, start: "top 92%", end: "top 55%", scrub: 0.6 }
+        }
+      );
+    });
+  }
+
+  /* ---- Numbers ---------------------------------------------------
+     Markup ships the real figure; this rewinds to zero and counts up
+     only once the block is actually on screen.
+  ---------------------------------------------------------------- */
+
+  function countUps(gsap) {
+    document.querySelectorAll(".number-value").forEach((element) => {
+      const target = Number(element.dataset.countTo);
+      if (!Number.isFinite(target)) return;
+
+      const counter = { value: 0 };
+      element.textContent = "0";
+
+      gsap.to(counter, {
+        value: target,
+        duration: 1.4,
+        ease: "power2.out",
+        scrollTrigger: { trigger: element, start: "top 88%", once: true },
+        onUpdate: () => {
+          element.textContent = String(Math.round(counter.value));
+        },
+        onComplete: () => {
+          element.textContent = String(target);
+        }
+      });
+    });
+  }
+
+  /* ---- Experience tracks ----------------------------------------
+     Bars draw out from their own start point on the shared axis.
+  ---------------------------------------------------------------- */
+
+  function experienceTracks(gsap) {
+    const bars = document.querySelectorAll(".track-clip-bar");
+    if (!bars.length) return;
+
+    gsap.to(bars, {
+      scaleX: 1,
+      duration: 0.9,
+      ease: "power3.out",
+      stagger: 0.08,
+      scrollTrigger: { trigger: ".tracks", start: "top 85%", once: true }
+    });
+  }
+
+  /* ---- Hero -----------------------------------------------------
+     Lines rise out of their own overflow mask, the portrait settles
+     in behind them, then the intro and buttons arrive.
+  ---------------------------------------------------------------- */
+
+  function heroTimeline(gsap) {
+    const lines = document.querySelectorAll(".hero-line-inner");
+    if (!lines.length) {
+      document.documentElement.classList.remove("hero-armed");
       return;
     }
 
-    if (reduceMotion) {
-      document.querySelectorAll(".reveal").forEach(function(el) {
-        el.classList.add("is-visible");
-      });
-      return;
-    }
+    const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-    const observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        const entersFromTop = entry.boundingClientRect.top < 0;
-        entry.target.classList.toggle("reveal-from-top", entersFromTop);
-        entry.target.classList.toggle("is-visible", entry.isIntersecting);
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: "0px 0px -6% 0px"
-    });
+    /* Cleared immediately before the tweens are built: gsap writes
+       its own inline start values in the same frame, so the hero
+       never flashes its final position. */
+    document.documentElement.classList.remove("hero-armed");
 
-    document.querySelectorAll(".reveal").forEach(function(el) {
-      observer.observe(el);
-    });
+    timeline
+      .from(lines, {
+        yPercent: 115,
+        duration: 1,
+        /* Keyed to the line, not the element: the outline twin of the
+           second line rises with its fill instead of a step behind. */
+        stagger: (index, target) => Number(target.dataset.line ?? index) * 0.09,
+        ease: "power4.out"
+      })
+      .from(
+        ".hero-portrait",
+        /* Scale only: the portrait is never hidden, so it can paint
+           the moment it loads (it is the page's largest element). */
+        { scale: 1.06, duration: 1.4, transformOrigin: "50% 100%" },
+        "-=0.72"
+      )
+      .from(
+        ".hero-foot > *",
+        { opacity: 0, y: 18, duration: 0.6, stagger: 0.08, ease: "power2.out" },
+        "-=0.6"
+      );
   }
 
-  /* ----------------------------------------------------------------
-     Boot — wait for content to be injected by content.js before
-     observing reveal targets (they don't exist yet at parse time).
-  ---------------------------------------------------------------- */
-  function run() {
-    waitForGSAP(bootHero);
-    bootReveal();
-  }
-
-  if (window.portfolioContentReady && typeof window.portfolioContentReady.finally === "function") {
-    window.portfolioContentReady.finally(run);
+  if (window.portfolioContentReady?.then) {
+    window.portfolioContentReady.then(boot).catch(boot);
   } else if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", run);
+    document.addEventListener("DOMContentLoaded", boot);
   } else {
-    run();
+    boot();
   }
-
 })();

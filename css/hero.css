@@ -1,0 +1,673 @@
+/* =============================================================
+   PRELOADER + HERO
+   The preloader reads as a timeline render: a bar filling like an
+   export with a timecode counting beside it. The hero layers the
+   cutout portrait between two lines of display type.
+   ============================================================= */
+
+/* ---- Preloader ------------------------------------------------
+   `html.preloading` is set by the inline script in index.html, so
+   the dark screen is painted on the very first frame — before any
+   stylesheet or font has a chance to flash.
+---------------------------------------------------------------- */
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-preloader);
+  display: none;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-block: var(--s-9);
+  background: var(--ink-900);
+  transform: translateY(0);
+}
+
+html.preloading .preloader {
+  display: flex;
+}
+
+/* Scroll stays locked while the render screen is up. */
+html.preloading {
+  overflow: hidden;
+}
+
+/* Exits as an upward wipe, revealing the hero underneath. The
+   `preloading` class is dropped the moment the wipe starts, so this
+   rule is what keeps the element on screen until it finishes. */
+.preloader.is-exiting {
+  display: flex;
+  transform: translateY(-100%);
+  transition: transform var(--dur-3) var(--ease-io);
+}
+
+.preloader-inner {
+  width: var(--page);
+  margin-inline: auto;
+}
+
+.preloader-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-4);
+}
+
+.preloader-label {
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+
+.preloader-timecode {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+.preloader-bar {
+  width: 100%;
+  height: 2px;
+  background: var(--line);
+}
+
+.preloader-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
+/* ---- Hero -----------------------------------------------------
+   The stage is a z-index sandwich: the first line sits behind the
+   portrait, the second in front of it.
+---------------------------------------------------------------- */
+
+.hero-inner {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s-7);
+}
+
+.hero-stage {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+/* The lockup is the coordinate system for the name and the portrait.
+   Both are sized in `em` of the hero type, so the composition scales
+   as one piece: a tall or zoomed-out viewport adds space AROUND the
+   lockup instead of pulling the portrait away from the type.
+   No z-index here, for the same stacking reason as .hero-name. */
+.hero-lockup {
+  /* Room above the first line for the hair, which rises past it. */
+  --head-room: 0.42em;
+  /* Where the first line ends. js/site.js measures the real value
+     once fonts land; this is Clash Display's width for "MERWIN". */
+  --name-end: 4.13em;
+
+  position: relative;
+  width: 100%;
+  padding-block: var(--head-room) 0.2em;
+  font-size: var(--fs-hero);
+}
+
+.hero-name {
+  position: relative;
+  /* Must stay `auto`. Any numeric z-index here makes the h1 its own
+     stacking context, which traps .hero-line-outline behind the
+     portrait no matter how high its own z-index is. */
+  z-index: auto;
+  /* A one-column grid rather than a flex column, so the outline twin
+     can share the second line's row and sit exactly on top of it. */
+  display: grid;
+  width: 100%;
+  grid-template-columns: 100%;
+  margin: 0;
+  font-family: var(--font-display);
+  /* Set on .hero-lockup, so the portrait shares the same em. */
+  font-size: 1em;
+  font-weight: 700;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--track-hero);
+  text-transform: uppercase;
+  text-wrap: nowrap;
+}
+
+.hero-line {
+  position: relative;
+  display: block;
+  /* Clips the mask reveal. The padding gives descenders and the
+     uppercase cap-height room so nothing is shaved off. */
+  overflow: hidden;
+  padding-block: 0.06em;
+  margin-block: -0.06em;
+}
+
+.hero-line-inner {
+  display: block;
+  will-change: transform;
+}
+
+/* The sandwich: both filled lines sit behind the portrait, so the
+   photo is never hidden under solid type. Only the outline twin of
+   the second line crosses in front of it, keeping the letterforms
+   readable over the photo while the face shows through them. */
+.hero-line-back {
+  z-index: 0;
+  grid-row: 1;
+}
+
+.hero-line-front,
+.hero-line-outline {
+  grid-row: 2;
+  grid-column: 1;
+  text-align: right;
+}
+
+.hero-line-front {
+  z-index: 0;
+}
+
+.hero-line-outline {
+  z-index: 2;
+  color: transparent;
+  /* Scales with the type: a hairline on phones, ~2px at full size. */
+  -webkit-text-stroke: max(1px, 0.009em) var(--text);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Geometry, in em of the hero type (1em = one cap-to-cap line):
+   the head sits in the empty space after the first line, chin just
+   under its baseline, so no letter of the name is ever covered. The
+   second line passes in front of the shoulders. The offsets come
+   from the cutout's silhouette: hair starts 2% down the file, the
+   chin sits at 29%, and the head begins 17% in from the left. */
+.hero-portrait {
+  position: absolute;
+  z-index: 1;
+  /* Image top 0.48em above the first line, so the chin lands at
+     0.86em: below the baseline, above the second line's caps. */
+  top: calc(var(--head-room) - 0.48em);
+  /* Head edge 0.18em clear of the last letter. */
+  left: calc(var(--name-end) - 0.17em);
+  display: flex;
+  width: 2.1em;
+  /* Head to mid-chest. The mask fades it out below the name. */
+  height: 2.58em;
+  pointer-events: none;
+}
+
+/* <picture> is inline by default, which breaks the percentage-height
+   chain and lets the image render at its intrinsic size. */
+.hero-portrait picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-portrait img {
+  width: 100%;
+  height: 100%;
+  /* base.css caps images at 100% of their container; the portrait
+     is sized by its own box instead. */
+  max-width: none;
+  /* The source is a tall head-to-thigh crop. `cover` pinned to the
+     top fills the box's width and keeps the full head, so the em
+     offsets on .hero-portrait map straight onto the file. */
+  object-fit: cover;
+  object-position: 50% 0;
+  /* Without this the crop ends in a hard horizontal cut across the
+     torso. The fade dissolves the figure into the canvas instead. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 66%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 66%, transparent 100%);
+}
+
+/* ---- 3D layer ---------------------------------------------------
+   Behind everything in the hero: the section is isolated, so z -1
+   lands under the type and the intro but above the page canvas.
+   Sized in hero em like the portrait, so the deck keeps the same
+   relationship to the name at every viewport. The box has a fixed
+   2:1 ratio shared by the live canvas and the poster, and is
+   absolutely positioned, so neither can shift layout.
+---------------------------------------------------------------- */
+
+.section-hero {
+  isolation: isolate;
+  /* The scene box is sized to the type, not the viewport, so on
+     narrower screens its transparent edges run past the sides. */
+  overflow-x: clip;
+}
+
+.hero-scene {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  /* Anchored to where the name starts, not to the page centre: the
+     page is anywhere from ~6em to 7.5em wide depending on viewport,
+     and a centred box pushes the front clip off the left edge at the
+     narrow end. Overflow goes right instead, where the back of the
+     fan is already fading into fog behind the portrait. */
+  left: -0.05em;
+  width: 7.6em;
+  aspect-ratio: 2 / 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: opacity 1.4s var(--ease-out);
+  /* Feathered top and bottom: as the deck drifts down on scroll, the
+     contact shadow would otherwise end in the canvas's hard edge. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 86%, transparent);
+}
+
+.hero-scene.is-visible {
+  opacity: 1;
+}
+
+.hero-scene canvas,
+.hero-scene-poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-scene-poster {
+  max-width: none;
+  object-fit: cover;
+}
+
+/* Only rendered with ?scene-debug in the URL. */
+.scene-debug-button {
+  position: fixed;
+  z-index: var(--z-preloader);
+  right: var(--s-4);
+  bottom: calc(var(--chrome-h) + var(--s-4));
+  padding: var(--s-2) var(--s-4);
+  border: 1px solid var(--accent);
+  background: var(--ink-900);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+
+/* ---- Portrait placeholder -------------------------------------
+   Visible scaffolding until the cutout exists. Disappears on its
+   own once data/02-hero.json has a portrait.src.
+---------------------------------------------------------------- */
+
+.portrait-slot {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  /* The box is sized in hero em; the slot's own text is not. */
+  font-size: var(--fs-body);
+  flex-direction: column;
+  /* Specs sit in the top half, clear of the front line of type that
+     crosses the lower half. */
+  justify-content: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border: 1px dashed var(--line-strong);
+  /* Opaque: a translucent panel lets the display type bleed through
+     and the specs become unreadable. */
+  background: var(--ink-800);
+  text-align: left;
+}
+
+.portrait-slot-label {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+
+.portrait-slot-note {
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.portrait-slot-specs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.portrait-slot-specs li {
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+}
+
+.portrait-slot-specs li::before {
+  margin-right: var(--s-2);
+  color: var(--accent);
+  content: "/";
+}
+
+/* ---- Hero footer: intro + calls to action --------------------- */
+
+.hero-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-6);
+  flex-wrap: wrap;
+}
+
+.hero-intro {
+  max-width: 34ch;
+  margin: 0;
+  color: var(--text-mid);
+  font-size: var(--fs-lead);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+/* ---- Buttons --------------------------------------------------
+   Two only: one accent, one hairline. Used site-wide from here.
+---------------------------------------------------------------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 2.875rem;
+  padding: 0 var(--s-5);
+  border: 1px solid transparent;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  transition: background var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
+}
+
+.button-primary {
+  background: var(--accent);
+  color: var(--ink-900);
+}
+
+.button-primary:hover,
+.button-primary:focus-visible {
+  background: var(--text);
+}
+
+.button-ghost {
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+.button-ghost:hover,
+.button-ghost:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---- Armed state ----------------------------------------------
+   Hides the hero before GSAP takes over, so there is no flash of
+   the final layout. js/site.js clears this after a failsafe delay
+   if the motion layer never boots.
+---------------------------------------------------------------- */
+
+html.hero-armed .hero-line-inner {
+  transform: translateY(115%);
+}
+
+html.hero-armed .hero-foot > * {
+  opacity: 0;
+}
+
+/* ---- Breakpoints ---------------------------------------------- */
+
+@media (max-width: 900px) {
+  .hero-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-5);
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-name {
+    /* 0.88 reads as a collision once the lines are this close to the
+       screen edges; they need the extra sliver of air. */
+    line-height: 0.95;
+  }
+
+  .hero-line-front,
+  .hero-line-outline {
+    text-align: left;
+  }
+
+  .portrait-slot {
+    padding: var(--s-4);
+    /* The type crosses the TOP of the slot at this size, not the
+       bottom, so the content moves down to stay readable. */
+    justify-content: flex-end;
+  }
+
+  /* Not enough clear height here for the spec list to be legible; it
+     stays on the desktop view and in data/02-hero.json. */
+  .portrait-slot-specs {
+    display: none;
+  }
+
+  .portrait-slot-note {
+    display: none;
+  }
+
+  .hero-actions {
+    width: 100%;
+  }
+
+  .button {
+    flex: 1;
+    padding-inline: var(--s-4);
+  }
+}
+
+/* ---- Hero socials + scroll hint -----------------------------------
+   Only used where the left social rail is not shown (below 1100px).
+---------------------------------------------------------------- */
+
+.hero-socials,
+.hero-scroll {
+  display: none;
+}
+
+@media (max-width: 1099px) {
+  .hero-socials {
+    display: flex;
+    flex-wrap: wrap;
+    /* Pull the first icon's padding back so it lines up with the text. */
+    margin-left: calc((var(--tap) - 1.125rem) / -2);
+  }
+
+  .hero-socials a {
+    display: grid;
+    width: var(--tap);
+    height: var(--tap);
+    place-items: center;
+    color: var(--text-mid);
+    transition: color var(--dur-1) var(--ease-out);
+  }
+
+  .hero-socials a:hover,
+  .hero-socials a:focus-visible {
+    color: var(--accent);
+  }
+
+  .hero-socials svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    fill: currentColor;
+  }
+}
+
+/* ---- Phones + tablets: full-bleed portrait (below 1024px) ---------
+   The portrait fills the first screen behind everything; the name,
+   intro, buttons and socials sit at the bottom-left over a dark
+   gradient that keeps them readable (AA) whatever the photo does.
+   The desktop sandwich (name around the portrait) is untouched.
+---------------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  .section-hero {
+    justify-content: flex-end;
+    padding: 0;
+  }
+
+  .hero-inner {
+    flex: 1;
+    justify-content: flex-end;
+    gap: var(--s-5);
+    padding-top: calc(var(--chrome-h) + var(--safe-top));
+    padding-bottom: calc(var(--s-6) + var(--safe-bottom));
+  }
+
+  .hero-stage {
+    position: static;
+    display: block;
+    flex: none;
+  }
+
+  .hero-lockup {
+    position: static;
+    padding: 0;
+    font-size: clamp(3rem, 15.5vw, 8rem);
+  }
+
+  /* Both lines left-aligned; the outline twin only matters when the
+     name crosses the portrait, which it no longer does here. */
+  .hero-line-front {
+    text-align: left;
+  }
+
+  .hero-line-outline {
+    display: none;
+  }
+
+  .hero-portrait {
+    position: absolute;
+    z-index: -1;
+    top: calc(var(--chrome-h) + var(--safe-top));
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: auto;
+    height: auto;
+  }
+
+  .hero-portrait img {
+    object-position: 50% 0%;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  /* The readability fade: clear over the face, solid canvas behind
+     the text block. */
+  .hero-portrait::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 10, 10, 0) 28%,
+      rgba(10, 10, 10, 0.78) 52%,
+      var(--ink-900) 70%
+    );
+    content: "";
+  }
+
+  .hero-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-4);
+  }
+
+  .hero-intro {
+    color: var(--text);
+  }
+
+  .hero-scroll {
+    display: inline-flex;
+    min-height: var(--tap);
+    align-items: center;
+    gap: var(--s-3);
+    color: var(--text-mid);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+  }
+
+  /* A short line that keeps drawing downward: "there is more". */
+  .hero-scroll::before {
+    display: block;
+    width: 1px;
+    height: 1.5rem;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: hero-scroll-cue 2.2s var(--ease-io) infinite;
+    transform-origin: 50% 0;
+    content: "";
+  }
+}
+
+@keyframes hero-scroll-cue {
+  0% {
+    transform: scaleY(0);
+  }
+  55% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* Tablets: the portrait shares the screen, leaving the left side to
+   the text, with a second fade from the left. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-portrait {
+    left: 34%;
+  }
+
+  .hero-portrait::after {
+    background:
+      linear-gradient(to right, var(--ink-900), rgba(10, 10, 10, 0) 38%),
+      linear-gradient(to bottom, rgba(10, 10, 10, 0) 40%, rgba(10, 10, 10, 0.8) 62%, var(--ink-900) 80%);
+  }
+}

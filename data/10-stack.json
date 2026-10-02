@@ -1,0 +1,137 @@
+{
+  "groups": [
+    {
+      "label": "Languages & web",
+      "items": [
+        {
+          "name": "JavaScript",
+          "icon": "assets/icons/stack/javascript.svg",
+          "color": "#F7DF1E"
+        },
+        {
+          "name": "PHP",
+          "icon": "assets/icons/stack/php.svg",
+          "color": "#8892BF"
+        },
+        {
+          "name": "HTML5",
+          "icon": "assets/icons/stack/html5.svg",
+          "color": "#E44D26"
+        },
+        {
+          "name": "CSS3",
+          "icon": "assets/icons/stack/css3.svg",
+          "color": "#33A9DC"
+        },
+        {
+          "name": "Node.js",
+          "icon": "assets/icons/stack/nodejs.svg",
+          "color": "#5FA04E"
+        },
+        {
+          "name": "Express",
+          "icon": "assets/icons/stack/express.svg",
+          "mono": true,
+          "color": "#FFFFFF"
+        }
+      ]
+    },
+    {
+      "label": "Data & cloud",
+      "items": [
+        {
+          "name": "MySQL",
+          "icon": "assets/icons/stack/mysql.svg",
+          "mono": true,
+          "color": "#4479A1"
+        },
+        {
+          "name": "Firebase",
+          "icon": "assets/icons/stack/firebase.svg",
+          "color": "#FFCA28"
+        }
+      ]
+    },
+    {
+      "label": "Tools",
+      "items": [
+        {
+          "name": "Git",
+          "icon": "assets/icons/stack/git.svg",
+          "color": "#F05032"
+        },
+        {
+          "name": "GitHub",
+          "icon": "assets/icons/stack/github.svg",
+          "mono": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "name": "VS Code",
+          "icon": "assets/icons/stack/vscode.svg",
+          "color": "#23A9F2"
+        },
+        {
+          "name": "Vercel",
+          "icon": "assets/icons/stack/vercel.svg",
+          "mono": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "name": "Notion",
+          "icon": "assets/icons/stack/notion.svg",
+          "mono": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "name": "Trello",
+          "icon": "assets/icons/stack/trello.svg",
+          "color": "#2684FF"
+        }
+      ]
+    },
+    {
+      "label": "Creative",
+      "items": [
+        {
+          "name": "Premiere Pro",
+          "icon": "assets/icons/stack/premierepro.svg",
+          "color": "#E976B9"
+        },
+        {
+          "name": "After Effects",
+          "icon": "assets/icons/stack/aftereffects.svg",
+          "color": "#D490C5"
+        },
+        {
+          "name": "Canva",
+          "icon": "assets/icons/stack/canva.svg",
+          "color": "#00C4CC"
+        }
+      ]
+    },
+    {
+      "label": "Integration & more",
+      "items": [
+        "REST APIs",
+        "EDI (ANSI X12)",
+        "Systems integration",
+        "Database design",
+        "SQL",
+        "Google Flow"
+      ]
+    }
+  ],
+  "github": {
+    "heading": "GitHub activity",
+    "username": "generosomm",
+    "summary": "{count} contributions in the last year",
+    "link": {
+      "label": "View GitHub",
+      "href": "https://github.com/generosomm"
+    },
+    "graphLabel": "GitHub contribution graph for the last year",
+    "snapshot": "data/github-contributions.json"
+  },
+  "note": "Items with an icon show as logos in their own colours; color is the brand colour used for the hover glow. mono: true is for single-colour logos, drawn in white. Plain strings show as text tags, for skills without a logo. Logos are from Devicon (MIT licence), saved in assets/icons/stack/. The GitHub graph reads a saved snapshot; refresh it with: node scripts/update-github-snapshot.mjs"
+}

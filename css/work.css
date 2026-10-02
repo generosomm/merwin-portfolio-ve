@@ -1,0 +1,630 @@
+/* =============================================================
+   WORK SECTIONS — what I do (stacked cards), selected work
+   (rows + 3D preview card), selected edits (grid). Same rules as the rest of the
+   site: hairlines over boxes, one accent, type doing the work.
+   ============================================================= */
+
+.icon-arrow {
+  width: 0.9em;
+  height: 0.9em;
+  flex: none;
+}
+
+/* ---- What I do: stacked cards ------------------------------------
+   Plain CSS sticky does the stacking, so it works with or without
+   the motion layer; js/motion.js only adds the tilt-back and shade
+   on the card being covered.
+---------------------------------------------------------------- */
+
+.practice-stack {
+  display: grid;
+  /* The gap is the scroll distance between one card landing and the
+     next one arriving over it. */
+  gap: 14svh;
+  margin: 0;
+}
+
+.practice-card {
+  position: sticky;
+  top: calc(var(--chrome-h) + var(--s-5) + var(--i) * var(--s-4));
+  /* Perspective lives on the sticky parent so the inner card can
+     tilt back in 3D as the next one covers it. */
+  perspective: 1600px;
+}
+
+.practice-card-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-6);
+  min-height: min(70svh, 34rem);
+  padding: clamp(1.25rem, 3vw, 2.75rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--ink-850);
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+
+.practice-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.practice-index {
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+}
+
+.practice-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--track-display);
+}
+
+.practice-text {
+  max-width: 30em;
+  margin: 0;
+  color: var(--text-mid);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+.practice-tags,
+.work-tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.practice-tags {
+  gap: var(--s-2);
+  margin-top: auto;
+  padding-top: var(--s-4);
+}
+
+.practice-tags li {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+.practice-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: var(--ink-800);
+}
+
+/* Absolutely placed so the image fills the card without sizing it:
+   a portrait thumbnail would otherwise make its card taller than the
+   others, and the sticky stack would push it out of view. */
+.practice-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Darkened by js/motion.js as the next card slides over. */
+.practice-shade {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-900);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Phones: each card must fit one screen while it is pinned, or the
+   next card covers its image before it has been seen. */
+@media (max-width: 599px) {
+  .practice-card {
+    top: calc(var(--chrome-h) + var(--s-3) + var(--i) * var(--s-3));
+  }
+
+  .practice-media {
+    aspect-ratio: 2 / 1;
+  }
+}
+
+@media (min-width: 900px) {
+  .practice-card-inner {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 4rem);
+  }
+
+  .practice-media {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+}
+
+/* ---- Selected work: rows + 3D preview card -------------------------
+   Rows stay clean: no images until asked for. On a desktop pointer
+   one shared card lives at the right of the list. Hovering a row:
+   - the card swings in on a hinge (from an angle, in depth)
+   - it glides to sit level with that row
+   - it tilts toward the cursor, with a soft glare
+   - moving to another row flips it over to the next screenshot
+   js/interactions.js sets --y, --rx, --ry and the state classes;
+   the drawing is all here. Phones and touch screens show no preview.
+---------------------------------------------------------------- */
+
+.work-stage {
+  position: relative;
+}
+
+.work-list {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+
+.work-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--s-2) var(--s-5);
+  padding-block: var(--s-6);
+  border-top: 1px solid var(--line);
+}
+
+/* Hover dimming lives on the children: the row's own opacity
+   belongs to the entrance animation. */
+.work-row > * {
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+
+.work-index {
+  padding-top: calc(var(--fs-h2) * 0.42);
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  transition: color var(--dur-2) var(--ease-out), opacity var(--dur-2) var(--ease-out);
+}
+
+.work-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: var(--track-display);
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+/* The title link covers the whole row, so the row is one big target. */
+.work-link::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: "";
+}
+
+.work-link:focus-visible {
+  outline: none;
+}
+
+.work-row:has(.work-link:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.work-summary {
+  max-width: 40em;
+  margin: var(--s-2) 0 0;
+  color: var(--text-mid);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}
+
+.work-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-4);
+  margin-top: var(--s-4);
+}
+
+.work-tags {
+  gap: var(--s-3);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+/* Sits above the row's stretched link so it stays its own target. */
+.work-code {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  gap: var(--s-1);
+  color: var(--text);
+  font-size: var(--fs-small);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.work-code:hover,
+.work-code:focus-visible {
+  color: var(--accent);
+}
+
+.work-arrow {
+  display: inline-flex;
+  color: var(--text-mid);
+  font-size: 1.25rem;
+  transition: color var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out);
+}
+
+/* ---- The card ---- */
+
+.work-preview {
+  --y: 0px;
+  --rx: 0deg;
+  --ry: 0deg;
+
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  right: 0;
+  display: none;
+  width: clamp(17rem, 25vw, 26rem);
+  aspect-ratio: 16 / 10;
+  pointer-events: none;
+  perspective: 1100px;
+  /* Glides between rows. */
+  transform: translateY(var(--y));
+  transition: transform 0.6s var(--ease-out);
+}
+
+.work-preview-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: var(--ink-800);
+  box-shadow: 0 40px 70px -30px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  /* Hidden pose: swung away on its right-edge hinge and pushed back.
+     Hinging on the right keeps that edge in place, so the card never
+     projects past the page edge, even while invisible. */
+  transform: rotateY(48deg) rotateX(14deg) translateZ(-180px) scale(0.92);
+  transform-origin: 100% 50%;
+  transition: transform 0.65s var(--ease-out), opacity 0.35s var(--ease-out);
+}
+
+.work-preview-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Glare: a soft light band that slides with the tilt. */
+.work-preview-card::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    calc(105deg + var(--ry) * 2),
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 48%,
+    transparent 66%
+  );
+  pointer-events: none;
+  content: "";
+}
+
+.work-preview.is-visible .work-preview-card {
+  opacity: 1;
+  transform: rotateY(var(--ry)) rotateX(var(--rx)) translateZ(0) scale(1);
+  transform-origin: 50% 50%;
+  transition: transform 0.45s var(--ease-out), opacity 0.35s var(--ease-out);
+}
+
+/* Switching rows: the card turns edge-on, the image swaps, and it
+   turns back (the second half is the .is-visible rule above). */
+.work-preview.is-visible.is-flipping .work-preview-card {
+  transform: rotateX(90deg) scale(0.96);
+  transition: transform 0.16s ease-in;
+}
+
+@media (min-width: 900px) and (hover: hover) and (pointer: fine) {
+  .work-preview {
+    display: block;
+  }
+
+  /* Leave room on the right for the card to land. */
+  .work-main {
+    padding-right: clamp(17rem, 27vw, 28rem);
+  }
+
+  /* Focus the hovered row: the rest step back. */
+  .work-list:hover .work-row > * {
+    opacity: 0.35;
+  }
+
+  .work-list:hover .work-row:hover > * {
+    opacity: 1;
+  }
+
+  .work-row:hover .work-index {
+    color: var(--accent);
+  }
+
+  .work-row.has-link:hover .work-title {
+    transform: translateX(0.35rem);
+  }
+
+  .work-row.has-link:hover .work-arrow {
+    color: var(--accent);
+    transform: translate(0.15rem, -0.15rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-preview,
+  .work-preview-card,
+  .work-preview.is-visible .work-preview-card {
+    transition: opacity var(--dur-2) var(--ease-out);
+  }
+
+  .work-preview-card,
+  .work-preview.is-visible .work-preview-card,
+  .work-preview.is-visible.is-flipping .work-preview-card {
+    transform: none;
+  }
+}
+
+/* ---- Selected edits: grid ---------------------------------------- */
+
+.edits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-6) var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .edits-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .edits-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.edit-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.edit-media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--ink-800);
+}
+
+.edit-media img,
+.edit-media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-media img {
+  transition: transform 0.8s var(--ease-out);
+}
+
+.edit-media video {
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+
+.edit-media.is-playing video {
+  opacity: 1;
+}
+
+.edit-link:hover .edit-media img,
+.edit-link:focus-visible .edit-media img {
+  transform: scale(1.04);
+}
+
+.edit-badge {
+  position: absolute;
+  z-index: 1;
+  top: var(--s-3);
+  left: var(--s-3);
+  padding: 0.3rem 0.55rem;
+  background: rgba(10, 10, 10, 0.72);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.edit-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.edit-title {
+  color: var(--text);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.35;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.edit-link:hover .edit-title,
+.edit-link:focus-visible .edit-title {
+  color: var(--accent);
+}
+
+.edit-platform {
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+.edits-more {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-8);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  letter-spacing: var(--track-display);
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.edits-more:hover,
+.edits-more:focus-visible {
+  color: var(--accent);
+}
+
+/* ---- Edits / AI Hooks tabs ----------------------------------------- */
+
+.edits-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-6);
+}
+
+.edits-tab {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0 var(--s-5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  transition: color var(--dur-1) var(--ease-out), background var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
+}
+
+.edits-tab:hover {
+  border-color: var(--text-mid);
+  color: var(--text);
+}
+
+.edits-tab[aria-selected="true"] {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--ink-900);
+}
+
+.edits-tab-count {
+  opacity: 0.6;
+}
+
+/* A switched-to tab eases in rather than snapping. */
+.edits-panel:not([hidden]) {
+  animation: edits-panel-in var(--dur-2) var(--ease-out);
+}
+
+@keyframes edits-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+/* Hook cards are buttons (they open a video), styled like the links. */
+button.edit-link {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* ---- Phones: each tab is one swipeable row --------------------------
+   The row runs edge to edge (out through the side padding) so cards
+   slide in from the screen edge, snaps card by card, and shows a
+   slice of the next card so it is obvious there is more.
+---------------------------------------------------------------- */
+
+.edits-dots {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .edits-grid {
+    grid-template-columns: none;
+    grid-auto-columns: 72%;
+    grid-auto-flow: column;
+    gap: var(--s-4);
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: var(--gutter);
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .edits-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .edit-card {
+    scroll-snap-align: start;
+  }
+
+  .edits-dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-2);
+    margin-top: var(--s-5);
+  }
+
+  .edits-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--r-pill);
+    background: var(--line-strong);
+    transition: width var(--dur-2) var(--ease-out), background var(--dur-2) var(--ease-out);
+  }
+
+  .edits-dots span.is-active {
+    width: 18px;
+    background: var(--accent);
+  }
+}

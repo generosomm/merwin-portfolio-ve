@@ -1,9 +1,13 @@
 {
-  "title": "Merwin Generoso | Systems Integrator & Creative Technologist",
-  "description": "Backend architecture, EDI systems integration, and AI-generated media workflows. 70M+ documented organic views.",
-  "socialTitle": "Merwin Generoso | Systems Integrator & Creative Technologist",
-  "socialDescription": "Backend architecture, EDI integrations, and AI-generated media workflows. 70M+ documented organic views.",
-  "canonicalUrl": "https://generosomm.vercel.app/",
-  "socialImage": "https://generosomm.vercel.app/assets/images/og-cover.jpg",
-  "socialImageAlt": "Merwin Generoso | Systems Integrator & Creative Technologist"
+  "title": "Merwin Generoso — Systems Developer & Creative Technologist",
+  "description": "Systems developer and creative technologist from the Philippines. Node.js, Express, PHP, MySQL and EDI integrations, alongside short-form edits with 70M+ documented organic views.",
+  "socialTitle": "Merwin Generoso — Systems Developer & Creative Technologist",
+  "socialDescription": "Backend systems, EDI integrations and AI-generated media. 70M+ documented organic views.",
+  "canonicalUrl": "https://generosomm.dev/",
+  "socialImage": "https://generosomm.dev/assets/images/portfolio-social-preview.png",
+  "socialImageAlt": "Merwin Generoso — systems developer and creative technologist",
+  "socialImageWidth": "1200",
+  "socialImageHeight": "630",
+  "themeColor": "#0A0A0A",
+  "TODO": "Regenerate assets/images/portfolio-social-preview.png (1200x630) from the redesigned hero once Phase 2 lands. The current file previews the old light layout."
 }

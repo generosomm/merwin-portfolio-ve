@@ -1,0 +1,102 @@
+{
+  "codeLabel": "Code",
+  "items": [
+    {
+      "title": "MSC NU Laguna Website",
+      "summary": "Community platform for members, events and updates. I led the backend.",
+      "tags": [
+        "Node.js",
+        "Express",
+        "MySQL"
+      ],
+      "href": "https://mscnulaguna.org/",
+      "code": "https://github.com/mscnulaguna/MSC-Official-Website",
+      "image": {
+        "src": "assets/images/work/msc-nu-laguna.webp",
+        "alt": "The MSC NU Laguna website repository on GitHub",
+        "width": 1200,
+        "height": 750
+      },
+      "TODO": "The preview shows the GitHub repo because mscnulaguna.org blocks automated browsers. Swap in a 1200x750 WebP screenshot of the live site."
+    },
+    {
+      "title": "Document Tracking & Analytics",
+      "summary": "Capstone system for the City Government of Sto. Tomas to track documents, updates and reports.",
+      "tags": [
+        "PHP",
+        "MySQL"
+      ],
+      "href": "https://github.com/generosomm/Document-Tracker",
+      "image": {
+        "src": "assets/images/work/document-tracker.webp",
+        "alt": "The Document Tracker repository on GitHub",
+        "width": 1200,
+        "height": 750
+      }
+    },
+    {
+      "title": "Goodness Gracious",
+      "summary": "Hotel EDI integration system. I led the hotel node in a five-team project exchanging ANSI X12 transactions over REST.",
+      "tags": [
+        "JavaScript",
+        "Cloud Functions",
+        "Firestore",
+        "Vercel"
+      ],
+      "href": null,
+      "image": null,
+      "TODO": "Add a repo or live link (href) and a 1200x750 WebP screenshot (image) when available. Until then the row shows without a link or preview."
+    },
+    {
+      "title": "Zero to Deploy",
+      "summary": "A guided planner that turns a client idea into a clear, approved project plan.",
+      "tags": [
+        "HTML5",
+        "CSS3",
+        "JavaScript"
+      ],
+      "href": "https://generosomm.github.io/ZeroToDeploy/",
+      "code": "https://github.com/generosomm/ZeroToDeploy",
+      "image": {
+        "src": "assets/images/work/zero-to-deploy.webp",
+        "alt": "The Zero to Deploy home screen",
+        "width": 1200,
+        "height": 750
+      }
+    },
+    {
+      "title": "Nexus Pass",
+      "summary": "An interactive digital pass that works directly in the browser.",
+      "tags": [
+        "HTML5",
+        "CSS3",
+        "JavaScript"
+      ],
+      "href": "https://generosomm.github.io/nexus-pass/",
+      "code": "https://github.com/generosomm/nexus-pass",
+      "image": {
+        "src": "assets/images/work/nexus-pass.webp",
+        "alt": "The Nexus Pass registration screen",
+        "width": 1200,
+        "height": 750
+      }
+    },
+    {
+      "title": "This Portfolio",
+      "summary": "Framework-free and JSON-driven, designed and built from scratch.",
+      "tags": [
+        "HTML5",
+        "CSS3",
+        "JavaScript"
+      ],
+      "href": "https://github.com/generosomm/merwin-portfolio-ve",
+      "image": {
+        "src": "assets/images/work/portfolio.webp",
+        "alt": "The hero of this portfolio",
+        "width": 1200,
+        "height": 750
+      }
+    }
+  ],
+  "note": "Rows link to href (opens in a new tab); code adds a separate Code link. Preview images are 1200x750 WebP in assets/images/work/: on desktop they appear as a 3D card when the row is hovered, on phones they sit under the row. A row with no href or image still shows, just without the link or preview."
+}

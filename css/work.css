@@ -203,7 +203,10 @@
   font-weight: 600;
   line-height: 1.05;
   letter-spacing: var(--track-display);
-  transition: transform var(--dur-2) var(--ease-out);
+  /* The hover nudge is a text-indent, not a transform: a transformed
+     title would become the containing block for the link's stretched
+     overlay below and shrink the clickable area to the title text. */
+  transition: text-indent var(--dur-2) var(--ease-out);
 }
 
 /* The title link covers the whole row, so the row is one big target. */
@@ -369,7 +372,7 @@
   }
 
   .work-row.has-link:hover .work-title {
-    transform: translateX(0.35rem);
+    text-indent: 0.35rem;
   }
 
   .work-row.has-link:hover .work-arrow {

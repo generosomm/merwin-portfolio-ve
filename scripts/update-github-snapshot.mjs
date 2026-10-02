@@ -41,13 +41,15 @@ if (!days.length) {
   process.exit(1);
 }
 
-/* One digit (0-4) per day keeps the file to a few hundred bytes. */
+/* levels: one digit (0-4) per day, which drives the colours. */
 const snapshot = {
   user,
   fetchedAt: new Date().toISOString().slice(0, 10),
   total: data.total?.lastYear ?? days.reduce((sum, day) => sum + (Number(day.count) || 0), 0),
   start: days[0].date,
-  levels: days.map((day) => Math.min(Math.max(Number(day.level) || 0, 0), 4)).join("")
+  levels: days.map((day) => Math.min(Math.max(Number(day.level) || 0, 0), 4)).join(""),
+  /* Exact daily counts, for the hover tooltip and the streak stats. */
+  counts: days.map((day) => Math.max(Number(day.count) || 0, 0))
 };
 
 await writeFile(path.join(root, target), JSON.stringify(snapshot, null, 2) + "\n");

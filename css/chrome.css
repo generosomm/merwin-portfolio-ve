@@ -379,3 +379,61 @@ body::after {
     display: flex;
   }
 }
+
+
+/* ---- iPadOS-style pointer (js/cursor.js) ---------------------------
+   Mouse and trackpad only. The real cursor is hidden while the soft
+   one is active, except while a dialog (the lightbox) is open: it
+   sits in the browser's top layer, above anything the page can
+   draw, so the normal cursor comes back for it.
+---------------------------------------------------------------- */
+
+html.has-ios-cursor,
+html.has-ios-cursor * {
+  cursor: none !important;
+}
+
+html.has-ios-cursor:has(dialog[open]),
+html.has-ios-cursor:has(dialog[open]) * {
+  cursor: auto !important;
+}
+
+.ios-cursor {
+  position: fixed;
+  z-index: calc(var(--z-preloader) - 1);
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--cursor-dot);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-1) var(--ease-out), background var(--dur-1) var(--ease-out);
+  will-change: transform, width, height;
+}
+
+.ios-cursor.is-visible {
+  opacity: 1;
+}
+
+.ios-cursor[data-mode="wrap"],
+.ios-cursor[data-mode="large"] {
+  background: var(--cursor-wrap);
+}
+
+.ios-cursor[data-mode="text"] {
+  background: var(--cursor-bar);
+}
+
+html:has(dialog[open]) .ios-cursor {
+  opacity: 0;
+}
+
+/* The control under the pointer leans toward it. `translate` is a
+   separate property from `transform`, so this adds to any transform
+   the element already has instead of replacing it. */
+.is-cursor-target {
+  translate: var(--lean-x, 0) var(--lean-y, 0);
+  transition: translate 0.25s var(--ease-out);
+}

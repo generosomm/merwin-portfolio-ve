@@ -97,6 +97,13 @@ try {
     }
   });
 
+  /* Every wired data file is preloaded in <head>, so it downloads in
+     parallel with the CSS and JS instead of after content.js runs. */
+  wiredFiles.forEach((filename) => {
+    const tag = `<link rel="preload" href="data/${filename}" as="fetch" crossorigin>`;
+    if (!index.includes(tag)) errors.push(`index.html: missing ${tag}`);
+  });
+
   const body = index.match(/<body[\s\S]*<\/body>/i)?.[0] || "";
   const bodyText = [...body.matchAll(/>([^<]+)</g)]
     .map((match) => match[1].trim())

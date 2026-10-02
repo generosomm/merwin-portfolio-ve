@@ -192,6 +192,7 @@
         image.alt = trigger.dataset.lightboxAlt || "";
       }
       dialog.showModal();
+      document.documentElement.classList.add("dialog-open");
       window.portfolio?.lenis?.stop();
     });
 
@@ -202,6 +203,7 @@
       if (event.target === dialog) dialog.close();
     });
     dialog.addEventListener("close", () => {
+      document.documentElement.classList.remove("dialog-open");
       /* Stop the clip and its download, not just its sound. */
       if (video && !video.hidden) {
         video.pause();

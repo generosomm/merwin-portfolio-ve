@@ -15,6 +15,14 @@ html {
   scroll-behavior: auto;
   /* Anchor jumps land below the fixed header, notch included. */
   scroll-padding-top: calc(var(--chrome-h) + var(--safe-top) + var(--s-5));
+  /* No visible scrollbar: the green playhead along the top edge
+     already shows scroll position. Scrolling itself is untouched
+     (wheel, trackpad, keyboard, touch). */
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {

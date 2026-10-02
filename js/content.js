@@ -1,22 +1,29 @@
 "use strict";
 
+/* =============================================================
+   CONTENT — fetches every JSON file in data/ and renders it.
+   No visible string is written here; all copy comes from JSON so
+   the site stays editable without touching code.
+   ============================================================= */
+
 const CONTENT_FILES = Object.freeze({
   meta: "00-meta.json",
-  nav: "01-nav.json",
+  chrome: "01-chrome.json",
   hero: "02-hero.json",
-  work: "04-work.json",
-  dev: "05-dev.json",
-  operations: "06-operations.json",
-  stats: "07-stats.json",
-  testimonials: "08-testimonials.json",
-  about: "09-about.json",
-  credentials: "10-credentials.json",
+  about: "03-about.json",
+  numbers: "04-numbers.json",
+  experience: "05-experience.json",
+  practice: "06-practice.json",
+  work: "07-work.json",
+  edits: "08-edits.json",
+  proof: "09-proof.json",
+  stack: "10-stack.json",
   contact: "11-contact.json",
-  ui: "12-ui.json",
-  aiHooks: "13-ai-hooks.json"
+  ui: "12-ui.json"
 });
 
 let interfaceText = {};
+let sectionIndex = new Map();
 
 function escapeHTML(value = "") {
   return String(value)
@@ -29,42 +36,15 @@ function escapeHTML(value = "") {
 
 const text = escapeHTML;
 const attr = escapeHTML;
-const list = (value) => Array.isArray(value) ? value : [];
-const records = (value) => list(value).filter((item) => item && typeof item === "object" && !Array.isArray(item));
+const list = (value) => (Array.isArray(value) ? value : []);
+const records = (value) =>
+  list(value).filter((item) => item && typeof item === "object" && !Array.isArray(item));
 const hasText = (value) => typeof value === "string" && value.trim().length > 0;
-const pad = (index) => String(index + 1).padStart(2, "0");
+
 const ui = (path) => {
   const value = path.split(".").reduce((current, key) => current?.[key], interfaceText);
   return hasText(value) ? value : "";
 };
-const formatUi = (path, values = {}) =>
-  Object.entries(values).reduce(
-    (output, [key, value]) => output.replaceAll(`{${key}}`, String(value)),
-    ui(path)
-  );
-
-function dropdownChevron() {
-  return '<span class="ui-chevron" aria-hidden="true"></span>';
-}
-
-function disclosureControl() {
-  return `<span class="ui-disclosure-control" aria-hidden="true">
-    <span class="ui-disclosure-state ui-disclosure-state-closed">${text(ui("labels.showDropdown"))}</span>
-    <span class="ui-disclosure-state ui-disclosure-state-open">${text(ui("labels.hideDropdown"))}</span>
-    ${dropdownChevron()}
-  </span>`;
-}
-
-function disclosureSummary(content, className = "") {
-  const classAttribute = hasText(className) ? ` class="${attr(className)}"` : "";
-  return `<summary${classAttribute}>${content}${disclosureControl()}</summary>`;
-}
-
-function setVisible(element, visible) {
-  if (!element) return;
-  element.hidden = !visible;
-  if (!visible) element.replaceChildren();
-}
 
 function setMeta(selector, value, attribute = "content") {
   const element = document.querySelector(selector);
@@ -72,11 +52,16 @@ function setMeta(selector, value, attribute = "content") {
   element.setAttribute(attribute, value);
 }
 
+function setLabel(element, value) {
+  if (!element || !hasText(value)) return;
+  element.setAttribute("aria-label", value);
+}
+
 async function loadPortfolioContent() {
   const results = await Promise.all(
     Object.entries(CONTENT_FILES).map(async ([key, filename]) => {
       try {
-        const response = await fetch(`data/${filename}`, { cache: "no-store" });
+        const response = await fetch(`data/${filename}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return { key, filename, data: await response.json() };
       } catch (error) {
@@ -94,742 +79,1028 @@ async function loadPortfolioContent() {
   };
 }
 
+/* ---- Metadata -------------------------------------------------
+   index.html ships static copies of these for crawlers that never
+   run JS; this keeps data/00-meta.json authoritative at runtime.
+---------------------------------------------------------------- */
+
 function renderMeta(data) {
   if (!data) return;
   if (hasText(data.title)) document.title = data.title;
   setMeta('meta[name="description"]', data.description);
+  setMeta('meta[name="theme-color"]', data.themeColor);
+  setMeta('link[rel="canonical"]', data.canonicalUrl, "href");
   setMeta('meta[property="og:title"]', data.socialTitle || data.title);
   setMeta('meta[property="og:description"]', data.socialDescription || data.description);
   setMeta('meta[property="og:url"]', data.canonicalUrl);
   setMeta('meta[property="og:image"]', data.socialImage);
   setMeta('meta[property="og:image:alt"]', data.socialImageAlt);
-  setMeta('link[rel="canonical"]', data.canonicalUrl, "href");
+  setMeta('meta[property="og:image:width"]', data.socialImageWidth);
+  setMeta('meta[property="og:image:height"]', data.socialImageHeight);
 }
 
-function renderInterface(data) {
-  interfaceText = data || {};
+/* ---- Icons ----------------------------------------------------
+   Inline so the social rail costs no extra request and inherits
+   currentColor for hover and focus states.
+---------------------------------------------------------------- */
 
-  const loader = document.querySelector("#portfolio-loader");
-  const loaderBrand = document.querySelector("#portfolio-loader-brand");
-  const loaderStatuses = document.querySelector("#portfolio-loader-statuses");
-  const statuses = list(data?.loader?.statuses).filter(hasText).slice(0, 3);
-
-  if (loader) loader.setAttribute("aria-label", ui("loader.ariaLabel"));
-  if (loaderBrand) loaderBrand.textContent = ui("loader.brand");
-  if (loaderStatuses) {
-    loaderStatuses.innerHTML = statuses
-      .map((status) => `<span>${text(status)}</span>`)
-      .join("");
-  }
-
-  const skipLink = document.querySelector("#skip-link");
-  if (skipLink) skipLink.textContent = ui("skipLink");
-
-  const videoDialog = document.querySelector("#video-dialog");
-  const imageDialog = document.querySelector("#image-dialog");
-  const videoClose = document.querySelector("#video-dialog-close");
-  const imageClose = document.querySelector("#image-dialog-close");
-
-  if (videoDialog) videoDialog.setAttribute("aria-label", ui("dialogs.videoLabel"));
-  if (imageDialog) imageDialog.setAttribute("aria-label", ui("dialogs.imageLabel"));
-  if (videoClose) {
-    videoClose.setAttribute("aria-label", ui("dialogs.closeVideoLabel"));
-    videoClose.innerHTML = `${text(ui("dialogs.closeButton"))} &times;`;
-  }
-  if (imageClose) {
-    imageClose.setAttribute("aria-label", ui("dialogs.closeImageLabel"));
-    imageClose.innerHTML = `${text(ui("dialogs.closeButton"))} &times;`;
-  }
+function socialIcon(name) {
+  const icons = {
+    github: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.9c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 0 1.6 1 1.6 1 .9 1.6 2.4 1.1 2.9.9.1-.7.4-1.1.7-1.3-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7.9.7 1.8V21c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg>`,
+    linkedin: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.4 7.8H2.2V22h3.2V7.8ZM3.8 2A1.9 1.9 0 1 0 3.8 5.8 1.9 1.9 0 0 0 3.8 2ZM22 13.8c0-4.3-2.3-6.3-5.4-6.3a4.7 4.7 0 0 0-4.2 2.3v-2H9.2V22h3.2v-7c0-1.8.4-3.6 2.7-3.6 2.3 0 2.3 2.1 2.3 3.7V22h3.2l1.4-8.2Z"/></svg>`,
+    tiktok: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 3v11.1a4.6 4.6 0 1 1-3.8-4.5v3.1a1.7 1.7 0 1 0 .8 1.4V3h3Zm0 0c.4 2.2 1.7 3.6 4 4.1v3.1a8.2 8.2 0 0 1-4-1.8V3Z"/></svg>`,
+    youtube: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21.4 6.5a2.7 2.7 0 0 0-1.9-1.9C17.8 4.2 12 4.2 12 4.2s-5.8 0-7.5.4a2.7 2.7 0 0 0-1.9 1.9A28 28 0 0 0 2.2 12c0 1.9.1 3.7.4 5.5a2.7 2.7 0 0 0 1.9 1.9c1.7.4 7.5.4 7.5.4s5.8 0 7.5-.4a2.7 2.7 0 0 0 1.9-1.9c.3-1.8.4-3.6.4-5.5s-.1-3.7-.4-5.5ZM10 15.4V8.6l5.8 3.4-5.8 3.4Z"/></svg>`,
+    instagram: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M7.2 2h9.6A5.2 5.2 0 0 1 22 7.2v9.6a5.2 5.2 0 0 1-5.2 5.2H7.2A5.2 5.2 0 0 1 2 16.8V7.2A5.2 5.2 0 0 1 7.2 2Zm0 2A3.2 3.2 0 0 0 4 7.2v9.6A3.2 3.2 0 0 0 7.2 20h9.6a3.2 3.2 0 0 0 3.2-3.2V7.2A3.2 3.2 0 0 0 16.8 4H7.2Zm10.1 1.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>`,
+    facebook: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13.8 22v-9h3l.5-3.5h-3.5V7.3c0-1 .3-1.8 1.8-1.8h1.9V2.4c-.3 0-1.5-.1-2.8-.1-2.8 0-4.7 1.7-4.7 4.8v2.4H7V13h3v9h3.8Z"/></svg>`
+  };
+  return icons[name] || "";
 }
 
-function renderNavigation(data) {
-  const root = document.querySelector('[data-content="nav"]');
-  const links = records(data?.links).filter((link) => hasText(link.label) && hasText(link.href));
-  const visible = data && (hasText(data.brand) || links.length || hasText(data.cta?.label));
-  setVisible(root, visible);
-  if (!visible) return;
+/* ---- Chrome: brand, nav, toggle ------------------------------ */
 
-  const cta = hasText(data.cta?.label) && hasText(data.cta?.href)
-    ? `<a class="nav-cta ui-action ui-action-inverse" href="${attr(data.cta.href)}">${text(data.cta.label)} <span aria-hidden="true">&nearr;</span></a>`
-    : "";
+function renderTopChrome(data) {
+  const root = document.querySelector('[data-chrome="top"]');
+  if (!root) return;
+
+  const brand = data.brand || {};
+  const nav = data.nav || {};
+  const links = records(nav.links);
+
+  const navLinks = links
+    .map(
+      (link) =>
+        `<li><a class="chrome-nav-link" href="${attr(link.href)}">${text(link.label)}</a></li>`
+    )
+    .join("");
 
   root.innerHTML = `
-    <a class="brand" href="#top" aria-label="${attr(data.brand || ui("navigation.brandFallback"))}, ${attr(ui("navigation.homeSuffix"))}">
-      <span class="brand-mark">${hasText(data.brandImage) ? `<img src="${attr(data.brandImage)}" alt="${attr(data.brandImageAlt || "")}">` : text(data.brandMark || ui("navigation.brandMarkFallback"))}</span>
-      <span>
-        ${hasText(data.brand) ? `<strong>${text(data.brand)}</strong>` : ""}
-        ${hasText(data.role) ? `<small>${text(data.role)}</small>` : ""}
-      </span>
+    <a class="brand" href="${attr(brand.href || "#hero")}" aria-label="${attr(brand.ariaLabel)}">
+      <span class="brand-name">${text(brand.name)}</span>
     </a>
-    <button class="menu-button ui-icon-button" type="button" aria-expanded="false" aria-controls="site-nav">
-      <span class="sr-only">${text(ui("navigation.toggleLabel"))}</span><span></span><span></span>
-    </button>
-    <nav class="site-nav" id="site-nav" aria-label="${attr(ui("navigation.primaryLabel"))}">
-      ${links.map((link) => {
-        const children = records(link.children).filter((child) => hasText(child.label) && hasText(child.href));
-        if (!children.length) return `<a href="${attr(link.href)}">${text(link.label)}</a>`;
-
-        return `<div class="nav-dropdown">
-          <a class="nav-dropdown-trigger" href="${attr(link.href)}" aria-haspopup="true">
-            <span>${text(link.label)}</span>${dropdownChevron()}
-          </a>
-          <div class="nav-dropdown-menu" aria-label="${attr(link.label)} ${attr(ui("navigation.sectionsSuffix"))}">
-            ${children.map((child) => `<a href="${attr(child.href)}">
-              ${hasText(child.index) ? `<span>${text(child.index)}</span>` : ""}
-              <strong>${text(child.label)}</strong>
-              <i aria-hidden="true">&darr;</i>
-            </a>`).join("")}
-          </div>
-        </div>`;
-      }).join("")}
-      ${cta}
+    <nav class="chrome-nav" aria-label="${attr(nav.ariaLabel)}">
+      <ul class="chrome-nav-list">${navLinks}</ul>
+      <button class="nav-toggle" id="nav-toggle" type="button"
+        aria-controls="menu" aria-expanded="false" aria-label="${attr(nav.openLabel)}"
+        data-close-label="${attr(nav.closeLabel)}">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
     </nav>`;
 }
 
-function renderHero(data, workData = {}) {
-  const root = document.querySelector('[data-content="hero"]');
-  const visible = data && (hasText(data.title) || hasText(data.intro));
-  setVisible(root, visible);
-  if (!visible) return;
+function renderSocialRail(data) {
+  const root = document.querySelector('[data-chrome="socials"]');
+  if (!root) return;
 
-  const services = list(data.services).filter(hasText);
-  const receiptStats = records(data.receipt?.stats);
-  const featuredFrames = records(workData?.items)
-    .filter((item) => hasText(item.image) && hasText(item.title))
-    .slice(0, 3);
-  const primaryCta = hasText(data.primaryCta?.label) && hasText(data.primaryCta?.href)
-    ? `<a class="button button-dark ui-action ui-action-solid" href="${attr(data.primaryCta.href)}">${text(data.primaryCta.label)} <span aria-hidden="true">&darr;</span></a>`
+  const socials = data.socials || {};
+  const links = records(socials.links);
+  if (!links.length) {
+    root.remove();
+    return;
+  }
+
+  setLabel(root, socials.ariaLabel);
+  root.innerHTML = links
+    .map(
+      (link) =>
+        `<a href="${attr(link.href)}" target="_blank" rel="noopener noreferrer"
+          aria-label="${attr(link.label)}">${socialIcon(link.icon)}</a>`
+    )
+    .join("");
+}
+
+function renderMenu(data) {
+  const root = document.querySelector('[data-chrome="menu"]');
+  if (!root) return;
+
+  const nav = data.nav || {};
+  const socials = data.socials || {};
+  const links = records(nav.links);
+
+  const menuLinks = links
+    .map(
+      (link, index) =>
+        `<li><a class="menu-link" href="${attr(link.href)}">
+          <span class="menu-index" aria-hidden="true">${text(String(index + 1).padStart(2, "0"))}</span>
+          <span>${text(link.label)}</span>
+        </a></li>`
+    )
+    .join("");
+
+  const menuSocials = records(socials.links)
+    .map(
+      (link) =>
+        `<a href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">
+          ${socialIcon(link.icon)}<span>${text(link.label)}</span>
+        </a>`
+    )
+    .join("");
+
+  setLabel(root, nav.menuAriaLabel);
+  root.setAttribute("role", "dialog");
+  root.setAttribute("aria-modal", "true");
+  root.innerHTML = `
+    <ul class="menu-list">${menuLinks}</ul>
+    <div class="menu-socials" aria-label="${attr(socials.ariaLabel)}">${menuSocials}</div>`;
+}
+
+/* ---- Scroll shell ---------------------------------------------
+   Each section opens with its title. The dashed placeholder is
+   temporary scaffolding and disappears as each real section is
+   built.
+---------------------------------------------------------------- */
+
+/* Every section opens with the same heading row: the big title on
+   the left and, where the section has somewhere to go, a "View all"
+   link on the same line (both from data/01-chrome.json). The title
+   text is repeated in data-text for the solid layer that wipes in
+   over the outline as the section scrolls up (css/sections.css). */
+function sectionTitle(id) {
+  const section = sectionIndex.get(id);
+  if (!section || !hasText(section.title)) return "";
+  const link = section.viewAll || {};
+  const more = hasText(link.href)
+    ? `<a class="view-all" href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">${text(link.label)}${ARROW}</a>`
     : "";
-  const secondaryCta = hasText(data.secondaryCta?.label) && hasText(data.secondaryCta?.href)
-    ? `<a class="button button-text ui-action ui-action-text" href="${attr(data.secondaryCta.href)}" target="_blank" rel="noopener">${text(data.secondaryCta.label)} <span aria-hidden="true">&nearr;</span></a>`
+  return `<div class="section-head">
+      <h2 class="section-title" data-text="${attr(section.title)}">${text(section.title)}</h2>
+      ${more}
+    </div>`;
+}
+
+/* Only fills sections that no renderer has claimed yet. Each one
+   drops out as its phase lands. */
+function renderSectionShell() {
+  const pending = ui("phasePending");
+
+  sectionIndex.forEach((section, id) => {
+    const root = document.querySelector(`[data-section="${id}"]`);
+    if (!root) return;
+
+    setLabel(root, section.title);
+    if (root.childElementCount) return;
+
+    root.innerHTML = `
+      <div class="section-inner">
+        ${sectionTitle(id)}
+        <p class="phase-pending">${text(pending)}</p>
+      </div>`;
+  });
+}
+
+/* ---- Preloader ------------------------------------------------
+   Markup only; js/site.js runs the counter and the exit wipe.
+---------------------------------------------------------------- */
+
+function renderPreloader() {
+  const root = document.querySelector('[data-chrome="preloader"]');
+  if (!root) return;
+
+  const config = interfaceText.preloader || {};
+  setLabel(root, config.ariaLabel);
+  root.dataset.fps = String(config.fps || 24);
+  root.dataset.frames = String(config.frames || 36);
+  root.dataset.duration = String(config.durationMs || 850);
+  root.dataset.exit = String(config.exitMs || 650);
+
+  root.innerHTML = `
+    <div class="preloader-inner">
+      <div class="preloader-head">
+        <span class="preloader-label">${text(config.label)}</span>
+        <span class="preloader-timecode" id="preloader-timecode"></span>
+      </div>
+      <div class="preloader-bar">
+        <span class="preloader-fill" id="preloader-fill"></span>
+      </div>
+    </div>`;
+}
+
+/* ---- Hero -----------------------------------------------------
+   The portrait sits between the two lines of type. Until the
+   cutout exists, a spec placeholder holds its exact position.
+---------------------------------------------------------------- */
+
+function portraitSlot(portrait) {
+  const placeholder = portrait.placeholder || {};
+  const specs = list(placeholder.specs)
+    .map((spec) => `<li>${text(spec)}</li>`)
+    .join("");
+
+  return `<div class="portrait-slot">
+      <p class="portrait-slot-label">${text(placeholder.label)}</p>
+      <p class="portrait-slot-note">${text(placeholder.note)}</p>
+      <ul class="portrait-slot-specs">${specs}</ul>
+    </div>`;
+}
+
+/* Phones download the 640px WebP, larger screens the full one; the
+   PNG is only for browsers without WebP. The sizes hint matches the
+   layout: full width on phones, ~64% on tablets, ~30% on desktop. */
+const PORTRAIT_SIZES = "(max-width: 767px) 100vw, (max-width: 1023px) 64vw, 30vw";
+
+function portraitImage(portrait) {
+  const set = records(portrait.sources)
+    .filter((source) => hasText(source.src) && Number(source.width))
+    .map((source) => `${source.src} ${Number(source.width)}w`)
+    .join(", ");
+  const sources = set
+    ? `<source srcset="${attr(set)}" sizes="${PORTRAIT_SIZES}" type="image/webp">`
+    : hasText(portrait.webp)
+      ? `<source srcset="${attr(portrait.webp)}" type="image/webp">`
+      : "";
+
+  return `<picture>
+      ${sources}
+      <img src="${attr(portrait.src)}" alt="${attr(portrait.alt)}"
+        width="${attr(portrait.width || "")}" height="${attr(portrait.height || "")}"
+        fetchpriority="high" decoding="async">
+    </picture>`;
+}
+
+function renderHero(data, chrome = {}) {
+  const root = document.querySelector('[data-section="hero"]');
+  if (!root || !data) return;
+
+  const name = data.name || {};
+  const lines = list(name.lines);
+  const portrait = data.portrait || {};
+  const ctas = data.ctas || {};
+  const primary = ctas.primary || {};
+  const secondary = ctas.secondary || {};
+  const scroll = data.scrollHint || {};
+
+  const nameLines = lines
+    .map((line, index) => {
+      const inner = `<span class="hero-line-inner" data-line="${index}">${text(line)}</span>`;
+      if (index === 0) return `<span class="hero-line hero-line-back">${inner}</span>`;
+      /* The second line is drawn twice: the fill behind the portrait,
+         an outline-only twin in front of it. Over the photo only the
+         outline survives; elsewhere it sits on the fill unseen. */
+      return `<span class="hero-line hero-line-front">${inner}</span>
+        <span class="hero-line hero-line-outline" aria-hidden="true">${inner}</span>`;
+    })
+    /* The newline is load-bearing: without whitespace between the
+       block spans, the accessible name reads as one run-on word. */
+    .join("\n");
+
+  const portraitContent = hasText(portrait.src)
+    ? portraitImage(portrait)
+    : portraitSlot(portrait);
+
+  root.setAttribute("aria-labelledby", "hero-title");
+  root.innerHTML = `
+    <div class="section-inner hero-inner">
+      <div class="hero-stage">
+        <div class="hero-lockup">
+          <h1 class="hero-name" id="hero-title">${nameLines}</h1>
+          <div class="hero-portrait">${portraitContent}</div>
+        </div>
+      </div>
+      <div class="hero-foot">
+        <p class="hero-intro">${text(data.intro)}</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="${attr(primary.href)}">${text(primary.label)}</a>
+          <a class="button button-ghost" href="${attr(secondary.href)}">${text(secondary.label)}</a>
+        </div>
+        ${heroSocials(chrome.socials)}
+      </div>
+      ${hasText(scroll.href) ? `<a class="hero-scroll" href="${attr(scroll.href)}">${text(scroll.label)}</a>` : ""}
+    </div>`;
+}
+
+/* Phones and tablets have no social rail, so the icons sit in the
+   hero instead (hidden again once the rail appears, in CSS). */
+function heroSocials(socials = {}) {
+  const links = records(socials.links)
+    .filter((link) => hasText(link.href))
+    .map(
+      (link) => `<a href="${attr(link.href)}" target="_blank" rel="noopener noreferrer"
+        aria-label="${attr(link.label)}">${socialIcon(link.icon)}</a>`
+    )
+    .join("");
+  return links ? `<nav class="hero-socials" aria-label="${attr(socials.ariaLabel)}">${links}</nav>` : "";
+}
+
+/* ---- About ----------------------------------------------------
+   The heading and one short paragraph. Every word is its own span
+   so the scroll scrub can sharpen them in one by one; {{braced}}
+   runs carry the accent. Without the motion layer the markup
+   simply reads as finished text.
+---------------------------------------------------------------- */
+
+function aboutWords(value) {
+  if (!hasText(value)) return "";
+
+  return String(value)
+    .split(/(\{\{[^}]+\}\})/g)
+    .map((segment) => {
+      const accent = segment.match(/^\{\{([^}]+)\}\}$/);
+      const className = accent ? "about-word is-accent" : "about-word";
+      return (accent ? accent[1] : segment)
+        .split(/(\s+)/)
+        .map((token) => (token.trim() ? `<span class="${className}">${text(token)}</span>` : token))
+        .join("");
+    })
+    .join("");
+}
+
+function renderAbout(data) {
+  const root = document.querySelector('[data-section="about"]');
+  if (!root || !data) return;
+
+  root.classList.add("section-about");
+  root.innerHTML = `
+    <div class="section-inner about">
+      ${sectionTitle("about")}
+      <p class="about-text">${aboutWords(data.text)}</p>
+    </div>`;
+}
+
+/* ---- Numbers --------------------------------------------------
+   Final values are rendered server-side-equivalent, in the markup.
+   The count-up animates down to zero and back up only when the
+   motion layer is active, so these read correctly without it.
+---------------------------------------------------------------- */
+
+/* Small line icons for the stat cards, drawn here rather than loaded
+   from an icon library. Keyed by "icon" in data/04-numbers.json. */
+const STAT_ICONS = {
+  views: '<path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/>',
+  projects: '<path d="M8 1.75L14.25 5 8 8.25 1.75 5z"/><path d="M1.75 8L8 11.25 14.25 8"/><path d="M1.75 11L8 14.25 14.25 11"/>',
+  years: '<rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6.5h12M5.25 1.5v3M10.75 1.5v3"/>',
+  certificate: '<circle cx="8" cy="6" r="4"/><path d="M5.5 9.25L4.5 14.5 8 12.75l3.5 1.75-1-5.25"/>'
+};
+
+function statIcon(name) {
+  const paths = STAT_ICONS[name];
+  if (!paths) return "";
+  return `<svg class="number-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round">${paths}</svg>`;
+}
+
+function renderNumbers(data) {
+  const root = document.querySelector('[data-section="numbers"]');
+  if (!root || !data) return;
+
+  const items = records(data.items)
+    .map(
+      (item) => `
+      <div class="number">
+        ${statIcon(item.icon)}
+        <p class="number-figure">
+          <span class="number-value" data-count-to="${attr(item.value)}">${text(item.value)}</span><span class="number-suffix">${text(item.suffix)}</span>
+        </p>
+        <h3 class="number-label">${text(item.label)}</h3>
+        <p class="number-detail">${text(item.detail)}</p>
+      </div>`
+    )
+    .join("");
+
+  root.innerHTML = `
+    <div class="section-inner">
+      ${sectionTitle("numbers")}
+      <div class="numbers">${items}</div>
+    </div>`;
+}
+
+/* ---- Experience -----------------------------------------------
+   Roles are positioned on one shared axis so the bars read as clips
+   on a timeline. Geometry is computed here, not in the motion layer,
+   so the tracks are correct even with JS animation disabled.
+---------------------------------------------------------------- */
+
+function monthIndex(value) {
+  const match = /^(\d{4})-(\d{2})$/.exec(String(value || ""));
+  if (!match) return null;
+  return Number(match[1]) * 12 + (Number(match[2]) - 1);
+}
+
+function trackGeometry(item, axisStart, axisEnd, today) {
+  const span = axisEnd - axisStart;
+  if (span <= 0) return null;
+
+  const start = monthIndex(item.start);
+  const rawEnd = item.end === "present" ? Math.min(today, axisEnd) : monthIndex(item.end);
+  if (start === null || rawEnd === null) return null;
+
+  const clamp = (value) => Math.min(Math.max(value, 0), 1);
+  const left = clamp((start - axisStart) / span);
+  const right = clamp((rawEnd - axisStart) / span);
+  /* A role shorter than the axis resolution still needs to be seen. */
+  const width = Math.max(right - left, 0.02);
+
+  return { left: left * 100, width: Math.min(width, 1 - left) * 100 };
+}
+
+function axisTicks(axisStart, axisEnd) {
+  const span = axisEnd - axisStart;
+  const firstYear = Math.floor(axisStart / 12);
+  const lastYear = Math.floor(axisEnd / 12);
+  const ticks = [];
+
+  for (let year = firstYear; year <= lastYear; year += 1) {
+    const position = ((year * 12 - axisStart) / span) * 100;
+    if (position < 0 || position > 100) continue;
+    ticks.push(
+      `<span class="track-axis-tick" style="left:${position.toFixed(2)}%">${text(year)}</span>`
+    );
+  }
+
+  return ticks.join("");
+}
+
+/* "2022" over "Present": the short year column used on phones. */
+function trackYears(item, presentLabel) {
+  const start = String(item.start || "").slice(0, 4);
+  const end = item.end === "present" ? presentLabel : String(item.end || "").slice(0, 4);
+  if (!/^\d{4}$/.test(start)) return "";
+  const parts = [start, end].filter((part, index) => hasText(part) && (index === 0 || part !== start));
+  return `<p class="track-years" aria-hidden="true">${parts.map((part) => `<span>${text(part)}</span>`).join("")}</p>`;
+}
+
+function trackRow(item, geometry, presentLabel = "") {
+  const link = item.link && typeof item.link === "object" ? item.link : null;
+  /* A TODO is rendered as its own flagged note rather than restyling
+     the summary, which may well be real copy already. */
+  const todo = hasText(item.TODO) ? `<p class="track-todo">${text(item.TODO)}</p>` : "";
+  const bar = geometry
+    ? `<span class="track-clip-bar" style="left:${geometry.left.toFixed(2)}%;width:${geometry.width.toFixed(2)}%"></span>`
     : "";
-  const receipt = data.receipt && (hasText(data.receipt.value) || receiptStats.length)
-    ? `<aside class="hero-receipt ui-card ui-card-inverse" aria-label="${attr(ui("labels.careerHighlights"))}">
-        <div class="receipt-top"><span>${text(data.receipt.label)}</span><span>${text(data.receipt.year)}</span></div>
-        ${hasText(data.receipt.value) ? `<p class="receipt-number">${text(data.receipt.value)}<span>${text(data.receipt.suffix)}</span></p>` : ""}
-        ${hasText(data.receipt.caption) ? `<p class="receipt-caption">${text(data.receipt.caption)}</p>` : ""}
-        ${receiptStats.length ? `<dl class="receipt-stats">${receiptStats.map((stat) => `<div><dt>${text(stat?.label)}</dt><dd>${text(stat?.value)}</dd></div>`).join("")}</dl>` : ""}
-        ${hasText(data.receipt.linkLabel) && hasText(data.receipt.linkHref) ? `<a href="${attr(data.receipt.linkHref)}">${text(data.receipt.linkLabel)} <span aria-hidden="true">&searr;</span></a>` : ""}
-      </aside>`
+
+  const body = `
+    ${trackYears(item, presentLabel)}
+    <p class="track-period">${text(item.period)}</p>
+    <div class="track-identity">
+      <h3 class="track-role">${text(item.role)}</h3>
+      <p class="track-org">${text(item.organization)}</p>
+    </div>
+    <div class="track-media">
+      <div class="track-clip">${bar}</div>
+      <div class="track-detail"><div>
+        <p class="track-summary">${text(item.summary)}</p>
+        ${todo}
+        ${link ? `<span class="track-link">${text(link.label)}</span>` : ""}
+      </div></div>
+    </div>`;
+
+  /* A linked role is a real anchor; an unlinked one is not pretending
+     to be interactive. */
+  return link && hasText(link.href)
+    ? `<li class="track"><a class="track-row" href="${attr(link.href)}"
+        target="_blank" rel="noopener noreferrer">${body}</a></li>`
+    : `<li class="track"><div class="track-row">${body}</div></li>`;
+}
+
+function renderExperience(data) {
+  const root = document.querySelector('[data-section="experience"]');
+  if (!root || !data) return;
+
+  const axis = data.axis || {};
+  const axisStart = monthIndex(axis.start);
+  const axisEnd = monthIndex(axis.end);
+  const now = new Date();
+  const today = now.getFullYear() * 12 + now.getMonth();
+
+  const items = records(data.items);
+  const rows = items
+    .map((item) =>
+      trackRow(
+        item,
+        axisStart === null || axisEnd === null
+          ? null
+          : trackGeometry(item, axisStart, axisEnd, today),
+        axis.presentLabel
+      )
+    )
+    .join("");
+
+  const ticks =
+    axisStart === null || axisEnd === null
+      ? ""
+      : `<div class="track-axis" aria-hidden="true">
+          <div class="track-axis-ticks">${axisTicks(axisStart, axisEnd)}</div>
+        </div>`;
+
+  root.innerHTML = `
+    <div class="section-inner">
+      ${sectionTitle("experience")}
+      ${ticks}
+      <ul class="tracks">${rows}</ul>
+    </div>`;
+}
+
+/* ---- Shared bits for the work sections ------------------------- */
+
+const pad2 = (value) => String(value).padStart(2, "0");
+
+function tagList(tags, className) {
+  const items = list(tags).filter(hasText);
+  if (!items.length) return "";
+  return `<ul class="${className}">${items.map((tag) => `<li>${text(tag)}</li>`).join("")}</ul>`;
+}
+
+/* image.srcset (optional) is a list of { src, width } so phones can
+   take a smaller file; sizes says how wide the image is drawn. */
+function picture(image, { className = "", eager = false, sizes = "" } = {}) {
+  if (!hasText(image?.src)) return "";
+  const size = image.width && image.height ? ` width="${attr(image.width)}" height="${attr(image.height)}"` : "";
+  const set = records(image.srcset)
+    .filter((source) => hasText(source.src) && Number(source.width))
+    .map((source) => `${source.src} ${Number(source.width)}w`)
+    .join(", ");
+  const responsive = set && sizes ? ` srcset="${attr(set)}" sizes="${attr(sizes)}"` : "";
+  return `<img class="${attr(className)}" src="${attr(image.src)}" alt="${attr(image.alt || "")}"${size}${responsive}
+    loading="${eager ? "eager" : "lazy"}" decoding="async">`;
+}
+
+/* A small arrow drawn in SVG, so no glyph lives in the code. */
+const ARROW = `<svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>`;
+
+/* ---- What I do ---------------------------------------------------
+   Three cards that pin one over the next as the page scrolls. The
+   shade layer is what js/motion.js darkens on the card underneath.
+---------------------------------------------------------------- */
+
+function renderPractice(data) {
+  const root = document.querySelector('[data-section="practice"]');
+  if (!root || !data) return;
+
+  const cards = records(data.items)
+    .filter((item) => hasText(item.title))
+    .map(
+      (item, index) => `
+        <li class="practice-card" style="--i: ${index}">
+          <article class="practice-card-inner">
+            <div class="practice-copy">
+              <span class="practice-index" aria-hidden="true">${pad2(index + 1)}</span>
+              <h3 class="practice-title">${text(item.title)}</h3>
+              <p class="practice-text">${text(item.text)}</p>
+              ${tagList(item.tags, "practice-tags")}
+            </div>
+            <div class="practice-media">${picture(item.image)}</div>
+            <span class="practice-shade" aria-hidden="true"></span>
+          </article>
+        </li>`
+    )
+    .join("");
+
+  root.innerHTML = `
+    <div class="section-inner">
+      ${sectionTitle("practice")}
+      <ol class="practice-stack">${cards}</ol>
+    </div>`;
+}
+
+/* ---- Selected work -----------------------------------------------
+   Clean full-width rows with the project name large. On a desktop
+   pointer, hovering a row brings in one shared 3D preview card at
+   the right of the list (js/interactions.js reads data-preview). On
+   phones and touch screens the rows stay text-only, with no preview.
+---------------------------------------------------------------- */
+
+function workRow(item, index, labels) {
+  const href = hasText(item.href) ? item.href : "";
+  const title = href
+    ? `<a class="work-link" href="${attr(href)}" target="_blank" rel="noopener noreferrer">${text(item.title)}</a>`
+    : text(item.title);
+  const code = hasText(item.code)
+    ? `<a class="work-code" href="${attr(item.code)}" target="_blank" rel="noopener noreferrer">${text(labels.code)}${ARROW}</a>`
     : "";
-  const visualReel = featuredFrames.length
-    ? `<div class="hero-reel" aria-label="${attr(ui("labels.featuredWorkPreview"))}">
-        ${featuredFrames.map((item, index) => `<a class="hero-frame" href="#editing" aria-label="${attr(item.title)}">
-          <img src="${attr(item.image)}" alt="${attr(item.imageAlt || item.title)}" ${index ? 'loading="lazy"' : ""}>
-          <span class="hero-frame-index" aria-hidden="true">${pad(index)}</span>
-          <span class="hero-frame-caption"><strong>${text(item.title)}</strong>${hasText(item.result) ? `<small>${text(item.result)}</small>` : ""}</span>
-        </a>`).join("")}
+  const preview = hasText(item.image?.src) ? ` data-preview="${attr(item.image.src)}"` : "";
+
+  return `
+    <li class="work-row${href ? " has-link" : ""}"${preview}>
+      <span class="work-index" aria-hidden="true">${pad2(index + 1)}</span>
+      <div class="work-main">
+        <h3 class="work-title">${title}</h3>
+        <p class="work-summary">${text(item.summary)}</p>
+        <div class="work-meta">
+          ${tagList(item.tags, "work-tags")}
+          ${code}
+          ${href ? `<span class="work-arrow" aria-hidden="true">${ARROW}</span>` : ""}
+        </div>
+      </div>
+    </li>`;
+}
+
+function renderWork(data) {
+  const root = document.querySelector('[data-section="work"]');
+  if (!root || !data) return;
+
+  const labels = { code: data.codeLabel };
+  const rows = records(data.items)
+    .filter((item) => hasText(item.title))
+    .map((item, index) => workRow(item, index, labels))
+    .join("");
+
+  root.innerHTML = `
+    <div class="section-inner">
+      ${sectionTitle("work")}
+      <div class="work-stage">
+        <ul class="work-list">${rows}</ul>
+        <div class="work-preview" aria-hidden="true">
+          <div class="work-preview-card"><img alt="" decoding="async"></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---- Selected edits ----------------------------------------------
+   Two tabs over the same card layout: "Edits" (each card links to
+   its post, with the reach as a badge) and "AI Hooks" (the Google
+   Flow product hooks; each card opens its video in the lightbox).
+   On phones each tab is one swipeable row with position dots; on
+   wider screens it is a grid. Videos are only attached (and
+   downloaded) on desktop hover or when a hook is opened, by
+   js/interactions.js.
+---------------------------------------------------------------- */
+
+function editMedia(item) {
+  const video = hasText(item.video) ? ` data-video="${attr(item.video)}"` : "";
+  return `
+    <span class="edit-media"${video}>
+      ${picture({ src: item.image, alt: "", width: item.imageWidth, height: item.imageHeight })}
+      ${hasText(item.badge) ? `<span class="edit-badge">${text(item.badge)}</span>` : ""}
+    </span>`;
+}
+
+function editMeta(title, platform) {
+  return `
+    <span class="edit-meta">
+      <span class="edit-title">${text(title)}</span>
+      <span class="edit-platform">${text(platform)}</span>
+    </span>`;
+}
+
+function editPanel(id, cards, selected) {
+  return `
+    <div class="edits-panel" id="edits-panel-${id}" role="tabpanel" aria-labelledby="edits-tab-${id}"${selected ? "" : " hidden"}>
+      <ul class="edits-grid">${cards}</ul>
+      <div class="edits-dots" aria-hidden="true"></div>
+    </div>`;
+}
+
+function renderEdits(data) {
+  const root = document.querySelector('[data-section="edits"]');
+  if (!root || !data) return;
+
+  const editItems = records(data.items).filter((item) => hasText(item.title) && hasText(item.href));
+  const edits = editItems
+    .map((item) => {
+      const label = [item.title, item.badge, item.platform].filter(hasText).join(", ");
+      return `
+        <li class="edit-card">
+          <a class="edit-link" href="${attr(item.href)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(label)}">
+            ${editMedia(item)}
+            ${editMeta(item.title, item.platform)}
+          </a>
+        </li>`;
+    })
+    .join("");
+
+  const hookData = data.hooks || {};
+  const hookItems = records(hookData.items).filter((item) => hasText(item.title) && hasText(item.video));
+  const hooks = hookItems
+    .map((item) => {
+      const label = [item.title, item.badge, hookData.platform, hookData.playLabel].filter(hasText).join(", ");
+      return `
+        <li class="edit-card">
+          <button class="edit-link" type="button" aria-haspopup="dialog" aria-label="${attr(label)}"
+            data-lightbox-video="${attr(item.video)}" data-lightbox-alt="${attr(item.alt)}">
+            ${editMedia(item)}
+            ${editMeta(item.title, hookData.platform)}
+          </button>
+        </li>`;
+    })
+    .join("");
+
+  const tabs = data.tabs || {};
+  const tab = (id, label, count, selected) => `
+    <button class="edits-tab" type="button" role="tab" id="edits-tab-${id}"
+      aria-controls="edits-panel-${id}" aria-selected="${selected}" tabindex="${selected ? 0 : -1}">
+      ${text(label)}<span class="edits-tab-count">${count}</span>
+    </button>`;
+
+  const tabList = hooks
+    ? `<div class="edits-tabs" role="tablist" aria-label="${attr(tabs.label)}">
+        ${tab("edits", tabs.edits, editItems.length, true)}
+        ${tab("hooks", tabs.hooks, hookItems.length, false)}
       </div>`
     : "";
 
   root.innerHTML = `
-    ${hasText(data.availability) ? `<div class="availability"><span class="status-dot" aria-hidden="true"></span>${text(data.availability)}</div>` : ""}
-    <div class="hero-layout${receipt || visualReel ? "" : " hero-layout-single"}">
-      <div class="hero-copy">
-        ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
-        <h1 id="hero-title">${text(data.title)}${hasText(data.titleAccent) ? `<br><em>${text(data.titleAccent)}</em>` : ""}</h1>
-        ${hasText(data.intro) ? `<p class="hero-intro">${text(data.intro)}</p>` : ""}
-        ${primaryCta || secondaryCta ? `<div class="hero-actions">${primaryCta}${secondaryCta}</div>` : ""}
-    ${services.length ? `<ul class="hero-services" aria-label="${attr(ui("labels.availableServices"))}">${services.map((service) => `<li class="ui-chip">${text(service)}</li>`).join("")}</ul>` : ""}
-      </div>
-      ${visualReel || receipt ? `<div class="hero-visual-stack">${visualReel}${receipt}</div>` : ""}
+    <div class="section-inner">
+      ${sectionTitle("edits")}
+      ${tabList}
+      ${editPanel("edits", edits, true)}
+      ${hooks ? editPanel("hooks", hooks, false) : ""}
     </div>`;
 }
 
-function galleryControls(target, label, count) {
-  if (count < 2) return "";
-  return `<div class="scroll-controls gallery-controls" role="group" aria-label="${attr(formatUi("gallery.controlsTemplate", { label }))}">
-      <button class="ui-icon-button" type="button" data-scroll-target="${attr(target)}" data-scroll-direction="-1" aria-label="${attr(formatUi("gallery.scrollLeftTemplate", { label }))}">&larr;</button>
-      <button class="ui-icon-button" type="button" data-scroll-target="${attr(target)}" data-scroll-direction="1" aria-label="${attr(formatUi("gallery.scrollRightTemplate", { label }))}">&rarr;</button>
-  </div>`;
+/* ---- Proof ------------------------------------------------------
+   Analytics as hairline rows (big number, what it is, the
+   screenshot), certificates as three tilting cards. Every item is a
+   button that opens the full-size original in the lightbox
+   (js/interactions.js); the page itself only loads small WebPs.
+---------------------------------------------------------------- */
+
+function lightboxAttrs(item) {
+  return `type="button" aria-haspopup="dialog" data-lightbox="${attr(item.full)}" data-lightbox-alt="${attr(item.alt)}"`;
 }
 
-/**
- * Renders a single "Liquid Glass" video card. Shared by the AI-Generated
- * Media and Video Editing sections, so both get identical markup/classes.
- * Media is forced to a 1:1 square by css/carousel-glass.css — there is no
- * per-item aspect ratio anymore.
- */
-function videoCaseCard(item, index, { watchLabel } = {}) {
-  const resultBadge = hasText(item?.result)
-    ? `<span class="case-result-badge"><strong>${text(item.result)}</strong>${hasText(item.resultDetail) ? `<small>${text(item.resultDetail)}</small>` : ""}</span>`
-    : "";
-  const media = hasText(item?.video)
-    ? `<button class="case-media video-trigger" type="button" data-video="${attr(item.video)}" aria-label="${attr(ui("labels.playPrefix"))} ${attr(item.title)}">
-        <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
-        ${resultBadge}
-        <span class="play-pill" aria-hidden="true"><i></i></span>
-      </button>`
-    : hasText(item?.image) && hasText(item?.postUrl)
-      ? `<a class="case-media" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(item.actionLabel || ui("labels.watchOriginal"))}: ${attr(item.title)}">
-          <img src="${attr(item.image)}" alt="${attr(item.imageAlt)}" loading="${index ? "lazy" : "eager"}">
-          ${resultBadge}
-          <span class="play-pill" aria-hidden="true"><i></i></span>
-        </a>`
-      : "";
-  return `<article class="case-study liquid-glass-card">
-    ${media}
-    <div class="case-copy">
-      ${hasText(item?.category) ? `<div class="case-meta-row">
-        <p class="case-category">${hasText(item.platform) ? `<span class="case-platform-icon case-platform-${attr(technologyKey(item.platform))}" role="img" aria-label="${attr(item.platform)}" title="${attr(item.platform)}">${socialIcon(technologyKey(item.platform))}</span>` : ""}<span>${text(item.category)}</span></p>
-      </div>` : ""}
-      ${hasText(item?.title) ? `<h3>${text(item.title)}</h3>` : ""}
-      ${hasText(item?.description) ? `<p>${text(item.description)}</p>` : ""}
-      ${hasText(item?.postUrl) ? `<div class="case-actions"><a class="case-original-link ui-action ui-action-outline" href="${attr(item.postUrl)}" target="_blank" rel="noopener" aria-label="${attr(ui("labels.watchOriginal"))}: ${attr(item.title)}"><span>${text(item.linkLabel || watchLabel || ui("labels.watch"))}</span><span aria-hidden="true">&nearr;</span></a></div>` : ""}
-    </div>
-  </article>`;
-}
+function renderProof(data) {
+  const root = document.querySelector('[data-section="proof"]');
+  if (!root || !data) return;
 
-/**
- * Renders a reusable, infinitely-looping carousel: .gallery-shell >
- * .video-grid.horizontal-track of .case-study.liquid-glass-card items,
- * plus prev/next controls. Shared by the AI-Generated Media section
- * (renderAiHooks) and the Video Editing section (renderWork) — same DOM,
- * same classes, only trackId/labels differ.
- *
- * The actual auto-scroll, infinite loop (clone + aria-hide + tabindex -1),
- * hover/focus/drag pause, and native drag-to-scroll are handled by the
- * existing .horizontal-track auto-carousel system in js/app.js — trackId
- * just needs to be in that file's isAutoCarousel id list. Direction is
- * driven by trackId there too ("ai-hooks-track" reverses it).
- */
-function renderCarouselSection(data, { trackId, trackLabel, controlsLabel, watchLabel, galleryLabel } = {}) {
-  const items = records(data?.items);
-  if (!items.length) return "";
-  const cardsHtml = items.map((item, index) => videoCaseCard(item, index, { watchLabel })).join("");
-  return `
-    ${hasText(galleryLabel) ? `<p class="gallery-kicker">${text(galleryLabel)}</p>` : ""}
-    <div class="gallery-shell">
-      <div class="video-grid horizontal-track" id="${attr(trackId)}" tabindex="0" aria-label="${attr(trackLabel)}">
-        ${cardsHtml}
-      </div>
-      ${galleryControls(trackId, controlsLabel, items.length)}
-    </div>`;
-}
+  root.classList.add("section-proof");
+  const analytics = data.analytics || {};
+  const certifications = data.certifications || {};
+  const lightbox = data.lightbox || {};
 
-function socialIcon(name) {
-  const icons = {
-    linkedin: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.4 7.8H2.2V22h3.2V7.8ZM3.8 2A1.9 1.9 0 1 0 3.8 5.8 1.9 1.9 0 0 0 3.8 2ZM22 13.8c0-4.3-2.3-6.3-5.4-6.3a4.7 4.7 0 0 0-4.2 2.3v-2H9.2V22h3.2v-7c0-1.8.4-3.6 2.7-3.6 2.3 0 2.3 2.1 2.3 3.7V22h3.2l1.4-8.2Z"/></svg>`,
-    tiktok: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3v11.1a4.6 4.6 0 1 1-3.8-4.5v3.1a1.7 1.7 0 1 0 .8 1.4V3h3Zm0 0c.4 2.2 1.7 3.6 4 4.1v3.1a8.2 8.2 0 0 1-4-1.8V3Z"/></svg>`,
-    youtube: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 6.5a2.7 2.7 0 0 0-1.9-1.9C17.8 4.2 12 4.2 12 4.2s-5.8 0-7.5.4a2.7 2.7 0 0 0-1.9 1.9A28 28 0 0 0 2.2 12c0 1.9.1 3.7.4 5.5a2.7 2.7 0 0 0 1.9 1.9c1.7.4 7.5.4 7.5.4s5.8 0 7.5-.4a2.7 2.7 0 0 0 1.9-1.9c.3-1.8.4-3.6.4-5.5s-.1-3.7-.4-5.5ZM10 15.4V8.6l5.8 3.4-5.8 3.4Z"/></svg>`,
-    instagram: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7.2 2h9.6A5.2 5.2 0 0 1 22 7.2v9.6a5.2 5.2 0 0 1-5.2 5.2H7.2A5.2 5.2 0 0 1 2 16.8V7.2A5.2 5.2 0 0 1 7.2 2Zm0 2A3.2 3.2 0 0 0 4 7.2v9.6A3.2 3.2 0 0 0 7.2 20h9.6a3.2 3.2 0 0 0 3.2-3.2V7.2A3.2 3.2 0 0 0 16.8 4H7.2Zm10.1 1.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>`,
-    facebook: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.8 22v-9h3l.5-3.5h-3.5V7.3c0-1 .3-1.8 1.8-1.8h1.9V2.4c-.3 0-1.5-.1-2.8-.1-2.8 0-4.7 1.7-4.7 4.8v2.4H7V13h3v9h3.8Z"/></svg>`,
-    github: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.9c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 0 1.6 1 1.6 1 .9 1.6 2.4 1.1 2.9.9.1-.7.4-1.1.7-1.3-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7.9.7 1.8V21c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg>`,
-    reels: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5 3h14a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Zm0 2h2.2l2 3H4V6a1 1 0 0 1 1-1Zm4.6 0h3.1l2 3h-3.1l-2-3Zm5.5 0H19a1 1 0 0 1 1 1v2h-2.9l-2-3ZM4 10v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8H4Zm6 2.2 5 2.8-5 2.8v-5.6Z"/></svg>`
-  };
-  return icons[name] || icons.reels;
-}
+  const carousel = analytics.carousel || {};
+  const slideItems = records(analytics.items).filter((item) => hasText(item.value) && hasText(item.full));
+  const total = slideItems.length;
+  const slideLabel = (index) =>
+    String(carousel.slide || "")
+      .replace("{index}", String(index + 1))
+      .replace("{total}", String(total));
 
-function technologyIcon(name) {
-  const icons = {
-    html: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 3h22l-2 23-9 3-9-3L5 3Z"/><path class="tech-icon-detail" d="M10 9h12l-.3 3H13l.2 3h8.2l-.7 8-4.7 1.6-4.7-1.6-.3-4h3l.2 1.8 1.8.6 1.8-.6.2-2.8H10.4L10 9Z"/></svg>`,
-    css: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 3h22l-2 23-9 3-9-3L5 3Z"/><path class="tech-icon-detail" d="M10 9h12l-.3 3-7.6 3h7.3l-.7 8-4.7 1.6-4.7-1.6-.3-4h3l.2 1.8 1.8.6 1.8-.6.2-2.8h-8.2l-.2-3 7.7-3H10.3L10 9Z"/></svg>`,
-    javascript: `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="3" width="26" height="26" rx="3"/><path class="tech-icon-detail" d="M16.8 22.7c.7 1.2 1.6 1.8 2.8 1.8s1.9-.6 1.9-1.4c0-1-.8-1.3-2.1-1.9l-.7-.3c-2.1-.9-3.5-2-3.5-4.3 0-2.1 1.6-3.8 4.2-3.8 1.8 0 3.1.6 4.1 2.3l-2.2 1.4c-.5-.9-1.1-1.2-1.9-1.2-.9 0-1.4.5-1.4 1.2 0 .8.5 1.2 1.8 1.8l.7.3c2.5 1.1 3.9 2.2 3.9 4.5 0 2.6-2 4-4.8 4-2.7 0-4.4-1.3-5.2-3.1l2.4-1.3ZM7.8 13h2.9v9.2c0 2.4-1 3-3.3 2.6v-2.3c.8.1 1.1 0 1.1-.7V13Z"/></svg>`,
-    node: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m16 2.5 12 6.8v13.4l-12 6.8-12-6.8V9.3L16 2.5Z"/><path class="tech-icon-detail" d="M12 22V10h3l5 7.3V10h3v12h-3l-5-7.2V22h-3Z"/></svg>`,
-    express: `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="26" height="18" rx="5"/><path class="tech-icon-detail" d="M8 12h8v2.4h-5v1.5h4.5v2.3H11v1.5h5.2V22H8V12Zm9.5 0h3l1.7 2.7 1.7-2.7h3l-3.2 4.8L27 22h-3l-1.9-3-1.9 3h-3l3.4-5.2-3.1-4.8Z"/></svg>`,
-    mysql: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C9.4 3 4 5.2 4 8v16c0 2.8 5.4 5 12 5s12-2.2 12-5V8c0-2.8-5.4-5-12-5Z"/><path class="tech-icon-detail" d="M16 6c5.5 0 9 1.5 9 2s-3.5 2-9 2-9-1.5-9-2 3.5-2 9-2Zm-9 6c2.2.9 5.4 1.4 9 1.4s6.8-.5 9-1.4v3.3c-.6.7-3.8 1.8-9 1.8s-8.4-1.1-9-1.8V12Zm0 7.2c2.2.9 5.4 1.4 9 1.4s6.8-.5 9-1.4v4.4c-.6.7-3.8 1.8-9 1.8s-8.4-1.1-9-1.8v-4.4Z"/></svg>`,
-    php: `<svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="16" rx="14" ry="9"/><path class="tech-icon-detail" d="M6.8 12h4.6c2.7 0 4.1 1.2 3.7 3.5-.4 2.6-2 3.7-4.8 3.7H9.1L8.7 22H5.8l1-10Zm3.6 2.2h-1l-.3 2.9h1c1.2 0 1.8-.4 2-1.5.2-1-.3-1.4-1.7-1.4Zm5.7-4h2.8l-.3 2.5c.8-.6 1.7-.9 2.8-.9 2.1 0 3.1 1.1 2.8 3.2l-.7 4.2h-2.9l.6-3.7c.2-1-.2-1.4-1.1-1.4-1.1 0-1.8.6-2 1.8l-.5 3.3h-2.9l1.4-9Z"/></svg>`
-  };
-  return icons[name] || `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="3" width="26" height="26" rx="5"/><path class="tech-icon-detail" d="m13 10-6 6 6 6 2-2-4-4 4-4-2-2Zm6 0-2 2 4 4-4 4 2 2 6-6-6-6Z"/></svg>`;
-}
-
-function technologyKey(value) {
-  return hasText(value) ? value.toLowerCase().replace(/[^a-z0-9-]/g, "") : "code";
-}
-
-function renderWork(data) {
-  const heading = document.querySelector('[data-content="work-heading"]');
-  const root = document.querySelector('[data-content="work"]');
-  const items = records(data?.items);
-  const socialLinks = records(data?.socialLinks).filter((link) => hasText(link.label) && hasText(link.href));
-  const creator = data?.creatorSpotlight;
-  const creatorProofs = list(creator?.proofs).filter(hasText);
-  const role = data?.roleSpotlight;
-  const roleLinks = records(role?.links).filter((link) => hasText(link.label) && hasText(link.href));
-  const headingVisible = data && (hasText(data.sectionHeading) || hasText(data.sectionDescription));
-  const contentVisible = data && (hasText(data.label) || items.length);
-  setVisible(heading, headingVisible);
-  setVisible(root, contentVisible);
-
-  if (headingVisible) {
-    heading.innerHTML = `
-      <div>
-        ${hasText(data.sectionEyebrow) ? `<p class="eyebrow">${text(data.sectionEyebrow)}</p>` : ""}
-        ${hasText(data.sectionHeading) ? `<h2 id="work-title">${text(data.sectionHeading)}</h2>` : ""}
-      </div>
-      ${hasText(data.sectionDescription) ? `<p>${text(data.sectionDescription)}</p>` : ""}`;
-  }
-  if (!contentVisible) return;
-
-  const councilDetails = roleLinks.length ? `<details class="content-details council-details">
-    ${disclosureSummary(`<span>${text(role.linksSummary || role.linksLabel || ui("labels.browseCouncilWork"))} <b>${roleLinks.length}</b></span>`)}
-    <div class="content-details-panel role-links">
-      ${creator && (hasText(role.summary) || (hasText(role.organizationLinkLabel) && hasText(role.organizationUrl))) ? `<div class="council-details-copy">
-        ${hasText(role.summary) ? `<p class="council-details-summary">${text(role.summary)}</p>` : ""}
-        ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${hasText(role.organizationLinkIcon) ? `<span class="role-organization-icon" aria-hidden="true">${socialIcon(role.organizationLinkIcon)}</span>` : ""}<span>${text(role.organizationLinkLabel)}</span> <span aria-hidden="true">&nearr;</span></a>` : ""}
-      </div>` : ""}
-      <div class="role-links-header">
-        ${roleLinks.length > 1 ? `<div class="scroll-controls council-work-controls" role="group" aria-label="${attr(ui("labels.councilWorkControls"))}">
-          <button type="button" data-scroll-target="council-work-track" data-scroll-direction="-1" aria-label="${attr(ui("labels.scrollCouncilWorkLeft"))}">&larr;</button>
-          <button type="button" data-scroll-target="council-work-track" data-scroll-direction="1" aria-label="${attr(ui("labels.scrollCouncilWorkRight"))}">&rarr;</button>
-        </div>` : ""}
-      </div>
-      <div class="role-links-track council-work-track horizontal-track" id="council-work-track" tabindex="0" aria-label="${attr(ui("labels.councilWorkTrack"))}">${roleLinks.map((link) => `<a class="selected-role-link" href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
-    </div>
-  </details>` : "";
-
-  root.innerHTML = `
-    <div class="subsection-title">
-      <p><span>${text(ui("sectionIndexes.video"))}</span> ${text(data.label)}</p>
-      <div class="subsection-side">
-        ${socialLinks.length ? `<div class="video-social-group">
-          ${hasText(data.socialLinksLabel) ? `<span class="video-social-label">${text(data.socialLinksLabel)}</span>` : ""}
-          <div class="video-social-links" aria-label="${attr(ui("labels.videoChannels"))}">${socialLinks.map((link) => `<a class="video-social-link" href="${attr(link.href)}" target="_blank" rel="noopener" aria-label="${attr(link.label)}" title="${attr(link.label)}">${socialIcon(link.icon)}</a>`).join("")}</div>
-        </div>` : ""}
-      </div>
-    </div>
-    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card ui-card${creator && hasText(creator.title) ? " video-spotlight" : ""}" aria-label="${attr(creator?.title || role.title || ui("labels.featuredRole"))}">
-      <div class="role-spotlight-heading header-card-primary">
-        ${creator && hasText(creator.title) ? `
-        ${hasText(creator.eyebrow) ? `<p class="eyebrow">${text(creator.eyebrow)}</p>` : ""}
-        <div class="role-title-row">
-          <h3>${text(creator.title)}</h3>
-          ${hasText(creator.period) ? `<span class="role-period ui-chip">${text(creator.period)}</span>` : ""}
-        </div>
-        ${hasText(creator.organization) ? `<p class="role-organization">${text(creator.organization)}</p>` : ""}
-        ${hasText(creator.actionLabel) && hasText(creator.actionHref) ? `<div class="creator-action-row"><a class="header-card-action ui-action ui-action-outline" href="${attr(creator.actionHref)}"><span>${text(creator.actionLabel)}</span><span aria-hidden="true">&darr;</span></a></div>` : ""}
-        ${creatorProofs.length ? `<ul class="creator-proof-list" aria-label="${attr(ui("labels.creatorResults"))}">${creatorProofs.map((proof) => `<li class="creator-proof">${text(proof)}</li>`).join("")}</ul>` : ""}` : `
-        ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
-        <div class="role-title-row">
-          ${hasText(role.title) ? `<h3>${text(role.title)}</h3>` : ""}
-          ${hasText(role.period) ? `<span class="role-period ui-chip">${text(role.period)}</span>` : ""}
-        </div>
-        ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
-        ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${hasText(role.organizationLinkIcon) ? `<span class="role-organization-icon" aria-hidden="true">${socialIcon(role.organizationLinkIcon)}</span>` : ""}<span>${text(role.organizationLinkLabel)}</span> <span aria-hidden="true">&nearr;</span></a>` : ""}
-        `}
-      </div>
-      <div class="role-spotlight-details header-card-secondary${creator && hasText(creator.title) ? " video-role-details" : ""}">
-        ${creator && hasText(creator.title) ? `
-        ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
-        <div class="role-title-row header-card-secondary-title">
-          ${hasText(role.title) ? `<h4>${text(role.title)}</h4>` : ""}
-          ${hasText(role.period) ? `<span class="role-period ui-chip">${text(role.period)}</span>` : ""}
-        </div>
-        ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
-        ${councilDetails}
-        ` : ""}
-        ${!creator && hasText(role.summary) ? `<p>${text(role.summary)}</p>` : ""}
-      </div>
-      ${!creator ? councilDetails : ""}
-    </aside>` : ""}
-    ${renderCarouselSection(data, {
-      trackId: "video-track",
-      trackLabel: ui("labels.videoProjectsTrack"),
-      controlsLabel: ui("gallery.videoProject"),
-      watchLabel: data.watchLabel,
-      galleryLabel: data.galleryLabel
-    })}`;
-}
-
-function renderDevelopment(data) {
-  const root = document.querySelector('[data-content="dev"]');
-  const projects = records(data?.projects);
-  const role = data?.roleSpotlight;
-  const roleLinks = records(role?.links).filter((link) => hasText(link.label) && hasText(link.href));
-  const visible = data && (hasText(data.heading) || projects.length || hasText(role?.title) || hasText(role?.organization));
-  setVisible(root, visible);
-  if (!visible) return;
-
-  root.innerHTML = `
-    <div class="subsection-title">
-      <p><span>${text(ui("sectionIndexes.development"))}</span> ${text(data.label)}</p>
-      <div class="subsection-side">
-        ${hasText(data.externalLabel) && hasText(data.externalUrl) ? `<a class="external-project-link" href="${attr(data.externalUrl)}" target="_blank" rel="noopener">${hasText(data.externalIcon) ? `<span class="external-project-icon" aria-hidden="true">${socialIcon(data.externalIcon)}</span>` : ""}<span>${text(data.externalLabel)}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
-      </div>
-    </div>
-    ${role && (hasText(role.title) || hasText(role.organization)) ? `<aside class="role-spotlight header-card development-role ui-card" aria-label="${attr(role.title || ui("labels.featuredWebRole"))}">
-      <div class="role-spotlight-heading header-card-primary">
-        ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
-        <div class="role-title-row">
-          ${hasText(role.title) ? `<h3>${text(role.title)}</h3>` : ""}
-          ${hasText(role.period) ? `<span class="role-period ui-chip">${text(role.period)}</span>` : ""}
-        </div>
-        ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
-        ${hasText(role.organizationLinkLabel) && hasText(role.organizationUrl) ? `<a class="role-organization-link" href="${attr(role.organizationUrl)}" target="_blank" rel="noopener">${hasText(role.organizationLinkIcon) ? `<span class="role-organization-icon" aria-hidden="true">${socialIcon(role.organizationLinkIcon)}</span>` : ""}<span>${text(role.organizationLinkLabel)}</span> <span aria-hidden="true">&nearr;</span></a>` : ""}
-      </div>
-      <div class="role-spotlight-details header-card-secondary">
-        ${hasText(role.detailEyebrow) ? `<p class="eyebrow">${text(role.detailEyebrow)}</p>` : ""}
-        ${hasText(role.detailTitle) ? `<div class="role-title-row header-card-secondary-title"><h4>${text(role.detailTitle)}</h4></div>` : ""}
-        ${hasText(role.summary) ? `<p>${text(role.summary)}</p>` : ""}
-        ${roleLinks.length ? `<div class="role-links">
-          ${hasText(role.linksLabel) ? `<span>${text(role.linksLabel)}</span>` : ""}
-          <div>${roleLinks.map((link) => `<a href="${attr(link.href)}" target="_blank" rel="noopener">${text(link.label)} &nearr;</a>`).join("")}</div>
-        </div>` : ""}
-      </div>
-    </aside>` : ""}
-    ${hasText(data.heading) || hasText(data.description) ? `<div class="dev-intro">
-      ${hasText(data.heading) ? `<h3>${text(data.heading)}</h3>` : ""}
-      ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
-    </div>` : ""}
-    ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
-    ${projects.length ? `<div class="gallery-shell">
-      <div class="repo-list horizontal-track" id="project-track" tabindex="0" aria-label="${attr(ui("labels.softwareProjectsTrack"))}">
-        ${projects.map((project) => {
-          const technologies = records(project?.technologies).filter((technology) => hasText(technology.name));
-          return `<article>
-          <div>
-            ${technologies.length ? `<ul class="tech-icons" aria-label="${attr(ui("labels.technologiesUsed"))}">${technologies.map((technology) => {
-              const iconKey = technologyKey(technology.icon);
-              return `<li class="tech-icon tech-icon-${attr(iconKey)}" aria-label="${attr(technology.name)}" title="${attr(technology.name)}">${technologyIcon(iconKey)}</li>`;
-            }).join("")}</ul>` : ""}
-            ${hasText(project?.title) ? `<h4>${text(project.title)}</h4>` : ""}
-            ${hasText(project?.description) ? `<span>${text(project.description)}</span>` : ""}
-            ${list(project?.features).length ? `<details class="content-details repo-details">
-              ${disclosureSummary(text(project.detailsLabel || data.detailsLabel || ui("labels.projectDetails")))}
-              <div class="content-details-panel"><ul class="repo-features">${list(project.features).map((feature) => `<li>${text(feature)}</li>`).join("")}</ul></div>
-            </details>` : ""}
+  /* Each slide is a screenshot card plus its caption. Without
+     js/interactions.js this is a plain swipeable row; with it, the
+     row becomes the 3D carousel (css/closing.css, .is-3d). */
+  const slides = slideItems
+    .map(
+      (item, index) => `
+        <div class="proof-slide" role="group" aria-roledescription="slide"
+          aria-label="${attr(slideLabel(index))}" data-index="${index}">
+          <button class="proof-card" ${lightboxAttrs(item)}>
+            <span class="proof-shot">${picture({ ...item.thumb, alt: item.alt }, { sizes: "(max-width: 767px) 90vw, 1280px" })}</span>
+          </button>
+          <div class="proof-caption">
+            <span class="proof-value">${text(item.value)}</span>
+            <span class="proof-label">${text(item.label)}</span>
           </div>
-          ${hasText(project?.repoUrl) || hasText(project?.liveUrl) ? `<div class="repo-links">
-            ${hasText(project.liveUrl) ? `<a class="ui-action ui-action-outline" href="${attr(project.liveUrl)}" target="_blank" rel="noopener"><span>${text(project.liveLabel || data.liveLabel || ui("labels.viewWebsite"))}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
-            ${hasText(project.repoUrl) ? `<a class="ui-action ui-action-outline" href="${attr(project.repoUrl)}" target="_blank" rel="noopener"><span>${text(project.repoLabel || data.repoLabel || ui("labels.viewCode"))}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
-          </div>` : ""}
-        </article>`;
-        }).join("")}
-      </div>
-      ${galleryControls("project-track", ui("gallery.softwareProject"), projects.length)}
-    </div>` : ""}`;
-}
+        </div>`
+    )
+    .join("");
 
-function vaToolIcon(name) {
-  const latestIcons = {
-    shopify: "https://api.iconify.design/logos:shopify.svg",
-    sheets: "https://api.iconify.design/simple-icons:googlesheets.svg?color=%2334A853",
-    gmail: "https://api.iconify.design/logos:google-gmail.svg",
-    canva: "https://api.iconify.design/devicon:canva.svg",
-    calendar: "https://api.iconify.design/logos:google-calendar.svg",
-    trello: "https://api.iconify.design/logos:trello.svg",
-    drive: "https://api.iconify.design/logos:google-drive.svg",
-    meta: "https://api.iconify.design/logos:meta-icon.svg",
-    capcut: "https://api.iconify.design/hugeicons:capcut.svg?color=%23111111"
-  };
-  if (latestIcons[name]) {
-    return `<img src="${attr(latestIcons[name])}" alt="" width="20" height="20" loading="lazy" decoding="async">`;
-  }
+  const chevron = (direction) =>
+    `<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="${direction === "previous" ? "M10 3.5L5.5 8l4.5 4.5" : "M6 3.5L10.5 8 6 12.5"}" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>`;
 
-  const icons = {
-    shopify: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#95BF47" d="m5 7 2-1.2C7.7 3.4 9.1 2 11 2c.5 0 1 .2 1.3.5.5-.2.9-.3 1.4-.3 1.5 0 2.5 1.2 3 3.2L19 7l-1.5 14.5L6.2 19.4 5 7Z"/><path fill="#5E8E3E" d="m16.7 6.4 2.3.6-1.5 14.5-2.2-.4 1.4-14.7Z"/><path fill="#fff" d="M13.8 8.8c-.5-.3-1.2-.5-1.8-.5-1.4 0-1.5.9-1.5 1.1 0 1.2 3.2 1.7 3.2 4.5 0 2.2-1.4 3.6-3.4 3.6-2.4 0-3.6-1.5-3.6-1.5l.7-2.1s1.2 1.1 2.2 1.1c.7 0 .9-.5.9-.9 0-1.6-2.6-1.7-2.6-4.3 0-2.2 1.6-4.3 4.8-4.3 1.2 0 1.8.4 1.8.4l-.7 2.9Z"/></svg>`,
-    sheets: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F9D58" d="M5 2h9l5 5v15H5V2Z"/><path fill="#87CEAC" d="M14 2v5h5l-5-5Z"/><path fill="#fff" d="M8 10h8v8H8v-8Zm1.5 1.5v1.2h2v-1.2h-2Zm3.4 0v1.2h1.6v-1.2h-1.6Zm-3.4 2.6v1.2h2v-1.2h-2Zm3.4 0v1.2h1.6v-1.2h-1.6Zm-3.4 2.6v.8h2v-.8h-2Zm3.4 0v.8h1.6v-.8h-1.6Z"/></svg>`,
-    gmail: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M3 6.5 7 9.4V19H4a1 1 0 0 1-1-1V6.5Z"/><path fill="#34A853" d="M17 9.4 21 6.5V18a1 1 0 0 1-1 1h-3V9.4Z"/><path fill="#EA4335" d="M3.7 5.1A2 2 0 0 1 6 5.3l6 4.4 6-4.4a2 2 0 0 1 3 .9l-9 6.6-9-6.6c.1-.4.3-.8.7-1.1Z"/><path fill="#FBBC04" d="m3 6.2 4 3v3.1l-4-3V6.2Z"/><path fill="#C5221F" d="m21 6.2-4 3v3.1l4-3V6.2Z"/></svg>`,
-    canva: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#00C4CC"/><path fill="#fff" d="M15.7 15.4c-1.1 1.1-2.3 1.7-3.7 1.7-2.7 0-4.5-1.8-4.5-4.6 0-3.2 2.3-5.7 5.5-5.7 1.4 0 2.6.5 3.4 1.4l-1.2 1.6c-.7-.6-1.4-.9-2.2-.9-1.8 0-3.1 1.5-3.1 3.5 0 1.6.9 2.6 2.4 2.6.9 0 1.7-.4 2.5-1.1l.9 1.5Z"/></svg>`,
-    calendar: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path fill="#fff" d="M7 8h10v9H7V8Z"/><path fill="#EA4335" d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3H3V5Z"/><path fill="#188038" d="M3 14h4v7H5a2 2 0 0 1-2-2v-5Z"/><path fill="#FBBC04" d="M17 14h4v5a2 2 0 0 1-2 2h-2v-7Z"/><path fill="#4285F4" d="M9 10h6v5H9v-5Z"/><path fill="#fff" d="M11 11h2v3h-2v-3Z"/></svg>`,
-    trello: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4" fill="#0052CC"/><rect x="6" y="6" width="5" height="11" rx="1" fill="#fff"/><rect x="13" y="6" width="5" height="8" rx="1" fill="#fff"/></svg>`,
-    drive: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F9D58" d="m8.2 3 3.1 5.4L5.2 19H2l6.2-10.7L5.1 3h3.1Z"/><path fill="#F4B400" d="M8.2 3h7.5l3.1 5.4h-7.5L8.2 3Z"/><path fill="#4285F4" d="M11.3 8.4h7.5L22 14l-3 5H5.2l6.1-10.6Z"/></svg>`,
-    meta: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#0668E1"/><path fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" d="M5.5 14.8c1.4-5.2 3-7.5 4.6-7.5 2.4 0 3.9 8.5 6.4 8.5 1.1 0 1.8-1 2-2.3.4-2.4-.4-5.8-2.5-5.8-2.7 0-5.2 8.1-8 8.1-1.2 0-2.1-.6-2.5-1Z"/></svg>`,
-    capcut: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4" fill="#111"/><path fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M6 8h12l-4 4 4 4H6l4-4-4-4Zm0-2 12 12M18 6 6 18"/></svg>`
-  };
-  return icons[name] || technologyIcon("code");
-}
+  /* Certificates use the same carousel markup as the analytics, but
+     js/interactions.js only turns it into a carousel on phones (see
+     data-carousel-media); wider screens show the three cards side by
+     side. */
+  const certCarousel = certifications.carousel || {};
+  const certItems = records(certifications.items).filter((item) => hasText(item.title) && hasText(item.full));
+  const certLabel = (index) =>
+    String(certCarousel.slide || "")
+      .replace("{index}", String(index + 1))
+      .replace("{total}", String(certItems.length));
+  const certs = certItems
+    .map(
+      (item, index) => `
+        <div class="proof-slide" role="group" aria-roledescription="slide"
+          aria-label="${attr(certLabel(index))}" data-index="${index}">
+          <button class="cert-card" ${lightboxAttrs(item)}>
+            <span class="cert-media">${picture({ ...item.thumb, alt: "" })}</span>
+            <span class="cert-title">${text(item.title)}</span>
+            <span class="cert-meta"><span>${text(item.issuer)}</span><span>${text(item.year)}</span></span>
+          </button>
+        </div>`
+    )
+    .join("");
 
-function renderOperations(data) {
-  const root = document.querySelector('[data-content="operations"]');
-  if (!root) return;
-  const items = records(data?.items);
-  const role = data?.roleSpotlight;
-  const visible = data && (hasText(data.heading) || items.length || hasText(role?.title));
-  setVisible(root, visible);
-  if (!visible) return;
-
-  root.innerHTML = `<details class="operations-section-details content-details">
-    ${disclosureSummary(`
-      <p><span>${text(ui("sectionIndexes.operations"))}</span> <span class="operations-label-full">${text(data.label)}</span>${hasText(data.mobileLabel) ? `<span class="operations-label-mobile">${text(data.mobileLabel)}</span>` : ""}</p>
-      ${hasText(data.status) ? `<span class="operations-status-full">${text(data.status)}</span>` : ""}
-      ${hasText(data.mobileStatus) ? `<span class="operations-status-mobile">${text(data.mobileStatus)}</span>` : ""}
-    `, "subsection-title operations-section-summary")}
-    <div class="operations-section-panel content-details-panel">
-    ${role && hasText(role.title) ? `<aside class="role-spotlight header-card operations-role ui-card" aria-label="${attr(role.title)}">
-      <div class="role-spotlight-heading header-card-primary">
-        ${hasText(role.eyebrow) ? `<p class="eyebrow">${text(role.eyebrow)}</p>` : ""}
-        <div class="role-title-row">
-          <h3>${text(role.title)}</h3>
-          ${hasText(role.period) ? `<span class="role-period ui-chip">${text(role.period)}</span>` : ""}
+  root.innerHTML = `
+    <div class="section-inner">
+      ${sectionTitle("proof")}
+      <div class="proof-block">
+        <div class="proof-head">
+          <h3 class="proof-heading">${text(analytics.heading)}</h3>
+          <p class="proof-intro">${text(analytics.intro)}</p>
         </div>
-        ${hasText(role.organization) ? `<p class="role-organization">${text(role.organization)}</p>` : ""}
-      </div>
-      <div class="role-spotlight-details header-card-secondary">
-        ${hasText(role.detailEyebrow) ? `<p class="eyebrow">${text(role.detailEyebrow)}</p>` : ""}
-        ${hasText(role.detailTitle) ? `<div class="role-title-row header-card-secondary-title"><h4>${text(role.detailTitle)}</h4></div>` : ""}
-        ${hasText(role.summary) ? `<p>${text(role.summary)}</p>` : ""}
-        ${items.length && hasText(role.actionLabel) && hasText(role.actionHref) ? `<a class="role-organization-link" href="${attr(role.actionHref)}">${text(role.actionLabel)} <span aria-hidden="true">&darr;</span></a>` : ""}
-      </div>
-    </aside>` : ""}
-    ${hasText(data.eyebrow) || hasText(data.heading) || hasText(data.description) ? `<div class="operations-intro">
-      <div class="operations-statement">
-        ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
-        ${hasText(data.heading) ? `<h3>${text(data.heading)}</h3>` : ""}
-      </div>
-      ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
-    </div>` : ""}
-    ${hasText(data.galleryLabel) ? `<p class="gallery-kicker">${text(data.galleryLabel)}</p>` : ""}
-    ${items.length ? `<div class="gallery-shell" id="operations-workflows">
-      <div class="operations-cards horizontal-track" id="operations-track" tabindex="0" aria-label="${attr(ui("labels.workflowSamplesTrack"))}">${items.map((item, index) => {
-      const deliverables = list(item?.deliverables).filter(hasText);
-      const tools = records(item?.tools).filter((tool) => hasText(tool.name));
-      return `<article class="operations-card ui-card">
-        <div class="operations-card-top">
-          <span class="operations-card-number">${pad(index)}</span>
-          ${hasText(data.sampleLabel) ? `<span class="operations-sample-label">${text(data.sampleLabel)}</span>` : ""}
-        </div>
-        ${hasText(item.category) ? `<p class="operations-category">${text(item.category)}</p>` : ""}
-        ${hasText(item.title) ? `<h4>${text(item.title)}</h4>` : ""}
-        ${hasText(item.problem) ? `<p class="operations-scope">${text(item.problem)}</p>` : ""}
-        ${hasText(item.outcome) ? `<p class="operations-outcome">${text(item.outcome)}</p>` : ""}
-        ${deliverables.length ? `<details class="content-details operations-details">
-          ${disclosureSummary(text(item.deliverablesLabel || ui("labels.viewDetails")))}
-          <div class="content-details-panel operations-deliverables">
-            <ul>${deliverables.map((deliverable) => `<li>${text(deliverable)}</li>`).join("")}</ul>
+        <div class="proof-carousel" role="region" aria-roledescription="carousel" aria-label="${attr(carousel.label)}">
+          <div class="proof-track">${slides}</div>
+          <div class="proof-controls">
+            <button class="proof-arrow" type="button" data-step="-1" aria-label="${attr(carousel.previous)}">${chevron("previous")}</button>
+            <span class="proof-count" aria-hidden="true"><span class="proof-current">${pad2(1)}</span><span class="proof-total">${pad2(total)}</span></span>
+            <button class="proof-arrow" type="button" data-step="1" aria-label="${attr(carousel.next)}">${chevron("next")}</button>
           </div>
-        </details>` : ""}
-        ${tools.length ? `<ul class="operations-tools" aria-label="${attr(ui("labels.toolsUsed"))}">${tools.map((tool) => {
-          const iconKey = technologyKey(tool.icon);
-          return `<li class="operations-tool operations-tool-${attr(iconKey)}" aria-label="${attr(tool.name)}" title="${attr(tool.name)}"><span class="operations-tool-icon" aria-hidden="true">${vaToolIcon(iconKey)}</span><span class="sr-only">${text(tool.name)}</span></li>`;
-        }).join("")}</ul>` : ""}
-      </article>`;
-    }).join("")}</div>
-      ${galleryControls("operations-track", ui("gallery.workflow"), items.length)}
-    </div>` : ""}
-    ${hasText(data.tools) || hasText(data.approach) ? `<div class="operations-footer">
-      ${hasText(data.tools) ? `<p class="operations-note">${text(ui("labels.toolsPrefix"))} ${text(data.tools)}</p>` : ""}
-      ${hasText(data.approach) ? `<p class="operations-disclosure">${text(data.approach)}</p>` : ""}
-    </div>` : ""}
+        </div>
+      </div>
+      <div class="proof-block">
+        <div class="proof-head">
+          <h3 class="proof-heading">${text(certifications.heading)}</h3>
+          ${hasText(certifications.viewAll?.href)
+            ? `<a class="view-all" href="${attr(certifications.viewAll.href)}" target="_blank" rel="noopener noreferrer">${text(certifications.viewAll.label)}${ARROW}</a>`
+            : ""}
+        </div>
+        <div class="proof-carousel cert-carousel" data-carousel-media="(max-width: 767px)"
+          role="region" aria-roledescription="carousel" aria-label="${attr(certCarousel.label)}">
+          <div class="proof-track cert-grid">${certs}</div>
+          <div class="proof-controls">
+            <button class="proof-arrow" type="button" data-step="-1" aria-label="${attr(certCarousel.previous)}">${chevron("previous")}</button>
+            <span class="proof-count" aria-hidden="true"><span class="proof-current">${pad2(1)}</span><span class="proof-total">${pad2(certItems.length)}</span></span>
+            <button class="proof-arrow" type="button" data-step="1" aria-label="${attr(certCarousel.next)}">${chevron("next")}</button>
+          </div>
+        </div>
+      </div>
     </div>
-  </details>`;
+    <dialog class="lightbox" aria-label="${attr(lightbox.label)}">
+      <button class="lightbox-close" type="button" aria-label="${attr(lightbox.close)}">
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+      </button>
+      <img alt="" decoding="async">
+      <video controls playsinline preload="none" hidden></video>
+    </dialog>`;
 }
 
-function renderStats(data) {
-  const root = document.querySelector('[data-content="stats"]');
-  const items = records(data?.items);
-  const visible = data && (hasText(data.heading) || items.length || hasText(data.total));
-  setVisible(root, visible);
-  if (!visible) return;
+/* ---- Stack + GitHub ---------------------------------------------
+   Skills as quiet pills in labelled rows. The contribution graph is
+   an empty shell here; js/interactions.js draws it from the saved
+   snapshot, and leaves it hidden if that file is missing.
+---------------------------------------------------------------- */
+
+function renderStack(data) {
+  const root = document.querySelector('[data-section="stack"]');
+  if (!root || !data) return;
+
+  /* Items with an icon render as logos; plain strings as text tags
+     (for skills that have no logo). */
+  const stackItems = (items) => {
+    const logos = records(items)
+      .filter((item) => hasText(item.name) && hasText(item.icon))
+      .map((item) => {
+        /* Only a plain hex colour reaches the style attribute. */
+        const brand = /^#[0-9a-f]{3,8}$/i.test(item.color || "") ? ` style="--brand: ${item.color}"` : "";
+        return `
+          <li class="stack-logo${item.mono ? " is-mono" : ""}"${brand}>
+            <span class="stack-logo-icon"><img src="${attr(item.icon)}" alt="" width="40" height="40" loading="lazy" decoding="async"></span>
+            <span class="stack-logo-name">${text(item.name)}</span>
+          </li>`;
+      })
+      .join("");
+    const tags = list(items).filter(hasText);
+    return `${logos ? `<ul class="stack-logos">${logos}</ul>` : ""}${tagList(tags, "stack-pills")}`;
+  };
+
+  const groups = records(data.groups)
+    .filter((group) => hasText(group.label))
+    .map(
+      (group) => `
+        <div class="stack-group">
+          <dt>${text(group.label)}</dt>
+          <dd>${stackItems(group.items)}</dd>
+        </div>`
+    )
+    .join("");
+
+  const github = data.github || {};
+  const link = github.link || {};
 
   root.innerHTML = `
-    <div class="section-heading">
-      <div>
-        ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
-        ${hasText(data.heading) ? `<h2 id="proof-title">${text(data.heading)}</h2>` : ""}
+    <div class="section-inner">
+      ${sectionTitle("stack")}
+      <dl class="stack-groups">${groups}</dl>
+      <div class="github" data-snapshot="${attr(github.snapshot)}" data-summary="${attr(github.summary)}">
+        <div class="github-head">
+          <h3 class="proof-heading">${text(github.heading)}</h3>
+          ${hasText(link.href) ? `<a class="text-link" href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">${text(link.label)}${ARROW}</a>` : ""}
+        </div>
+        <div class="github-scroll" hidden>
+          <div class="github-graph" role="img" aria-label="${attr(github.graphLabel)}"></div>
+        </div>
+        <p class="github-summary" hidden></p>
       </div>
-      ${hasText(data.description) ? `<div class="section-heading-aside"><p>${text(data.description)}</p></div>` : ""}
-    </div>
-    ${items.length ? `<div class="gallery-shell">
-      <div class="proof-grid horizontal-track" id="proof-track" tabindex="0" aria-label="${attr(ui("labels.analyticsProofTrack"))}">
-        ${items.map((item) => `<button class="proof-card image-trigger ui-card" type="button" data-image="${attr(item?.image)}" data-alt="${attr(item?.alt)}">
-          <span class="proof-card-top"><strong>${text(item?.value)}</strong><small>${text(item?.detail)}</small></span>
-          ${hasText(item?.image) ? `<img src="${attr(item.image)}" alt="${attr(item.alt)}" loading="lazy">` : ""}
-          <span class="proof-card-bottom">${text(item?.title)} <i>${text(ui("labels.expand"))} &nearr;</i></span>
-        </button>`).join("")}
-      </div>
-      ${galleryControls("proof-track", ui("gallery.analyticsProof"), items.length)}
-    </div>` : ""}
-    ${hasText(data.total) ? `<p class="proof-total"><span>${text(data.totalLabel)}</span><strong>${text(data.total)} ${hasText(data.totalDetail) ? `<small>${text(data.totalDetail)}</small>` : ""}</strong></p>` : ""}`;
-}
-
-function renderTestimonials(data) {
-  const root = document.querySelector('[data-content="testimonials"]');
-  const items = records(data?.items);
-  const visible = Boolean(data?.enabled && items.length);
-  setVisible(root, visible);
-  if (!visible) return;
-
-  root.innerHTML = `
-    <div class="section-heading">
-      <div><p class="eyebrow">${text(data.eyebrow)}</p><h2 id="testimonials-title">${text(data.heading)}</h2></div>
-      ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
-    </div>
-    <div class="gallery-shell">
-      <div class="testimonial-track horizontal-track" id="testimonial-track" tabindex="0" aria-label="${attr(ui("labels.clientTestimonialsTrack"))}">
-        ${items.map((item) => `<figure class="testimonial-card ui-card">
-          <blockquote>&ldquo;${text(item?.quote)}&rdquo;</blockquote>
-          <figcaption><strong>${text(item?.name)}</strong>${hasText(item?.role) ? `<span>${text(item.role)}</span>` : ""}</figcaption>
-        </figure>`).join("")}
-      </div>
-      ${galleryControls("testimonial-track", ui("gallery.clientTestimonial"), items.length)}
     </div>`;
 }
 
-function renderAbout(data) {
-  const root = document.querySelector('[data-content="about"]');
-  const paragraphs = list(data?.paragraphs).filter(hasText);
-  const facts = records(data?.facts);
-  const visible = data && (hasText(data.heading) || paragraphs.length || facts.length);
-  setVisible(root, visible);
-  if (!visible) return;
-
-  root.innerHTML = `
-    <div class="about-title">
-      ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
-      ${hasText(data.heading) ? `<h2 id="about-title">${text(data.heading)}</h2>` : ""}
-    </div>
-    <div class="about-copy">
-      ${paragraphs.length ? `<p>${text(paragraphs[0])}</p>` : ""}
-      ${paragraphs.length > 1 ? `<details class="content-details about-details">
-        ${disclosureSummary(text(data.detailsLabel || ui("labels.moreAboutMe")))}
-        <div class="content-details-panel">${paragraphs.slice(1).map((paragraph) => `<p>${text(paragraph)}</p>`).join("")}</div>
-      </details>` : ""}
-      ${facts.length ? `<dl class="about-facts">${facts.map((fact) => `<div class="about-fact"><dt>${text(fact?.label)}</dt><dd>${text(fact?.value)}</dd></div>`).join("")}</dl>` : ""}
-    </div>`;
-}
-
-function renderCredentials(data) {
-  const root = document.querySelector('[data-content="credentials"]');
-  const items = records(data?.items);
-  const visible = data && (hasText(data.heading) || items.length);
-  setVisible(root, visible);
-  if (!visible) return;
-
-  root.innerHTML = `
-    <div class="credentials-heading">
-      <div class="credentials-kicker-row">
-        ${hasText(data.eyebrow) ? `<p class="eyebrow">${text(data.eyebrow)}</p>` : ""}
-        ${hasText(data.verificationLabel) && hasText(data.verificationUrl) ? `<div class="credentials-actions">
-          <a class="ui-action ui-action-outline" href="${attr(data.verificationUrl)}" target="_blank" rel="noopener"><span class="linkedin-mark" aria-hidden="true">${text(ui("labels.linkedinMark"))}</span><span>${text(data.verificationLabel)}</span><span aria-hidden="true">&nearr;</span></a>
-        </div>` : ""}
-      </div>
-      ${hasText(data.heading) ? `<h3 id="credentials-title">${text(data.heading)}</h3>` : ""}
-      ${hasText(data.description) ? `<div class="credentials-proof"><p>${text(data.description)}</p></div>` : ""}
-    </div>
-    ${items.length ? `<div class="gallery-shell">
-      <div class="certificate-grid horizontal-track" id="certificate-track" tabindex="0" aria-label="${attr(ui("labels.certificatesTrack"))}">
-        ${items.map((item) => `<button class="certificate-card image-trigger ui-card" type="button" data-image="${attr(item?.image)}" data-alt="${attr(item?.alt)}">
-          <span class="certificate-image">${hasText(item?.image) ? `<img src="${attr(item.image)}" alt="${attr(item.alt)}" loading="lazy">` : ""}</span>
-          <span class="certificate-meta"><span><small>${text(item?.issuer)}${hasText(item?.year) ? ` / ${text(item.year)}` : ""}</small><strong>${text(item?.title)}</strong></span><i>${text(ui("labels.expand"))} &nearr;</i></span>
-        </button>`).join("")}
-      </div>
-      ${galleryControls("certificate-track", ui("gallery.certificate"), items.length)}
-    </div>` : ""}`;
-}
-
-/**
- * AI-Generated Media subsection — first of the three #work subsections.
- * Uses the same subsection-title numbered badge as its siblings
- * (renderWork, renderDevelopment) and the shared renderCarouselSection()
- * carousel (1:1 cards, auto-scrolling right — see "ai-hooks-track" in
- * js/app.js's isAutoCarousel direction logic).
- */
-function renderAiHooks(data) {
-  const root = document.querySelector('[data-content="ai-hooks"]');
-  const items = records(data?.items);
-  const visible = data && (hasText(data.heading) || items.length);
-  setVisible(root, visible);
-  if (!visible) return;
-
-  root.innerHTML = `
-    <div class="subsection-title">
-      <p><span>${text(ui("sectionIndexes.aiHooks"))}</span> ${text(data.label)}</p>
-    </div>
-    ${hasText(data.heading) || hasText(data.description) ? `<div class="dev-intro">
-      ${hasText(data.heading) ? `<h3>${text(data.heading)}</h3>` : ""}
-      ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
-    </div>` : ""}
-    ${renderCarouselSection(data, {
-      trackId: "ai-hooks-track",
-      trackLabel: ui("labels.aiHooksTrack"),
-      controlsLabel: ui("gallery.aiHook"),
-      watchLabel: data.watchLabel,
-      galleryLabel: data.galleryLabel
-    })}`;
-}
+/* ---- Contact + footer -------------------------------------------- */
 
 function renderContact(data) {
-  const root = document.querySelector('[data-content="contact"]');
-  const footer = document.querySelector('[data-content="footer"]');
-  const visible = data && (hasText(data.heading) || hasText(data.email));
-  setVisible(root, visible);
-  setVisible(footer, Boolean(data?.footer));
-  if (!visible) return;
+  const root = document.querySelector('[data-section="contact"]');
+  if (!root || !data) return;
 
-  const subject = encodeURIComponent(data.emailSubject || "");
-  const body = encodeURIComponent(data.emailBody || "");
-  const links = records(data.links).filter((link) => hasText(link.label) && hasText(link.href));
-  const cvLink = links.find((link) => technologyKey(link.icon || link.label) === "cv");
-  const socialLinks = links.filter((link) => link !== cvLink);
-  const locationLines = list(data.locationLines).filter(hasText);
+  root.classList.add("section-contact");
+  const email = data.email || {};
+  const mailto = hasText(email.address)
+    ? `mailto:${email.address}${hasText(email.subject) ? `?subject=${encodeURIComponent(email.subject)}` : ""}`
+    : "";
 
-  root.innerHTML = `<div class="contact-inner">
-    ${hasText(data.eyebrow) ? `<p class="eyebrow contact-availability">${text(data.eyebrow)}</p>` : ""}
-    ${hasText(data.heading) ? `<h2 id="contact-title">${text(data.heading)}${hasText(data.headingAccent) ? `<br><em>${text(data.headingAccent)}</em>` : ""}</h2>` : ""}
-    ${hasText(data.description) ? `<p>${text(data.description)}</p>` : ""}
-    ${hasText(data.email) ? `<a class="contact-email" href="mailto:${attr(data.email)}?subject=${subject}&amp;body=${body}"><span>${text(data.emailAction || ui("labels.startConversation"))}</span><strong>${text(data.emailLabel || data.email)}</strong><i aria-hidden="true">&nearr;</i></a>` : ""}
-    ${links.length || locationLines.length ? `<div class="contact-meta">
-      ${links.length ? `<div class="contact-link-group">
-        <span class="contact-links-label">${text(ui("labels.connectWithMe"))}</span>
-        <div class="contact-link-row">
-          ${socialLinks.length ? `<div class="contact-social-links" aria-label="${attr(ui("labels.socialProfiles"))}">${socialLinks.map((link) => {
-            const iconKey = technologyKey(link.icon || link.label);
-            return `<a class="contact-social-link contact-social-${attr(iconKey)}" href="${attr(link.href)}" target="_blank" rel="noopener" aria-label="${attr(link.label)}" title="${attr(link.label)}">${socialIcon(iconKey)}</a>`;
-          }).join("")}</div>` : ""}
-          ${cvLink ? `<a class="contact-cv-link ui-action ui-action-outline" href="${attr(cvLink.href)}" target="_blank" rel="noopener"><span>${text(cvLink.label || ui("labels.viewCv"))}</span><span aria-hidden="true">&nearr;</span></a>` : ""}
-        </div>
-      </div>` : ""}
-      ${locationLines.length ? `<p>${locationLines.map(text).join("<br>")}</p>` : ""}
-    </div>` : ""}
-  </div>`;
+  /* One label/value row. The value is plain text, the email address,
+     a single link, a list of links, or the live local time. */
+  const rowValue = (row) => {
+    if (row.email && mailto) {
+      return `<a class="contact-value-link" href="${attr(mailto)}">${text(email.address)}</a>`;
+    }
+    if (row.link && hasText(row.link.href)) {
+      return `<a class="contact-value-link" href="${attr(row.link.href)}" target="_blank" rel="noopener">${text(row.link.label)}${ARROW}</a>`;
+    }
+    const links = records(row.links).filter((link) => hasText(link.href));
+    if (links.length) {
+      const items = links
+        .map((link) => `<li><a href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">${text(link.label)}</a></li>`)
+        .join("");
+      return `<ul class="contact-links">${items}</ul>`;
+    }
+    if (hasText(row.timeZone)) {
+      return `<span class="contact-time" data-time-zone="${attr(row.timeZone)}" data-time-label="${attr(row.timeLabel || "")}"></span>`;
+    }
+    return text(row.value);
+  };
 
-  if (data.footer && footer) {
-    footer.innerHTML = `
-      <p>&copy; <span id="year">${text(data.footer.year)}</span> ${text(data.footer.copyright)}</p>
-      <p>${text(data.footer.note)}</p>
-      ${hasText(data.footer.backToTop) ? `<a href="#top">${text(data.footer.backToTop)} &uarr;</a>` : ""}`;
-  }
+  const rows = records(data.rows)
+    .filter((row) => hasText(row.label))
+    .map((row) => `<div class="contact-row"><dt>${text(row.label)}</dt><dd>${rowValue(row)}</dd></div>`)
+    .join("");
+
+  const pair = records(data.pair)
+    .filter((row) => hasText(row.label))
+    .map((row) => `<div class="contact-cell"><dt>${text(row.label)}</dt><dd>${rowValue(row)}</dd></div>`)
+    .join("");
+
+  const action = mailto
+    ? `<div class="contact-actions"><a class="button button-primary" href="${attr(mailto)}">${text(email.label)}</a></div>`
+    : "";
+
+  root.innerHTML = `
+    <div class="section-inner contact">
+      ${sectionTitle("contact")}
+      <p class="contact-statement">${aboutWords(data.statement)}</p>
+      ${action}
+      ${rows ? `<dl class="contact-list">${rows}</dl>` : ""}
+      ${pair ? `<dl class="contact-pair">${pair}</dl>` : ""}
+    </div>`;
+
+  renderFooter(data.footer);
 }
 
-function updateCompositeSections() {
-  // Work section: 01 AI-Generated Media -> 02 Video Editing -> 03 Web Systems & Backend
-  const work = document.querySelector("#work");
-  const workChildren = ["work-heading", "ai-hooks", "work", "dev"]
-    .map((key) => document.querySelector(`[data-content="${key}"]`));
-  if (work) work.hidden = !workChildren.some((child) => child && !child.hidden);
+/* The copyright line and a way back to the top. */
+function renderFooter(data) {
+  const root = document.querySelector('[data-content="footer"]');
+  if (!root || !data) return;
 
-  const about = document.querySelector("#about");
-  const aboutChildren = ["about", "credentials"]
-    .map((key) => document.querySelector(`[data-content="${key}"]`));
-  if (about) about.hidden = !aboutChildren.some((child) => child && !child.hidden);
+  root.innerHTML = `
+    <div class="footer-inner">
+      <span class="footer-copy">&copy; ${new Date().getFullYear()} ${text(data.name)}</span>
+      <a class="footer-top" href="#hero">${text(data.backToTop)}</a>
+    </div>`;
+}
+
+function renderInterface(data) {
+  const skip = document.querySelector("#skip-link");
+  if (skip && hasText(data.skipLink)) skip.textContent = data.skipLink;
+}
+
+function reportErrors(errors) {
+  const status = document.querySelector("#content-status");
+  if (!status || !errors.length) return;
+  const message = ui("contentError");
+  if (!hasText(message)) return;
+  status.textContent = message;
+  status.hidden = false;
 }
 
 function renderPortfolio(payload) {
   const { data, errors } = payload;
-  renderInterface(data.ui);
-  const renderers = [
-    ["meta",         renderMeta],
-    ["nav",          renderNavigation],
-    ["hero",         (heroData) => renderHero(heroData, data.work)],
-    ["aiHooks",      renderAiHooks],
-    ["work",         renderWork],
-    ["dev",          renderDevelopment],
-    ["operations",   renderOperations],
-    ["stats",        renderStats],
-    ["testimonials", renderTestimonials],
-    ["about",        renderAbout],
-    ["credentials",  renderCredentials],
-    ["contact",      renderContact]
-  ];
+  interfaceText = data.ui || {};
+  sectionIndex = new Map(
+    records(data.chrome?.sections)
+      .filter((section) => hasText(section.id))
+      .map((section) => [section.id, section])
+  );
 
-  renderers.forEach(([key, renderer]) => {
-    try {
-      renderer(data[key]);
-    } catch (error) {
-      console.error(`Could not render the ${key} section.`, error);
-    }
-  });
+  renderInterface(interfaceText);
+  renderMeta(data.meta);
+  renderPreloader();
 
-  updateCompositeSections();
-
-  if (errors.length) {
-    const status = document.querySelector("#content-status");
-    if (status) {
-      status.textContent = ui("contentError");
-      status.hidden = false;
-    }
+  if (data.chrome) {
+    renderTopChrome(data.chrome);
+    renderSocialRail(data.chrome);
+    renderMenu(data.chrome);
   }
+
+  renderHero(data.hero, data.chrome);
+  renderAbout(data.about);
+  renderNumbers(data.numbers);
+  renderExperience(data.experience);
+  renderPractice(data.practice);
+  renderWork(data.work);
+  renderEdits(data.edits);
+  renderProof(data.proof);
+  renderStack(data.stack);
+  renderContact(data.contact);
+  renderSectionShell();
+
+  reportErrors(errors);
+  document.documentElement.classList.add("is-ready");
 }
 
-window.portfolioContentReady = loadPortfolioContent().then(renderPortfolio);
+window.portfolioContentReady = loadPortfolioContent()
+  .then((payload) => {
+    renderPortfolio(payload);
+    return payload;
+  })
+  .catch((error) => {
+    console.error("Portfolio content failed to render.", error);
+    document.documentElement.classList.add("is-ready");
+  });

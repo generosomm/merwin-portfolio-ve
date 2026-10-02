@@ -2,110 +2,140 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#070a09">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0A0A0A">
   <meta name="robots" content="index, follow">
+
   <script>
+    /* Runs before first paint so the render screen never flashes the
+       page behind it, and the hero never flashes its final layout. */
     (() => {
-      document.documentElement.classList.add("editorial-cut");
+      const root = document.documentElement;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      root.classList.add("hero-armed");
+
+      /* Phones skip the render screen: on a small screen and a mobile
+         connection it only delays the first real paint of the page. */
+      if (window.matchMedia("(hover: none), (pointer: coarse), (max-width: 767px)").matches) return;
 
       try {
-        const loaderSessionKey = "ero-visuals-loader-seen";
-        if (sessionStorage.getItem(loaderSessionKey)) return;
-
-        sessionStorage.setItem(loaderSessionKey, "true");
-        document.documentElement.classList.add("loader-pending");
-
-        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        window.setTimeout(() => {
-          document.documentElement.classList.add("loader-exiting");
-        }, reduceMotion ? 100 : 460);
-        window.setTimeout(() => {
-          document.documentElement.classList.remove("loader-pending", "loader-exiting");
-        }, reduceMotion ? 200 : 720);
+        const key = "mg-preloader-seen";
+        if (sessionStorage.getItem(key)) return;
+        sessionStorage.setItem(key, "1");
       } catch {
-        // Skip the session loader when browser storage is unavailable.
+        /* Private mode: show it, rather than guess. */
       }
+
+      root.classList.add("preloading");
     })();
   </script>
 
-  <title></title>
-  <meta name="description" content="">
-  <meta property="og:title" content="">
-  <meta property="og:description" content="">
+  <!-- Static copies of data/00-meta.json so crawlers that do not run
+       JS still see real metadata. js/content.js overwrites these from
+       the JSON at runtime, which stays the single source of truth. -->
+  <title>Merwin Generoso — Systems Developer &amp; Creative Technologist</title>
+  <meta name="description" content="Systems developer and creative technologist from the Philippines. Node.js, Express, PHP, MySQL and EDI integrations, alongside short-form edits with 70M+ documented organic views.">
+  <link rel="canonical" href="https://generosomm.dev/">
+  <meta property="og:title" content="Merwin Generoso — Systems Developer &amp; Creative Technologist">
+  <meta property="og:description" content="Backend systems, EDI integrations and AI-generated media. 70M+ documented organic views.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="">
-  <meta property="og:image" content="">
-  <meta property="og:image:alt" content="">
+  <meta property="og:url" content="https://generosomm.dev/">
+  <meta property="og:image" content="https://generosomm.dev/assets/images/portfolio-social-preview.png">
+  <meta property="og:image:alt" content="Merwin Generoso — systems developer and creative technologist">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="canonical" href="">
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23070a09'/><text x='50' y='68' font-size='54' font-family='Manrope,sans-serif' font-weight='700' fill='%2331c979' text-anchor='middle'>M</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0A0A'/><rect x='14' y='18' width='72' height='3' fill='%232BD47D'/><text x='50' y='74' font-size='50' font-family='system-ui,sans-serif' font-weight='700' fill='%23F2F2F0' text-anchor='middle'>M</text></svg>">
 
+  <!-- The hero portrait is the largest thing on the first screen:
+       start fetching the right size before the CSS and JS arrive. -->
+  <link rel="preload" as="image" type="image/webp" fetchpriority="high"
+    imagesrcset="assets/images/pfp-640.webp 640w, assets/images/pfp-800.webp 800w, assets/images/pfp.webp 1067w"
+    imagesizes="(max-width: 767px) 100vw, (max-width: 1023px) 64vw, 30vw">
+
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="css/styles.css?v=20260918-3">
-  <script src="js/content.js?v=20260918-3" defer></script>
-  <script src="js/app.js?v=20260817-2" defer></script>
+  <!-- Parallel links, not an @import chain: each stylesheet starts
+       downloading as soon as the HTML is parsed. -->
+  <link rel="stylesheet" href="css/tokens.css?v=r17">
+  <link rel="stylesheet" href="css/base.css?v=r17">
+  <link rel="stylesheet" href="css/chrome.css?v=r17">
+  <link rel="stylesheet" href="css/sections.css?v=r17">
+  <link rel="stylesheet" href="css/hero.css?v=r17">
+  <link rel="stylesheet" href="css/story.css?v=r17">
+  <link rel="stylesheet" href="css/work.css?v=r17">
+  <link rel="stylesheet" href="css/closing.css?v=r17">
+
+  <!-- Resolves the bare "three" imports in js/scene/. Inert until the
+       scene is lazily imported after the hero paints; harmless if
+       js/scene/ is deleted. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <!-- Local scripts first, on purpose: deferred scripts execute in
+       document order, so a slow CDN here would hold up the render
+       screen. Lenis and GSAP attach themselves once they arrive. -->
+  <script src="js/content.js?v=r17" defer></script>
+  <script src="js/site.js?v=r17" defer></script>
+  <script src="js/interactions.js?v=r17" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
-  <script src="js/motion.js?v=20260918-3" defer></script>
+  <script src="js/motion.js?v=r17" defer></script>
+
+  <!-- Remote stylesheets block both script execution and first paint.
+       media="print" takes them out of that path; the onload flip
+       applies them the moment they arrive, and font-display:swap
+       covers the gap with the fallback face. -->
+  <!-- One family per request: Fontshare silently serves only the
+       first family when several are combined in one URL. -->
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=clash-display@600,700&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@400,500,700&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=clash-display@600,700&display=swap">
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@400,500,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+  </noscript>
 </head>
 
 <body>
-  <div class="portfolio-loader" id="portfolio-loader" role="status" aria-label="">
-    <div class="portfolio-loader-panel" aria-hidden="true">
-      <strong class="portfolio-loader-brand" id="portfolio-loader-brand"></strong>
-      <div class="portfolio-loader-statuses" id="portfolio-loader-statuses"></div>
-      <div class="portfolio-loader-timeline"><span></span></div>
-    </div>
-  </div>
+  <div class="preloader" data-chrome="preloader" role="status"></div>
 
   <a class="skip-link" id="skip-link" href="#main"></a>
   <div class="content-status" id="content-status" role="status" hidden></div>
 
-  <header class="site-header" data-content="nav"></header>
-  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+  <div class="playhead" id="playhead" aria-hidden="true">
+    <span class="playhead-fill" id="playhead-fill"></span>
+  </div>
+
+  <header class="chrome chrome-top" data-chrome="top"></header>
+  <nav class="chrome chrome-socials" data-chrome="socials"></nav>
+  <div class="menu" id="menu" data-chrome="menu"></div>
 
   <main id="main">
-
-    <!-- 01 HERO -->
-    <section class="hero" id="top" data-content="hero" aria-labelledby="hero-title"></section>
-
-    <!-- 02 SELECTED WORK: 01 AI-Generated Media -> 02 Video Editing -> 03 Web Systems & Backend -->
-    <section class="section work" id="work" aria-labelledby="work-title">
-      <div class="section-heading" data-content="work-heading" hidden></div>
-      <div class="subsection" id="ai-hooks" data-content="ai-hooks"></div>
-      <div class="subsection" id="editing" data-content="work"></div>
-      <div class="subsection development" id="development" data-content="dev"></div>
-    </section>
-
-    <!-- 03 SCALE & PROOF -->
-    <section class="section proof" id="proof" data-content="stats" aria-labelledby="proof-title"></section>
-
-    <!-- 04 CREDENTIALS & ABOUT -->
-    <section class="section about" id="about" aria-labelledby="about-title">
-      <div class="about-layout" data-content="about"></div>
-      <section class="credentials" data-content="credentials" aria-labelledby="credentials-title"></section>
-    </section>
-
-    <!-- 05 CONTACT -->
-    <section class="contact" id="contact" data-content="contact" aria-labelledby="contact-title"></section>
-
+    <section class="section section-hero" id="hero" data-section="hero"></section>
+    <section class="section" id="about" data-section="about"></section>
+    <section class="section" id="numbers" data-section="numbers"></section>
+    <section class="section" id="experience" data-section="experience"></section>
+    <section class="section" id="practice" data-section="practice"></section>
+    <section class="section" id="work" data-section="work"></section>
+    <section class="section" id="edits" data-section="edits"></section>
+    <section class="section" id="proof" data-section="proof"></section>
+    <section class="section" id="stack" data-section="stack"></section>
+    <section class="section" id="contact" data-section="contact"></section>
   </main>
 
   <footer class="site-footer" data-content="footer"></footer>
-
-  <dialog class="media-dialog" id="video-dialog" aria-label="">
-    <button class="dialog-close ui-icon-button" id="video-dialog-close" type="button" aria-label=""></button>
-    <video controls playsinline preload="metadata"></video>
-  </dialog>
-
-  <dialog class="media-dialog image-dialog" id="image-dialog" aria-label="">
-    <button class="dialog-close ui-icon-button" id="image-dialog-close" type="button" aria-label=""></button>
-    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="">
-  </dialog>
 </body>
 </html>

@@ -1,0 +1,381 @@
+/* =============================================================
+   CHROME — minimal fixed furniture around the viewport edges.
+   Playhead (top), brand + nav (top), socials (left edge),
+   mobile menu.
+   ============================================================= */
+
+/* ---- Shared ---------------------------------------------------
+   Chrome containers never swallow pointer events; only their
+   interactive children opt back in. That keeps the whole page
+   scrollable and draggable right up to the viewport edge.
+---------------------------------------------------------------- */
+
+.chrome {
+  position: fixed;
+  z-index: var(--z-chrome);
+  pointer-events: none;
+}
+
+.chrome a,
+.chrome button {
+  pointer-events: auto;
+}
+
+/* Chrome stays out of the way until content has rendered. */
+.chrome,
+.playhead {
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+
+html.is-ready .chrome,
+html.is-ready .playhead {
+  opacity: 1;
+}
+
+/* ---- Playhead -------------------------------------------------
+   A 2px scrub bar across the top edge. The fill tracks scroll
+   progress; each notch marks one section in-point.
+---------------------------------------------------------------- */
+
+.playhead {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--playhead-h);
+  z-index: var(--z-playhead);
+  background: var(--line);
+  pointer-events: none;
+}
+
+.playhead-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  /* Transform only — no layout, no paint beyond the bar itself. */
+  will-change: transform;
+}
+
+.playhead-notch {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: calc(var(--playhead-h) + 4px);
+  background: var(--line-strong);
+}
+
+/* ---- Top chrome ---------------------------------------------- */
+
+.chrome-top {
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  min-height: calc(var(--chrome-h) + var(--safe-top));
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  /* Clears the notch / status bar on phones in a webview. */
+  padding-top: var(--safe-top);
+  padding-inline: var(--gutter);
+}
+
+/* Legibility scrim: the type underneath can be anything. Solid
+   through the brand row — a fade that starts at the top edge is only
+   half opaque at the brand's baseline, so scrolled text reads
+   straight through the wordmark — then fading out below it. */
+.chrome-top::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 calc(var(--s-6) * -1);
+  background: linear-gradient(to bottom, var(--ink-900) 60%, transparent);
+  content: "";
+}
+
+.brand {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+}
+
+/* The name alone is the logo. */
+.brand-name {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  /* Clash Display sets very tight at small sizes; the wordmark needs
+     its word space back to stay readable. */
+  letter-spacing: 0.01em;
+  word-spacing: 0.08em;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.brand:hover .brand-name,
+.brand:focus-visible .brand-name {
+  color: var(--accent);
+}
+
+.chrome-nav-list {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+}
+
+.chrome-nav-link {
+  position: relative;
+  display: inline-flex;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  align-items: center;
+  justify-content: center;
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.chrome-nav-link::after {
+  position: absolute;
+  bottom: 0.55rem;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform var(--dur-2) var(--ease-out);
+  content: "";
+}
+
+.chrome-nav-link:hover,
+.chrome-nav-link:focus-visible {
+  color: var(--text);
+}
+
+/* The section on screen: its link in the accent. */
+.chrome-nav-link[aria-current="true"],
+.menu-link[aria-current="true"] {
+  color: var(--accent);
+}
+
+.chrome-nav-link:hover::after,
+.chrome-nav-link:focus-visible::after,
+.chrome-nav-link[aria-current="true"]::after {
+  transform: scaleX(1);
+}
+
+/* ---- Menu toggle (mobile only) ------------------------------- */
+
+.nav-toggle {
+  display: none;
+  width: var(--tap);
+  height: var(--tap);
+  margin-right: calc(var(--s-3) * -1);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 18px;
+  height: 1px;
+  background: var(--text);
+  transition: transform var(--dur-2) var(--ease-io);
+}
+
+html.menu-open .nav-toggle span:first-child {
+  transform: translateY(3px) rotate(45deg);
+}
+
+html.menu-open .nav-toggle span:last-child {
+  transform: translateY(-3px) rotate(-45deg);
+}
+
+/* ---- Social rail (left edge, wide screens only) -------------- */
+
+.chrome-socials {
+  top: 50%;
+  left: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+  width: var(--gutter);
+  transform: translateY(-50%);
+}
+
+.chrome-socials a {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  color: var(--text-mid);
+  transition: color var(--dur-1) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+}
+
+.chrome-socials svg {
+  width: 1.0625rem;
+  height: 1.0625rem;
+  fill: currentColor;
+}
+
+.chrome-socials a:hover,
+.chrome-socials a:focus-visible {
+  color: var(--accent);
+  transform: translateX(2px);
+}
+
+/* ---- Mobile menu ---------------------------------------------
+   JS applies `inert` while closed, so focus can never land inside
+   a hidden menu — no hand-rolled focus trap needed.
+---------------------------------------------------------------- */
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s-8);
+  padding: calc(var(--chrome-h) + var(--safe-top) + var(--s-6)) var(--gutter)
+    calc(var(--s-8) + var(--safe-bottom));
+  background: var(--ink-900);
+  opacity: 0;
+  /* Deliberately not `visibility: hidden`: a transitioned visibility
+     flips halfway through, which would make .focus() fail on open.
+     `inert` (set by JS) is what actually keeps focus and assistive
+     tech out while the menu is closed. */
+  pointer-events: none;
+  transform: translateY(-1.5%);
+  transition: opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+}
+
+.menu.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+html.menu-open {
+  overflow: hidden;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.menu-link {
+  display: flex;
+  min-height: var(--tap);
+  align-items: baseline;
+  gap: var(--s-4);
+  padding-block: var(--s-3);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  letter-spacing: var(--track-display);
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.menu-link:hover,
+.menu-link:focus-visible {
+  color: var(--accent);
+}
+
+.menu-index {
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 400;
+  letter-spacing: var(--track-label);
+}
+
+.menu-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-5);
+}
+
+.menu-socials a {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.menu-socials svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+  fill: currentColor;
+}
+
+.menu-socials a:hover,
+.menu-socials a:focus-visible {
+  color: var(--accent);
+}
+
+/* ---- Bottom fade -----------------------------------------------
+   A soft edge at the bottom of the viewport so content scrolls out
+   under it rather than being cut by the screen edge. Purely visual
+   and pointer-transparent; sits under the menu and the chrome.
+---------------------------------------------------------------- */
+
+body::after {
+  position: fixed;
+  z-index: calc(var(--z-menu) - 1);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: calc(var(--s-7) + var(--safe-bottom));
+  background: linear-gradient(to top, var(--ink-900), transparent);
+  pointer-events: none;
+  content: "";
+}
+
+/* ---- Breakpoints --------------------------------------------- */
+
+/* Below 768px the nav list collapses into the menu. */
+@media (max-width: 767px) {
+  .chrome-nav-list {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+}
+
+@media (min-width: 768px) {
+  .menu {
+    display: none;
+  }
+}
+
+/* The social rail only earns its place once there is real margin. */
+@media (min-width: 1100px) {
+  .chrome-socials {
+    display: flex;
+  }
+}

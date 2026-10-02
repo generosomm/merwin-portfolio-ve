@@ -1,0 +1,120 @@
+{
+  "brand": {
+    "name": "Merwin Generoso",
+    "href": "#hero",
+    "ariaLabel": "Merwin Generoso — back to the top"
+  },
+  "nav": {
+    "ariaLabel": "Primary navigation",
+    "openLabel": "Open menu",
+    "closeLabel": "Close menu",
+    "menuAriaLabel": "Site menu",
+    "links": [
+      {
+        "label": "About",
+        "href": "#about"
+      },
+      {
+        "label": "Experience",
+        "href": "#experience"
+      },
+      {
+        "label": "Work",
+        "href": "#work"
+      },
+      {
+        "label": "Proof",
+        "href": "#proof"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      }
+    ]
+  },
+  "socials": {
+    "ariaLabel": "Social profiles",
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/generosomm",
+        "icon": "github"
+      },
+      {
+        "label": "LinkedIn",
+        "href": "https://linkedin.com/in/generosomm",
+        "icon": "linkedin"
+      },
+      {
+        "label": "TikTok",
+        "href": "https://www.tiktok.com/@eroedtx",
+        "icon": "tiktok"
+      },
+      {
+        "label": "YouTube",
+        "href": "https://www.youtube.com/@eroedtx",
+        "icon": "youtube"
+      },
+      {
+        "label": "Instagram",
+        "href": "https://www.instagram.com/eroedtx/",
+        "icon": "instagram"
+      },
+      {
+        "label": "Facebook",
+        "href": "https://www.facebook.com/eroedtx",
+        "icon": "facebook"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "title": "Hero"
+    },
+    {
+      "id": "about",
+      "title": "About"
+    },
+    {
+      "id": "numbers",
+      "title": "Numbers"
+    },
+    {
+      "id": "experience",
+      "title": "Experience"
+    },
+    {
+      "id": "practice",
+      "title": "What I Do"
+    },
+    {
+      "id": "work",
+      "title": "Selected Work",
+      "viewAll": {
+        "label": "View all on GitHub",
+        "href": "https://github.com/generosomm"
+      }
+    },
+    {
+      "id": "edits",
+      "title": "Selected Edits",
+      "viewAll": {
+        "label": "View all on TikTok",
+        "href": "https://www.tiktok.com/@eroedtx"
+      }
+    },
+    {
+      "id": "proof",
+      "title": "Proof"
+    },
+    {
+      "id": "stack",
+      "title": "Stack"
+    },
+    {
+      "id": "contact",
+      "title": "Contact"
+    }
+  ]
+}

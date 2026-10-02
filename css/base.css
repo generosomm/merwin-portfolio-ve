@@ -1,0 +1,209 @@
+/* =============================================================
+   BASE — reset, canvas, typographic primitives, a11y utilities.
+   ============================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--ink-900);
+  /* Lenis owns smooth scrolling; native smooth would fight it. */
+  scroll-behavior: auto;
+  /* Anchor jumps land below the fixed header, notch included. */
+  scroll-padding-top: calc(var(--chrome-h) + var(--safe-top) + var(--s-5));
+}
+
+body {
+  margin: 0;
+  background: var(--ink-900);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: var(--leading-body);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Belt and braces against horizontal scroll at any width. */
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--track-display);
+  text-wrap: balance;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ink-900);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Only suppress the ring for pointer users who never needed it. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ---- Typographic primitives ---------------------------------- */
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.lead {
+  max-width: var(--measure);
+  color: var(--text-mid);
+  font-size: var(--fs-lead);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+/* ---- Layout primitives --------------------------------------- */
+
+.page {
+  width: var(--page);
+  margin-inline: auto;
+}
+
+.hairline {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: var(--line);
+}
+
+/* ---- Accessibility utilities --------------------------------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  min-height: var(--tap);
+  top: var(--s-3);
+  left: var(--s-3);
+  z-index: calc(var(--z-preloader) + 1);
+  padding: var(--s-3) var(--s-4);
+  background: var(--accent);
+  color: var(--ink-900);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  transform: translateY(calc(-100% - var(--s-4)));
+  transition: transform var(--dur-1) var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+.content-status {
+  position: fixed;
+  bottom: calc(var(--chrome-h) + var(--safe-bottom));
+  left: 50%;
+  z-index: var(--z-menu);
+  max-width: min(32rem, calc(100% - var(--s-8)));
+  padding: var(--s-3) var(--s-4);
+  background: var(--ink-800);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  font-size: var(--fs-small);
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.content-status[hidden] {
+  display: none;
+}
+
+/* ---- Reduced motion ------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

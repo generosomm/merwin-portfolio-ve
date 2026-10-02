@@ -1,0 +1,130 @@
+/* =============================================================
+   TOKENS — the single source of truth for the whole site.
+   Nothing below this file hardcodes a colour, size, or easing.
+   ============================================================= */
+
+:root {
+  color-scheme: dark;
+
+  /* ---- Surface ------------------------------------------------ */
+  --ink-900: #0a0a0a;          /* page canvas */
+  --ink-850: #0e0e0e;          /* raised: sticky cards */
+  --ink-800: #141414;          /* preloader, lightbox scrim */
+
+  /* ---- Hairlines ---------------------------------------------- */
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.18);
+
+  /* ---- Text --------------------------------------------------- */
+  --text: #f2f2f0;             /* 18.4:1 on --ink-900 */
+  --text-mid: #8c8c88;         /*  5.9:1 — passes AA for body copy */
+  --text-dim: #6c6c66;         /*  3.4:1 — scroll-reveal START state; AA for large text */
+
+  /* ---- Accent ------------------------------------------------- */
+  --accent: #2bd47d;           /* 10.2:1 on --ink-900 — AAA at any size */
+  --accent-wash: rgba(43, 212, 125, 0.14);
+
+  /* ---- 3D scene ----------------------------------------------
+     js/scene/ reads these at runtime, so the WebGL materials stay
+     in sync with the page. Graphite and bone only; the accent is
+     reserved for the rim light and the playhead. */
+  --scene-graphite: #1d1d1c;   /* slab body */
+  --scene-face: #2a2a28;       /* plain slab face */
+  --scene-bone: #e8e6e0;       /* key light */
+
+  /* ---- Type families ----------------------------------------- */
+  --font-display: "Clash Display", "Satoshi", system-ui, sans-serif;
+  --font-body: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ---- Type scale ----------------------------------------------
+     One fluid scale, every step clamp()ed between a 375px phone and
+     a 1440px laptop, with the maximum capped so large screens do not
+     keep growing. Nothing on the site is set below 12px.
+       label    12 -> 13px    small   13 -> 14px    body  16 -> 17px
+       lead     18 -> 22px    h3      20 -> 28px    h2    28 -> 48px
+       section  40 -> 76px    display 36 -> 88px    hero  name only
+  ---------------------------------------------------------------- */
+  --fs-hero: clamp(3.2rem, 15vw, 13rem);
+  --fs-display: clamp(2.25rem, 1.03rem + 5.2vw, 5.5rem);
+  --fs-section: clamp(2.5rem, 1.39rem + 4.73vw, 4.75rem);
+  --fs-h2: clamp(1.75rem, 1.13rem + 2.63vw, 3rem);
+  --fs-h3: clamp(1.25rem, 1rem + 1.05vw, 1.75rem);
+  --fs-lead: clamp(1.125rem, 1rem + 0.53vw, 1.375rem);
+  --fs-body: clamp(1rem, 0.97rem + 0.13vw, 1.0625rem);
+  --fs-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --fs-label: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem);
+
+  --track-hero: -0.05em;
+  --track-display: -0.035em;
+  --track-label: 0.16em;
+  --leading-tight: 0.88;
+  --leading-snug: 1.15;
+  --leading-body: 1.6;
+  --measure: 62ch;
+
+  /* ---- Space (8px base) -------------------------------------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+  --s-11: 12rem;
+
+  /* ---- Layout ---------------------------------------------------
+     Breakpoints (media queries cannot read custom properties, so
+     these are documented here and used literally):
+       480  large phones      768  tablets
+       1024 laptops           1440 content stops growing
+  ---------------------------------------------------------------- */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+
+  /* Side padding: 20px on a 375px phone, 64px on wide screens, and
+     never less than a notch's safe area in landscape. */
+  --gutter: max(clamp(1.25rem, 0.6rem + 2.8vw, 4rem), var(--safe-left), var(--safe-right));
+  /* The same top/bottom padding on every section. */
+  --section-y: clamp(4.5rem, 3rem + 6vw, 9rem);
+  /* Space between a section's heading row and its content. */
+  --head-gap: clamp(2rem, 1.4rem + 2vw, 3.5rem);
+  --page: min(1440px, 100% - (var(--gutter) * 2));
+  --chrome-h: 3.5rem;
+  --playhead-h: 2px;
+  /* Minimum touch target. */
+  --tap: 2.75rem;
+
+  /* ---- Radii — square by design, two deliberate exceptions --- */
+  --r-pill: 999px;
+  --r-cursor: 50%;
+
+  /* ---- Motion ------------------------------------------------- */
+  --dur-1: 180ms;
+  --dur-2: 420ms;
+  --dur-3: 900ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* ---- Depth -------------------------------------------------- */
+  --z-section: 1;
+  --z-menu: 80;
+  /* Chrome sits ABOVE the menu so the brand and the close toggle
+     stay visible and usable while the menu is open. */
+  --z-chrome: 90;
+  --z-playhead: 95;
+  --z-preloader: 100;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 1ms;
+    --dur-2: 1ms;
+    --dur-3: 1ms;
+  }
+}

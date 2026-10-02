@@ -1,27 +1,70 @@
 {
-  "eyebrow": "Available for remote work",
-  "heading": "Have a project in mind?",
-  "headingAccent": "Let’s make it happen.",
-  "description": "Tell me what you need, your deadline, and useful links. I’ll reply with a clear next step.",
-  "email": "generosomerwin10@gmail.com",
-  "emailAction": "Start a conversation",
-  "emailLabel": "Email me",
-  "emailSubject": "Remote work inquiry",
-  "emailBody": "Hi Merwin,\n\nHere's what I need help with:\n\nTarget deadline:\nUseful links:\n\nThank you.",
-  "links": [
-    { "label": "LinkedIn", "href": "https://linkedin.com/in/generosomm" },
-    { "label": "GitHub", "href": "https://github.com/generosomm" },
-    { "label": "Facebook", "href": "https://www.facebook.com/eroedtx" },
-    { "label": "Instagram", "href": "https://www.instagram.com/eroedtx/" },
-    { "label": "TikTok", "href": "https://www.tiktok.com/@eroedtx" },
-    { "label": "YouTube", "href": "https://www.youtube.com/@eroedtx" },
-    { "label": "View CV", "icon": "cv", "href": "assets/Merwin_Generoso_CV.pdf" }
+  "statement": "Need something built, or something cut?",
+  "email": {
+    "address": "generosomerwin10@gmail.com",
+    "label": "Email me",
+    "subject": "Hello from your portfolio"
+  },
+  "rows": [
+    {
+      "label": "Email",
+      "email": true
+    },
+    {
+      "label": "Availability",
+      "value": "Open to internships & remote work"
+    },
+    {
+      "label": "Résumé",
+      "link": {
+        "label": "View CV",
+        "href": "assets/Merwin_Generoso_CV.pdf"
+      }
+    },
+    {
+      "label": "Socials",
+      "links": [
+        {
+          "label": "LinkedIn",
+          "href": "https://linkedin.com/in/generosomm"
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/generosomm"
+        },
+        {
+          "label": "TikTok",
+          "href": "https://www.tiktok.com/@eroedtx"
+        },
+        {
+          "label": "YouTube",
+          "href": "https://www.youtube.com/@eroedtx"
+        },
+        {
+          "label": "Instagram",
+          "href": "https://www.instagram.com/eroedtx/"
+        },
+        {
+          "label": "Facebook",
+          "href": "https://www.facebook.com/eroedtx"
+        }
+      ]
+    }
   ],
-  "locationLines": ["Sto. Tomas City, Batangas", "Philippines / GMT+8"],
+  "pair": [
+    {
+      "label": "Based in",
+      "value": "Sto. Tomas City, Batangas, PH"
+    },
+    {
+      "label": "Local time",
+      "timeZone": "Asia/Manila",
+      "timeLabel": "GMT+8"
+    }
+  ],
   "footer": {
-    "year": "2026",
-    "copyright": "Merwin Generoso",
-    "note": "Designed and built from scratch.",
+    "name": "Merwin Generoso",
     "backToTop": "Back to top"
-  }
+  },
+  "note": "rows is the vertical label/value list; each row shows value (text), email (your address as a mailto link), link (one link) or links (a list). pair is the two-column row under it; a timeZone entry shows your live local time. The footer year updates itself."
 }

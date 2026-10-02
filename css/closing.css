@@ -1,0 +1,896 @@
+/* =============================================================
+   CLOSING SECTIONS — proof, stack + GitHub, contact, footer.
+   ============================================================= */
+
+/* Shared sub-heading inside a section ("Analytics", "Certifications",
+   "GitHub activity"): quieter than the section title, above the
+   body copy. */
+.proof-heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  letter-spacing: var(--track-display);
+}
+
+.text-link {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  gap: var(--s-1);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.text-link:hover,
+.text-link:focus-visible {
+  color: var(--accent);
+}
+
+/* ---- Proof -------------------------------------------------------- */
+
+.proof-block + .proof-block {
+  margin-top: var(--s-9);
+}
+
+.proof-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  margin-bottom: var(--s-5);
+}
+
+.proof-intro {
+  max-width: 34em;
+  margin: 0;
+  color: var(--text-mid);
+  font-size: var(--fs-body);
+}
+
+/* Analytics carousel.
+   Base layout (no JS): a swipeable, snapping row of screenshots.
+   With js/interactions.js it becomes a 3D coverflow (.is-3d): the
+   active screenshot flat and large in the middle, its neighbours
+   angled back on either side. JS sets --offset (slides from the
+   active one) and --abs on each slide; the drawing is all here. */
+
+.section-proof {
+  /* The angled side cards run past the page edges on purpose. */
+  overflow-x: clip;
+}
+
+.proof-carousel {
+  /* As wide as the page allows (up to 1280px), but never so tall
+     that the screenshot and its caption overflow the screen: the
+     last term converts the spare viewport height into a width at
+     the screenshots' 1400:713 ratio. */
+  --slide-w: min(90vw, 80rem, (100svh - 15rem) * 1.9635);
+}
+
+.proof-track {
+  display: flex;
+  gap: var(--s-5);
+  overflow-x: auto;
+  padding-bottom: var(--s-3);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.proof-slide {
+  flex: 0 0 var(--slide-w);
+  scroll-snap-align: center;
+}
+
+.proof-card {
+  display: block;
+  width: 100%;
+  cursor: zoom-in;
+}
+
+.proof-shot {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  aspect-ratio: 1874 / 954;
+  background: var(--ink-800);
+}
+
+.proof-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.proof-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-5);
+  padding-top: var(--s-4);
+}
+
+.proof-value {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--track-display);
+}
+
+.proof-label {
+  color: var(--text-mid);
+  font-size: var(--fs-body);
+}
+
+.proof-controls {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-5);
+  margin-top: var(--s-6);
+}
+
+.proof-arrow {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-cursor);
+  color: var(--text);
+  transition: border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
+}
+
+.proof-arrow svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.proof-arrow:hover,
+.proof-arrow:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.proof-count {
+  display: flex;
+  gap: var(--s-2);
+  min-width: 4.5rem;
+  justify-content: center;
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.proof-current {
+  color: var(--text);
+}
+
+.proof-total::before {
+  margin-right: var(--s-2);
+  content: "/";
+}
+
+/* ---- 3D coverflow ---- */
+
+.proof-carousel.is-3d .proof-controls {
+  display: flex;
+}
+
+.proof-carousel.is-3d .proof-track {
+  position: relative;
+  display: block;
+  height: var(--track-h, 32rem);
+  overflow: visible;
+  padding: 0;
+  perspective: 1800px;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.proof-carousel.is-3d .proof-slide {
+  --offset: 0;
+  --abs: 0;
+
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--slide-w);
+  transform:
+    translateX(-50%)
+    translateX(calc(var(--offset) * 54%))
+    translateZ(calc(var(--abs) * -240px))
+    rotateY(calc(var(--offset) * -34deg));
+  transform-style: preserve-3d;
+  z-index: calc(10 - var(--abs));
+  transition: transform 0.75s var(--ease-out), opacity 0.5s var(--ease-out);
+}
+
+.proof-carousel.is-3d .proof-slide.is-far {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Side cards sit in shadow and show no caption; only the active one
+   is read in full. */
+.proof-carousel.is-3d .proof-shot::after {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-900);
+  opacity: calc(var(--abs) * 0.45);
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease-out);
+  content: "";
+}
+
+.proof-carousel.is-3d .proof-caption {
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+
+.proof-carousel.is-3d .is-active .proof-caption {
+  opacity: 1;
+}
+
+.proof-carousel.is-3d .proof-slide:not(.is-active) .proof-card {
+  cursor: pointer;
+}
+
+.proof-carousel.is-3d .is-active .proof-card:hover .proof-shot,
+.proof-carousel.is-3d .is-active .proof-card:focus-visible .proof-shot {
+  border-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proof-carousel.is-3d .proof-slide,
+  .proof-carousel.is-3d .proof-shot::after {
+    transition: none;
+  }
+}
+
+/* Certificates: tilt toward the cursor with a soft green sheen that
+   follows it. --rx/--ry/--mx/--my are set by js/interactions.js;
+   the defaults leave the card flat and the sheen off. */
+.cert-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-6) var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 700px) {
+  .cert-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.cert-card {
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 50%;
+
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: var(--s-2);
+  text-align: left;
+}
+
+.cert-media {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  padding: var(--s-4);
+  place-items: center;
+  border: 1px solid var(--line);
+  background: var(--ink-850);
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform var(--dur-2) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+}
+
+.cert-media img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.cert-media::after {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mx) var(--my), var(--accent-wash), transparent 55%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-2) var(--ease-out);
+  content: "";
+}
+
+/* While tracking, the transform follows the cursor directly. */
+.cert-card.is-tilting .cert-media {
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+
+.cert-card:hover .cert-media,
+.cert-card:focus-visible .cert-media {
+  border-color: var(--line-strong);
+}
+
+.cert-card:hover .cert-media::after {
+  opacity: 1;
+}
+
+.cert-title {
+  margin-top: var(--s-2);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.cert-card:hover .cert-title,
+.cert-card:focus-visible .cert-title {
+  color: var(--accent);
+}
+
+.cert-meta {
+  display: flex;
+  gap: var(--s-2);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+.cert-meta span + span::before {
+  margin-right: var(--s-2);
+  content: "\00B7";
+}
+
+/* ---- Lightbox ------------------------------------------------------ */
+
+.lightbox {
+  width: min(92vw, 1400px);
+  max-width: none;
+  max-height: 92svh;
+  margin: auto;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+.lightbox::backdrop {
+  background: rgba(10, 10, 10, 0.92);
+}
+
+.lightbox img {
+  display: block;
+  width: 100%;
+  max-height: 88svh;
+  object-fit: contain;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: calc(var(--s-6) * -1 - var(--s-3));
+  right: 0;
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  color: var(--text);
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.lightbox-close svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.lightbox-close:hover,
+.lightbox-close:focus-visible {
+  color: var(--accent);
+}
+
+/* ---- Stack ---------------------------------------------------------- */
+
+.stack-groups {
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.stack-group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-3);
+  padding-block: var(--s-5);
+  border-top: 1px solid var(--line);
+}
+
+.stack-group dt {
+  color: var(--text-mid);
+  font-size: var(--fs-body);
+}
+
+.stack-group dd {
+  margin: 0;
+}
+
+.stack-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stack-pills li {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-small);
+  transition: border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
+}
+
+.stack-pills li:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (min-width: 768px) {
+  .stack-group {
+    grid-template-columns: minmax(10rem, 16rem) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-6);
+  }
+}
+
+/* Logos: always in their own colours. Single-colour (mono) logos
+   are black in the source files, so they are drawn white.
+   Hover is a small three-part reaction:
+   1. pop    the logo hops, squashes and wobbles back (keyframes)
+   2. magnet the icon leans toward the cursor (js/interactions.js
+             sets --tx/--ty/--tilt on the tile)
+   3. glow   the tile lights up in the logo's brand colour (--brand),
+             centred on the cursor (--gx/--gy)
+   Reduced motion keeps only the glow. */
+.stack-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stack-logo {
+  --brand: var(--accent);
+  --tx: 0px;
+  --ty: 0px;
+  --tilt: 0deg;
+  --gx: 50%;
+  --gy: 60%;
+
+  position: relative;
+  display: flex;
+  width: 6.25rem;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-4) var(--s-2) var(--s-3);
+  /* No overflow clipping: the logo is allowed to hop out of its tile. */
+  border: 1px solid var(--line);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  text-align: center;
+  transition: border-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+
+.stack-logo::before {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--gx) var(--gy),
+    color-mix(in srgb, var(--brand) 30%, transparent),
+    transparent 62%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-2) var(--ease-out);
+  content: "";
+}
+
+.stack-logo-icon {
+  position: relative;
+  z-index: 1;
+  display: block;
+  transform: translate(var(--tx), var(--ty)) rotate(var(--tilt));
+  transition: transform 0.35s var(--ease-out);
+}
+
+.stack-logo img {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  transform-origin: 50% 100%;
+}
+
+.stack-logo.is-mono img {
+  filter: brightness(0) invert(0.94);
+}
+
+.stack-logo-name {
+  position: relative;
+  transition: color var(--dur-2) var(--ease-out);
+}
+
+.stack-logo:hover {
+  border-color: color-mix(in srgb, var(--brand) 55%, transparent);
+  color: var(--text);
+}
+
+.stack-logo:hover::before {
+  opacity: 1;
+}
+
+.stack-logo:hover img {
+  animation: logo-pop 0.75s var(--ease-out);
+  filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--brand) 45%, transparent));
+}
+
+.stack-logo.is-mono:hover img {
+  filter: brightness(0) invert(1) drop-shadow(0 6px 14px rgba(255, 255, 255, 0.25));
+}
+
+/* Hop, squash on landing, small wobble, settle. */
+@keyframes logo-pop {
+  0% {
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+  }
+  28% {
+    transform: translateY(-11px) scale(1.12, 1.12) rotate(-9deg);
+  }
+  50% {
+    transform: translateY(0) scale(1.14, 0.86) rotate(0deg);
+  }
+  68% {
+    transform: translateY(-4px) scale(0.96, 1.05) rotate(5deg);
+  }
+  84% {
+    transform: translateY(0) scale(1.02, 0.98) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-logo:hover img {
+    animation: none;
+  }
+
+  .stack-logo-icon {
+    transform: none;
+  }
+}
+
+/* Phones: each tile becomes a compact icon + name pill, and they
+   wrap with an even gap. The hover effects are pointer-only, so
+   nothing is lost on touch. */
+@media (max-width: 767px) {
+  .stack-logo {
+    width: auto;
+    flex-direction: row;
+    gap: var(--s-2);
+    padding: 0.4rem 0.85rem 0.4rem 0.5rem;
+    border-radius: var(--r-pill);
+    color: var(--text);
+    text-align: left;
+  }
+
+  .stack-logo img {
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+
+  .stack-logo::before {
+    border-radius: inherit;
+  }
+}
+
+.stack-logos + .stack-pills {
+  margin-top: var(--s-3);
+}
+
+/* GitHub graph: 53 weeks x 7 days, drawn by js/interactions.js. */
+.github {
+  margin-top: var(--s-9);
+}
+
+.github-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  margin-bottom: var(--s-5);
+}
+
+/* The graph lives in a card and only ever shows as many recent weeks
+   as fit its width (js/interactions.js), so it never scrolls
+   sideways and the squares never shrink below readable. */
+.github-scroll {
+  overflow: hidden;
+  padding: clamp(1rem, 0.7rem + 1.2vw, 1.75rem);
+  border: 1px solid var(--line);
+  background: var(--ink-850);
+}
+
+.github-graph {
+  --cell: clamp(10px, 0.5rem + 0.4vw, 15px);
+
+  display: grid;
+  width: max-content;
+  grid-auto-columns: var(--cell);
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, var(--cell));
+  gap: 3px;
+}
+
+.github-cell {
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.github-cell[data-level="1"] {
+  background: color-mix(in srgb, var(--accent) 30%, var(--ink-900));
+}
+
+.github-cell[data-level="2"] {
+  background: color-mix(in srgb, var(--accent) 52%, var(--ink-900));
+}
+
+.github-cell[data-level="3"] {
+  background: color-mix(in srgb, var(--accent) 76%, var(--ink-900));
+}
+
+.github-cell[data-level="4"] {
+  background: var(--accent);
+}
+
+.github-cell.is-empty {
+  background: transparent;
+}
+
+.github-summary {
+  margin: var(--s-3) 0 0;
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+/* ---- Contact: the calm close -----------------------------------------
+   Everything centred around one statement, then a vertical list of
+   label/value rows on hairlines, then a two-column row (where I am,
+   my local time). Same on every width; the rows simply put the label
+   beside the value once there is room.
+---------------------------------------------------------------- */
+
+.contact > .section-head {
+  justify-content: center;
+  text-align: center;
+}
+
+.contact-statement {
+  max-width: 13em;
+  margin: 0 auto;
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: var(--track-display);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.contact-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--head-gap);
+}
+
+.contact-list,
+.contact-pair {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.contact-list {
+  margin-top: clamp(3rem, 2rem + 4vw, 6rem);
+  border-top: 1px solid var(--line);
+}
+
+.contact-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-1);
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.contact-row dt,
+.contact-cell dt {
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+.contact-row dd,
+.contact-cell dd {
+  margin: 0;
+  font-size: var(--fs-lead);
+}
+
+@media (min-width: 768px) {
+  .contact-row {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-6);
+  }
+}
+
+.contact-value-link {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  gap: var(--s-2);
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.3em;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.contact-value-link:hover,
+.contact-value-link:focus-visible {
+  color: var(--accent);
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-links a {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.contact-links a:hover,
+.contact-links a:focus-visible {
+  color: var(--accent);
+}
+
+/* Two columns at every width, phones included. */
+.contact-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
+}
+
+.contact-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  padding-block: var(--s-4);
+}
+
+.contact-cell + .contact-cell {
+  padding-left: var(--s-5);
+  border-left: 1px solid var(--line);
+}
+
+.contact-time {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Footer ---------------------------------------------------------- */
+
+.site-footer {
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+}
+
+.footer-inner {
+  display: flex;
+  width: var(--page);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 var(--s-6);
+  margin-inline: auto;
+  /* Bottom padding clears the fixed bottom fade and the home bar. */
+  padding-block: var(--s-5) calc(var(--s-7) + var(--safe-bottom));
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+.footer-top {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.footer-top:hover,
+.footer-top:focus-visible {
+  color: var(--accent);
+}
+
+/* Videos (AI hooks) open in the same lightbox as the screenshots. */
+.lightbox video {
+  display: block;
+  width: 100%;
+  max-height: 88svh;
+  background: var(--ink-900);
+}
+
+.lightbox [hidden] {
+  display: none;
+}
+
+/* ---- Certificates carousel (phones) ---------------------------------
+   Same component as the analytics carousel; js/interactions.js only
+   switches it to 3D below 768px. Wider screens keep the plain track,
+   which is the three-card grid (.cert-grid above).
+---------------------------------------------------------------- */
+
+.cert-carousel {
+  /* Narrow enough that the neighbours peek in at the screen edges. */
+  --slide-w: min(68vw, 20rem);
+}
+
+.cert-carousel:not(.is-3d) .proof-track {
+  overflow: visible;
+  padding-bottom: 0;
+  scroll-snap-type: none;
+}
+
+/* Side certificates step back; only the middle one reads in full. */
+.cert-carousel.is-3d .proof-slide .cert-card {
+  transition: opacity 0.5s var(--ease-out);
+}
+
+.cert-carousel.is-3d .proof-slide:not(.is-active) .cert-card {
+  opacity: 0.45;
+}
+
+/* Only the middle certificate is captioned; the side ones would
+   otherwise print their titles beside it. */
+.cert-carousel.is-3d .cert-title,
+.cert-carousel.is-3d .cert-meta {
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+
+.cert-carousel.is-3d .proof-slide:not(.is-active) .cert-title,
+.cert-carousel.is-3d .proof-slide:not(.is-active) .cert-meta {
+  opacity: 0;
+}

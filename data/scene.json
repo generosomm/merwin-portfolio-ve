@@ -1,0 +1,32 @@
+{
+  "mode": "off",
+  "slabs": 6,
+  "accentIntensity": 1,
+  "frames": [
+    {
+      "slab": 2,
+      "src": "assets/images/scene/frame-seven-sundays.webp",
+      "source": "assets/images/seven-sundays-thumb.jpg"
+    },
+    {
+      "slab": 4,
+      "src": "assets/images/scene/frame-thats-so-true.webp",
+      "source": "assets/images/thats-so-true-thumb.jpg"
+    }
+  ],
+  "poster": {
+    "src": "assets/images/scene/clip-stack-poster.webp",
+    "width": 1600,
+    "height": 800
+  },
+  "debug": {
+    "exportLabel": "Export poster"
+  },
+  "notes": {
+    "mode": "\"live\" renders the 3D clip stack, \"poster\" always shows the static image, \"off\" removes the scene entirely. Mobile, low-power devices, missing WebGL and reduced motion always get the poster.",
+    "slabs": "Number of clips in the stack, 5 to 7.",
+    "accentIntensity": "Strength of the green rim light and playhead glow. 0 turns the green off, 1.5 is the sensible maximum.",
+    "frames": "Which slab (0 = front) shows which edit. \"src\" is the small desaturated texture the scene loads; \"source\" is the thumbnail it is made from. After changing frames or slabs, run: node scripts/build-scene-assets.mjs",
+    "poster": "Static fallback, exported from the live scene by the same script. Keep the 2:1 ratio."
+  }
+}

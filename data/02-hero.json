@@ -1,22 +1,55 @@
 {
-  "eyebrow": "Systems Integrator & Digital Creative",
-  "title": "Merwin",
-  "titleAccent": "Generoso.",
-  "intro": "Architecting secure web deployments and engineering high-retention digital media.",
-  "primaryCta": { "label": "View my work", "href": "#work" },
-  "secondaryCta": { "label": "View CV", "href": "assets/Merwin_Generoso_CV.pdf" },
-  "receipt": {
-    "label": "Verified scale",
-    "year": "2026",
-    "value": "70M",
-    "suffix": "+",
-    "caption": "Documented organic views across TikTok and YouTube dashboards.",
-    "stats": [
-      { "label": "TikTok (365 days)", "value": "57.9M" },
-      { "label": "YouTube (lifetime)", "value": "16.4M" },
-      { "label": "Peak single asset", "value": "14M" }
-    ],
-    "linkLabel": "See the proof",
-    "linkHref": "#proof"
+  "name": {
+    "lines": [
+      "Merwin",
+      "Generoso"
+    ]
+  },
+  "intro": "Systems developer & creative technologist from the Philippines.",
+  "ctas": {
+    "primary": {
+      "label": "View work",
+      "href": "#work"
+    },
+    "secondary": {
+      "label": "View CV",
+      "href": "assets/Merwin_Generoso_CV.pdf"
+    }
+  },
+  "portrait": {
+    "src": "assets/images/pfp.png",
+    "webp": "assets/images/pfp.webp",
+    "alt": "Merwin Generoso",
+    "width": 1067,
+    "height": 2345,
+    "placeholder": {
+      "label": "Portrait slot",
+      "note": "The cutout drops in here, layered between the two lines of type.",
+      "specs": [
+        "Transparent PNG, plus a WebP twin",
+        "2000 × 2600px minimum, portrait 3:4",
+        "Crop head to mid-thigh, hair cleanly masked",
+        "Even lighting, no white halo on the mask edge"
+      ]
+    },
+    "note": "Phones load pfp-640.webp, larger screens pfp.webp (both WebP), with the PNG as the fallback. If you replace the portrait, regenerate all three at the same ratio. Clearing portrait.src brings the spec placeholder back.",
+    "sources": [
+      {
+        "src": "assets/images/pfp-640.webp",
+        "width": 640
+      },
+      {
+        "src": "assets/images/pfp-800.webp",
+        "width": 800
+      },
+      {
+        "src": "assets/images/pfp.webp",
+        "width": 1067
+      }
+    ]
+  },
+  "scrollHint": {
+    "label": "Scroll",
+    "href": "#about"
   }
 }

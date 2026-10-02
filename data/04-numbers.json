@@ -1,0 +1,34 @@
+{
+  "heading": "By the numbers",
+  "items": [
+    {
+      "value": 70,
+      "suffix": "M+",
+      "label": "Documented views",
+      "detail": "Across TikTok, YouTube, Instagram and Facebook dashboards",
+      "icon": "views"
+    },
+    {
+      "value": 5,
+      "suffix": "",
+      "label": "Shipped projects",
+      "detail": "Live deployments and delivered systems",
+      "icon": "projects"
+    },
+    {
+      "value": 4,
+      "suffix": "",
+      "label": "Years creating",
+      "detail": "Editing and publishing since 2022",
+      "icon": "years"
+    },
+    {
+      "value": 3,
+      "suffix": "",
+      "label": "Certifications",
+      "detail": "Certiport ITS Network Security, ITS Databases, Salesforce Agentblazer",
+      "icon": "certificate"
+    }
+  ],
+  "note": "Every figure here must be traceable to something else on this site. Shipped projects counts MSC NU Laguna, Document Tracking & Analytics, Goodness Gracious, Zero to Deploy and Nexus Pass — this portfolio itself is deliberately not counted. Years creating is 2026 minus 2022; bump it each January."
+}

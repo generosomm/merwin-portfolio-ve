@@ -1,0 +1,130 @@
+/* =============================================================
+   SECTIONS — the scroll shell.
+   Full-width hairline dividers, generous negative space, and the
+   title that opens each section. Section-specific layouts live in
+   their own files.
+   ============================================================= */
+
+main {
+  display: block;
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+/* Hairlines between sections instead of boxed cards. */
+.section + .section {
+  border-top: 1px solid var(--line);
+}
+
+/* The hero owns the full first screen and needs no top padding —
+   the fixed chrome already reserves that space. */
+.section-hero {
+  display: flex;
+  /* 100vh first for browsers without small-viewport units; svh keeps
+     mobile address bars from cropping the first screen. */
+  min-height: 100vh;
+  min-height: 100svh;
+  flex-direction: column;
+  justify-content: center;
+  /* Bottom padding clears the fixed bottom fade (css/chrome.css). */
+  padding-block: calc(var(--chrome-h) + var(--safe-top) + var(--s-6)) calc(var(--s-7) + var(--safe-bottom));
+  border-top: 0;
+}
+
+.section-inner {
+  width: var(--page);
+  margin-inline: auto;
+}
+
+/* ---- Section title -------------------------------------------
+   One plain word per section, in the display face. Big enough to
+   mark the start of a section at a glance; well below the hero so
+   the name stays the loudest thing on the page.
+---------------------------------------------------------------- */
+
+/* Drawn twice, like the hero's second line: an outline underneath
+   and a solid copy on top that wipes in from the left as the section
+   scrolls up. --fill (0..1) is scrubbed by js/motion.js; it defaults
+   to 1, so without the motion layer the title is simply solid. */
+/* Title left, optional "View all" right, on one baseline; the link
+   drops under the title when the row is too narrow. */
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  margin-bottom: var(--head-gap);
+}
+
+.view-all {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  gap: var(--s-1);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.view-all:hover,
+.view-all:focus-visible {
+  color: var(--accent);
+}
+
+.section-title {
+  --fill: 1;
+
+  position: relative;
+  margin: 0;
+  color: transparent;
+  -webkit-text-stroke: max(1px, 0.012em) var(--text-mid);
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--track-display);
+}
+
+.section-title::after {
+  position: absolute;
+  inset: 0;
+  color: var(--text);
+  -webkit-text-stroke: 0;
+  clip-path: inset(0 calc((1 - var(--fill)) * 100%) 0 0);
+  content: attr(data-text);
+  /* Empty alt text: the h2's own text is what assistive tech reads,
+     so the visual copy must not be announced a second time. */
+  content: attr(data-text) / "";
+  pointer-events: none;
+}
+
+/* ---- Phase placeholder ---------------------------------------
+   Temporary scaffolding so the scroll shell has real height while
+   Phases 2-5 are still being built. Removed as each section lands.
+---------------------------------------------------------------- */
+
+.phase-pending {
+  display: flex;
+  min-height: 42vh;
+  align-items: center;
+  border-top: 1px dashed var(--line);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+
+/* Sections take focus after an in-page link jump (js/site.js) so
+   keyboard users continue from there; they are not controls, so
+   they draw no focus ring. */
+.section:focus {
+  outline: none;
+}

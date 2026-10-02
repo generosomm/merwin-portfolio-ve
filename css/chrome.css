@@ -385,7 +385,10 @@ body::after {
    Mouse and trackpad only. The real cursor is hidden while the soft
    one is active, except while a dialog (the lightbox) is open: it
    sits in the browser's top layer, above anything the page can
-   draw, so the normal cursor comes back for it.
+   draw, so the normal cursor comes back for it. js/interactions.js
+   sets html.dialog-open for that; a :has(dialog[open]) selector on
+   the root would do the same but makes every style change during
+   scrolling re-check the whole page.
 ---------------------------------------------------------------- */
 
 html.has-ios-cursor,
@@ -393,8 +396,8 @@ html.has-ios-cursor * {
   cursor: none !important;
 }
 
-html.has-ios-cursor:has(dialog[open]),
-html.has-ios-cursor:has(dialog[open]) * {
+html.has-ios-cursor.dialog-open,
+html.has-ios-cursor.dialog-open * {
   cursor: auto !important;
 }
 
@@ -410,7 +413,7 @@ html.has-ios-cursor:has(dialog[open]) * {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--dur-1) var(--ease-out), background var(--dur-1) var(--ease-out);
-  will-change: transform, width, height;
+  will-change: transform;
 }
 
 .ios-cursor.is-visible {
@@ -426,7 +429,7 @@ html.has-ios-cursor:has(dialog[open]) * {
   background: var(--cursor-bar);
 }
 
-html:has(dialog[open]) .ios-cursor {
+html.dialog-open .ios-cursor {
   opacity: 0;
 }
 

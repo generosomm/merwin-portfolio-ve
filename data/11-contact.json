@@ -5,6 +5,45 @@
     "label": "Email me",
     "subject": "Hello from your portfolio"
   },
+  "form": {
+    "heading": "Tell me about your project",
+    "name": "Your name",
+    "replyTo": "Your email",
+    "service": "What do you need?",
+    "options": [
+      {
+        "value": "promotion",
+        "label": "Music, film or brand promotion"
+      },
+      {
+        "value": "website",
+        "label": "A business website"
+      },
+      {
+        "value": "editing",
+        "label": "Video editing"
+      },
+      {
+        "value": "other",
+        "label": "Something else"
+      }
+    ],
+    "deadline": "Deadline (optional)",
+    "message": "Project details",
+    "messageHint": "What are you promoting or building? Links help.",
+    "submit": "Send project brief",
+    "sending": "Sending…",
+    "sent": "Thanks! Your brief is on its way. I'll reply by email.",
+    "mailtoSent": "Your email app should now open with your brief filled in. Just press send.",
+    "failed": "That didn't go through. Please email me directly instead.",
+    "subject": "Project brief: {service}",
+    "endpoint": "",
+    "accessKey": ""
+  },
+  "booking": {
+    "label": "Book a free 15-minute call",
+    "href": ""
+  },
   "rows": [
     {
       "label": "Email",
@@ -66,5 +105,5 @@
     "name": "Merwin Generoso",
     "backToTop": "Back to top"
   },
-  "note": "rows is the vertical label/value list; each row shows value (text), email (your address as a mailto link), link (one link) or links (a list). pair is the two-column row under it; a timeZone entry shows your live local time. The footer year updates itself."
+  "note": "form: until accessKey is set, the form opens the visitor's email app with their brief filled in. To receive briefs straight to your inbox, get a free access key at web3forms.com and paste it into accessKey (endpoint can stay empty). booking: paste your Cal.com (or Calendly) link into href to show the booking button. rows is the vertical label/value list; pair is the two-column row; a timeZone entry shows your live local time."
 }

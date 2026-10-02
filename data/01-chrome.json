@@ -15,8 +15,8 @@
         "href": "#about"
       },
       {
-        "label": "Experience",
-        "href": "#experience"
+        "label": "Services",
+        "href": "#services"
       },
       {
         "label": "Work",
@@ -25,6 +25,10 @@
       {
         "label": "Proof",
         "href": "#proof"
+      },
+      {
+        "label": "Experience",
+        "href": "#experience"
       },
       {
         "label": "Contact",
@@ -81,12 +85,8 @@
       "title": "Track Record"
     },
     {
-      "id": "experience",
-      "title": "Experience"
-    },
-    {
-      "id": "practice",
-      "title": "What I Do"
+      "id": "services",
+      "title": "Services"
     },
     {
       "id": "work",
@@ -107,6 +107,10 @@
     {
       "id": "proof",
       "title": "Proof"
+    },
+    {
+      "id": "experience",
+      "title": "Experience"
     },
     {
       "id": "stack",

@@ -89,7 +89,13 @@ main {
   font-size: var(--fs-section);
   font-weight: 600;
   line-height: 1;
-  letter-spacing: var(--track-display);
+  /* All caps, like the hero name; capitals need a little less of the
+     tight display tracking to stay readable at this size. */
+  letter-spacing: -0.02em;
+  /* Clash Display's word space nearly vanishes in capitals: without
+     this, "WHAT I DO" reads as one word. */
+  word-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .section-title::after {

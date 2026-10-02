@@ -631,3 +631,140 @@ button.edit-link {
     background: var(--accent);
   }
 }
+
+/* ---- Services: card details --------------------------------------- */
+
+.service-label {
+  display: block;
+  margin: 0 0 var(--s-2);
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+
+/* The audience: the point of the promotion offer, so it is the one
+   big number on the card. */
+.service-audience {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding-block: var(--s-4);
+  border-block: 1px solid var(--line);
+}
+
+.service-audience-total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--s-2);
+  margin: 0;
+  color: var(--text-mid);
+  font-size: var(--fs-body);
+}
+
+.service-audience-total strong {
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--track-display);
+}
+
+.service-audience-total span {
+  font-size: var(--fs-small);
+  opacity: 0.8;
+}
+
+.service-platforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.service-platforms li {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+.service-platforms strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.service-includes {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A short green tick per line. */
+.service-includes li {
+  position: relative;
+  padding-left: var(--s-5);
+  color: var(--text);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+}
+
+.service-includes li::before {
+  position: absolute;
+  top: 0.65em;
+  left: 0;
+  width: 0.75rem;
+  height: 1px;
+  background: var(--accent);
+  content: "";
+}
+
+.service-addon {
+  margin: var(--s-3) 0 0;
+  color: var(--accent);
+  font-size: var(--fs-small);
+}
+
+.service-proof {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.service-proof .service-label {
+  display: inline;
+  margin-right: var(--s-2);
+}
+
+.service-cta {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+/* Phones: a service card holds more than a short blurb now, so the
+   image steps down to a strip and the copy spacing tightens, keeping
+   each card within one screen while it is pinned. */
+@media (max-width: 599px) {
+  .practice-copy {
+    gap: var(--s-3);
+  }
+
+  .practice-card .practice-media {
+    aspect-ratio: 3 / 1;
+  }
+
+  .service-includes li,
+  .practice-text {
+    font-size: var(--fs-small);
+  }
+}

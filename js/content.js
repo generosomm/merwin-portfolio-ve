@@ -355,10 +355,15 @@ function renderHero(data, chrome = {}) {
   const nameLines = lines
     .map((line, index) => {
       const inner = `<span class="hero-line-inner" data-line="${index}" style="--line: ${index}">${text(line)}</span>`;
-      if (index === 0) return `<span class="hero-line hero-line-back">${inner}</span>`;
-      /* The second line is drawn twice: the fill behind the portrait,
-         an outline-only twin in front of it. Over the photo only the
-         outline survives; elsewhere it sits on the fill unseen. */
+      /* Each line is drawn twice: the fill behind the portrait, an
+         outline-only twin in front of it. Over the photo only the
+         outline survives; elsewhere it sits on the fill unseen. On
+         desktop only the second line crosses the photo, so the first
+         line's twin is shown on phones only (css/hero.css). */
+      if (index === 0) {
+        return `<span class="hero-line hero-line-back">${inner}</span>
+        <span class="hero-line hero-line-outline hero-line-outline-first" aria-hidden="true">${inner}</span>`;
+      }
       return `<span class="hero-line hero-line-front">${inner}</span>
         <span class="hero-line hero-line-outline" aria-hidden="true">${inner}</span>`;
     })
@@ -638,37 +643,68 @@ function picture(image, { className = "", eager = false, sizes = "" } = {}) {
 /* A small arrow drawn in SVG, so no glyph lives in the code. */
 const ARROW = `<svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>`;
 
-/* ---- What I do ---------------------------------------------------
-   Three cards that pin one over the next as the page scrolls. The
-   shade layer is what js/motion.js darkens on the card underneath.
+/* ---- Services ----------------------------------------------------
+   The offers, as cards that pin one over the next as the page
+   scrolls (the shade layer is what js/motion.js darkens on the card
+   underneath). Each card: what it is, the audience behind it where
+   that is the point, what the client gets, the proof, and a button
+   that jumps to the contact form with this service preselected.
 ---------------------------------------------------------------- */
 
+function serviceAudience(audience) {
+  if (!audience || !hasText(audience.total)) return "";
+  const platforms = records(audience.platforms)
+    .filter((platform) => hasText(platform.name) && hasText(platform.value))
+    .map((platform) => `<li><strong>${text(platform.value)}</strong> ${text(platform.name)}</li>`)
+    .join("");
+  return `
+    <div class="service-audience">
+      <p class="service-audience-total"><strong>${text(audience.total)}</strong> ${text(audience.label)}${hasText(audience.asOf) ? ` <span>${text(audience.asOf)}</span>` : ""}</p>
+      ${platforms ? `<ul class="service-platforms">${platforms}</ul>` : ""}
+    </div>`;
+}
+
 function renderPractice(data) {
-  const root = document.querySelector('[data-section="practice"]');
+  const root = document.querySelector('[data-section="services"]');
   if (!root || !data) return;
 
+  const cta = data.cta || {};
   const cards = records(data.items)
     .filter((item) => hasText(item.title))
-    .map(
-      (item, index) => `
+    .map((item, index) => {
+      const includes = list(item.includes).filter(hasText);
+      return `
         <li class="practice-card" style="--i: ${index}">
           <article class="practice-card-inner">
             <div class="practice-copy">
               <span class="practice-index" aria-hidden="true">${pad2(index + 1)}</span>
               <h3 class="practice-title">${text(item.title)}</h3>
               <p class="practice-text">${text(item.text)}</p>
-              ${tagList(item.tags, "practice-tags")}
+              ${serviceAudience(item.audience)}
+              ${includes.length
+                ? `<div class="service-block">
+                    <p class="service-label">${text(data.includesLabel)}</p>
+                    <ul class="service-includes">${includes.map((line) => `<li>${text(line)}</li>`).join("")}</ul>
+                    ${hasText(item.addon) ? `<p class="service-addon">${text(item.addon)}</p>` : ""}
+                  </div>`
+                : ""}
+              ${hasText(item.proof)
+                ? `<p class="service-proof"><span class="service-label">${text(data.proofLabel)}</span> ${text(item.proof)}</p>`
+                : ""}
+              ${hasText(cta.href)
+                ? `<a class="button button-primary service-cta" href="${attr(cta.href)}" data-service="${attr(item.service || "")}">${text(cta.label)}</a>`
+                : ""}
             </div>
             <div class="practice-media">${picture(item.image)}</div>
             <span class="practice-shade" aria-hidden="true"></span>
           </article>
-        </li>`
-    )
+        </li>`;
+    })
     .join("");
 
   root.innerHTML = `
     <div class="section-inner">
-      ${sectionTitle("practice")}
+      ${sectionTitle("services")}
       <ol class="practice-stack">${cards}</ol>
     </div>`;
 }
@@ -1012,6 +1048,56 @@ function renderStack(data) {
 
 /* ---- Contact + footer -------------------------------------------- */
 
+/* The project brief form. js/interactions.js handles sending: to the
+   form service when an access key is set, otherwise by opening the
+   visitor's email app with the brief filled in. Every label and
+   message comes from data/11-contact.json. */
+function projectForm(form, address) {
+  if (!form || !hasText(form.submit)) return "";
+  const options = records(form.options)
+    .filter((option) => hasText(option.value) && hasText(option.label))
+    .map((option) => `<option value="${attr(option.value)}">${text(option.label)}</option>`)
+    .join("");
+  const messages = {
+    sending: form.sending, sent: form.sent, mailtoSent: form.mailtoSent, failed: form.failed,
+    subject: form.subject, name: form.name, replyTo: form.replyTo, service: form.service,
+    deadline: form.deadline, message: form.message
+  };
+
+  return `
+    <form class="brief" id="project-brief" novalidate
+      data-endpoint="${attr(form.endpoint || "")}" data-key="${attr(form.accessKey || "")}"
+      data-address="${attr(address || "")}" data-messages="${attr(JSON.stringify(messages))}">
+      <h3 class="brief-heading">${text(form.heading)}</h3>
+      <div class="brief-grid">
+        <label class="brief-field">
+          <span>${text(form.name)}</span>
+          <input name="name" type="text" autocomplete="name" required>
+        </label>
+        <label class="brief-field">
+          <span>${text(form.replyTo)}</span>
+          <input name="email" type="email" autocomplete="email" required>
+        </label>
+        <label class="brief-field">
+          <span>${text(form.service)}</span>
+          <select name="service">${options}</select>
+        </label>
+        <label class="brief-field">
+          <span>${text(form.deadline)}</span>
+          <input name="deadline" type="text">
+        </label>
+        <label class="brief-field brief-wide">
+          <span>${text(form.message)}</span>
+          <textarea name="message" rows="5" required placeholder="${attr(form.messageHint || "")}"></textarea>
+        </label>
+      </div>
+      <div class="brief-foot">
+        <button class="button button-primary" type="submit">${text(form.submit)}</button>
+        <p class="brief-status" role="status" aria-live="polite"></p>
+      </div>
+    </form>`;
+}
+
 function renderContact(data) {
   const root = document.querySelector('[data-section="contact"]');
   if (!root || !data) return;
@@ -1054,14 +1140,22 @@ function renderContact(data) {
     .map((row) => `<div class="contact-cell"><dt>${text(row.label)}</dt><dd>${rowValue(row)}</dd></div>`)
     .join("");
 
-  const action = mailto
-    ? `<div class="contact-actions"><a class="button button-primary" href="${attr(mailto)}">${text(email.label)}</a></div>`
-    : "";
+  /* Email is always there; the booking button appears once a link is
+     set in data/11-contact.json. */
+  const booking = data.booking || {};
+  const buttons = [
+    mailto ? `<a class="button button-ghost" href="${attr(mailto)}">${text(email.label)}</a>` : "",
+    hasText(booking.href)
+      ? `<a class="button button-ghost" href="${attr(booking.href)}" target="_blank" rel="noopener noreferrer">${text(booking.label)}</a>`
+      : ""
+  ].join("");
+  const action = buttons.trim() ? `<div class="contact-actions">${buttons}</div>` : "";
 
   root.innerHTML = `
     <div class="section-inner contact">
       ${sectionTitle("contact")}
       <p class="contact-statement">${aboutWords(data.statement)}</p>
+      ${projectForm(data.form, email.address)}
       ${action}
       ${rows ? `<dl class="contact-list">${rows}</dl>` : ""}
       ${pair ? `<dl class="contact-pair">${pair}</dl>` : ""}

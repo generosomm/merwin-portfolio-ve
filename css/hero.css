@@ -168,9 +168,13 @@ html.preloading {
    photo is never hidden under solid type. Only the outline twin of
    the second line crosses in front of it, keeping the letterforms
    readable over the photo while the face shows through them. */
+/* Every line and twin is pinned to the single column: two items on
+   the same row with an auto column would otherwise be pushed into a
+   second, zero-width column. */
 .hero-line-back {
   z-index: 0;
   grid-row: 1;
+  grid-column: 1;
 }
 
 .hero-line-front,
@@ -191,6 +195,15 @@ html.preloading {
   -webkit-text-stroke: max(1px, 0.009em) var(--text);
   pointer-events: none;
   user-select: none;
+}
+
+/* The first line's twin. It shares the first line's row, and only
+   phones use it: on desktop "MERWIN" never crosses the photo. */
+.hero-line-outline-first {
+  display: none;
+  grid-row: 1;
+  grid-column: 1;
+  text-align: left;
 }
 
 /* Geometry, in em of the hero type (1em = one cap-to-cap line):
@@ -713,6 +726,94 @@ html.hero-play .hero-foot > :nth-child(3) {
   100% {
     transform: scaleY(1);
     opacity: 0;
+  }
+}
+
+/* ---- Phones: the portrait fits the space above the name ----------
+   Phone screens vary a lot in height (in-app browsers like Messenger
+   or Instagram add bars top and bottom), but the text stack under
+   the photo does not shrink. Sizing the photo by the screen width
+   alone let the name climb onto the face on short screens.
+   So here the name and portrait become siblings in the hero column:
+   the portrait box takes exactly the space between the header and
+   the name, and the photo is sized from that box (container query
+   units): tall enough that the chin, 29% down the file, lands just
+   above the name, never wider than the screen. The rest of the
+   figure runs on behind the text and fades out.
+---------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .hero-stage,
+  .hero-lockup {
+    display: contents;
+  }
+
+  /* The same sandwich as desktop: both filled lines behind the photo,
+     the photo, then both outline twins in front. Letters crossing the
+     shirt become outlines; letters over the dark background stay
+     solid. The intro, buttons and socials sit above it all. */
+  .hero-line-outline,
+  .hero-line-outline-first {
+    display: block;
+    text-align: left;
+    -webkit-text-stroke-width: 1.5px;
+  }
+
+  .hero-foot,
+  .hero-scroll {
+    position: relative;
+    z-index: 3;
+  }
+
+  .hero-portrait {
+    position: relative;
+    z-index: 1;
+    inset: auto;
+    order: -1;
+    flex: 1 1 0;
+    min-height: 0;
+    display: block;
+    width: 100%;
+    height: auto;
+    container-type: size;
+  }
+
+  .hero-portrait::after {
+    display: none;
+  }
+
+  .hero-portrait picture {
+    display: contents;
+  }
+
+  .hero-portrait img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: auto;
+    /* Fallback for browsers without container units: full width. */
+    height: calc(100vw / 0.455);
+    height: clamp(16rem, 100cqh / 0.31, 100cqw / 0.455);
+    max-width: none;
+    object-fit: fill;
+    transform: translateX(-50%);
+    /* Face and neck solid, chest fading out behind the text. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 38%, transparent 62%);
+    mask-image: linear-gradient(to bottom, #000 38%, transparent 62%);
+  }
+
+  /* The photo now sits above the text, not behind all of it, so the
+     stack can start right under it. */
+  .hero-inner {
+    justify-content: flex-start;
+  }
+}
+
+/* Very short phone screens (in-app browsers): the scroll hint gives
+   its room to the photo. */
+@media (max-width: 767px) and (max-height: 720px) {
+  .hero-scroll {
+    display: none;
   }
 }
 

@@ -235,26 +235,58 @@
   ---------------------------------------------------------------- */
 
   function countUps(gsap) {
-    document.querySelectorAll(".number-value").forEach((element) => {
-      const target = Number(element.dataset.countTo);
-      if (!Number.isFinite(target)) return;
+    /* Desktop shows all four cards in one row, so they can start as
+       soon as the row peeks in. On phones each card is its own row: if
+       it started at the bottom edge the count would be over before the
+       card reached the eye, so there each card waits until it is well
+       in view, counts a little longer, and rises in as it starts. */
+    gsap.matchMedia().add(
+      { wide: "(min-width: 768px)", narrow: "(max-width: 767px)" },
+      ({ conditions }) => {
+        const counted = [];
+        document.querySelectorAll(".number").forEach((card) => {
+          const element = card.querySelector(".number-value");
+          const target = Number(element?.dataset.countTo);
+          if (!element || !Number.isFinite(target)) return;
+          counted.push([element, target]);
 
-      const counter = { value: 0 };
-      element.textContent = "0";
+          const counter = { value: 0 };
+          element.textContent = "0";
 
-      gsap.to(counter, {
-        value: target,
-        duration: 1.4,
-        ease: "power2.out",
-        scrollTrigger: { trigger: element, start: "top 88%", once: true },
-        onUpdate: () => {
-          element.textContent = String(Math.round(counter.value));
-        },
-        onComplete: () => {
-          element.textContent = String(target);
-        }
-      });
-    });
+          const timeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: conditions.narrow ? card : element,
+              start: conditions.narrow ? "top 72%" : "top 88%",
+              once: true
+            }
+          });
+
+          if (conditions.narrow) {
+            timeline.from(card, { opacity: 0, y: 28, duration: 0.6, ease: "power2.out" }, 0);
+          }
+
+          timeline.to(counter, {
+            value: target,
+            duration: conditions.narrow ? 1.8 : 1.4,
+            ease: "power2.out",
+            onUpdate: () => {
+              element.textContent = String(Math.round(counter.value));
+            },
+            onComplete: () => {
+              element.textContent = String(target);
+            }
+          }, conditions.narrow ? 0.1 : 0);
+        });
+
+        /* Leaving this layout (window resized past the breakpoint):
+           show the real figures so none sticks part-way. */
+        return () => {
+          counted.forEach(([element, target]) => {
+            element.textContent = String(target);
+          });
+        };
+      }
+    );
   }
 
   /* ---- Experience tracks ----------------------------------------

@@ -1,0 +1,92 @@
+/* =============================================================
+   LEGAL — privacy.html and terms.html.
+   Plain reading pages: no JS, no motion, same tokens and fonts as
+   the portfolio so they feel like part of the site.
+   ============================================================= */
+
+.legal {
+  width: min(var(--page), 46rem);
+  margin-inline: auto;
+  padding-block: calc(var(--s-8) + var(--safe-top)) calc(var(--s-9) + var(--safe-bottom));
+}
+
+.legal-back {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  color: var(--text-mid);
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.legal-back:hover,
+.legal-back:focus-visible {
+  color: var(--accent);
+}
+
+.legal h1 {
+  margin-block: var(--s-6) var(--s-3);
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 600;
+  line-height: var(--leading-snug);
+}
+
+.legal-meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  color: var(--text-mid);
+}
+
+.legal h2 {
+  margin-block: var(--s-7) var(--s-3);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line);
+  /* Body face, normal tracking: the display tracking is tuned for
+     big titles and runs small headings' words together. */
+  font-family: var(--font-body);
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: var(--leading-snug);
+}
+
+.legal p,
+.legal li {
+  max-width: var(--measure);
+  color: var(--text-mid);
+}
+
+.legal p + p,
+.legal ul + p {
+  margin-top: var(--s-4);
+}
+
+/* The base reset removes bullets; the bold lead-in on each item
+   does the job instead, so no indent either. */
+.legal ul {
+  margin: var(--s-4) 0 0;
+  padding-left: 0;
+}
+
+.legal li + li {
+  margin-top: var(--s-2);
+}
+
+.legal strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.legal main a:not(.legal-back) {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.2em;
+}
+
+.legal main a:not(.legal-back):hover,
+.legal main a:not(.legal-back):focus-visible {
+  text-decoration-color: var(--accent);
+}

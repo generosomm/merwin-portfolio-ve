@@ -1,0 +1,23 @@
+# =============================================================
+# Files that stay in Git but are never uploaded to Vercel.
+# Anything listed here is neither deployed nor served.
+#
+# Why this file exists: the four AI Hook originals below (~69 MB)
+# are masters the site never loads (it plays the compressed copies
+# in assets/videos/web/). Leaving them out makes every deploy
+# faster and keeps `vercel` CLI uploads under Hobby's 100 MB cap
+# (the repo tracks ~133 MB; Git deploys aren't held to that cap).
+# =============================================================
+
+# Original video masters (the site uses assets/videos/web/*)
+assets/videos/AI Hook Tenda WiFi router.mp4
+assets/videos/AI Hook Hair illusion kit.mp4
+assets/videos/AI Hook RedBlue light Therapy cap.mp4
+assets/videos/AI Hook Ceelike purple mouthwash.mp4
+
+# Repo tooling and docs: useful in Git, pointless on the live site
+scripts
+.githooks
+docs
+README.md
+node_modules

@@ -2,10 +2,10 @@
   "heading": "By the numbers",
   "items": [
     {
-      "value": 70,
+      "value": 74,
       "suffix": "M+",
       "label": "Documented views",
-      "detail": "Across TikTok, YouTube, Instagram and Facebook dashboards",
+      "detail": "TikTok (last 365 days) plus YouTube (lifetime), from the dashboards in Proof",
       "icon": "views"
     },
     {
@@ -30,5 +30,5 @@
       "icon": "certificate"
     }
   ],
-  "note": "Every figure here must be traceable to something else on this site. Shipped projects counts MSC NU Laguna, Document Tracking & Analytics, Goodness Gracious, Zero to Deploy and Nexus Pass — this portfolio itself is deliberately not counted. Years creating is 2026 minus 2022; bump it each January."
+  "note": "Every figure here must be traceable to something else on this site. Documented views is 57.9M (TikTok, last 365 days) + 16.4M (YouTube, lifetime) = 74.3M, both screenshots in 09-proof.json, rounded down to 74M+. Shipped projects counts MSC NU Laguna, Document Tracking & Analytics, Goodness Gracious, Zero to Deploy and Nexus Pass — this portfolio itself is deliberately not counted. Years creating is 2026 minus 2022; bump it each January."
 }

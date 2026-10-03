@@ -1169,9 +1169,17 @@ function renderFooter(data) {
   const root = document.querySelector('[data-content="footer"]');
   if (!root || !data) return;
 
+  /* Privacy and Terms stay visible on every visit: TikTok and Meta
+     app review both check for them without opening any menu. */
+  const legal = records(data.legal)
+    .filter((link) => hasText(link.label) && hasText(link.href))
+    .map((link) => `<a href="${attr(link.href)}">${text(link.label)}</a>`)
+    .join("");
+
   root.innerHTML = `
     <div class="footer-inner">
       <span class="footer-copy">&copy; ${new Date().getFullYear()} ${text(data.name)}</span>
+      ${legal ? `<nav class="footer-legal" aria-label="${attr(data.legalLabel || "Legal")}">${legal}</nav>` : ""}
       <a class="footer-top" href="#hero">${text(data.backToTop)}</a>
     </div>`;
 }

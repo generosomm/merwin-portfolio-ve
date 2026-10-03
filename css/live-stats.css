@@ -1,0 +1,437 @@
+/* =============================================================
+   LIVE STATS — the per-platform table under the Numbers cards, its
+   status line and "how counted" note, and the Top posts strip in
+   Proof. Markup: js/content.js (static, documented figures) and
+   js/live-stats.js (live upgrade).
+   Same language as the rest of the page: hairlines instead of
+   boxes, mono labels, the accent kept for "live" only.
+   ============================================================= */
+
+.live {
+  margin-top: var(--s-7);
+}
+
+/* ---- Status line + "how counted" ------------------------------- */
+
+.live-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  margin-bottom: var(--s-3);
+}
+
+.live-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: 0.04em;
+}
+
+.live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.live-status.is-live {
+  color: var(--accent);
+}
+
+/* A slow breath on the dot while live, so it reads as a signal. */
+.live-status.is-live .live-dot {
+  animation: live-breathe 2.4s ease-in-out infinite;
+}
+
+.live-status.is-loading .live-dot {
+  opacity: 0.4;
+}
+
+@keyframes live-breathe {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.live-methods {
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+.live-methods summary {
+  display: inline-flex;
+  min-height: var(--tap);
+  align-items: center;
+  gap: var(--s-2);
+  cursor: pointer;
+  list-style: none;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.live-methods summary::-webkit-details-marker {
+  display: none;
+}
+
+.live-methods summary::after {
+  content: "+";
+  font-family: var(--font-mono);
+  text-decoration: none;
+}
+
+.live-methods[open] summary::after {
+  content: "–";
+}
+
+.live-methods summary:hover,
+.live-methods summary:focus-visible {
+  color: var(--accent);
+}
+
+.live-methods-body {
+  max-width: 62ch;
+  padding: var(--s-3) 0 var(--s-4);
+  line-height: 1.55;
+}
+
+.live-methods-body ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.live-methods-body li + li,
+.live-methods-body p {
+  margin-top: var(--s-2);
+}
+
+.live-methods-body strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.live-note {
+  display: block;
+  color: var(--text-dim);
+}
+
+/* ---- Table ------------------------------------------------------ */
+
+.live-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.live-table thead th {
+  padding: 0 0 var(--s-2);
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.live-table thead th:first-child {
+  text-align: left;
+}
+
+.live-row > * {
+  padding: var(--s-4) 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.live-platform {
+  font-weight: 400;
+  text-align: left;
+}
+
+.live-platform-link {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--s-3);
+  min-height: var(--tap);
+  color: var(--text);
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+a.live-platform-link:hover,
+a.live-platform-link:focus-visible {
+  color: var(--accent);
+}
+
+.live-icon {
+  display: inline-flex;
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--text-mid);
+}
+
+.live-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.live-name {
+  font-weight: 500;
+}
+
+.live-handle,
+.live-tag {
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+}
+
+.live-tag {
+  padding: 0.1em 0.5em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+}
+
+.live-cell {
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.live-value {
+  display: inline-block;
+  min-width: 3ch;
+}
+
+.live-trend {
+  width: 6rem;
+  padding-left: var(--s-5);
+}
+
+.live-spark {
+  display: block;
+  width: 4.5rem;
+  height: 1.25rem;
+  margin-left: auto;
+  overflow: visible;
+}
+
+.live-spark polyline {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.live-row-total > * {
+  border-bottom: 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+.live-row-total .live-cell {
+  color: var(--text);
+}
+
+/* Platforms showing documented or cached numbers recede a little. */
+.live-row.is-manual .live-cell,
+.live-row.is-stale .live-cell,
+.live-row.is-error .live-cell {
+  color: var(--text-mid);
+}
+
+/* ---- Loading skeleton ------------------------------------------------
+   The values keep their size (they hold the documented figures
+   underneath), so nothing moves when the live ones arrive. */
+
+.live.is-loading .live-value {
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--line) 25%, var(--line-strong) 50%, var(--line) 75%);
+  background-size: 200% 100%;
+  color: transparent;
+  animation: live-shimmer 1.2s linear infinite;
+}
+
+@keyframes live-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ---- Phones: each platform is a small block ------------------------ */
+
+@media (max-width: 767px) {
+  .live-table thead {
+    display: none;
+  }
+
+  .live-table,
+  .live-table tbody,
+  .live-table tfoot {
+    display: block;
+  }
+
+  .live-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-1) var(--s-3);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .live-row > * {
+    padding: 0;
+    border: 0;
+  }
+
+  .live-row-total {
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 0;
+  }
+
+  .live-row-total > * {
+    border-top: 0;
+  }
+
+  .live-platform {
+    grid-column: 1 / 3;
+    grid-row: 1;
+  }
+
+  /* .live-row > .live-trend outranks the .live-cell rule below, so
+     the sparkline stays beside the name instead of taking a slot in
+     the numbers row. */
+  .live-row > .live-trend {
+    grid-column: 3;
+    grid-row: 1;
+    width: auto;
+    padding: 0;
+    align-self: center;
+  }
+
+  .live-cell {
+    grid-row: 2;
+    font-size: var(--fs-body);
+    text-align: left;
+  }
+
+  .live-cell::before {
+    display: block;
+    margin-bottom: 0.15rem;
+    color: var(--text-mid);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    content: attr(data-label);
+  }
+
+  .live-trend.live-cell::before {
+    content: none;
+  }
+}
+
+/* ---- Top posts (Proof) --------------------------------------------- */
+
+.live-posts-list {
+  display: grid;
+  grid-auto-columns: clamp(8.5rem, 38vw, 11rem);
+  grid-auto-flow: column;
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0 0 var(--s-3);
+  overflow-x: auto;
+  list-style: none;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.live-post-item {
+  scroll-snap-align: start;
+}
+
+.live-post {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  color: var(--text);
+}
+
+.live-post-media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 9 / 16;
+  border: 1px solid var(--line);
+  background: var(--ink-850);
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+
+.live-post-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.live-post:hover .live-post-media,
+.live-post:focus-visible .live-post-media {
+  border-color: var(--accent);
+}
+
+.live-post-views {
+  position: absolute;
+  left: var(--s-2);
+  bottom: var(--s-2);
+  padding: 0.2em 0.5em;
+  background: rgba(10, 10, 10, 0.78);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+}
+
+.live-post-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+}
+
+.live-post-meta .live-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.live-post-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-status.is-live .live-dot,
+  .live.is-loading .live-value {
+    animation: none;
+  }
+}

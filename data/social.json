@@ -48,5 +48,62 @@
     "followersTotal": null,
     "viewsTotal": 74300000
   },
-  "note": "Public, non-secret settings for the live stats (read by /api and, from Phase 6, by the page). refreshMinutes: how old the cached snapshot may get before /api/stats fetches again (15 to 1440). showPlatforms: which platforms the page shows, in order. platforms.*.enabled: false stops the server from calling that platform at all. platforms.*.documented: a total you can prove with a screenshot; the site shows max(live, documented) per platform, so it never double counts. facebook stays disabled until you confirm facebook.com/eroedtx is a Page (see docs/SOCIAL-API-SETUP.md step 9). Never put keys or tokens in this file: it is public."
+  "display": {
+    "caption": "Followers, views and posts on each platform",
+    "status": {
+      "loading": "checking live stats",
+      "live": "live · updated {ago}",
+      "cached": "cached · updated {ago}",
+      "documented": "documented figures"
+    },
+    "ago": {
+      "now": "just now",
+      "minutes": "{n} min ago",
+      "hours": "{n} h ago",
+      "days": "{n} d ago"
+    },
+    "columns": {
+      "platform": "Platform",
+      "followers": "Followers",
+      "views": "Views",
+      "posts": "Posts",
+      "trend": "30 days"
+    },
+    "names": {
+      "tiktok": "TikTok",
+      "youtube": "YouTube",
+      "instagram": "Instagram",
+      "facebook": "Facebook"
+    },
+    "total": "All platforms",
+    "noValue": "–",
+    "tags": {
+      "manual": "documented",
+      "stale": "cached",
+      "error": "cached"
+    },
+    "trend": "Followers over the last {days} days, from {from} to {to}",
+    "viewsCard": {
+      "label": "Views, documented + live",
+      "detail": "Live from TikTok and YouTube, never below the documented screenshots"
+    },
+    "methods": {
+      "summary": "How these numbers are counted",
+      "total": "Total views",
+      "baseline": "Documented baseline",
+      "notes": {
+        "tiktok": "From TikTok's official API (developer sandbox, connected to my own account only).",
+        "youtube": "From the YouTube Data API's public channel statistics."
+      }
+    },
+    "topPosts": {
+      "show": true,
+      "limit": 8,
+      "heading": "Top posts",
+      "intro": "My most-viewed posts right now, pulled live from each platform.",
+      "views": "{n} views",
+      "open": "Open on {platform}"
+    }
+  },
+  "note": "Public, non-secret settings for the live stats (read by /api and by js/live-stats.js). display holds every word the live stats show on the page; topPosts.show false hides the top-posts strip. refreshMinutes: how old the cached snapshot may get before /api/stats fetches again (15 to 1440). showPlatforms: which platforms the page shows, in order. platforms.*.enabled: false stops the server from calling that platform at all. platforms.*.documented: a total you can prove with a screenshot; the site shows max(live, documented) per platform, so it never double counts. facebook stays disabled until you confirm facebook.com/eroedtx is a Page (see docs/SOCIAL-API-SETUP.md step 9). Never put keys or tokens in this file: it is public."
 }

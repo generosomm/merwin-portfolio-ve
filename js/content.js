@@ -19,7 +19,8 @@ const CONTENT_FILES = Object.freeze({
   proof: "09-proof.json",
   stack: "10-stack.json",
   contact: "11-contact.json",
-  ui: "12-ui.json"
+  ui: "12-ui.json",
+  social: "social.json"
 });
 
 let interfaceText = {};
@@ -465,14 +466,104 @@ function statIcon(name) {
   return `<svg class="number-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round">${paths}</svg>`;
 }
 
-function renderNumbers(data) {
+/* ---- Live audience: the static version ---------------------------
+   The per-platform table under the cards, drawn from the documented
+   figures in data/social.json. This is what shows when the live
+   stats can't load (or js/live-stats.js is removed): honest numbers,
+   labelled "documented". js/live-stats.js fills the same markup with
+   live numbers when /api/stats answers.
+---------------------------------------------------------------- */
+
+const compactNumber = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
+
+function liveValue(value, noValue) {
+  if (!Number.isFinite(value)) return `<span class="live-value">${text(noValue)}</span>`;
+  return `<data class="live-value" value="${attr(value)}" title="${attr(value.toLocaleString("en"))}">${text(compactNumber.format(value))}</data>`;
+}
+
+function renderLiveFallback(social) {
+  const display = social?.display;
+  if (!display) return "";
+  const columns = display.columns || {};
+  const names = display.names || {};
+  const noValue = display.noValue || "";
+
+  const rows = list(social.showPlatforms)
+    .map((name) => [name, social.platforms?.[name]])
+    .filter(([, platform]) => Number.isFinite(platform?.documented?.views))
+    .map(
+      ([name, platform]) => `
+        <tr class="live-row" data-platform="${attr(name)}">
+          <th scope="row" class="live-platform">
+            <a class="live-platform-link" href="${attr(platform.url)}" target="_blank" rel="noopener noreferrer">
+              <span class="live-icon">${socialIcon(name)}</span>
+              <span class="live-name">${text(names[name] || name)}</span>
+              <span class="live-handle">${text(platform.handle)}</span>
+            </a>
+          </th>
+          <td class="live-cell" data-field="followers" data-label="${attr(columns.followers)}">${liveValue(null, noValue)}</td>
+          <td class="live-cell" data-field="views" data-label="${attr(columns.views)}">${liveValue(platform.documented.views, noValue)}</td>
+          <td class="live-cell" data-field="posts" data-label="${attr(columns.posts)}">${liveValue(null, noValue)}</td>
+          <td class="live-cell live-trend" data-field="trend" aria-hidden="true"></td>
+        </tr>`
+    )
+    .join("");
+  if (!rows) return "";
+
+  const methods = list(social.showPlatforms)
+    .map((name) => [name, social.platforms?.[name]?.documented])
+    .filter(([, documented]) => Number.isFinite(documented?.views))
+    .map(([name, documented]) => `<li><strong>${text(names[name] || name)}</strong> ${text(`${compactNumber.format(documented.views)} (${documented.window})`)}</li>`)
+    .join("");
+
+  return `
+    <div class="live" data-live-stats>
+      <div class="live-head">
+        <p class="live-status is-documented" data-live-status>
+          <span class="live-dot" aria-hidden="true"></span>
+          <span data-live-status-text>${text(display.status?.documented)}</span>
+        </p>
+        <details class="live-methods">
+          <summary>${text(display.methods?.summary)}</summary>
+          <div class="live-methods-body" data-live-methods>
+            <ul>${methods}</ul>
+            <p>${text(social.baseline?.note)}</p>
+          </div>
+        </details>
+      </div>
+      <table class="live-table">
+        <caption class="sr-only">${text(display.caption)}</caption>
+        <thead>
+          <tr>
+            <th scope="col">${text(columns.platform)}</th>
+            <th scope="col">${text(columns.followers)}</th>
+            <th scope="col">${text(columns.views)}</th>
+            <th scope="col">${text(columns.posts)}</th>
+            <th scope="col" class="live-trend-head"><span class="sr-only">${text(columns.trend)}</span></th>
+          </tr>
+        </thead>
+        <tbody data-live-rows>${rows}</tbody>
+        <tfoot>
+          <tr class="live-row live-row-total" data-platform="total">
+            <th scope="row" class="live-platform"><span class="live-name">${text(display.total)}</span></th>
+            <td class="live-cell" data-field="followers" data-label="${attr(columns.followers)}">${liveValue(social.fallback?.followersTotal ?? null, noValue)}</td>
+            <td class="live-cell" data-field="views" data-label="${attr(columns.views)}">${liveValue(social.fallback?.viewsTotal ?? null, noValue)}</td>
+            <td class="live-cell" data-field="posts" data-label="${attr(columns.posts)}">${liveValue(null, noValue)}</td>
+            <td class="live-cell live-trend" aria-hidden="true"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>`;
+}
+
+function renderNumbers(data, social) {
   const root = document.querySelector('[data-section="numbers"]');
   if (!root || !data) return;
 
   const items = records(data.items)
     .map(
       (item) => `
-      <div class="number">
+      <div class="number"${hasText(item.live) ? ` data-live="${attr(item.live)}"` : ""}>
         ${statIcon(item.icon)}
         <p class="number-figure">
           <span class="number-value" data-count-to="${attr(item.value)}">${text(item.value)}</span><span class="number-suffix">${text(item.suffix)}</span>
@@ -487,6 +578,7 @@ function renderNumbers(data) {
     <div class="section-inner">
       ${sectionTitle("numbers")}
       <div class="numbers">${items}</div>
+      ${renderLiveFallback(social)}
     </div>`;
 }
 
@@ -1219,7 +1311,7 @@ function renderPortfolio(payload) {
 
   renderHero(data.hero, data.chrome);
   renderAbout(data.about);
-  renderNumbers(data.numbers);
+  renderNumbers(data.numbers, data.social);
   renderExperience(data.experience);
   renderPractice(data.practice);
   renderWork(data.work);

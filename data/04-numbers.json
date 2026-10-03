@@ -4,6 +4,7 @@
     {
       "value": 74,
       "suffix": "M+",
+      "live": "views",
       "label": "Documented views",
       "detail": "TikTok (last 365 days) plus YouTube (lifetime), from the dashboards in Proof",
       "icon": "views"

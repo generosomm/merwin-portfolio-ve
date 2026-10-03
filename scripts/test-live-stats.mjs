@@ -101,14 +101,15 @@ function youtubeResponse(url) {
 }
 
 /* ---- Fake TikTok ------------------------------------------------ */
-const TIKTOK_VIDEOS = Array.from({ length: 45 }, (_, i) => ({
+const makeVideos = (count, viewsEach = (i) => (i + 1) * 100_000) => Array.from({ length: count }, (_, i) => ({
   id: `7${String(i).padStart(18, "0")}`,
   title: `TikTok edit ${i}`,
-  view_count: (i + 1) * 100_000, // sum = 103.5M
+  view_count: viewsEach(i),
   cover_image_url: `https://p16-sign.tiktokcdn.com/obj/cover-${i}.jpeg?x-expires=1`
 }));
+let TIKTOK_VIDEOS = makeVideos(45); // views sum = 103.5M
 
-let tiktok = { calls: 0, accessToken: "tt-access-1", refreshToken: "tt-refresh-1", refreshMode: "ok", userMode: "ok", scope: "user.info.basic,user.info.profile,user.info.stats,video.list" };
+let tiktok = { calls: 0, listCalls: 0, listLimit: Infinity, accessToken: "tt-access-1", refreshToken: "tt-refresh-1", refreshMode: "ok", userMode: "ok", scope: "user.info.basic,user.info.profile,user.info.stats,video.list" };
 
 function tiktokResponse(url, init) {
   tiktok.calls += 1;
@@ -133,9 +134,18 @@ function tiktokResponse(url, init) {
     return json(401, { data: {}, error: { code: "access_token_invalid", message: "expired", log_id: "x" } });
   }
   if (url.pathname === "/v2/user/info/") {
-    return json(200, { data: { user: { open_id: "open-123", username: "eroedtx", display_name: "ERO", follower_count: 250000, likes_count: 4800000, video_count: 45 } }, error: { code: "ok" } });
+    return json(200, { data: { user: { open_id: "open-123", username: "eroedtx", display_name: "ERO", follower_count: 250000, likes_count: 4800000, video_count: TIKTOK_VIDEOS.length } }, error: { code: "ok" } });
+  }
+  if (url.pathname === "/v2/video/query/") {
+    const ids = JSON.parse(init.body).filters.video_ids;
+    assert.ok(ids.length <= 20, "video.query takes at most 20 IDs");
+    return json(200, { data: { videos: TIKTOK_VIDEOS.filter((v) => ids.includes(v.id)) }, error: { code: "ok" } });
   }
   if (url.pathname === "/v2/video/list/") {
+    tiktok.listCalls += 1;
+    if (tiktok.listCalls > tiktok.listLimit) {
+      return json(429, { data: {}, error: { code: "rate_limit_exceeded", message: "slow down", log_id: "x" } });
+    }
     const body = JSON.parse(init.body);
     assert.ok(body.max_count <= 20, "video.list max_count is at most 20");
     const start = body.cursor ?? 0;
@@ -185,6 +195,7 @@ const stats = (await import("../api/stats.js")).default;
 const health = (await import("../api/health.js")).default;
 const oauth = (await import("../api/auth/[provider]/[action].js")).default;
 const thumb = (await import("../api/thumb.js")).default;
+const refreshApi = (await import("../api/refresh.js")).default;
 const { trimText, safeUrl, toCount } = await import("../lib/normalize.js");
 const { KEYS } = await import("../lib/store.js");
 
@@ -472,7 +483,7 @@ await test("callback: exchanges the code, stores tokens, refreshes stats at once
   const stored = JSON.parse(redis.get(KEYS.token("tiktok")));
   assert.equal(stored.refreshToken, "tt-refresh-1");
   assert.ok(stored.connectedAt);
-  assert.equal(tiktok.calls, 1 + 1 + 3, "token + user info + 3 pages of 20");
+  assert.equal(tiktok.calls, 1 + 1 + 3 + 1, "token + user info + 3 pages of 20 + top-post query");
 });
 
 await test("replayed callback (same state again) is refused", async () => {
@@ -570,6 +581,82 @@ await test("health: TikTok token lifetimes, never the token", async () => {
   assert.equal(tokens.connected, true);
   assert.ok(tokens.refreshTokenDaysLeft >= 364);
   assert.ok(!text.includes("tt-access") && !text.includes("tt-refresh"));
+});
+
+await test("big account: the index walks a few pages per refresh and finishes in later runs", async () => {
+  TIKTOK_VIDEOS = makeVideos(300, () => 10_000); // 300 videos, 3M views in total
+  redis.delete(KEYS.index("tiktok"));
+  tiktok.listCalls = 0;
+  makeDue();
+  let { body } = await get();
+  assert.equal(body.platforms.tiktok.status, "ok");
+  assert.equal(tiktok.listCalls, 7, "newest page + 6 older pages, no more");
+  assert.match(body.platforms.tiktok.viewsMethod, /^documented 57\.9M .*partial: sum of view_count across the first 140 of 300/);
+  assert.equal(body.platforms.tiktok.views, 57_900_000, "documented wins while the index is partial");
+
+  makeDue();
+  ({ body } = await get());
+  assert.match(body.platforms.tiktok.viewsMethod, /first 260 of 300/);
+
+  makeDue();
+  ({ body } = await get());
+  assert.equal(body.platforms.tiktok.liveViews, 3_000_000, "all 300 videos summed after the pass completes");
+  assert.match(body.platforms.tiktok.viewsMethod, /sum of view_count across 300 public videos/);
+  assert.doesNotMatch(body.platforms.tiktok.viewsMethod, /partial/);
+});
+
+await test("rate limited mid-walk: keeps the pages it got, still ok, carries on next time", async () => {
+  TIKTOK_VIDEOS = makeVideos(300, () => 10_000);
+  redis.delete(KEYS.index("tiktok"));
+  tiktok.listCalls = 0;
+  tiktok.listLimit = 3; // the 4th video.list call gets a 429
+  logs.length = 0;
+  makeDue();
+  const { body } = await get();
+  tiktok.listLimit = Infinity;
+  assert.equal(body.platforms.tiktok.status, "ok");
+  assert.match(body.platforms.tiktok.viewsMethod, /first 60 of 300/);
+  assert.ok(logs.some((l) => l.includes("index walk paused (rate_limit_exceeded)")));
+  const index = JSON.parse(redis.get(KEYS.index("tiktok")));
+  assert.equal(Object.keys(index.videos).length, 60);
+  assert.equal(index.cursor, 60, "next refresh resumes after the last good page");
+});
+
+await test("deleted videos drop out of the sum when a pass completes", async () => {
+  TIKTOK_VIDEOS = makeVideos(45);
+  redis.delete(KEYS.index("tiktok"));
+  makeDue();
+  await get();
+  const removed = TIKTOK_VIDEOS.pop(); // the 4.5M-view video is deleted
+  makeDue();
+  const { body } = await get();
+  assert.equal(body.platforms.tiktok.liveViews, 103_500_000 - removed.view_count);
+  assert.equal(body.platforms.tiktok.topPosts.some((p) => p.id === removed.id), false);
+});
+
+await test("/api/refresh: cron or admin only, refreshes now, reports statuses only", async () => {
+  Object.assign(process.env, { CRON_SECRET: "cron-secret" });
+  assert.equal((await call(refreshApi, "/api/refresh")).status, 401);
+  assert.equal((await call(refreshApi, "/api/refresh?key=wrong")).status, 401);
+  assert.equal((await call(refreshApi, "/api/refresh?key=cron-secret")).status, 401, "cron secret only works as a header");
+  const cron = await call(refreshApi, "/api/refresh", { headers: { Authorization: "Bearer cron-secret" } });
+  assert.equal(cron.status, 200);
+  const body = await cron.json();
+  assert.equal(body.statuses.tiktok, "ok");
+  assert.equal(body.statuses.youtube, "ok");
+  assert.equal(JSON.stringify(body).includes("57"), false, "no numbers in the refresh answer");
+  const admin = await call(refreshApi, "/api/refresh", { method: "POST", headers: { Authorization: "Bearer admin-secret" } });
+  assert.equal(admin.status, 200);
+  redis.set(KEYS.lock("refresh"), "busy");
+  assert.equal((await call(refreshApi, "/api/refresh?key=admin-secret")).status, 409, "respects the shared lock");
+  redis.delete(KEYS.lock("refresh"));
+});
+
+await test("token response without refresh_expires_in: assumes 365 days, not 'expired'", async () => {
+  const { tokenRecord } = await import("../lib/providers/tiktok.js");
+  const record = tokenRecord({ access_token: "a", refresh_token: "r", expires_in: 86400 });
+  const days = (new Date(record.refreshExpiresAt) - Date.now()) / 86_400_000;
+  assert.ok(days > 364 && days <= 365);
 });
 
 process.stdout.write(`Live stats backend\n${results.join("\n")}\n`);

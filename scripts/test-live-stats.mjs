@@ -5,8 +5,8 @@ import process from "node:process";
    Live stats backend tests: no network, no keys, no packages.
    Run with:  node scripts/test-live-stats.mjs
 
-   global fetch is replaced by a fake that plays YouTube and an
-   in-memory Upstash Redis, so every failure case (expired key,
+   global fetch is replaced by a fake that plays YouTube, TikTok and
+   an in-memory Upstash Redis, so every failure case (expired key,
    API down, rate limited, storage empty or down, lock held) can be
    reproduced on demand.
    ============================================================= */
@@ -26,6 +26,11 @@ function runRedis([name, ...args]) {
       return "OK";
     }
     case "DEL": return redis.delete(args[0]) ? 1 : 0;
+    case "GETDEL": {
+      const value = redis.get(args[0]) ?? null;
+      redis.delete(args[0]);
+      return value;
+    }
     case "INCRBY": {
       const next = (Number(redis.get(args[0])) || 0) + Number(args[1]);
       redis.set(args[0], String(next));
@@ -95,6 +100,52 @@ function youtubeResponse(url) {
   throw new Error(`fake youtube: ${resource}`);
 }
 
+/* ---- Fake TikTok ------------------------------------------------ */
+const TIKTOK_VIDEOS = Array.from({ length: 45 }, (_, i) => ({
+  id: `7${String(i).padStart(18, "0")}`,
+  title: `TikTok edit ${i}`,
+  view_count: (i + 1) * 100_000, // sum = 103.5M
+  cover_image_url: `https://p16-sign.tiktokcdn.com/obj/cover-${i}.jpeg?x-expires=1`
+}));
+
+let tiktok = { calls: 0, accessToken: "tt-access-1", refreshToken: "tt-refresh-1", refreshMode: "ok", userMode: "ok", scope: "user.info.basic,user.info.profile,user.info.stats,video.list" };
+
+function tiktokResponse(url, init) {
+  tiktok.calls += 1;
+  if (url.pathname === "/v2/oauth/token/") {
+    const form = new URLSearchParams(init.body);
+    assert.equal(form.get("client_key"), "tt-client-key");
+    assert.equal(form.get("client_secret"), "tt-client-secret");
+    if (form.get("grant_type") === "authorization_code") {
+      if (form.get("code") !== "good-code") return json(400, { error: "invalid_grant", error_description: "bad code" });
+      assert.equal(form.get("redirect_uri"), "https://generosomm.dev/api/auth/tiktok/callback");
+    } else {
+      if (tiktok.refreshMode === "invalid" || form.get("refresh_token") !== tiktok.refreshToken) {
+        return json(400, { error: "invalid_grant", error_description: "refresh token invalid" });
+      }
+      tiktok.refreshToken = "tt-refresh-2"; // TikTok rotates it
+      tiktok.accessToken = "tt-access-2";
+    }
+    return json(200, { access_token: tiktok.accessToken, expires_in: 86400, refresh_token: tiktok.refreshToken, refresh_expires_in: 31536000, open_id: "open-123", scope: tiktok.scope, token_type: "Bearer" });
+  }
+  const auth = new Headers(init.headers).get("authorization");
+  if (tiktok.userMode === "invalid" || auth !== `Bearer ${tiktok.accessToken}`) {
+    return json(401, { data: {}, error: { code: "access_token_invalid", message: "expired", log_id: "x" } });
+  }
+  if (url.pathname === "/v2/user/info/") {
+    return json(200, { data: { user: { open_id: "open-123", username: "eroedtx", display_name: "ERO", follower_count: 250000, likes_count: 4800000, video_count: 45 } }, error: { code: "ok" } });
+  }
+  if (url.pathname === "/v2/video/list/") {
+    const body = JSON.parse(init.body);
+    assert.ok(body.max_count <= 20, "video.list max_count is at most 20");
+    const start = body.cursor ?? 0;
+    const page = TIKTOK_VIDEOS.slice(start, start + body.max_count);
+    const next = start + body.max_count;
+    return json(200, { data: { videos: page, cursor: next, has_more: next < TIKTOK_VIDEOS.length }, error: { code: "ok" } });
+  }
+  throw new Error(`fake tiktok: ${url.pathname}`);
+}
+
 function json(status, body) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 }
@@ -108,6 +159,10 @@ globalThis.fetch = async (input, init = {}) => {
     return json(200, { result: runRedis(body) });
   }
   if (url.hostname === "www.googleapis.com") return youtubeResponse(url);
+  if (url.hostname === "open.tiktokapis.com") return tiktokResponse(url, init);
+  if (url.hostname.endsWith(".tiktokcdn.com")) {
+    return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), { status: 200, headers: { "Content-Type": "image/jpeg", "Content-Length": "4" } });
+  }
   throw new Error(`unexpected fetch: ${url.href}`);
 };
 
@@ -118,13 +173,18 @@ Object.assign(process.env, {
   YOUTUBE_CHANNEL_ID: "UCtest",
   KV_REST_API_URL: "https://fake-redis.test",
   KV_REST_API_TOKEN: "redis-token-must-never-leak",
-  ADMIN_SECRET: "admin-secret"
+  ADMIN_SECRET: "admin-secret",
+  TIKTOK_CLIENT_KEY: "tt-client-key",
+  TIKTOK_CLIENT_SECRET: "tt-client-secret",
+  TIKTOK_REDIRECT_URI: "https://generosomm.dev/api/auth/tiktok/callback"
 });
 
 const { httpDefaults } = await import("../lib/http.js");
 httpDefaults.backoffBaseMs = 5; // keep retries fast in tests
 const stats = (await import("../api/stats.js")).default;
 const health = (await import("../api/health.js")).default;
+const oauth = (await import("../api/auth/[provider]/[action].js")).default;
+const thumb = (await import("../api/thumb.js")).default;
 const { trimText, safeUrl, toCount } = await import("../lib/normalize.js");
 const { KEYS } = await import("../lib/store.js");
 
@@ -346,6 +406,170 @@ await test("helpers: unsafe URLs dropped, counts coerced", async () => {
   assert.equal(toCount("1200"), 1200);
   assert.equal(toCount(-5), null);
   assert.equal(toCount(undefined), null);
+});
+
+/* ---- TikTok (Phase 3) --------------------------------------------- */
+
+const call = (handler, path, init) => handler.fetch(new Request(`https://generosomm.dev${path}`, init));
+
+await test("TikTok before connecting: documented 57.9M, no API calls", async () => {
+  redis.clear();
+  tiktok.calls = 0;
+  const { body } = await get();
+  assert.equal(body.platforms.tiktok.status, "manual");
+  assert.equal(body.platforms.tiktok.views, 57_900_000);
+  assert.equal(tiktok.calls, 0);
+});
+
+let state = "";
+let cookie = "";
+await test("connect start: admin only; redirects to TikTok with state + cookie", async () => {
+  assert.equal((await call(oauth, "/api/auth/tiktok/start")).status, 401);
+  assert.equal((await call(oauth, "/api/auth/tiktok/start?key=wrong")).status, 401);
+  const response = await call(oauth, "/api/auth/tiktok/start?key=admin-secret");
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get("referrer-policy"), "no-referrer");
+  const location = new URL(response.headers.get("location"));
+  assert.equal(location.origin + location.pathname, "https://www.tiktok.com/v2/auth/authorize/");
+  assert.equal(location.searchParams.get("client_key"), "tt-client-key");
+  assert.equal(location.searchParams.get("scope"), "user.info.basic,user.info.profile,user.info.stats,video.list");
+  assert.equal(location.searchParams.get("redirect_uri"), "https://generosomm.dev/api/auth/tiktok/callback");
+  state = location.searchParams.get("state");
+  assert.ok(state.length >= 40);
+  const setCookie = response.headers.get("set-cookie");
+  assert.match(setCookie, /HttpOnly/);
+  assert.match(setCookie, /Secure/);
+  cookie = setCookie.split(";")[0];
+  assert.ok(redis.has(KEYS.oauthState(state)));
+});
+
+await test("callback: wrong cookie is refused, nothing saved", async () => {
+  const bad = await call(oauth, `/api/auth/tiktok/callback?code=good-code&state=${state}`, { headers: { Cookie: "oauth_state=forged" } });
+  assert.equal(bad.status, 400);
+  assert.equal(redis.has(KEYS.token("tiktok")), false);
+  /* The failed attempt used up the state (one use only), so start again. */
+  const again = await call(oauth, "/api/auth/tiktok/start?key=admin-secret");
+  state = new URL(again.headers.get("location")).searchParams.get("state");
+  cookie = again.headers.get("set-cookie").split(";")[0];
+});
+
+await test("callback: denied on TikTok's screen is reported, nothing saved", async () => {
+  const response = await call(oauth, "/api/auth/tiktok/callback?error=access_denied&error_description=user+cancelled");
+  assert.equal(response.status, 400);
+  assert.match(await response.text(), /access_denied/);
+  assert.equal(redis.has(KEYS.token("tiktok")), false);
+});
+
+await test("callback: exchanges the code, stores tokens, refreshes stats at once", async () => {
+  tiktok.calls = 0;
+  const response = await call(oauth, `/api/auth/tiktok/callback?code=good-code&state=${state}`, { headers: { Cookie: cookie } });
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /TikTok connected/);
+  assert.match(html, /@eroedtx/);
+  assert.ok(!html.includes("tt-access") && !html.includes("tt-refresh"), "tokens never shown");
+  assert.match(response.headers.get("set-cookie"), /Max-Age=0/, "state cookie cleared");
+  const stored = JSON.parse(redis.get(KEYS.token("tiktok")));
+  assert.equal(stored.refreshToken, "tt-refresh-1");
+  assert.ok(stored.connectedAt);
+  assert.equal(tiktok.calls, 1 + 1 + 3, "token + user info + 3 pages of 20");
+});
+
+await test("replayed callback (same state again) is refused", async () => {
+  const replay = await call(oauth, `/api/auth/tiktok/callback?code=good-code&state=${state}`, { headers: { Cookie: cookie } });
+  assert.equal(replay.status, 400);
+});
+
+await test("TikTok live: followers, likes, posts; views = max(sum of 45 videos, documented)", async () => {
+  const { body, text } = await get();
+  const tt = body.platforms.tiktok;
+  assert.equal(tt.status, "ok");
+  assert.equal(tt.handle, "@eroedtx");
+  assert.equal(tt.followers, 250000);
+  assert.equal(tt.likes, 4_800_000);
+  assert.equal(tt.posts, 45);
+  assert.equal(tt.liveViews, 103_500_000);
+  assert.equal(tt.views, 103_500_000, "live sum beats documented 57.9M here");
+  assert.equal(tt.viewsMethod, "sum of view_count across 45 public videos (live)");
+  assert.equal(body.totals.followers, 250000 + 16700);
+  assert.ok(!text.includes("tt-access") && !text.includes("tiktokcdn"), "no tokens or raw CDN URLs in public JSON");
+});
+
+await test("TikTok top posts: 6 by views, clean permalinks, thumbnails via /api/thumb", async () => {
+  const { body } = await get();
+  const top = body.platforms.tiktok.topPosts;
+  assert.equal(top.length, 6);
+  assert.equal(top[0].views, 4_500_000);
+  assert.equal(top[0].url, `https://www.tiktok.com/@eroedtx/video/${top[0].id}`);
+  assert.equal(top[0].thumbnail.url, `/api/thumb?p=tiktok&id=${top[0].id}`);
+  assert.equal("_thumbSource" in top[0], false);
+});
+
+await test("thumb proxy: serves known posts, refuses everything else", async () => {
+  const { body } = await get();
+  const id = body.platforms.tiktok.topPosts[0].id;
+  const ok = await call(thumb, `/api/thumb?p=tiktok&id=${id}`);
+  assert.equal(ok.status, 200);
+  assert.equal(ok.headers.get("content-type"), "image/jpeg");
+  assert.match(ok.headers.get("cache-control"), /s-maxage=21600/, "never cached past TikTok's 6 h TTL");
+  assert.equal((await call(thumb, "/api/thumb?p=tiktok&id=7000")).status, 404, "post not in snapshot");
+  assert.equal((await call(thumb, "/api/thumb?p=tiktok&id=../../etc")).status, 404, "unsafe id");
+  assert.equal((await call(thumb, `/api/thumb?p=youtube&id=${id}`)).status, 404, "platform not proxied");
+  /* A tampered snapshot pointing at another host is refused. */
+  const snap = JSON.parse(redis.get(KEYS.snapshot));
+  snap.platforms.tiktok.topPosts[1]._thumbSource = "https://evil.example/x.jpg";
+  redis.set(KEYS.snapshot, JSON.stringify(snap));
+  assert.equal((await call(thumb, `/api/thumb?p=tiktok&id=${snap.platforms.tiktok.topPosts[1].id}`)).status, 404);
+});
+
+await test("access token expiring: refreshed first, rotated refresh token saved", async () => {
+  const record = JSON.parse(redis.get(KEYS.token("tiktok")));
+  record.accessExpiresAt = new Date(Date.now() + 60_000).toISOString(); // 1 minute left
+  redis.set(KEYS.token("tiktok"), JSON.stringify(record));
+  makeDue();
+  const { body } = await get();
+  assert.equal(body.platforms.tiktok.status, "ok");
+  const saved = JSON.parse(redis.get(KEYS.token("tiktok")));
+  assert.equal(saved.refreshToken, "tt-refresh-2");
+  assert.equal(saved.accessToken, "tt-access-2");
+  assert.equal(saved.connectedAt, record.connectedAt, "connection date kept");
+});
+
+await test("refresh token rejected: status error, last good numbers kept, says how to fix", async () => {
+  const record = JSON.parse(redis.get(KEYS.token("tiktok")));
+  record.accessExpiresAt = new Date(Date.now() - 1000).toISOString();
+  redis.set(KEYS.token("tiktok"), JSON.stringify(record));
+  tiktok.refreshMode = "invalid";
+  logs.length = 0;
+  makeDue();
+  const { body } = await get();
+  tiktok.refreshMode = "ok";
+  assert.equal(body.platforms.tiktok.status, "error");
+  assert.equal(body.platforms.tiktok.followers, 250000);
+  assert.equal(body.platforms.youtube.status, "ok", "YouTube unaffected");
+  assert.ok(logs.some((l) => l.includes("re-run /api/auth/tiktok/start")));
+});
+
+await test("access token revoked mid-life: status error, no retries", async () => {
+  const record = JSON.parse(redis.get(KEYS.token("tiktok")));
+  record.accessExpiresAt = new Date(Date.now() + 86_000_000).toISOString();
+  redis.set(KEYS.token("tiktok"), JSON.stringify(record));
+  tiktok.userMode = "invalid";
+  tiktok.calls = 0;
+  makeDue();
+  const { body } = await get();
+  tiktok.userMode = "ok";
+  assert.equal(tiktok.calls, 1);
+  assert.equal(body.platforms.tiktok.status, "error");
+});
+
+await test("health: TikTok token lifetimes, never the token", async () => {
+  const response = await health.fetch(new Request("https://generosomm.dev/api/health", { headers: { Authorization: "Bearer admin-secret" } }));
+  const text = await response.text();
+  const tokens = JSON.parse(text).storage.tokens.tiktok;
+  assert.equal(tokens.connected, true);
+  assert.ok(tokens.refreshTokenDaysLeft >= 364);
+  assert.ok(!text.includes("tt-access") && !text.includes("tt-refresh"));
 });
 
 process.stdout.write(`Live stats backend\n${results.join("\n")}\n`);

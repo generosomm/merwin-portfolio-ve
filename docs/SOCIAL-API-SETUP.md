@@ -255,8 +255,9 @@ limits**.
 
 1. Go to <https://developers.tiktok.com/signup> → sign up with your email →
    verify it → log in.
-2. When asked about an organization, you can register as an **individual**.
-   TikTok recommends organizations for production apps, which this won't be.
+2. The portal asks you to **Create an organization** first. Name it
+   `Merwin Generoso`. The name can't be changed later, and your real name
+   matches the site and its Privacy/Terms pages. Don't put "TikTok" in it.
 
 ### 7b. Create the app
 
@@ -317,6 +318,27 @@ upload. If you prefer that, send it to me and I'll commit it to the site root.)
    - `TIKTOK_CLIENT_KEY`
    - `TIKTOK_CLIENT_SECRET`
    - `TIKTOK_REDIRECT_URI` = `https://generosomm.dev/api/auth/tiktok/callback`
+
+### 7e. Connect @eroedtx (once the Phase 3 code is deployed)
+
+1. Make sure all three `TIKTOK_*` variables are in Vercel and you've
+   redeployed. `/api/health` should show them as `true`.
+2. In a browser **logged in to TikTok as @eroedtx**, open:
+   `https://generosomm.dev/api/auth/tiktok/start?key=YOUR_ADMIN_SECRET`
+   Use the bare domain, not `www`: the state cookie belongs to the host
+   that set it.
+3. TikTok shows the consent screen for the four permissions → **Authorize**.
+4. You land on a **"TikTok connected"** page showing the account,
+   followers, posts and the views figure the site will use. No token is
+   ever shown.
+5. Done for the next 365 days. The site refreshes the access token
+   (24 h) by itself and saves the new refresh token each time.
+   `/api/health` shows `tokens.tiktok.refreshTokenDaysLeft`.
+
+If the page says **"Link expired or invalid"**, open the start link again;
+each link works once, for 10 minutes. If it says the code exchange failed,
+check that `TIKTOK_REDIRECT_URI` in Vercel matches the Login Kit redirect URI
+character for character.
 
 ### What production review would need
 

@@ -14,7 +14,22 @@
 
 import { isAdmin } from "../lib/auth.js";
 import { env } from "../lib/config.js";
-import { getQuotaUnits, getSnapshot, ping, storageConfigured } from "../lib/store.js";
+import { getQuotaUnits, getSnapshot, getToken, ping, storageConfigured } from "../lib/store.js";
+
+/* Token lifetimes only, never the tokens themselves. */
+async function tokenReport(provider) {
+  const record = await getToken(provider);
+  if (!record) return { connected: false };
+  const minutesLeft = (iso) => (iso ? Math.round((new Date(iso) - Date.now()) / 60_000) : null);
+  const refreshMinutes = minutesLeft(record.refreshExpiresAt);
+  return {
+    connected: true,
+    connectedAt: record.connectedAt || null,
+    accessTokenMinutesLeft: minutesLeft(record.accessExpiresAt),
+    refreshTokenDaysLeft: refreshMinutes === null ? null : Math.floor(refreshMinutes / 1440),
+    scope: record.scope || ""
+  };
+}
 
 /* Every variable the backend reads, grouped like .env.example. */
 const EXPECTED = {
@@ -33,7 +48,7 @@ async function storageReport() {
   if (!storageConfigured()) return { configured: false, reachable: false };
   try {
     const reachable = await ping();
-    const [snapshot, youtubeUnitsToday] = await Promise.all([getSnapshot(), getQuotaUnits("youtube")]);
+    const [snapshot, youtubeUnitsToday, tiktok] = await Promise.all([getSnapshot(), getQuotaUnits("youtube"), tokenReport("tiktok")]);
     const minutesSince = (iso) => (iso ? Math.round((Date.now() - new Date(iso)) / 60_000) : null);
     const statuses = snapshot
       ? Object.fromEntries(Object.entries(snapshot.platforms || {}).map(([name, p]) => [name, p.status]))
@@ -50,7 +65,8 @@ async function storageReport() {
             statuses
           }
         : null,
-      quota: { youtubeUnitsToday, youtubeDailyLimit: 10_000 }
+      quota: { youtubeUnitsToday, youtubeDailyLimit: 10_000 },
+      tokens: { tiktok }
     };
   } catch (error) {
     return { configured: true, reachable: false, error: error.message };

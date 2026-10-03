@@ -60,22 +60,23 @@
 
   <!-- Parallel links, not an @import chain: each stylesheet starts
        downloading as soon as the HTML is parsed. -->
-  <link rel="stylesheet" href="css/fonts.css?v=r41">
-  <link rel="stylesheet" href="css/tokens.css?v=r41">
-  <link rel="stylesheet" href="css/base.css?v=r41">
-  <link rel="stylesheet" href="css/chrome.css?v=r41">
-  <link rel="stylesheet" href="css/sections.css?v=r41">
-  <link rel="stylesheet" href="css/hero.css?v=r41">
-  <link rel="stylesheet" href="css/story.css?v=r41">
-  <link rel="stylesheet" href="css/work.css?v=r41">
-  <link rel="stylesheet" href="css/closing.css?v=r41">
+  <link rel="stylesheet" href="css/fonts.css?v=r42">
+  <link rel="stylesheet" href="css/tokens.css?v=r42">
+  <link rel="stylesheet" href="css/base.css?v=r42">
+  <link rel="stylesheet" href="css/chrome.css?v=r42">
+  <link rel="stylesheet" href="css/sections.css?v=r42">
+  <link rel="stylesheet" href="css/hero.css?v=r42">
+  <link rel="stylesheet" href="css/story.css?v=r42">
+  <link rel="stylesheet" href="css/work.css?v=r42">
+  <link rel="stylesheet" href="css/closing.css?v=r42">
+  <link rel="stylesheet" href="css/live-stats.css?v=r42">
 
   <!-- Nothing appears until content.js has run with the site's data,
        so both are fetched early, right after the render-blocking CSS:
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=r41" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=r42" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -93,14 +94,17 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=r41" defer></script>
-  <script src="js/site.js?v=r41" defer></script>
-  <script src="js/interactions.js?v=r41" defer></script>
-  <script src="js/cursor.js?v=r41" defer></script>
+  <script src="js/content.js?v=r42" defer></script>
+  <script src="js/site.js?v=r42" defer></script>
+  <script src="js/interactions.js?v=r42" defer></script>
+  <script src="js/cursor.js?v=r42" defer></script>
   <script src="vendor/lenis.min.js?v=1.1.18" defer></script>
   <script src="vendor/gsap.min.js?v=3.13.0" defer></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.13.0" defer></script>
-  <script src="js/motion.js?v=r41" defer></script>
+  <script src="js/motion.js?v=r42" defer></script>
+  <!-- Live social stats (optional): upgrades the Numbers section with
+       /api/stats. Remove it and the documented figures still show. -->
+  <script src="js/live-stats.js?v=r42" defer></script>
 </head>
 
 <body>

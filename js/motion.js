@@ -234,6 +234,26 @@
   ---------------------------------------------------------------- */
 
   function countUps(gsap) {
+    const { ScrollTrigger } = window;
+
+    /* The target is read when the count starts, not when the page
+       loads: js/live-stats.js may swap a card's figure for the live
+       one (81.4 instead of 74) while it's still off screen. data-
+       decimals lets a figure like 81.4 count with its decimal. */
+    const targetOf = (element) => Number(element.dataset.countTo);
+    const show = (element, value) => {
+      const decimals = Number(element.dataset.decimals) || 0;
+      element.textContent = value.toFixed(decimals);
+    };
+
+    /* A live card waits (at most ~3 s) for live-stats.js to settle,
+       so it counts once to the right number instead of counting to
+       the old figure and then jumping. */
+    const settled = (card) =>
+      card.hasAttribute("data-live") && window.portfolioLive?.ready
+        ? Promise.race([window.portfolioLive.ready, new Promise((resolve) => setTimeout(resolve, 3200))])
+        : Promise.resolve();
+
     /* Desktop shows all four cards in one row, so they can start as
        soon as the row peeks in. On phones each card is its own row: if
        it started at the bottom edge the count would be over before the
@@ -245,43 +265,46 @@
         const counted = [];
         document.querySelectorAll(".number").forEach((card) => {
           const element = card.querySelector(".number-value");
-          const target = Number(element?.dataset.countTo);
-          if (!element || !Number.isFinite(target)) return;
-          counted.push([element, target]);
+          if (!element || !Number.isFinite(targetOf(element))) return;
+          counted.push(element);
 
-          const counter = { value: 0 };
           element.textContent = "0";
+          element.dataset.countState = "waiting";
+          if (conditions.narrow) gsap.set(card, { opacity: 0, y: 28 });
 
-          const timeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: conditions.narrow ? card : element,
-              start: conditions.narrow ? "top 72%" : "top 88%",
-              once: true
+          ScrollTrigger.create({
+            trigger: conditions.narrow ? card : element,
+            start: conditions.narrow ? "top 72%" : "top 88%",
+            once: true,
+            onEnter: async () => {
+              await settled(card);
+              const counter = { value: 0 };
+              const timeline = gsap.timeline();
+              element.dataset.countState = "running";
+              if (conditions.narrow) {
+                timeline.to(card, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0);
+              }
+              timeline.to(counter, {
+                value: targetOf(element),
+                duration: conditions.narrow ? 1.8 : 1.4,
+                ease: "power2.out",
+                onUpdate: () => show(element, counter.value),
+                onComplete: () => {
+                  show(element, targetOf(element));
+                  element.dataset.countState = "done";
+                  element.dispatchEvent(new CustomEvent("count:done"));
+                }
+              }, conditions.narrow ? 0.1 : 0);
             }
           });
-
-          if (conditions.narrow) {
-            timeline.from(card, { opacity: 0, y: 28, duration: 0.6, ease: "power2.out" }, 0);
-          }
-
-          timeline.to(counter, {
-            value: target,
-            duration: conditions.narrow ? 1.8 : 1.4,
-            ease: "power2.out",
-            onUpdate: () => {
-              element.textContent = String(Math.round(counter.value));
-            },
-            onComplete: () => {
-              element.textContent = String(target);
-            }
-          }, conditions.narrow ? 0.1 : 0);
         });
 
         /* Leaving this layout (window resized past the breakpoint):
            show the real figures so none sticks part-way. */
         return () => {
-          counted.forEach(([element, target]) => {
-            element.textContent = String(target);
+          counted.forEach((element) => {
+            show(element, targetOf(element));
+            element.dataset.countState = "done";
           });
         };
       }

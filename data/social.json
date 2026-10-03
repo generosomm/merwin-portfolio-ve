@@ -1,0 +1,52 @@
+{
+  "refreshMinutes": 30,
+  "showPlatforms": ["tiktok", "youtube", "instagram", "facebook"],
+  "topPostsPerPlatform": 6,
+  "platforms": {
+    "tiktok": {
+      "handle": "@eroedtx",
+      "url": "https://www.tiktok.com/@eroedtx",
+      "enabled": true,
+      "documented": {
+        "views": 57900000,
+        "window": "last 365 days",
+        "asOf": "TODO: date of the TikTok Studio screenshot",
+        "source": "#proof"
+      }
+    },
+    "youtube": {
+      "handle": "@eroedtx",
+      "url": "https://www.youtube.com/@eroedtx",
+      "enabled": true,
+      "documented": {
+        "views": 16400000,
+        "window": "lifetime",
+        "asOf": "TODO: date of the YouTube Studio screenshot",
+        "source": "#proof"
+      }
+    },
+    "instagram": {
+      "handle": "@eroedtx",
+      "url": "https://www.instagram.com/eroedtx/",
+      "enabled": true,
+      "documented": null
+    },
+    "facebook": {
+      "handle": "eroedtx",
+      "url": "https://www.facebook.com/eroedtx",
+      "enabled": false,
+      "documented": null
+    }
+  },
+  "baseline": {
+    "note": "Documented historical totals from my own analytics screenshots, used when an API can't reach full history. 74.3M = TikTok 57.9M (last 365 days) + YouTube 16.4M (lifetime), both shown in the Proof section.",
+    "totalViews": 74300000,
+    "asOf": "TODO: date of the newer of the two screenshots",
+    "source": "#proof"
+  },
+  "fallback": {
+    "followersTotal": null,
+    "viewsTotal": 74300000
+  },
+  "note": "Public, non-secret settings for the live stats (read by /api and, from Phase 6, by the page). refreshMinutes: how old the cached snapshot may get before /api/stats fetches again (15 to 1440). showPlatforms: which platforms the page shows, in order. platforms.*.enabled: false stops the server from calling that platform at all. platforms.*.documented: a total you can prove with a screenshot; the site shows max(live, documented) per platform, so it never double counts. facebook stays disabled until you confirm facebook.com/eroedtx is a Page (see docs/SOCIAL-API-SETUP.md step 9). Never put keys or tokens in this file: it is public."
+}

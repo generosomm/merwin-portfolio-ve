@@ -1,0 +1,9 @@
+{
+  "name": "generosomm-dev",
+  "private": true,
+  "description": "Portfolio site (static) plus Vercel serverless functions in /api for live social stats.",
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  }
+}

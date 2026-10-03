@@ -8,3 +8,13 @@ node_modules/
 dist/
 coverage/
 *.log
+
+# Secrets: real values live only in Vercel's environment variables
+# (and in .env.local on your own machine, created by `vercel env pull`).
+# .env.example is the committed template with names but no values.
+.env
+.env.*
+!.env.example
+
+# Vercel CLI link folder (holds your project and org IDs)
+.vercel/

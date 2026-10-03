@@ -1040,6 +1040,21 @@
   font-size: var(--fs-small);
 }
 
+.footer-legal {
+  display: flex;
+  gap: var(--s-5);
+}
+
+/* Phones: copyright and "Back to top" share the first row, the
+   legal links sit on their own row below. */
+@media (max-width: 767px) {
+  .footer-legal {
+    order: 3;
+    width: 100%;
+  }
+}
+
+.footer-legal a,
 .footer-top {
   display: inline-flex;
   min-height: var(--tap);
@@ -1047,6 +1062,8 @@
   transition: color var(--dur-1) var(--ease-out);
 }
 
+.footer-legal a:hover,
+.footer-legal a:focus-visible,
 .footer-top:hover,
 .footer-top:focus-visible {
   color: var(--accent);

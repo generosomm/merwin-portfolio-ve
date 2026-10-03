@@ -103,7 +103,18 @@
   ],
   "footer": {
     "name": "Merwin Generoso",
-    "backToTop": "Back to top"
+    "backToTop": "Back to top",
+    "legalLabel": "Legal",
+    "legal": [
+      {
+        "label": "Privacy",
+        "href": "privacy.html"
+      },
+      {
+        "label": "Terms",
+        "href": "terms.html"
+      }
+    ]
   },
   "note": "form: until accessKey is set, the form opens the visitor's email app with their brief filled in. To receive briefs straight to your inbox, get a free access key at web3forms.com and paste it into accessKey (endpoint can stay empty). booking: paste your Cal.com (or Calendly) link into href to show the booking button. rows is the vertical label/value list; pair is the two-column row; a timeZone entry shows your live local time."
 }

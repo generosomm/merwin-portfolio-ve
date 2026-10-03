@@ -212,6 +212,9 @@ Public channel stats only need an API key: no OAuth and no app review.
 3. ☰ menu → **APIs & Services → Library** → search **YouTube Data API v3** →
    open it → **Enable**.
 4. **APIs & Services → Credentials** → **+ Create credentials → API key**.
+   If Google opens a **Create credentials** wizard instead: **Select an API**
+   = `YouTube Data API v3`, **What data will you be accessing?** = **Public
+   data** (not User data, which would create an OAuth client) → **Next**.
    Copy the key → this is `YOUTUBE_API_KEY`.
 5. Click the new key (or **Edit API key**) to restrict it:
    - **Name:** `generosomm-stats-server`

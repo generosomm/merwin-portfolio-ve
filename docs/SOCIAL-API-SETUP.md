@@ -377,9 +377,17 @@ Development mode for good**. No App Review and no Business Verification.
      portfolio yet* → **Next** → **Create app**.
 3. In the app: **Use cases** (left sidebar) → **Manage messaging & content on
    Instagram** → **Customize** → **API setup with Instagram login**.
-4. **1. Add required permissions:** make sure **`instagram_business_basic`**
-   and **`instagram_business_manage_insights`** are added. Don't add publishing
-   or messaging permissions; we don't use them.
+   The page shows numbered boxes (as of October 2026): **1. Add required
+   messaging permissions**, **2. Generate access tokens**, **3. Configure
+   webhooks**, **4. Set up Instagram business login**, **5. Complete app
+   review**. Only 1 (partly) and 4 matter here; skip 2's "Add account", 3 and 5.
+4. **Permissions:** box 1 lists the use case's defaults (`basic`,
+   `manage_comments`, `manage_messages`). The insights permission isn't
+   among them. Left menu → **Permissions and features** → find
+   **`instagram_business_manage_insights`** → **Add** (standard access is
+   enough for your own account), and check `instagram_business_basic` is
+   there. The comment/message permissions can stay: the site never asks for
+   them at login, so they're never granted.
 5. **Give @eroedtx a role on the app** (required in Development mode):
    - Sidebar **App roles → Roles** → **Add People** → **Instagram Tester** →
      enter `eroedtx` → **Add**.
@@ -388,11 +396,11 @@ Development mode for good**. No App Review and no Business Verification.
      → **Accept**. (In the app it's under **Settings → Website permissions →
      Apps and websites**.)
 6. Back in **API setup with Instagram login**:
-   - **3. Set up Instagram business login** → **Business login settings** →
-     **OAuth redirect URIs:** add
-     `https://generosomm.dev/api/auth/instagram/callback` → **Save**.
-   - On the same screen, copy the **Instagram app ID** and **Instagram app
-     secret**. **These are not** the Meta App ID on the dashboard home.
+   - **4. Set up Instagram business login** → **Set up** → **OAuth redirect
+     URIs:** add `https://generosomm.dev/api/auth/instagram/callback` → **Save**.
+   - The **Instagram app ID** and **Instagram app secret** (click **Show**) are
+     at the top of this page. **These are not** the Meta App ID on the
+     dashboard home.
 7. **App settings → Basic:** set **Privacy Policy URL** to
    `https://generosomm.dev/privacy.html` and **Terms of Service URL** to
    `https://generosomm.dev/terms.html` → **Save changes**.

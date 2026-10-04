@@ -1,0 +1,126 @@
+/* =============================================================
+   NOTES + VISITS — the Visitor Notes section (list + form, the
+   form reuses the contact brief's field styles from closing.css)
+   and the visit counter in the footer.
+   ============================================================= */
+
+.notes-intro {
+  max-width: 40em;
+  margin: 0 0 var(--s-6);
+  color: var(--text-mid);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+/* ---- Approved notes: quotes on hairlines, two across on wide screens */
+
+.notes-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 var(--s-7);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 900px) {
+  .notes-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-5) 0;
+  border-top: 1px solid var(--line);
+}
+
+.note-message {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.note-message::before {
+  content: "\201C";
+  color: var(--accent);
+}
+
+.note-message::after {
+  content: "\201D";
+  color: var(--accent);
+}
+
+.note-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-3);
+  margin: 0;
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+}
+
+.note-name {
+  color: var(--text);
+}
+
+.note-role::before,
+.note-date::before {
+  margin-right: var(--s-3);
+  content: "·";
+}
+
+.notes-empty {
+  margin: 0;
+  padding: var(--s-5) 0;
+  border-top: 1px solid var(--line);
+  color: var(--text-mid);
+}
+
+/* ---- Form ------------------------------------------------------------ */
+
+.notes-form {
+  margin-top: var(--s-7);
+}
+
+.notes-counter {
+  align-self: flex-end;
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+}
+
+.notes-rules {
+  margin: var(--s-4) 0 0;
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+/* The bot trap: off-screen for people, still in the form for bots. */
+.notes-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ---- Footer visit counter -------------------------------------------- */
+
+.footer-visits {
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+}
+
+@media (max-width: 767px) {
+  .footer-visits {
+    order: 4;
+    width: 100%;
+  }
+}

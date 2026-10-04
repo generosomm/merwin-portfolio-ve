@@ -20,7 +20,8 @@ const CONTENT_FILES = Object.freeze({
   stack: "10-stack.json",
   contact: "11-contact.json",
   ui: "12-ui.json",
-  social: "social.json"
+  social: "social.json",
+  notes: "notes.json"
 });
 
 let interfaceText = {};
@@ -286,6 +287,7 @@ function renderPreloader() {
   root.dataset.frames = String(config.frames || 36);
   root.dataset.duration = String(config.durationMs || 850);
   root.dataset.exit = String(config.exitMs || 650);
+  root.dataset.maxWait = String(config.maxWaitMs || 2000);
 
   root.innerHTML = `
     <div class="preloader-inner">
@@ -1262,6 +1264,56 @@ function renderContact(data) {
 }
 
 /* The copyright line and a way back to the top. */
+/* ---- Visitor notes -----------------------------------------------
+   The shell only: title, intro, an empty list and the form, hidden.
+   js/notes.js loads the approved notes from /api/feedback and shows
+   the form once it knows the API is there, so without it (or with
+   the API down) nobody gets a form that can't send.
+---------------------------------------------------------------- */
+
+function renderNotes(data) {
+  const root = document.querySelector('[data-section="notes"]');
+  if (!root || !data) return;
+  const form = data.form || {};
+
+  root.innerHTML = `
+    <div class="section-inner">
+      ${sectionTitle("notes")}
+      <p class="notes-intro">${text(data.intro)}</p>
+      <div class="notes" data-notes hidden>
+        <ul class="notes-list" data-notes-list aria-label="${attr(data.listLabel)}"></ul>
+        <p class="notes-empty" data-notes-empty hidden>${text(data.empty)}</p>
+      </div>
+      <form class="brief notes-form" data-notes-form novalidate hidden>
+        <h3 class="brief-heading">${text(form.heading)}</h3>
+        <div class="brief-grid">
+          <label class="brief-field">
+            <span>${text(form.name)}</span>
+            <input name="name" type="text" autocomplete="name" required minlength="2" maxlength="60" placeholder="${attr(form.namePlaceholder)}">
+          </label>
+          <label class="brief-field">
+            <span>${text(form.role)}</span>
+            <input name="role" type="text" autocomplete="organization-title" maxlength="80" placeholder="${attr(form.rolePlaceholder)}">
+          </label>
+          <label class="brief-field brief-wide">
+            <span>${text(form.message)}</span>
+            <textarea name="message" required minlength="10" maxlength="500" placeholder="${attr(form.messagePlaceholder)}"></textarea>
+            <small class="notes-counter" data-notes-counter aria-hidden="true"></small>
+          </label>
+          <label class="notes-trap" aria-hidden="true">
+            <span>${text(form.trap)}</span>
+            <input name="website" type="text" tabindex="-1" autocomplete="off">
+          </label>
+        </div>
+        <p class="notes-rules">${text(form.rules)}</p>
+        <div class="brief-foot">
+          <button class="button button-primary" type="submit">${text(form.submit)}</button>
+          <p class="brief-status" data-notes-status role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>`;
+}
+
 function renderFooter(data) {
   const root = document.querySelector('[data-content="footer"]');
   if (!root || !data) return;
@@ -1276,6 +1328,7 @@ function renderFooter(data) {
   root.innerHTML = `
     <div class="footer-inner">
       <span class="footer-copy">&copy; ${new Date().getFullYear()} ${text(data.name)}</span>
+      ${hasText(data.visits) ? `<span class="footer-visits" data-visits data-template="${attr(data.visits)}" hidden></span>` : ""}
       ${legal ? `<nav class="footer-legal" aria-label="${attr(data.legalLabel || "Legal")}">${legal}</nav>` : ""}
       <a class="footer-top" href="#hero">${text(data.backToTop)}</a>
     </div>`;
@@ -1323,6 +1376,7 @@ function renderPortfolio(payload) {
   renderEdits(data.edits);
   renderProof(data.proof);
   renderStack(data.stack);
+  renderNotes(data.notes);
   renderContact(data.contact);
   renderSectionShell();
 

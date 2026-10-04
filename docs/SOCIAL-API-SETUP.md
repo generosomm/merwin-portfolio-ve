@@ -498,3 +498,41 @@ Limits of local testing:
   one-time connects on production.
 - **Crons don't run under `vercel dev`.** Call the endpoint by hand instead.
   Phase 5 shows how.
+
+---
+
+## 12. Visitor notes, visit counter and Vercel Web Analytics
+
+These run on the same Vercel project and Redis database as the stats.
+Nothing new to sign up for.
+
+### Visitor notes (moderated)
+
+- Visitors send notes from the **Visitor Notes** section (above Contact).
+  Every note waits for your approval; nothing is public until you approve it.
+- **Approve notes at** `https://generosomm.dev/notes-admin.html`: paste your
+  `ADMIN_SECRET`, then **Approve**, **Hide** (take it back down) or **Delete**.
+  The page isn't linked anywhere and tells search engines not to index it.
+- `/api/health` shows `storage.notes.pending`, so you can see when notes are waiting.
+- Built-in spam protection: links are refused, a hidden field catches bots,
+  notes sent within 3 s of the form appearing are silently dropped, at most
+  3 notes per visitor per day, at most 100 waiting at once.
+- To change the wording on the page: `data/notes.json`. To change the rules
+  (lengths, limits): `lib/notes.js`, and keep the messages in `notes.json` in sync.
+
+### Visit counter (public, in the footer)
+
+- Shows "N visits since Oct 2026": one visit per visitor per day, counted after
+  3 s on the page, never from bots or other sites. IP addresses are never
+  stored (see `lib/visitor.js`). It starts at 0 on launch day.
+- `/api/health` shows `storage.visits` (total, today, since).
+- To hide it, delete `"visits"` from `footer` in `data/11-contact.json`.
+
+### Vercel Web Analytics (private)
+
+1. Vercel → project **generosomm** → **Analytics** (left sidebar) → **Enable**.
+2. Redeploy (or push). The script tags are already in `index.html`.
+3. Visit the site, wait a few minutes, then check **Analytics** for page views,
+   countries, referrers (LinkedIn, Google, TikTok…) and devices.
+
+Hobby includes 50,000 events a month and keeps the last month of reports.

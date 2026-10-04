@@ -15,18 +15,10 @@
 
       root.classList.add("hero-armed");
 
-      /* Phones skip the render screen: on a small screen and a mobile
-         connection it only delays the first real paint of the page. */
-      if (window.matchMedia("(hover: none), (pointer: coarse), (max-width: 767px)").matches) return;
-
-      try {
-        const key = "mg-preloader-seen";
-        if (sessionStorage.getItem(key)) return;
-        sessionStorage.setItem(key, "1");
-      } catch {
-        /* Private mode: show it, rather than guess. */
-      }
-
+      /* The render screen shows on every visit, phones included. It's
+         short (0.85 s minimum) and doubles as the wait for the live
+         stats, capped at 2 s (js/site.js). Visitors who ask for reduced
+         motion skip it entirely (the return above). */
       root.classList.add("preloading");
     })();
   </script>
@@ -60,23 +52,24 @@
 
   <!-- Parallel links, not an @import chain: each stylesheet starts
        downloading as soon as the HTML is parsed. -->
-  <link rel="stylesheet" href="css/fonts.css?v=r42">
-  <link rel="stylesheet" href="css/tokens.css?v=r42">
-  <link rel="stylesheet" href="css/base.css?v=r42">
-  <link rel="stylesheet" href="css/chrome.css?v=r42">
-  <link rel="stylesheet" href="css/sections.css?v=r42">
-  <link rel="stylesheet" href="css/hero.css?v=r42">
-  <link rel="stylesheet" href="css/story.css?v=r42">
-  <link rel="stylesheet" href="css/work.css?v=r42">
-  <link rel="stylesheet" href="css/closing.css?v=r42">
-  <link rel="stylesheet" href="css/live-stats.css?v=r42">
+  <link rel="stylesheet" href="css/fonts.css?v=r44">
+  <link rel="stylesheet" href="css/tokens.css?v=r44">
+  <link rel="stylesheet" href="css/base.css?v=r44">
+  <link rel="stylesheet" href="css/chrome.css?v=r44">
+  <link rel="stylesheet" href="css/sections.css?v=r44">
+  <link rel="stylesheet" href="css/hero.css?v=r44">
+  <link rel="stylesheet" href="css/story.css?v=r44">
+  <link rel="stylesheet" href="css/work.css?v=r44">
+  <link rel="stylesheet" href="css/closing.css?v=r44">
+  <link rel="stylesheet" href="css/live-stats.css?v=r44">
+  <link rel="stylesheet" href="css/notes.css?v=r44">
 
   <!-- Nothing appears until content.js has run with the site's data,
        so both are fetched early, right after the render-blocking CSS:
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=r42" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=r44" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -94,17 +87,29 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=r42" defer></script>
-  <script src="js/site.js?v=r42" defer></script>
-  <script src="js/interactions.js?v=r42" defer></script>
-  <script src="js/cursor.js?v=r42" defer></script>
+  <script src="js/content.js?v=r44" defer></script>
+  <script src="js/site.js?v=r44" defer></script>
+  <script src="js/interactions.js?v=r44" defer></script>
+  <script src="js/cursor.js?v=r44" defer></script>
   <script src="vendor/lenis.min.js?v=1.1.18" defer></script>
   <script src="vendor/gsap.min.js?v=3.13.0" defer></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.13.0" defer></script>
-  <script src="js/motion.js?v=r42" defer></script>
+  <script src="js/motion.js?v=r44" defer></script>
   <!-- Live social stats (optional): upgrades the Numbers section with
        /api/stats. Remove it and the documented figures still show. -->
-  <script src="js/live-stats.js?v=r42" defer></script>
+  <script src="js/live-stats.js?v=r44" defer></script>
+  <!-- Visitor notes and the footer visit counter (optional, like
+       live-stats.js: remove them and the rest of the site is fine). -->
+  <script src="js/notes.js?v=r44" defer></script>
+  <script src="js/visits.js?v=r44" defer></script>
+
+  <!-- Vercel Web Analytics: private visitor stats in the Vercel
+       dashboard (no cookies). Starts working once Analytics is enabled
+       for the project in Vercel; until then this request just 404s. -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
 <body>
@@ -131,6 +136,7 @@
     <section class="section" id="proof" data-section="proof"></section>
     <section class="section" id="experience" data-section="experience"></section>
     <section class="section" id="stack" data-section="stack"></section>
+    <section class="section" id="notes" data-section="notes"></section>
     <section class="section" id="contact" data-section="contact"></section>
   </main>
 

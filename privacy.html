@@ -8,36 +8,50 @@
   <meta name="description" content="How generosomm.dev handles data: it stores no visitor data and only reads stats from Merwin Generoso's own social accounts.">
   <link rel="canonical" href="https://generosomm.dev/privacy.html">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0A0A'/><rect x='14' y='18' width='72' height='3' fill='%232BD47D'/><text x='50' y='74' font-size='50' font-family='system-ui,sans-serif' font-weight='700' fill='%23F2F2F0' text-anchor='middle'>M</text></svg>">
-  <link rel="stylesheet" href="css/fonts.css?v=r42">
-  <link rel="stylesheet" href="css/tokens.css?v=r42">
-  <link rel="stylesheet" href="css/base.css?v=r42">
-  <link rel="stylesheet" href="css/legal.css?v=r42">
+  <link rel="stylesheet" href="css/fonts.css?v=r44">
+  <link rel="stylesheet" href="css/tokens.css?v=r44">
+  <link rel="stylesheet" href="css/base.css?v=r44">
+  <link rel="stylesheet" href="css/legal.css?v=r44">
 </head>
 
 <!-- TODO(Merwin): review every statement on this page before you
      submit any developer app. It describes how the site works on
-     2026-10-03; update it whenever that changes (for example, if
-     you add analytics or switch the contact form to Web3Forms). -->
+     2026-10-04 (visit counter, Vercel Web Analytics, visitor notes);
+     update it whenever that changes (for example, if you switch the
+     contact form to Web3Forms or add email alerts for notes). -->
 
 <body class="legal">
   <main>
     <a class="legal-back" href="./">&larr; generosomm.dev</a>
 
     <h1>Privacy Policy</h1>
-    <p class="legal-meta">Last updated 3 October 2026</p>
+    <p class="legal-meta">Last updated 4 October 2026</p>
 
     <h2>The short version</h2>
     <p>generosomm.dev is the personal portfolio of Merwin Generoso. It has no
-      user accounts, no analytics, no advertising and no tracking cookies. It
-      does not collect, store or sell information about the people who visit it.</p>
+      user accounts, no advertising and no tracking cookies, and it never sells
+      anything about its visitors. It counts visits without storing who you are,
+      and if you leave a note, it keeps what you wrote so it can be shown once I
+      approve it.</p>
 
     <h2>Data about visitors</h2>
     <ul>
-      <li><strong>No cookies or trackers.</strong> The site sets no cookies and
-        loads no analytics or advertising scripts.</li>
-      <li><strong>Browser storage.</strong> The site saves one small flag in your
-        browser's session storage so the intro screen shows only once per visit.
-        It never leaves your device and is cleared when you close the tab.</li>
+      <li><strong>No cookies or advertising trackers.</strong> The site sets no
+        cookies and loads no advertising scripts.</li>
+      <li><strong>Visit counter.</strong> The number of visits in the footer is
+        counted once per visitor per day. To tell visitors apart without storing
+        who they are, the server turns your IP address and browser type into a
+        one-way code, mixed with a random value that changes every day. Your IP
+        address itself is never stored, the code can't be turned back into it, and
+        the codes are deleted after two days. Only the daily totals are kept.</li>
+      <li><strong>Visitor statistics.</strong> The site uses
+        <a href="https://vercel.com/docs/analytics/privacy-policy" rel="noopener">Vercel Web Analytics</a>
+        to show me aggregate numbers (page views, countries, referring sites,
+        device types). It uses no cookies and doesn't identify individual visitors.</li>
+      <li><strong>Browser storage.</strong> The site saves the date it last counted
+        your visit in your browser's local storage, so it doesn't ask the server
+        again the same day. It stays on your device, and you can clear it any time
+        with your browser's site data.</li>
       <li><strong>Server logs.</strong> The site is hosted on Vercel. Like any web
         host, Vercel's servers briefly record standard request details (such as
         IP address, browser type and the page requested) to deliver the site and
@@ -47,6 +61,20 @@
         opens your own email app with your message filled in. Nothing is sent
         until you press send in your email app, and the message then reaches me as
         a normal email. I use it only to reply to you.</li>
+    </ul>
+
+    <h2>Visitor notes</h2>
+    <ul>
+      <li><strong>What is stored:</strong> the name, the optional "who you are"
+        and the note you write, plus the time you sent it. No email address is
+        asked for or stored.</li>
+      <li><strong>Who sees it:</strong> nobody but me until I approve it. Approved
+        notes are shown publicly on this site with your name, "who you are" and the
+        date. I may decline any note without saying why.</li>
+      <li><strong>Spam protection:</strong> to limit how many notes one person can
+        send per day, the same daily, one-way code as the visit counter is kept for
+        two days. It is not linked to your note.</li>
+      <li><strong>Changing your mind:</strong> email me and I'll remove your note.</li>
     </ul>
 
     <h2>Connected social accounts</h2>

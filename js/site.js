@@ -135,6 +135,12 @@
     const frames = Number(element.dataset.frames) || 36;
     const duration = Number(element.dataset.duration) || 850;
     const exitMs = Number(element.dataset.exit) || 650;
+    /* The screen also waits for the live stats (js/live-stats.js), so
+       the Track Record shows real numbers when it lifts, but never
+       longer than maxWait from navigation start. */
+    const maxWait = Number(element.dataset.maxWait) || 2000;
+    let liveSettled = !window.portfolioLive?.ready;
+    window.portfolioLive?.ready?.then(() => { liveSettled = true; });
     const pad = (value) => String(value).padStart(2, "0");
 
     /* Timing lives in JSON rather than CSS so the whole render screen
@@ -174,9 +180,12 @@
          of the way across instead of starting over. */
       function step(now) {
         const progress = Math.min(now / duration, 1);
-        /* Ease out so the bar decelerates into its end point. */
-        paint(1 - Math.pow(1 - progress, 3));
-        if (progress >= 1) finish();
+        /* Ease out so the bar decelerates into its end point. While the
+           live stats are still on their way it holds just short of the
+           end, then completes the moment they land. */
+        const eased = 1 - Math.pow(1 - progress, 3);
+        paint(liveSettled ? eased : Math.min(eased, 0.92));
+        if (progress >= 1 && liveSettled) finish();
         else frameRequest = window.requestAnimationFrame(step);
       }
 
@@ -185,8 +194,10 @@
       element.addEventListener("pointerdown", finish);
       document.addEventListener("keydown", finish, { once: true });
 
-      /* If anything stalls, the page still gets revealed. */
-      window.setTimeout(finish, Math.max(duration - performance.now(), 0) + 1200);
+      /* Never wait on the network longer than maxWait, and if anything
+         else stalls, the page still gets revealed. */
+      window.setTimeout(finish, Math.max(Math.max(duration, maxWait) - performance.now(), 0));
+      window.setTimeout(finish, Math.max(duration - performance.now(), 0) + 2400);
     });
   }
 

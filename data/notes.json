@@ -1,0 +1,30 @@
+{
+  "intro": "Visited, worked with me, or hired me? Leave a short note. Notes appear here after I've read and approved them.",
+  "empty": "No notes yet. Be the first to leave one.",
+  "listLabel": "Notes from visitors",
+  "form": {
+    "heading": "Leave a note",
+    "name": "Your name",
+    "namePlaceholder": "e.g. Ana Santos",
+    "role": "Who you are (optional)",
+    "rolePlaceholder": "e.g. Recruiter, client, classmate",
+    "message": "Your note",
+    "messagePlaceholder": "What should other visitors know?",
+    "counter": "{n} / {max}",
+    "trap": "Leave this field empty",
+    "rules": "Notes are public once approved. Please don't include links.",
+    "submit": "Send note",
+    "sending": "Sending…",
+    "sent": "Thanks! Your note will appear here once I've approved it.",
+    "errors": {
+      "name": "Please enter a name (2 to 60 characters).",
+      "role": "Please keep \"who you are\" under 80 characters.",
+      "message": "Notes need 10 to 500 characters.",
+      "links": "Links aren't allowed in notes. Please remove them and try again.",
+      "rate": "You've sent a few notes today already. Please try again tomorrow.",
+      "busy": "A lot of notes are waiting for approval right now. Please try again later.",
+      "default": "That didn't go through. Please try again in a moment."
+    }
+  },
+  "note": "Copy for the Visitor Notes section (js/notes.js, api/feedback.js). Notes are moderated: nothing a visitor sends is public until you approve it at /notes-admin.html. The limits (name 2-60, role up to 80, message 10-500, no links) are enforced by the server in lib/notes.js; keep these messages in sync if you change them."
+}

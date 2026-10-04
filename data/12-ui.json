@@ -6,7 +6,8 @@
     "fps": 24,
     "frames": 36,
     "durationMs": 850,
-    "exitMs": 650
+    "exitMs": 650,
+    "maxWaitMs": 2000
   },
   "phasePending": "Builds in a later phase",
   "contentError": "Some portfolio content could not be loaded. Please refresh the page."

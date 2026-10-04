@@ -117,6 +117,10 @@
       "title": "Stack"
     },
     {
+      "id": "notes",
+      "title": "Visitor Notes"
+    },
+    {
       "id": "contact",
       "title": "Contact"
     }

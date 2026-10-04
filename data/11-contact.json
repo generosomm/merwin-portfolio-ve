@@ -104,6 +104,7 @@
   "footer": {
     "name": "Merwin Generoso",
     "backToTop": "Back to top",
+    "visits": "{n} visits since {since}",
     "legalLabel": "Legal",
     "legal": [
       {

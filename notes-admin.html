@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Notes — approval</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0A0A'/><rect x='14' y='18' width='72' height='3' fill='%232BD47D'/><text x='50' y='74' font-size='50' font-family='system-ui,sans-serif' font-weight='700' fill='%23F2F2F0' text-anchor='middle'>M</text></svg>">
+  <link rel="stylesheet" href="css/fonts.css?v=r44">
+  <link rel="stylesheet" href="css/tokens.css?v=r44">
+  <link rel="stylesheet" href="css/base.css?v=r44">
+  <link rel="stylesheet" href="css/legal.css?v=r44">
+  <style>
+    .admin-key { display: flex; flex-wrap: wrap; gap: var(--s-3); margin: var(--s-5) 0; }
+    .admin-key input { flex: 1 1 16rem; min-height: var(--tap); padding: 0.6rem 0.8rem; border: 1px solid var(--line-strong); background: var(--ink-900); color: var(--text); font: inherit; font-size: 16px; }
+    .admin-button { min-height: var(--tap); padding: 0 1rem; border: 1px solid var(--line-strong); background: transparent; color: var(--text); font: inherit; cursor: pointer; }
+    .admin-button:hover, .admin-button:focus-visible { border-color: var(--accent); color: var(--accent); }
+    .admin-button[data-action="delete"]:hover { border-color: var(--danger); color: var(--danger); }
+    .admin-status { color: var(--text-mid); font-family: var(--font-mono); font-size: var(--fs-label); }
+    .admin-list { margin: var(--s-6) 0 0; padding: 0; list-style: none; }
+    .admin-note { padding: var(--s-5) 0; border-top: 1px solid var(--line); }
+    .admin-note p { margin: 0; }
+    .admin-message { color: var(--text) !important; overflow-wrap: anywhere; }
+    .admin-meta { margin-top: var(--s-2) !important; font-family: var(--font-mono); font-size: var(--fs-label); }
+    .admin-tag { display: inline-block; margin-right: var(--s-2); padding: 0.1em 0.5em; border: 1px solid var(--line-strong); border-radius: 999px; }
+    .admin-tag.is-pending { border-color: var(--accent); color: var(--accent); }
+    .admin-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-3); }
+  </style>
+</head>
+
+<!-- Private approval page for Visitor Notes. Linked from nowhere and
+     marked noindex; it does nothing without the admin secret, which
+     every request to /api/feedback re-checks on the server. The key
+     is kept in this tab's sessionStorage only, so it's gone when the
+     tab closes. -->
+
+<body class="legal">
+  <main>
+    <a class="legal-back" href="./">&larr; generosomm.dev</a>
+    <h1>Visitor notes</h1>
+    <p class="legal-meta">Approve a note to make it public. Hide takes it back down; delete removes it for good.</p>
+
+    <form class="admin-key" id="admin-key">
+      <label class="sr-only" for="key">Admin secret</label>
+      <input id="key" name="key" type="password" autocomplete="current-password" placeholder="Admin secret" required>
+      <button class="admin-button" type="submit">Load notes</button>
+    </form>
+    <p class="admin-status" id="admin-status" role="status" aria-live="polite"></p>
+    <ul class="admin-list" id="admin-list"></ul>
+  </main>
+  <script src="js/notes-admin.js?v=r44" defer></script>
+</body>
+</html>

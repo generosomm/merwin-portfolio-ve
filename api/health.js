@@ -14,7 +14,8 @@
 
 import { isAdmin } from "../lib/auth.js";
 import { env } from "../lib/config.js";
-import { getQuotaUnits, getSnapshot, getToken, ping, storageConfigured } from "../lib/store.js";
+import { allNotes } from "../lib/notes.js";
+import { KEYS, getQuotaUnits, getSnapshot, getToken, pipeline, ping, storageConfigured, utcDay } from "../lib/store.js";
 
 /* Token lifetimes only, never the tokens themselves. */
 async function tokenReport(provider) {
@@ -48,7 +49,13 @@ async function storageReport() {
   if (!storageConfigured()) return { configured: false, reachable: false };
   try {
     const reachable = await ping();
-    const [snapshot, youtubeUnitsToday, tiktok] = await Promise.all([getSnapshot(), getQuotaUnits("youtube"), tokenReport("tiktok")]);
+    const [snapshot, youtubeUnitsToday, tiktok, notes, visits] = await Promise.all([
+      getSnapshot(),
+      getQuotaUnits("youtube"),
+      tokenReport("tiktok"),
+      allNotes(),
+      pipeline([["GET", KEYS.visitsTotal], ["GET", KEYS.visitsDay(utcDay())], ["GET", KEYS.visitsSince]])
+    ]);
     const minutesSince = (iso) => (iso ? Math.round((Date.now() - new Date(iso)) / 60_000) : null);
     const statuses = snapshot
       ? Object.fromEntries(Object.entries(snapshot.platforms || {}).map(([name, p]) => [name, p.status]))
@@ -66,7 +73,12 @@ async function storageReport() {
           }
         : null,
       quota: { youtubeUnitsToday, youtubeDailyLimit: 10_000 },
-      tokens: { tiktok }
+      tokens: { tiktok },
+      notes: {
+        pending: notes.filter((note) => note.status === "pending").length,
+        approved: notes.filter((note) => note.status === "approved").length
+      },
+      visits: { total: Number(visits[0]) || 0, today: Number(visits[1]) || 0, since: visits[2] || null }
     };
   } catch (error) {
     return { configured: true, reachable: false, error: error.message };

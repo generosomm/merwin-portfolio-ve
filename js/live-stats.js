@@ -9,8 +9,9 @@
      data/social.json (documented figures). This file only upgrades
      it. Delete this file (or /api) and the site still works.
    - The request starts the moment this script runs, in parallel
-     with the content. If it fails or takes over 3 s, the documented
-     figures stay and the error goes to the console only.
+     with the content. If it takes over 3 s the documented figures
+     show meanwhile, and the live ones replace them if they still
+     arrive (within 25 s). Errors go to the console only.
    - js/motion.js waits for window.portfolioLive.ready before
      counting the live "Views" card, so it counts once, to the right
      number.
@@ -21,7 +22,8 @@
 
 (function liveStats() {
   const STATS_URL = "/api/stats";
-  const FIRST_TIMEOUT_MS = 3000;
+  const SOFT_TIMEOUT_MS = 3000; // show the documented figures after this...
+  const HARD_TIMEOUT_MS = 25_000; // ...but keep listening this long for the live ones
   const POLL_TIMEOUT_MS = 8000;
   const POLL_MS = 10 * 60_000; // a tab left open picks up new numbers
   const COUNT_MS = 1200;
@@ -46,7 +48,7 @@
   }
 
   /* Start now; the page content is still loading in parallel. */
-  const firstFetch = fetchStats(FIRST_TIMEOUT_MS);
+  const firstFetch = fetchStats(HARD_TIMEOUT_MS);
   firstFetch.catch(() => {}); // handled in start(); avoids an "unhandled" warning meanwhile
 
   /* ---- Formatting -------------------------------------------------
@@ -470,18 +472,34 @@
       paintStatus(block, social.display);
     }
 
-    try {
-      const stats = await firstFetch;
-      apply(block, stats, social, { first: true });
-    } catch (error) {
-      /* Visitors just see the documented figures. */
-      console.info(`[live-stats] showing documented figures (${error.name === "AbortError" ? "timed out" : error.message}).`);
+    /* After 3 s the visitor sees the documented figures instead of a
+       skeleton, but the request keeps going: if the live numbers land
+       later (a slow first request), they replace the documented ones
+       without a reload. */
+    const showDocumented = (reason) => {
+      console.info(`[live-stats] showing documented figures (${reason}).`);
       statusState = { kind: "documented", updatedAt: null };
       if (block) paintStatus(block, social.display);
-    } finally {
-      block?.classList.remove("is-loading");
-      resolveReady();
+    };
+    const soft = new Promise((resolve) => window.setTimeout(() => resolve("soft-timeout"), SOFT_TIMEOUT_MS));
+    const first = await Promise.race([
+      firstFetch.then((stats) => ({ stats }), (error) => ({ error })),
+      soft
+    ]);
+
+    if (first === "soft-timeout") {
+      showDocumented("still waiting for live stats");
+      firstFetch.then(
+        (stats) => apply(block, stats, social, { first: true }),
+        (error) => console.info(`[live-stats] live stats unavailable (${error.name === "AbortError" ? "timed out" : error.message}).`)
+      );
+    } else if (first.stats) {
+      apply(block, first.stats, social, { first: true });
+    } else {
+      showDocumented(first.error?.message || "error");
     }
+    block?.classList.remove("is-loading");
+    resolveReady();
 
     /* Keep "updated X min ago" honest, and pick up new numbers if the
        tab stays open. Polls only while the tab is visible. */

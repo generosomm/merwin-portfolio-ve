@@ -37,6 +37,32 @@ function runRedis([name, ...args]) {
       return next;
     }
     case "EXPIRE": return 1;
+    case "INCR": {
+      const next = (Number(redis.get(args[0])) || 0) + 1;
+      redis.set(args[0], String(next));
+      return next;
+    }
+    case "SADD": {
+      const set = redis.get(args[0]) instanceof Set ? redis.get(args[0]) : new Set();
+      const added = set.has(args[1]) ? 0 : 1;
+      set.add(args[1]);
+      redis.set(args[0], set);
+      return added;
+    }
+    case "HSET": {
+      const hash = redis.get(args[0]) instanceof Map ? redis.get(args[0]) : new Map();
+      hash.set(args[1], args[2]);
+      redis.set(args[0], hash);
+      return 1;
+    }
+    case "HGETALL": {
+      const hash = redis.get(args[0]);
+      return hash instanceof Map ? [...hash.entries()].flat() : [];
+    }
+    case "HDEL": {
+      const hash = redis.get(args[0]);
+      return hash instanceof Map && hash.delete(args[1]) ? 1 : 0;
+    }
     case "EVAL": {
       const [, , key, token] = args; // compare-and-delete script
       if (redis.get(key) === token) { redis.delete(key); return 1; }
@@ -196,6 +222,9 @@ const health = (await import("../api/health.js")).default;
 const oauth = (await import("../api/auth/[provider]/[action].js")).default;
 const thumb = (await import("../api/thumb.js")).default;
 const refreshApi = (await import("../api/refresh.js")).default;
+const visitApi = (await import("../api/visit.js")).default;
+const feedbackApi = (await import("../api/feedback.js")).default;
+const { cleanText } = await import("../lib/notes.js");
 const { trimText, safeUrl, toCount } = await import("../lib/normalize.js");
 const { KEYS } = await import("../lib/store.js");
 
@@ -657,6 +686,160 @@ await test("token response without refresh_expires_in: assumes 365 days, not 'ex
   const record = tokenRecord({ access_token: "a", refresh_token: "r", expires_in: 86400 });
   const days = (new Date(record.refreshExpiresAt) - Date.now()) / 86_400_000;
   assert.ok(days > 364 && days <= 365);
+});
+
+await test("due snapshot + waitUntil: replies instantly with saved numbers, refreshes after", async () => {
+  TIKTOK_VIDEOS = makeVideos(45);
+  redis.delete(KEYS.lock("refresh"));
+  makeDue();
+  const before = JSON.parse(redis.get(KEYS.snapshot));
+  const pending = [];
+  youtube = { ...youtube, mode: "ok", calls: 0, lifetimeViews: 19_000_000 };
+  const response = await stats.fetch(new Request("https://generosomm.dev/api/stats"), { waitUntil: (p) => pending.push(p) });
+  const body = await response.json();
+  assert.equal(pending.length, 1, "refresh handed to waitUntil");
+  assert.equal(body.updatedAt, before.updatedAt, "answered with the saved snapshot");
+  assert.match(response.headers.get("cache-control"), /s-maxage=30,/, "short cache while refreshing");
+  await pending[0];
+  assert.ok(youtube.calls > 0, "the background refresh ran");
+  assert.equal(redis.has(KEYS.lock("refresh")), false, "lock released");
+  const after = await get();
+  assert.equal(after.body.platforms.youtube.views, 19_000_000, "next request gets the fresh numbers");
+  assert.match(after.response.headers.get("cache-control"), /s-maxage=900/);
+});
+
+await test("nothing saved yet: refreshes before replying even with waitUntil", async () => {
+  redis.delete(KEYS.snapshot);
+  const pending = [];
+  const response = await stats.fetch(new Request("https://generosomm.dev/api/stats"), { waitUntil: (p) => pending.push(p) });
+  const body = await response.json();
+  assert.equal(pending.length, 0);
+  assert.equal(body.platforms.youtube.status, "ok");
+  assert.ok(redis.has(KEYS.snapshot));
+});
+
+await test("background refresh failing doesn't break anything", async () => {
+  makeDue();
+  const pending = [];
+  youtube = { ...youtube, mode: "down", calls: 0 };
+  const response = await stats.fetch(new Request("https://generosomm.dev/api/stats"), { waitUntil: (p) => pending.push(p) });
+  assert.equal(response.status, 200);
+  await pending[0];
+  youtube.mode = "ok";
+  const after = await get();
+  assert.equal(after.body.platforms.youtube.status, "stale", "kept the last good numbers");
+  assert.equal(redis.has(KEYS.lock("refresh")), false);
+});
+
+/* ---- Visit counter + visitor notes --------------------------------- */
+
+const BROWSER = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
+const from = (ip, extra = {}) => ({ Origin: "https://generosomm.dev", "User-Agent": BROWSER, "X-Forwarded-For": ip, ...extra });
+const visit = (headers) => visitApi.fetch(new Request("https://generosomm.dev/api/visit", { method: "POST", headers }));
+const feedback = (init = {}, path = "/api/feedback") => feedbackApi.fetch(new Request(`https://generosomm.dev${path}`, init));
+const note = (ip, fields = {}) => feedback({
+  method: "POST",
+  headers: { ...from(ip), "Content-Type": "application/json" },
+  body: JSON.stringify({ name: "Ana Santos", role: "Recruiter", message: "Clean work and fast replies, great to work with.", website: "", startedAt: Date.now() - 10_000, ...fields })
+});
+
+await test("visits: counted once per visitor per day, never from bots or other sites", async () => {
+  assert.equal((await visit({ "User-Agent": BROWSER })).status, 403, "no Origin: not from a page");
+  assert.equal((await visit(from("1.1.1.1", { Origin: "https://evil.example" }))).status, 403);
+
+  let body = await (await visit(from("203.0.113.7"))).json();
+  assert.equal(body.counted, true);
+  assert.equal(body.total, 1);
+  assert.equal(body.since, new Date().toISOString().slice(0, 10));
+
+  body = await (await visit(from("203.0.113.7"))).json();
+  assert.equal(body.counted, false, "same visitor, same day");
+  assert.equal(body.total, 1);
+
+  body = await (await visit(from("198.51.100.9"))).json();
+  assert.equal(body.total, 2, "a different visitor counts");
+
+  body = await (await visit(from("192.0.2.1", { "User-Agent": "Googlebot/2.1" }))).json();
+  assert.equal(body.counted, false);
+  assert.equal(body.total, 2);
+
+  const get = await visitApi.fetch(new Request("https://generosomm.dev/api/visit"));
+  assert.match(get.headers.get("cache-control"), /s-maxage=60/);
+  assert.equal((await get.json()).total, 2);
+});
+
+await test("visits: IP addresses are never stored, only salted one-way hashes", async () => {
+  const dump = JSON.stringify([...redis.entries()].map(([k, v]) => [k, v instanceof Set ? [...v] : v instanceof Map ? [...v] : v]));
+  assert.ok(!dump.includes("203.0.113.7") && !dump.includes("198.51.100.9"));
+});
+
+await test("notes: a valid note waits for approval and isn't public", async () => {
+  const response = await note("203.0.113.20");
+  assert.equal(response.status, 202);
+  const stored = [...redis.get(KEYS.notes).values()].map((v) => JSON.parse(v));
+  assert.equal(stored.length, 1);
+  assert.equal(stored[0].status, "pending");
+  const pub = await (await feedback()).json();
+  assert.deepEqual(pub.notes, []);
+});
+
+await test("notes: spam traps answer 'ok' but store nothing", async () => {
+  const before = redis.get(KEYS.notes).size;
+  assert.equal((await note("203.0.113.21", { website: "http://spam.example" })).status, 202, "honeypot filled");
+  assert.equal((await note("203.0.113.22", { startedAt: Date.now() - 500 })).status, 202, "sent within 3 s");
+  assert.equal(redis.get(KEYS.notes).size, before);
+});
+
+await test("notes: bad input is refused with a reason", async () => {
+  const reason = async (fields) => (await (await note("203.0.113.30", fields)).json()).error;
+  assert.equal(await reason({ name: "A" }), "name");
+  assert.equal(await reason({ message: "too short" }), "message");
+  assert.equal(await reason({ message: "Great work, see my site at www.example.com for more" }), "links");
+  assert.equal(await reason({ message: "Hire me https://x.example/offer now please" }), "links");
+  const noOrigin = await feedback({ method: "POST", headers: { "Content-Type": "application/json", "User-Agent": BROWSER }, body: "{}" });
+  assert.equal(noOrigin.status, 403);
+});
+
+await test("notes: at most 3 per visitor per day", async () => {
+  for (let i = 0; i < 3; i += 1) assert.equal((await note("203.0.113.40", { message: `Note number ${i} from the same visitor here.` })).status, 202);
+  assert.equal((await note("203.0.113.40")).status, 429);
+});
+
+await test("notes: invisible characters stripped, text kept as text", async () => {
+  assert.equal(cleanText("  Hi\u200B there\u202E <b>x</b>\n\n "), "Hi there <b>x</b>");
+});
+
+await test("notes admin: secret required; approve, hide and delete", async () => {
+  assert.equal((await feedback({}, "/api/feedback?all=1")).status, 401);
+  const admin = { Authorization: "Bearer admin-secret", "Content-Type": "application/json" };
+  const all = await (await feedback({ headers: admin }, "/api/feedback?all=1")).json();
+  const target = all.notes.find((n) => n.message === "Clean work and fast replies, great to work with.");
+  assert.ok(target);
+
+  const denied = await feedback({ method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "approve", id: target.id }) });
+  assert.equal(denied.status, 401, "moderation needs the secret");
+
+  await feedback({ method: "POST", headers: admin, body: JSON.stringify({ action: "approve", id: target.id }) });
+  let pub = await (await feedback()).json();
+  assert.equal(pub.notes.length, 1);
+  assert.deepEqual(Object.keys(pub.notes[0]).sort(), ["date", "id", "message", "name", "role"], "public fields only");
+  assert.equal(pub.notes[0].message, "Clean work and fast replies, great to work with.");
+
+  await feedback({ method: "POST", headers: admin, body: JSON.stringify({ action: "hide", id: target.id }) });
+  pub = await (await feedback()).json();
+  assert.equal(pub.notes.length, 0, "hidden again");
+
+  await feedback({ method: "POST", headers: admin, body: JSON.stringify({ action: "delete", id: target.id }) });
+  const after = await (await feedback({ headers: admin }, "/api/feedback?all=1")).json();
+  assert.equal(after.notes.some((n) => n.id === target.id), false);
+});
+
+await test("health: shows pending notes and visit totals", async () => {
+  const response = await health.fetch(new Request("https://generosomm.dev/api/health", { headers: { Authorization: "Bearer admin-secret" } }));
+  const body = await response.json();
+  assert.ok(body.storage.notes.pending >= 3);
+  assert.equal(body.storage.visits.total, 2);
+  assert.equal(body.storage.visits.today, 2);
 });
 
 process.stdout.write(`Live stats backend\n${results.join("\n")}\n`);

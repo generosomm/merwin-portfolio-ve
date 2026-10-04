@@ -411,6 +411,22 @@ expect:
   live sum, which is why the site keeps a documented baseline.
 - Posts inside carousels have no individual insights.
 - Numbers can lag up to 48 hours.
+- Instagram Login doesn't expose captions, so Instagram top posts show
+  without a caption.
+
+### 8b. Connect @eroedtx (once the Phase 4 code is deployed)
+
+1. Make sure the three `INSTAGRAM_*` variables are in Vercel and you've
+   redeployed.
+2. Open `https://generosomm.dev/api/auth/instagram/start?key=YOUR_ADMIN_SECRET`
+   (the bare domain, not `www`) and log in as **@eroedtx**.
+3. Allow both permissions → you land on **"Instagram connected"** with your
+   followers and post count.
+4. Views fill in over the next few refreshes: one request per post, about 24
+   posts per refresh. Speed it up with `/api/refresh?key=…` a few minutes apart.
+5. The token lasts 60 days and the site renews it weekly, so you won't need
+   to reconnect unless you revoke access. `/api/health` shows
+   `tokens.instagram.accessTokenDaysLeft`.
 
 ---
 
@@ -443,6 +459,22 @@ If it is a Page:
 
 Your Facebook account is the app's admin, so Development mode is enough here
 too.
+
+### 9b. Connect the Page (once deployed)
+
+1. Open `https://generosomm.dev/api/auth/facebook/start?key=YOUR_ADMIN_SECRET`.
+2. Log in with the Facebook account that manages the Page. On Meta's
+   **"choose Pages"** screen, tick **your Page**, then allow the permissions.
+3. You land on **"Facebook connected"** with the Page's followers and the
+   views of its newest posts.
+4. If it says **`page_not_managed`**, that login doesn't manage the Page in
+   `FACEBOOK_PAGE_ID`, or the Page wasn't ticked. Connect again and tick it.
+
+The Page token doesn't expire. It only stops working if you remove the app,
+lose your role on the Page, or change your Facebook password; then connect
+again. Meta retired several Page metrics in 2025–26: if post views get refused,
+the site keeps showing the Page's followers and marks views as unavailable
+instead of failing.
 
 ---
 

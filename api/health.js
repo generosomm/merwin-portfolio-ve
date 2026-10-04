@@ -23,11 +23,14 @@ async function tokenReport(provider) {
   if (!record) return { connected: false };
   const minutesLeft = (iso) => (iso ? Math.round((new Date(iso) - Date.now()) / 60_000) : null);
   const refreshMinutes = minutesLeft(record.refreshExpiresAt);
+  const accessMinutes = minutesLeft(record.accessExpiresAt);
   return {
     connected: true,
     connectedAt: record.connectedAt || null,
-    accessTokenMinutesLeft: minutesLeft(record.accessExpiresAt),
-    refreshTokenDaysLeft: refreshMinutes === null ? null : Math.floor(refreshMinutes / 1440),
+    accessTokenMinutesLeft: accessMinutes,
+    accessTokenDaysLeft: accessMinutes === null ? null : Math.floor(accessMinutes / 1440), // Instagram: renewed weekly
+    refreshTokenDaysLeft: refreshMinutes === null ? null : Math.floor(refreshMinutes / 1440), // TikTok: 365 days
+    page: record.pageName || undefined, // Facebook: the connected Page (its token doesn't expire)
     scope: record.scope || ""
   };
 }
@@ -49,10 +52,12 @@ async function storageReport() {
   if (!storageConfigured()) return { configured: false, reachable: false };
   try {
     const reachable = await ping();
-    const [snapshot, youtubeUnitsToday, tiktok, notes, visits] = await Promise.all([
+    const [snapshot, youtubeUnitsToday, tiktok, instagram, facebook, notes, visits] = await Promise.all([
       getSnapshot(),
       getQuotaUnits("youtube"),
       tokenReport("tiktok"),
+      tokenReport("instagram"),
+      tokenReport("facebook"),
       allNotes(),
       pipeline([["GET", KEYS.visitsTotal], ["GET", KEYS.visitsDay(utcDay())], ["GET", KEYS.visitsSince]])
     ]);
@@ -73,7 +78,7 @@ async function storageReport() {
           }
         : null,
       quota: { youtubeUnitsToday, youtubeDailyLimit: 10_000 },
-      tokens: { tiktok },
+      tokens: { tiktok, instagram, facebook },
       notes: {
         pending: notes.filter((note) => note.status === "pending").length,
         approved: notes.filter((note) => note.status === "approved").length

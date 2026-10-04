@@ -182,6 +182,84 @@ function tiktokResponse(url, init) {
   throw new Error(`fake tiktok: ${url.pathname}`);
 }
 
+/* ---- Fake Instagram + Facebook (Meta) ---------------------------- */
+const makeMedia = (count) => Array.from({ length: count }, (_, i) => ({
+  id: `1790000000${String(i).padStart(4, "0")}`,
+  media_type: i % 10 === 9 ? "CAROUSEL_ALBUM" : "VIDEO",
+  permalink: `https://www.instagram.com/reel/code${i}/`,
+  thumbnail_url: `https://scontent.cdninstagram.com/v/t51/thumb-${i}.jpg?oe=1`,
+  timestamp: "2026-09-01T00:00:00+0000",
+  like_count: 10,
+  views: (i + 1) * 1000
+}));
+let IG_MEDIA = makeMedia(120);
+let meta = { igToken: "ig-long-1", igCalls: 0, fbCalls: 0, fbPosts: "ok", fbPages: [{ id: "PAGE1", name: "ERO | VISUALS", access_token: "fb-page" }] };
+
+function igResponse(url, init) {
+  meta.igCalls += 1;
+  if (url.hostname === "api.instagram.com" && url.pathname === "/oauth/access_token") {
+    const form = new URLSearchParams(init.body);
+    if (form.get("code") !== "ig-code") return json(400, { error_type: "OAuthException", code: 400, error_message: "bad code" });
+    return json(200, { data: [{ access_token: "ig-short", user_id: "17841", permissions: "instagram_business_basic,instagram_business_manage_insights" }] });
+  }
+  if (url.pathname === "/access_token") {
+    assert.equal(url.searchParams.get("grant_type"), "ig_exchange_token");
+    return json(200, { access_token: meta.igToken, token_type: "bearer", expires_in: 5183944 });
+  }
+  if (url.pathname === "/refresh_access_token") {
+    meta.igToken = "ig-long-2";
+    return json(200, { access_token: meta.igToken, token_type: "bearer", expires_in: 5183944 });
+  }
+  const auth = new Headers(init.headers).get("authorization");
+  if (auth !== `Bearer ${meta.igToken}`) return json(400, { error: { message: "Invalid OAuth access token", type: "OAuthException", code: 190 } });
+  if (url.pathname === "/v26.0/me") return json(200, { user_id: "17841", username: "eroedtx", followers_count: 12000, media_count: IG_MEDIA.length });
+  if (url.pathname === "/v26.0/me/media") {
+    const start = Number(url.searchParams.get("after") || 0);
+    const size = Number(url.searchParams.get("limit"));
+    const page = IG_MEDIA.slice(start, start + size).map(({ views, ...rest }) => rest);
+    const end = start + size;
+    return json(200, { data: page, paging: { cursors: { after: String(end) }, ...(end < IG_MEDIA.length ? { next: "https://graph.instagram.com/next" } : {}) } });
+  }
+  const insights = /^\/v26\.0\/(\d+)\/insights$/.exec(url.pathname);
+  if (insights) {
+    const item = IG_MEDIA.find((m) => m.id === insights[1]);
+    if (!item || item.media_type === "CAROUSEL_ALBUM") return json(400, { error: { message: "metric not supported", code: 100 } });
+    return json(200, { data: [{ name: "views", period: "lifetime", values: [{ value: item.views }] }] });
+  }
+  throw new Error(`fake instagram: ${url.pathname}`);
+}
+
+function fbResponse(url, init) {
+  meta.fbCalls += 1;
+  if (url.pathname === "/v26.0/oauth/access_token") {
+    if (url.searchParams.get("grant_type") === "fb_exchange_token") return json(200, { access_token: "fb-long", token_type: "bearer", expires_in: 5184000 });
+    if (url.searchParams.get("code") !== "fb-code") return json(400, { error: { message: "bad code", code: 100 } });
+    return json(200, { access_token: "fb-short", token_type: "bearer", expires_in: 3600 });
+  }
+  const auth = new Headers(init.headers).get("authorization");
+  if (url.pathname === "/v26.0/me/accounts") {
+    assert.equal(auth, "Bearer fb-long");
+    return json(200, { data: meta.fbPages });
+  }
+  if (url.pathname === "/v26.0/me/permissions") {
+    return json(200, { data: ["pages_show_list", "pages_read_engagement", "read_insights"].map((permission) => ({ permission, status: "granted" })) });
+  }
+  if (auth !== "Bearer fb-page") return json(400, { error: { message: "Invalid token", code: 190 } });
+  if (url.pathname === "/v26.0/PAGE1") return json(200, { name: "ERO | VISUALS", username: "eroedtx", followers_count: 5000 });
+  if (url.pathname === "/v26.0/PAGE1/posts") {
+    if (meta.fbPosts === "retired") return json(400, { error: { message: "(#100) The value must be a valid insights metric", code: 100 } });
+    const posts = Array.from({ length: 3 }, (_, i) => ({
+      id: `PAGE1_${i}`,
+      message: `Page post ${i}`,
+      permalink_url: `https://www.facebook.com/eroedtx/posts/${i}`,
+      full_picture: `https://scontent.xx.fbcdn.net/v/p${i}.jpg`,
+      insights: { data: [{ name: "post_media_view", period: "lifetime", values: [{ value: (i + 1) * 100 }] }] }
+    }));
+    return json(200, { data: posts, paging: { cursors: { after: "x" } } });
+  }
+  throw new Error(`fake facebook: ${url.pathname}`);
+}
+
 function json(status, body) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 }
@@ -196,6 +274,11 @@ globalThis.fetch = async (input, init = {}) => {
   }
   if (url.hostname === "www.googleapis.com") return youtubeResponse(url);
   if (url.hostname === "open.tiktokapis.com") return tiktokResponse(url, init);
+  if (url.hostname === "api.instagram.com" || url.hostname === "graph.instagram.com") return igResponse(url, init);
+  if (url.hostname === "graph.facebook.com") return fbResponse(url, init);
+  if (url.hostname.endsWith(".cdninstagram.com") || url.hostname.endsWith(".fbcdn.net")) {
+    return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), { status: 200, headers: { "Content-Type": "image/jpeg", "Content-Length": "4" } });
+  }
   if (url.hostname.endsWith(".tiktokcdn.com")) {
     return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), { status: 200, headers: { "Content-Type": "image/jpeg", "Content-Length": "4" } });
   }
@@ -840,6 +923,146 @@ await test("health: shows pending notes and visit totals", async () => {
   assert.ok(body.storage.notes.pending >= 3);
   assert.equal(body.storage.visits.total, 2);
   assert.equal(body.storage.visits.today, 2);
+});
+
+/* ---- Instagram + Facebook (Phase 4) -------------------------------- */
+
+const { instagramLimits } = await import("../lib/providers/instagram.js");
+const connect = async (provider, code) => {
+  const start = await call(oauth, `/api/auth/${provider}/start?key=admin-secret`);
+  const location = new URL(start.headers.get("location"));
+  const st = location.searchParams.get("state");
+  const ck = start.headers.get("set-cookie").split(";")[0];
+  const response = await call(oauth, `/api/auth/${provider}/callback?code=${code}&state=${st}`, { headers: { Cookie: ck } });
+  return { location, response, html: await response.text() };
+};
+
+await test("Instagram before connecting: not shown, no calls", async () => {
+  redis.clear();
+  meta.igCalls = 0;
+  const { body } = await get();
+  assert.equal(body.platforms.instagram.status, "disabled");
+  assert.equal(meta.igCalls, 0);
+});
+
+await test("Instagram connect: Instagram Login, long-lived token stored, stats at once", async () => {
+  Object.assign(process.env, {
+    INSTAGRAM_APP_ID: "ig-app",
+    INSTAGRAM_APP_SECRET: "ig-secret",
+    INSTAGRAM_REDIRECT_URI: "https://generosomm.dev/api/auth/instagram/callback"
+  });
+  instagramLimits.viewsPerRun = 50;
+  const { location, response, html } = await connect("instagram", "ig-code");
+  assert.equal(location.origin + location.pathname, "https://www.instagram.com/oauth/authorize");
+  assert.equal(location.searchParams.get("scope"), "instagram_business_basic,instagram_business_manage_insights");
+  assert.equal(response.status, 200);
+  assert.match(html, /Instagram connected/);
+  assert.ok(!html.includes("ig-long") && !html.includes("ig-secret"));
+  const stored = JSON.parse(redis.get(KEYS.token("instagram")));
+  assert.equal(stored.accessToken, "ig-long-1", "the 60-day token, not the 1-hour one");
+  assert.ok((new Date(stored.accessExpiresAt) - Date.now()) / 86_400_000 > 59);
+});
+
+await test("Instagram: posts listed, views filled in over several refreshes, carousels skipped", async () => {
+  let { body } = await get();
+  let ig = body.platforms.instagram;
+  assert.equal(ig.status, "ok");
+  assert.equal(ig.followers, 12000);
+  assert.equal(ig.posts, 120);
+  assert.match(ig.viewsMethod, /partial: sum of post views across 45 of 120/);
+
+  for (let i = 0; i < 2; i += 1) { makeDue(); ({ body } = await get()); }
+  ig = body.platforms.instagram;
+  const expected = IG_MEDIA.filter((m) => m.media_type !== "CAROUSEL_ALBUM").reduce((s, m) => s + m.views, 0);
+  assert.equal(ig.liveViews, expected, "every non-carousel post counted once");
+  assert.doesNotMatch(ig.viewsMethod, /partial/);
+  assert.equal(ig.topPosts[0].url, "https://www.instagram.com/reel/code118/", "#119 is a carousel (no views)");
+  assert.match(ig.topPosts[0].thumbnail.url, /^\/api\/thumb\?p=instagram&id=/);
+  const thumbRes = await call(thumb, ig.topPosts[0].thumbnail.url);
+  assert.equal(thumbRes.status, 200, "Instagram CDN is on the thumbnail allow-list");
+});
+
+await test("Instagram: token renewed after a week, new token saved", async () => {
+  const record = JSON.parse(redis.get(KEYS.token("instagram")));
+  record.renewedAt = new Date(Date.now() - 8 * 86_400_000).toISOString();
+  redis.set(KEYS.token("instagram"), JSON.stringify(record));
+  makeDue();
+  const { body } = await get();
+  assert.equal(body.platforms.instagram.status, "ok");
+  assert.equal(JSON.parse(redis.get(KEYS.token("instagram"))).accessToken, "ig-long-2");
+});
+
+await test("Instagram: expired token -> error, last numbers kept, says how to fix", async () => {
+  const record = JSON.parse(redis.get(KEYS.token("instagram")));
+  record.accessExpiresAt = new Date(Date.now() - 1000).toISOString();
+  redis.set(KEYS.token("instagram"), JSON.stringify(record));
+  logs.length = 0;
+  makeDue();
+  const { body } = await get();
+  assert.equal(body.platforms.instagram.status, "error");
+  assert.equal(body.platforms.instagram.followers, 12000);
+  assert.ok(logs.some((l) => l.includes("re-run /api/auth/instagram/start")));
+});
+
+await test("Facebook without FACEBOOK_PAGE_ID: disabled, Meta never called", async () => {
+  meta.fbCalls = 0;
+  makeDue();
+  const { body } = await get();
+  assert.equal(body.platforms.facebook.status, "disabled");
+  assert.equal(meta.fbCalls, 0);
+});
+
+await test("Facebook connect: wrong Page is refused with a clear hint", async () => {
+  Object.assign(process.env, {
+    META_APP_ID: "meta-app",
+    META_APP_SECRET: "meta-secret",
+    FACEBOOK_REDIRECT_URI: "https://generosomm.dev/api/auth/facebook/callback",
+    FACEBOOK_PAGE_ID: "PAGE1"
+  });
+  meta.fbPages = [{ id: "OTHER", name: "Someone else", access_token: "x" }];
+  const { response, html } = await connect("facebook", "fb-code");
+  assert.equal(response.status, 502);
+  assert.match(html, /page_not_managed/);
+  assert.equal(redis.has(KEYS.token("facebook")), false);
+  meta.fbPages = [{ id: "PAGE1", name: "ERO | VISUALS", access_token: "fb-page" }];
+});
+
+await test("Facebook connect: Page token stored, followers and post views live", async () => {
+  const { location, response, html } = await connect("facebook", "fb-code");
+  assert.equal(location.origin + location.pathname, "https://www.facebook.com/v26.0/dialog/oauth");
+  assert.equal(location.searchParams.get("scope"), "pages_show_list,pages_read_engagement,read_insights");
+  assert.equal(response.status, 200);
+  assert.ok(!html.includes("fb-page") && !html.includes("meta-secret"));
+  const stored = JSON.parse(redis.get(KEYS.token("facebook")));
+  assert.equal(stored.pageId, "PAGE1");
+  const { body } = await get();
+  const fb = body.platforms.facebook;
+  assert.equal(fb.status, "ok");
+  assert.equal(fb.followers, 5000);
+  assert.equal(fb.liveViews, 600);
+  assert.equal(fb.posts, null, "no total post count from the Graph API");
+  assert.equal(fb.topPosts[0].title, "Page post 2");
+});
+
+await test("Facebook: a retired views metric keeps followers, marks views unavailable", async () => {
+  meta.fbPosts = "retired";
+  makeDue();
+  const { body } = await get();
+  meta.fbPosts = "ok";
+  const fb = body.platforms.facebook;
+  assert.equal(fb.status, "ok");
+  assert.equal(fb.followers, 5000);
+  assert.equal(fb.liveViews, null);
+  assert.match(fb.viewsMethod, /unavailable/);
+});
+
+await test("health: Instagram days left and the connected Facebook Page, no tokens", async () => {
+  const response = await health.fetch(new Request("https://generosomm.dev/api/health", { headers: { Authorization: "Bearer admin-secret" } }));
+  const text = await response.text();
+  const tokens = JSON.parse(text).storage.tokens;
+  assert.equal(tokens.facebook.page, "ERO | VISUALS");
+  assert.equal(tokens.instagram.connected, true);
+  assert.ok(!text.includes("fb-page") && !text.includes("ig-long"));
 });
 
 process.stdout.write(`Live stats backend\n${results.join("\n")}\n`);

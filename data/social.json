@@ -1,6 +1,11 @@
 {
   "refreshMinutes": 30,
-  "showPlatforms": ["tiktok", "youtube", "instagram", "facebook"],
+  "showPlatforms": [
+    "tiktok",
+    "youtube",
+    "instagram",
+    "facebook"
+  ],
   "topPostsPerPlatform": 6,
   "platforms": {
     "tiktok": {
@@ -34,7 +39,7 @@
     "facebook": {
       "handle": "eroedtx",
       "url": "https://www.facebook.com/eroedtx",
-      "enabled": false,
+      "enabled": true,
       "documented": null
     }
   },
@@ -85,7 +90,7 @@
     "trend": "Followers over the last {days} days, from {from} to {to}",
     "viewsCard": {
       "label": "Views, documented + live",
-      "detail": "Live from TikTok and YouTube, never below the documented screenshots"
+      "detail": "Live from each connected platform, never below the documented screenshots"
     },
     "methods": {
       "summary": "How these numbers are counted",
@@ -93,7 +98,9 @@
       "baseline": "Documented baseline",
       "notes": {
         "tiktok": "From TikTok's official API (developer sandbox, connected to my own account only).",
-        "youtube": "From the YouTube Data API's public channel statistics."
+        "youtube": "From the YouTube Data API's public channel statistics.",
+        "instagram": "From Instagram's official API (Professional account insights). Meta keeps post views for 2 years and none for posts inside carousels, so older views aren't included.",
+        "facebook": "From Facebook's Page insights (my own Page only). Views are summed over the newest posts."
       }
     },
     "topPosts": {
@@ -105,5 +112,5 @@
       "open": "Open on {platform}"
     }
   },
-  "note": "Public, non-secret settings for the live stats (read by /api and by js/live-stats.js). display holds every word the live stats show on the page; topPosts.show false hides the top-posts strip. refreshMinutes: how old the cached snapshot may get before /api/stats fetches again (15 to 1440). showPlatforms: which platforms the page shows, in order. platforms.*.enabled: false stops the server from calling that platform at all. platforms.*.documented: a total you can prove with a screenshot; the site shows max(live, documented) per platform, so it never double counts. facebook stays disabled until you confirm facebook.com/eroedtx is a Page (see docs/SOCIAL-API-SETUP.md step 9). Never put keys or tokens in this file: it is public."
+  "note": "Public, non-secret settings for the live stats (read by /api and by js/live-stats.js). display holds every word the live stats show on the page; topPosts.show false hides the top-posts strip. refreshMinutes: how old the cached snapshot may get before /api/stats fetches again (15 to 1440). showPlatforms: which platforms the page shows, in order. platforms.*.enabled: false stops the server from calling that platform at all. platforms.*.documented: a total you can prove with a screenshot; the site shows max(live, documented) per platform, so it never double counts. facebook is enabled but stays off (status disabled, no calls to Meta) until FACEBOOK_PAGE_ID is set in Vercel, because only Pages have an insights API (see docs/SOCIAL-API-SETUP.md step 9). Never put keys or tokens in this file: it is public."
 }

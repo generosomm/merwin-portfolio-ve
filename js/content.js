@@ -1151,6 +1151,28 @@ function renderStack(data) {
    form service when an access key is set, otherwise by opening the
    visitor's email app with the brief filled in. Every label and
    message comes from data/11-contact.json. */
+/* ---- Fold: a form tucked behind a 3D key ---------------------------
+   The key (a button) carries the form's title; pressing it unfolds
+   the form below like a hinged sheet. js/interactions.js closes the
+   folds on load and handles the toggle; without it, the forms simply
+   stay open. Used by the contact brief and the visitor-note form.
+---------------------------------------------------------------- */
+
+function foldBlock(id, label, body, { hidden = false, attrs = "" } = {}) {
+  return `
+    <div class="fold" data-fold${hidden ? " hidden" : ""} ${attrs}>
+      <button class="fold-key" type="button" aria-expanded="true" aria-controls="${attr(id)}" data-fold-toggle>
+        <span class="fold-cap">
+          <span class="fold-label">${text(label)}</span>
+          <span class="fold-icon" aria-hidden="true"></span>
+        </span>
+      </button>
+      <div class="fold-panel" id="${attr(id)}" data-fold-panel>
+        <div class="fold-sheet">${body}</div>
+      </div>
+    </div>`;
+}
+
 function projectForm(form, address) {
   if (!form || !hasText(form.submit)) return "";
   const options = records(form.options)
@@ -1163,11 +1185,10 @@ function projectForm(form, address) {
     deadline: form.deadline, message: form.message
   };
 
-  return `
+  return foldBlock("project-brief-panel", form.heading, `
     <form class="brief" id="project-brief" novalidate
       data-endpoint="${attr(form.endpoint || "")}" data-key="${attr(form.accessKey || "")}"
       data-address="${attr(address || "")}" data-messages="${attr(JSON.stringify(messages))}">
-      <h3 class="brief-heading">${text(form.heading)}</h3>
       <div class="brief-grid">
         <label class="brief-field">
           <span>${text(form.name)}</span>
@@ -1194,7 +1215,7 @@ function projectForm(form, address) {
         <button class="button button-primary" type="submit">${text(form.submit)}</button>
         <p class="brief-status" role="status" aria-live="polite"></p>
       </div>
-    </form>`;
+    </form>`);
 }
 
 function renderContact(data) {
@@ -1284,8 +1305,7 @@ function renderNotes(data) {
         <ul class="notes-list" data-notes-list aria-label="${attr(data.listLabel)}"></ul>
         <p class="notes-empty" data-notes-empty hidden>${text(data.empty)}</p>
       </div>
-      <form class="brief notes-form" data-notes-form novalidate hidden>
-        <h3 class="brief-heading">${text(form.heading)}</h3>
+      ${foldBlock("notes-form-panel", form.heading, `<form class="brief notes-form" data-notes-form novalidate>
         <div class="brief-grid">
           <label class="brief-field">
             <span>${text(form.name)}</span>
@@ -1310,7 +1330,7 @@ function renderNotes(data) {
           <button class="button button-primary" type="submit">${text(form.submit)}</button>
           <p class="brief-status" data-notes-status role="status" aria-live="polite"></p>
         </div>
-      </form>
+      </form>`, { hidden: true, attrs: "data-notes-fold" })}
     </div>`;
 }
 

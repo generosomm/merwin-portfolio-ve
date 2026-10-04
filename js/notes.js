@@ -142,7 +142,7 @@
       if (!ok) throw new Error("unavailable");
       renderList(listNode, emptyNode, body.notes);
       block.hidden = false;
-      form.hidden = false;
+      (form.closest("[data-notes-fold]") || form).hidden = false; // the 3D key + folded form
       wireForm(form, copy.form || {});
     } catch (error) {
       /* No API (local preview, or it's down): leave the intro only. */

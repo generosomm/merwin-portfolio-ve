@@ -889,13 +889,69 @@
     if (document.fonts?.ready) document.fonts.ready.then(fit);
   }
 
+  /* ---- Folds: forms tucked behind a 3D key --------------------------
+     Markup from js/content.js (foldBlock). Closed on load; the key
+     toggles. While closed the form is inert (can't be tabbed into or
+     read out), and while it unfolds the sheet clips its content, then
+     un-clips once settled so focus outlines aren't cut off. On a mouse,
+     the key tilts a few degrees toward the pointer. */
+  function initFolds() {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    document.querySelectorAll("[data-fold]").forEach((fold) => {
+      const key = fold.querySelector("[data-fold-toggle]");
+      const panel = fold.querySelector("[data-fold-panel]");
+      if (!key || !panel) return;
+
+      const set = (open) => {
+        key.setAttribute("aria-expanded", String(open));
+        fold.classList.toggle("is-open", open);
+        fold.classList.remove("is-settled");
+        panel.inert = !open;
+        /* No transition will run (reduced motion, or not animated yet): settle now. */
+        if (open && (reduce || !fold.classList.contains("fold-ready"))) fold.classList.add("is-settled");
+      };
+
+      fold.classList.add("fold-enhanced");
+      set(false);
+      /* Transitions only after the closed state has painted, so the
+         page doesn't animate the forms shut on load. */
+      window.requestAnimationFrame(() => window.requestAnimationFrame(() => fold.classList.add("fold-ready")));
+
+      panel.addEventListener("transitionend", (event) => {
+        if (event.target !== panel || event.propertyName !== "grid-template-rows") return;
+        if (fold.classList.contains("is-open")) fold.classList.add("is-settled");
+        window.ScrollTrigger?.refresh(); // sections below moved
+      });
+
+      key.addEventListener("click", () => set(key.getAttribute("aria-expanded") !== "true"));
+      fold.openFold = () => set(true);
+
+      if (finePointer && !reduce) {
+        key.addEventListener("pointermove", (event) => {
+          const box = key.getBoundingClientRect();
+          const x = (event.clientX - box.left) / box.width - 0.5;
+          const y = (event.clientY - box.top) / box.height - 0.5;
+          key.style.setProperty("--tilt-x", `${(-y * 14).toFixed(2)}deg`);
+          key.style.setProperty("--tilt-y", `${(x * 10).toFixed(2)}deg`);
+        });
+        key.addEventListener("pointerleave", () => {
+          key.style.removeProperty("--tilt-x");
+          key.style.removeProperty("--tilt-y");
+        });
+      }
+    });
+  }
+
   /* A service card's "Start a project" preselects that service in the
-     form; the jump itself is the normal in-page link. */
+     form and unfolds it; the jump itself is the normal in-page link. */
   function initServiceLinks() {
     const select = document.querySelector('#project-brief select[name="service"]');
     if (!select) return;
     document.querySelectorAll(".service-cta[data-service]").forEach((link) => {
       link.addEventListener("click", () => {
+        select.closest("[data-fold]")?.openFold?.();
         if ([...select.options].some((option) => option.value === link.dataset.service)) {
           select.value = link.dataset.service;
         }
@@ -938,6 +994,7 @@
     initStackLogos();
     initGithubGraph();
     initLocalTime();
+    initFolds();
     initProjectForm();
     initServiceLinks();
     initStackFit();

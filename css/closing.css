@@ -1276,3 +1276,160 @@
     width: 100%;
   }
 }
+
+/* ---- Fold: a form tucked behind a 3D key ----------------------------
+   The key is a flat cap sitting on a thin green edge (its side), so it
+   reads as a raised key. Hover lifts it and tilts it toward the pointer
+   (--tilt-x/--tilt-y from js/interactions.js); pressing pushes it down
+   flat, and it stays pressed while its form is open. The form unfolds
+   below it like a hinged sheet: the row grows from 0 while the sheet
+   swings down from the top edge.
+   Without JS (.fold-enhanced missing) everything simply shows open. */
+
+.fold {
+  max-width: 56rem;
+  margin: var(--head-gap) auto 0;
+  perspective: 1400px;
+}
+
+.fold-key {
+  --depth: 6px;
+  display: flex;
+  margin: 0 auto;
+  padding: 0 0 var(--depth);
+  border: 0;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  perspective: 600px;
+}
+
+.fold-cap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-5);
+  min-height: 3.5rem;
+  padding: 0 var(--s-5) 0 var(--s-6);
+  border: 1px solid var(--line-strong);
+  background: var(--ink-850);
+  box-shadow: 0 var(--depth) 0 0 var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(0);
+  transform-style: preserve-3d;
+  transition:
+    transform 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
+}
+
+/* The plus, drawn with two bars; it turns into a cross when open. */
+.fold-icon {
+  position: relative;
+  width: 0.85rem;
+  height: 0.85rem;
+  color: var(--accent);
+  transition: transform 0.35s var(--ease-out);
+}
+
+.fold-icon::before,
+.fold-icon::after {
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 2px;
+  margin-top: -1px;
+  background: currentColor;
+  content: "";
+}
+
+.fold-icon::after {
+  transform: rotate(90deg);
+}
+
+.fold-key:hover .fold-cap,
+.fold-key:focus-visible .fold-cap {
+  border-color: var(--accent);
+  box-shadow: 0 calc(var(--depth) + 2px) 0 0 var(--accent);
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-2px);
+}
+
+.fold-key:focus-visible {
+  outline: none;
+}
+
+.fold-key:focus-visible .fold-cap {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Pressed: pushed all the way down, the green side gone. */
+.fold-key:active .fold-cap,
+.fold.is-open .fold-cap {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0 var(--accent);
+  transform: rotateX(0deg) rotateY(0deg) translateY(var(--depth));
+}
+
+.fold.is-open .fold-icon {
+  transform: rotate(135deg);
+}
+
+/* The panel: open by default (no JS), folded once enhanced. */
+.fold-panel {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.fold-sheet {
+  min-height: 0;
+}
+
+.fold-sheet > .brief {
+  margin-top: var(--s-5);
+}
+
+.fold-enhanced .fold-sheet {
+  overflow: hidden;
+  transform-origin: top center;
+}
+
+.fold-enhanced:not(.is-open) .fold-panel {
+  grid-template-rows: 0fr;
+}
+
+.fold-enhanced:not(.is-open) .fold-sheet {
+  opacity: 0;
+  transform: rotateX(-70deg);
+}
+
+/* Once fully open, stop clipping so focus rings show in full. */
+.fold-enhanced.is-settled .fold-sheet {
+  overflow: visible;
+}
+
+.fold-ready .fold-panel {
+  transition: grid-template-rows 0.55s var(--ease-out);
+}
+
+.fold-ready .fold-sheet {
+  transition:
+    transform 0.6s var(--ease-out),
+    opacity 0.4s var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fold-cap,
+  .fold-icon,
+  .fold-ready .fold-panel,
+  .fold-ready .fold-sheet {
+    transition: none;
+  }
+
+  .fold-enhanced:not(.is-open) .fold-sheet {
+    transform: none;
+  }
+}

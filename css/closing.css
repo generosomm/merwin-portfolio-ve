@@ -357,6 +357,21 @@
   margin-right: var(--s-2);
   content: "\00B7";
 }
+/* Optional proof link under a card (e.g. a Trailhead profile). */
+.cert-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  margin-top: var(--s-2);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.cert-link:hover,
+.cert-link:focus-visible {
+  color: var(--accent);
+}
 
 /* ---- Lightbox ------------------------------------------------------ */
 
@@ -380,6 +395,17 @@
   width: 100%;
   max-height: 88svh;
   object-fit: contain;
+}
+
+.lightbox.has-caption img {
+  max-height: 82svh;
+}
+
+.lightbox-caption {
+  margin-top: var(--s-3);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  text-align: center;
 }
 
 .lightbox-close {

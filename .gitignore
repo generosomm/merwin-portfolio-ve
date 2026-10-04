@@ -18,3 +18,10 @@ coverage/
 
 # Vercel CLI link folder (holds your project and org IDs)
 .vercel/
+
+# Unredacted certificate originals: kept outside the repo (see
+# scripts/redact-config.json). Only the redacted WebPs in
+# assets/images/proof/ may be committed.
+assets/images/*Certificate*.jpg
+assets/images/Information Technology Specialist*.jpg
+private-certificates/

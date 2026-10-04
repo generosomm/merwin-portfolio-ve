@@ -132,7 +132,8 @@
           "width": 802,
           "height": 620
         },
-        "full": "assets/images/Information Technology Specialist - Network Security.jpg",
+        "full": "assets/images/proof/cert-network-security.webp",
+        "caption": "Signature and IDs redacted for privacy.",
         "alt": "Information Technology Specialist Network Security certificate awarded to Merwin Generoso"
       },
       {
@@ -142,9 +143,10 @@
         "thumb": {
           "src": "assets/images/proof/cert-databases.webp",
           "width": 900,
-          "height": 695
+          "height": 696
         },
-        "full": "assets/images/Information Technology Specialist in Databases.jpg",
+        "full": "assets/images/proof/cert-databases-full.webp",
+        "caption": "Signature and IDs redacted for privacy.",
         "alt": "Information Technology Specialist Databases certificate awarded to Merwin Generoso"
       },
       {
@@ -156,8 +158,14 @@
           "width": 800,
           "height": 450
         },
-        "full": "assets/images/Agentblazer Champion Certificate of Completion.jpg",
-        "alt": "Salesforce Agentblazer Champion certificate awarded to Merwin Generoso"
+        "full": "assets/images/proof/cert-agentblazer.webp",
+        "caption": "Agentblazer Workshop Completion Certificate",
+        "alt": "Salesforce Agentblazer Workshop completion certificate awarded to Merwin Generoso",
+        "link": {
+          "label": "Champion status on Trailhead",
+          "href": "",
+          "TODO": "Paste your public Trailhead profile URL into href; the link stays hidden until then."
+        }
       }
     ],
     "carousel": {
@@ -171,5 +179,5 @@
     "label": "Preview",
     "close": "Close"
   },
-  "note": "thumb is the small WebP shown on the page; full is the original that opens in the lightbox. Every value must match its screenshot."
+  "note": "thumb is the small WebP shown on the page; full is the larger image that opens in the lightbox. Every value must match its screenshot. Certificate images must only ever be the redacted files from scripts/redact-certs.mjs (never the originals); caption shows under the image in the lightbox, link (optional) shows under the card."
 }

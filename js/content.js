@@ -950,12 +950,13 @@ function renderEdits(data) {
 /* ---- Proof ------------------------------------------------------
    Analytics as hairline rows (big number, what it is, the
    screenshot), certificates as three tilting cards. Every item is a
-   button that opens the full-size original in the lightbox
+   button that opens the full-size image in the lightbox
    (js/interactions.js); the page itself only loads small WebPs.
 ---------------------------------------------------------------- */
 
 function lightboxAttrs(item) {
-  return `type="button" aria-haspopup="dialog" data-lightbox="${attr(item.full)}" data-lightbox-alt="${attr(item.alt)}"`;
+  const caption = hasText(item.caption) ? ` data-lightbox-caption="${attr(item.caption)}"` : "";
+  return `type="button" aria-haspopup="dialog" data-lightbox="${attr(item.full)}" data-lightbox-alt="${attr(item.alt)}"${caption}`;
 }
 
 function renderProof(data) {
@@ -1017,6 +1018,9 @@ function renderProof(data) {
             <span class="cert-title">${text(item.title)}</span>
             <span class="cert-meta"><span>${text(item.issuer)}</span><span>${text(item.year)}</span></span>
           </button>
+          ${hasText(item.link?.href)
+            ? `<a class="cert-link" href="${attr(item.link.href)}" target="_blank" rel="noopener noreferrer">${text(item.link.label)}${ARROW}</a>`
+            : ""}
         </div>`
     )
     .join("");
@@ -1062,6 +1066,7 @@ function renderProof(data) {
       </button>
       <img alt="" decoding="async">
       <video controls playsinline preload="none" hidden></video>
+      <p class="lightbox-caption" hidden></p>
     </dialog>`;
 }
 

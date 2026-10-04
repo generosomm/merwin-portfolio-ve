@@ -171,6 +171,7 @@
     const dialog = document.querySelector(".lightbox");
     const image = dialog?.querySelector("img");
     const video = dialog?.querySelector("video");
+    const caption = dialog?.querySelector(".lightbox-caption");
     if (!dialog || !image || typeof dialog.showModal !== "function") return;
 
     /* Images (proof) and videos (AI hooks) share one dialog. */
@@ -190,6 +191,11 @@
         image.hidden = false;
         image.src = trigger.dataset.lightbox;
         image.alt = trigger.dataset.lightboxAlt || "";
+      }
+      if (caption) {
+        caption.textContent = trigger.dataset.lightboxCaption || "";
+        caption.hidden = !caption.textContent;
+        dialog.classList.toggle("has-caption", !caption.hidden);
       }
       dialog.showModal();
       document.documentElement.classList.add("dialog-open");

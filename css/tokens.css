@@ -62,8 +62,8 @@
   --fs-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
   --fs-label: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem);
 
-  --track-hero: -0.05em;
-  --track-display: -0.035em;
+  --track-hero: 0.015em;
+  --track-display: -0.01em;
   --track-label: 0.16em;
   --leading-tight: 0.88;
   --leading-snug: 1.15;
@@ -94,14 +94,15 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
 
-  /* Side padding: 20px on a 375px phone, 64px on wide screens, and
+  /* Side padding: 24px on phones, 6vw on larger screens, and
      never less than a notch's safe area in landscape. */
-  --gutter: max(clamp(1.25rem, 0.6rem + 2.8vw, 4rem), var(--safe-left), var(--safe-right));
+  --gutter: max(clamp(1.5rem, 6vw, 7rem), var(--safe-left), var(--safe-right));
   /* The same top/bottom padding on every section. */
-  --section-y: clamp(4.5rem, 3rem + 6vw, 9rem);
+  --section-y: clamp(2.75rem, 2rem + 2vw, 4.25rem);
   /* Space between a section's heading row and its content. */
-  --head-gap: clamp(2rem, 1.4rem + 2vw, 3.5rem);
-  --page: min(1440px, 100% - (var(--gutter) * 2));
+  --head-gap: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+  --content-max: 85rem;
+  --page: min(var(--content-max), 100% - (var(--gutter) * 2));
   --chrome-h: 3.5rem;
   --playhead-h: 2px;
   /* Minimum touch target. */

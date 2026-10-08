@@ -1,18 +1,13 @@
 {
   "heading": "Experience",
-  "axis": {
-    "start": "2022-01",
-    "end": "2026-12",
-    "presentLabel": "Present"
-  },
   "items": [
     {
       "role": "Creator & Video Editor",
       "organization": "ERO | VISUALS",
-      "period": "Aug 2022 — Present",
+      "period": "Aug 2022 to Present",
       "start": "2022-08",
       "end": "present",
-      "summary": "My personal short-form content brand. Film, music and trend-led edits across TikTok, YouTube, Instagram and Facebook, with 74M+ documented organic views.",
+      "summary": "Film, music and entertainment edits through my own short-form content brand, ERO | VISUALS.",
       "link": {
         "label": "TikTok",
         "href": "https://www.tiktok.com/@eroedtx"
@@ -21,10 +16,10 @@
     {
       "role": "Video Production Officer",
       "organization": "NU Laguna Computer Studies Council",
-      "period": "Jun 2025 — Present",
+      "period": "Jun 2025 to Present",
       "start": "2025-06",
       "end": "present",
-      "summary": "Plan, schedule, and deliver multimedia content for university events while keeping production files organized for smooth team collaboration.",
+      "summary": "Plan and deliver multimedia content for university events, with organized files for team collaboration.",
       "link": {
         "label": "Council reels",
         "href": "https://www.facebook.com/NULagunaSCSSC/reels/"
@@ -33,10 +28,10 @@
     {
       "role": "Web Development Lead",
       "organization": "MSC NU Laguna",
-      "period": "Jun 2025 — Jul 2026",
+      "period": "Jun 2025 to Jul 2026",
       "start": "2025-06",
       "end": "2026-07",
-      "summary": "Architected and shipped the backend for the MSC NU Laguna web platform. Live production deployment, launched at SparkPoint 2026.",
+      "summary": "Led backend development for the community platform, launched at SparkPoint 2026.",
       "link": {
         "label": "mscnulaguna.org",
         "href": "https://mscnulaguna.org/"
@@ -45,10 +40,10 @@
     {
       "role": "Capstone Project Lead",
       "organization": "City Government of Sto. Tomas",
-      "period": "2025 — 2026",
+      "period": "2025 to 2026",
       "start": "2025-08",
       "end": "2026-06",
-      "summary": "Led requirements gathering, stakeholder coordination, documentation, and development planning for a PHP and MySQL document tracking system, translating government workflow requirements into system features and development priorities. Contributed to development of the PHP/MySQL system.",
+      "summary": "Led requirements, stakeholder coordination and development planning for the city's PHP/MySQL document tracking system.",
       "link": null
     }
   ]

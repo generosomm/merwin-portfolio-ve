@@ -255,6 +255,20 @@
     if (!line?.firstChild) return;
 
     function measure() {
+      lockup.style.removeProperty("font-size");
+      const name = lockup.querySelector(".hero-name");
+      const lines = [...lockup.querySelectorAll(".hero-line-inner")];
+      const available = name.clientWidth - 14;
+      const widths = lines.map((node) => {
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        return range.getBoundingClientRect().width;
+      });
+      const widest = Math.max(...widths);
+      const natural = parseFloat(getComputedStyle(lockup).fontSize);
+      if (widest > available && available > 0) {
+        lockup.style.fontSize = `${natural * available / widest}px`;
+      }
       const fontSize = parseFloat(getComputedStyle(lockup).fontSize);
       if (!fontSize) return;
       const range = document.createRange();
@@ -265,6 +279,26 @@
 
     measure();
     if (document.fonts?.ready) document.fonts.ready.then(measure);
+    document.fonts?.addEventListener("loadingdone", measure);
+    let measuredWidth = 0;
+    let measureFrame = 0;
+    new ResizeObserver(([entry]) => {
+      if (entry.contentRect.width === measuredWidth) return;
+      measuredWidth = entry.contentRect.width;
+      cancelAnimationFrame(measureFrame);
+      measureFrame = requestAnimationFrame(measure);
+    }).observe(document.querySelector(".hero-inner"));
+
+    const brand = document.querySelector(".brand");
+    const hero = document.querySelector("#hero");
+    const updateBrand = () => {
+      const inHero = hero.getBoundingClientRect().bottom > 56;
+      root.classList.toggle("in-hero", inHero);
+      brand.inert = inHero;
+      brand.setAttribute("aria-hidden", String(inHero));
+    };
+    updateBrand();
+    new IntersectionObserver(updateBrand, { rootMargin: "-56px 0px 0px 0px" }).observe(hero);
   }
 
   /* ---- 3D layer -----------------------------------------------
@@ -325,6 +359,8 @@
     const openLabel = toggle.getAttribute("aria-label") || "";
     const closeLabel = toggle.dataset.closeLabel || openLabel;
     let open = false;
+    const background = [...document.querySelectorAll("main, .site-footer")];
+    menu.setAttribute("data-lenis-prevent", "");
 
     function setState(next) {
       open = next;
@@ -334,6 +370,7 @@
       root.classList.toggle("menu-open", open);
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? closeLabel : openLabel);
+      background.forEach((element) => { element.inert = open; });
 
       if (open) {
         lenis?.stop();
@@ -352,6 +389,18 @@
     });
 
     document.addEventListener("keydown", (event) => {
+      if (event.key === "Tab" && open) {
+        const targets = [toggle, ...menu.querySelectorAll("a[href], button:not([disabled])")];
+        const first = targets[0];
+        const last = targets.at(-1);
+        if (event.shiftKey && (document.activeElement === first || !targets.includes(document.activeElement))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
       if (event.key === "Escape" && open) {
         setState(false);
         toggle.focus();
@@ -363,7 +412,7 @@
     window.addEventListener(
       "resize",
       debounce(() => {
-        if (open && window.innerWidth >= 768) setState(false);
+        if (open && window.innerWidth >= 1024) setState(false);
       }, 180),
       { passive: true }
     );

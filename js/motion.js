@@ -45,13 +45,11 @@
       refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 250);
     }, true);
 
-    /* Order matters: the About pin adds scroll length, so it is
-       created before any trigger further down the page measures
-       its position. */
+    /* Set up the introduction before the section and card reveals. */
     aboutScroll(gsap);
+    practiceStack(gsap);
     sectionTitles(gsap);
     countUps(gsap);
-    experienceTracks(gsap);
     entrances(gsap);
     closingStatement(gsap);
     stackWave(gsap);
@@ -89,7 +87,7 @@
         if (conditions.wide) {
           gsap
             .timeline({
-              scrollTrigger: { trigger: section, start: "top top", end: "+=90%", pin: true, scrub: 0.8 }
+              scrollTrigger: { trigger: section, start: "top 85%", end: "bottom 55%", scrub: 0.8 }
             })
             .fromTo(words, from, to);
         } else {
@@ -100,6 +98,32 @@
         }
       }
     );
+  }
+
+  function practiceStack(gsap) {
+    const cards = Array.from(document.querySelectorAll(".practice-card"));
+      gsap.matchMedia().add("all", () => {
+      cards.slice(0, -1).forEach((card, index) => {
+        const next = cards[index + 1];
+        const inner = card.querySelector(".practice-card-inner");
+        const shade = card.querySelector(".practice-shade");
+        if (!inner) return;
+
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: next,
+              start: "top bottom",
+              /* Ends exactly where the next card sticks. */
+              end: () => `top ${parseFloat(getComputedStyle(next).top) || 0}px`,
+                scrub: true,
+                invalidateOnRefresh: true
+            }
+          })
+            .to(inner, { scale: () => window.matchMedia("(max-width: 767px)").matches ? 0.96 : 0.93, rotateX: () => window.matchMedia("(max-width: 767px)").matches ? 4 : 6, ease: "none" }, 0)
+          .to(shade, { opacity: 0.55, ease: "none" }, 0);
+      });
+    });
   }
 
   /* ---- Entrances ---------------------------------------------------
@@ -113,7 +137,6 @@
       [".process-steps", ".process-step"],
       [".offer-list", ".offer-row"],
       [".work-list", ".work-row"],
-      ["#edits-panel-edits .edits-grid", ".edit-card"],
       [".contact-list", ".contact-row"]
     ].forEach(([listSelector, itemSelector]) => {
       const list = document.querySelector(listSelector);
@@ -279,23 +302,6 @@
         };
       }
     );
-  }
-
-  /* ---- Experience tracks ----------------------------------------
-     Bars draw out from their own start point on the shared axis.
-  ---------------------------------------------------------------- */
-
-  function experienceTracks(gsap) {
-    const bars = document.querySelectorAll(".track-clip-bar");
-    if (!bars.length) return;
-
-    gsap.to(bars, {
-      scaleX: 1,
-      duration: 0.9,
-      ease: "power3.out",
-      stagger: 0.08,
-      scrollTrigger: { trigger: ".tracks", start: "top 85%", once: true }
-    });
   }
 
   if (window.portfolioContentReady?.then) {

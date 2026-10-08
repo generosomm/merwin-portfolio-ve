@@ -34,7 +34,7 @@
 /* ---- Proof -------------------------------------------------------- */
 
 .proof-block + .proof-block {
-  margin-top: var(--s-9);
+  margin-top: var(--s-7);
 }
 
 .proof-head {
@@ -409,13 +409,16 @@
 }
 
 .lightbox-close {
-  position: absolute;
-  top: calc(var(--s-6) * -1 - var(--s-3));
-  right: 0;
+  position: fixed;
+  z-index: 2;
+  top: max(var(--s-2), var(--safe-top));
+  right: max(var(--gutter), var(--safe-right));
   display: grid;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--tap);
+  height: var(--tap);
   place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--ink-850);
   color: var(--text);
   transition: color var(--dur-1) var(--ease-out);
 }
@@ -651,7 +654,7 @@
 ---------------------------------------------------------------- */
 
 .github {
-  margin-top: var(--s-9);
+  margin-top: var(--s-7);
 }
 
 .github-head {
@@ -952,7 +955,7 @@
 }
 
 .contact-list {
-  margin-top: clamp(3rem, 2rem + 4vw, 6rem);
+  margin-top: clamp(2rem, 1.5rem + 2vw, 3rem);
   border-top: 1px solid var(--line);
 }
 
@@ -1053,31 +1056,20 @@
 }
 
 .footer-inner {
-  display: flex;
+  display: grid;
   width: var(--page);
-  flex-wrap: wrap;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 0 var(--s-6);
+  gap: var(--s-3) var(--s-7);
   margin-inline: auto;
-  /* Bottom padding clears the fixed bottom fade and the home bar. */
-  padding-block: var(--s-5) calc(var(--s-7) + var(--safe-bottom));
+  padding-block: var(--s-5) calc(var(--s-6) + var(--safe-bottom));
   color: var(--text-mid);
   font-size: var(--fs-small);
 }
-
-.footer-legal {
-  display: flex;
-  gap: var(--s-5);
-}
-
-/* Phones: copyright and "Back to top" share the first row, the
-   legal links sit on their own row below. */
+.footer-legal { display: flex; gap: var(--s-5); }
 @media (max-width: 767px) {
-  .footer-legal {
-    order: 3;
-    width: 100%;
-  }
+  .footer-inner { grid-template-columns: 1fr auto; gap: var(--s-2) var(--s-4); }
+  .footer-copy { grid-column: 1 / -1; }
 }
 
 .footer-legal a,
@@ -1100,6 +1092,7 @@
   display: block;
   width: 100%;
   max-height: 88svh;
+  object-fit: contain;
   background: var(--ink-900);
 }
 
@@ -1150,7 +1143,7 @@
 .brief {
   max-width: 56rem;
   margin: var(--head-gap) auto 0;
-  padding: clamp(1.25rem, 0.9rem + 1.6vw, 2.5rem);
+  padding: clamp(1.25rem, 1rem + 1vw, 1.75rem);
   border: 1px solid var(--line);
   background: var(--ink-850);
   text-align: left;
@@ -1433,3 +1426,12 @@
     transform: none;
   }
 }
+
+/* Tablet grids keep readable content widths rather than squeezing cards. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .cert-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact-row { grid-template-columns: 8rem minmax(0, 1fr); gap: var(--s-4); }
+}
+.contact-row dd, .contact-cell, .brief-field { min-width: 0; }
+
+.proof-heading, .contact-statement { word-spacing: 0.12em; letter-spacing: -0.025em; }

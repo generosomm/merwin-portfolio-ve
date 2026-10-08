@@ -357,11 +357,9 @@ function renderHero(data, chrome = {}) {
   const nameLines = lines
     .map((line, index) => {
       const inner = `<span class="hero-line-inner" data-line="${index}" style="--line: ${index}">${text(line)}</span>`;
-      /* One solid, pure-white line each, drawn in front of the
-         portrait (css/hero.css). "back"/"front" name the two rows of
-         the desktop composition: the first line ends before the
-         head, the second crosses the shoulders. */
-      return `<span class="hero-line ${index === 0 ? "hero-line-back" : "hero-line-front"}">${inner}</span>`;
+      // Filled type behind the portrait; a matching outline stays in front.
+      const outline = `<span class="hero-line-inner hero-line-outline" aria-hidden="true" data-line="${index}" style="--line: ${index}">${text(line)}</span>`;
+      return `<span class="hero-line ${index === 0 ? "hero-line-back" : "hero-line-front"}">${inner}${outline}</span>`;
     })
     /* The newline is load-bearing: without whitespace between the
        block spans, the accessible name reads as one run-on word. */
@@ -507,6 +505,12 @@ function renderLiveFallback(social) {
 
   return `
     <div class="live" data-live-stats>
+      <div class="live-head">
+        <p class="live-status is-documented" data-live-status>
+          <span class="live-dot" aria-hidden="true"></span>
+          <span data-live-status-text>${text(display.status?.documented)}</span>
+        </p>
+      </div>
       <table class="live-table">
         <caption class="sr-only">${text(display.caption)}</caption>
         <thead>
@@ -558,128 +562,38 @@ function renderNumbers(data, social) {
     </div>`;
 }
 
-/* ---- Experience -----------------------------------------------
-   Roles are positioned on one shared axis so the bars read as clips
-   on a timeline. Geometry is computed here, not in the motion layer,
-   so the tracks are correct even with JS animation disabled.
----------------------------------------------------------------- */
+/* ---- Experience: editorial rows with visible contributions -------- */
 
-function monthIndex(value) {
-  const match = /^(\d{4})-(\d{2})$/.exec(String(value || ""));
-  if (!match) return null;
-  return Number(match[1]) * 12 + (Number(match[2]) - 1);
-}
-
-function trackGeometry(item, axisStart, axisEnd, today) {
-  const span = axisEnd - axisStart;
-  if (span <= 0) return null;
-
-  const start = monthIndex(item.start);
-  const rawEnd = item.end === "present" ? Math.min(today, axisEnd) : monthIndex(item.end);
-  if (start === null || rawEnd === null) return null;
-
-  const clamp = (value) => Math.min(Math.max(value, 0), 1);
-  const left = clamp((start - axisStart) / span);
-  const right = clamp((rawEnd - axisStart) / span);
-  /* A role shorter than the axis resolution still needs to be seen. */
-  const width = Math.max(right - left, 0.02);
-
-  return { left: left * 100, width: Math.min(width, 1 - left) * 100 };
-}
-
-function axisTicks(axisStart, axisEnd) {
-  const span = axisEnd - axisStart;
-  const firstYear = Math.floor(axisStart / 12);
-  const lastYear = Math.floor(axisEnd / 12);
-  const ticks = [];
-
-  for (let year = firstYear; year <= lastYear; year += 1) {
-    const position = ((year * 12 - axisStart) / span) * 100;
-    if (position < 0 || position > 100) continue;
-    ticks.push(
-      `<span class="track-axis-tick" style="left:${position.toFixed(2)}%">${text(year)}</span>`
-    );
-  }
-
-  return ticks.join("");
-}
-
-/* "2022" over "Present": the short year column used on phones. */
-function trackYears(item, presentLabel) {
-  const start = String(item.start || "").slice(0, 4);
-  const end = item.end === "present" ? presentLabel : String(item.end || "").slice(0, 4);
-  if (!/^\d{4}$/.test(start)) return "";
-  const parts = [start, end].filter((part, index) => hasText(part) && (index === 0 || part !== start));
-  return `<p class="track-years" aria-hidden="true">${parts.map((part) => `<span>${text(part)}</span>`).join("")}</p>`;
-}
-
-function trackRow(item, geometry, presentLabel = "") {
-  const link = item.link && typeof item.link === "object" ? item.link : null;
-  /* A TODO is rendered as its own flagged note rather than restyling
-     the summary, which may well be real copy already. */
-  const todo = hasText(item.TODO) ? `<p class="track-todo">${text(item.TODO)}</p>` : "";
-  const bar = geometry
-    ? `<span class="track-clip-bar" style="left:${geometry.left.toFixed(2)}%;width:${geometry.width.toFixed(2)}%"></span>`
-    : "";
-
-  const body = `
-    ${trackYears(item, presentLabel)}
-    <p class="track-period">${text(item.period)}</p>
-    <div class="track-identity">
-      <h3 class="track-role">${text(item.role)}</h3>
-      <p class="track-org">${text(item.organization)}</p>
-    </div>
-    <div class="track-media">
-      <div class="track-clip">${bar}</div>
-      <div class="track-detail"><div>
-        <p class="track-summary">${text(item.summary)}</p>
-        ${todo}
-        ${link ? `<span class="track-link">${text(link.label)}</span>` : ""}
-      </div></div>
-    </div>`;
-
-  /* A linked role is a real anchor; an unlinked one is not pretending
-     to be interactive. */
-  return link && hasText(link.href)
-    ? `<li class="track"><a class="track-row" href="${attr(link.href)}"
-        target="_blank" rel="noopener noreferrer">${body}</a></li>`
-    : `<li class="track"><div class="track-row">${body}</div></li>`;
+function trackRow(item) {
+  const year = String(item.start || "").slice(0, 4);
+  const link = item.link && hasText(item.link.href) ? item.link : null;
+  const period = String(item.period || "").replaceAll("\u2014", "to");
+  return `
+    <li class="track${item.end === "present" ? " is-current" : ""}">
+      <div class="track-row">
+        <div class="track-date">
+          ${/^\d{4}$/.test(year) ? `<span class="track-year" aria-hidden="true">${text(year)}</span>` : ""}
+          <p class="track-period">${text(period)}</p>
+        </div>
+        <div class="track-identity">
+          <h3 class="track-role">${text(item.role)}</h3>
+          <p class="track-org">${text(item.organization)}</p>
+        </div>
+        <div class="track-detail">
+          <p class="track-summary">${text(item.summary)}</p>
+          ${link ? `<a class="track-link" href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">${text(link.label)}${ARROW}</a>` : ""}
+        </div>
+      </div>
+    </li>`;
 }
 
 function renderExperience(data) {
   const root = document.querySelector('[data-section="experience"]');
   if (!root || !data) return;
-
-  const axis = data.axis || {};
-  const axisStart = monthIndex(axis.start);
-  const axisEnd = monthIndex(axis.end);
-  const now = new Date();
-  const today = now.getFullYear() * 12 + now.getMonth();
-
-  const items = records(data.items);
-  const rows = items
-    .map((item) =>
-      trackRow(
-        item,
-        axisStart === null || axisEnd === null
-          ? null
-          : trackGeometry(item, axisStart, axisEnd, today),
-        axis.presentLabel
-      )
-    )
-    .join("");
-
-  const ticks =
-    axisStart === null || axisEnd === null
-      ? ""
-      : `<div class="track-axis" aria-hidden="true">
-          <div class="track-axis-ticks">${axisTicks(axisStart, axisEnd)}</div>
-        </div>`;
-
+  const rows = records(data.items).filter((item) => hasText(item.role)).map(trackRow).join("");
   root.innerHTML = `
     <div class="section-inner">
       ${sectionTitle("experience")}
-      ${ticks}
       <ul class="tracks">${rows}</ul>
     </div>`;
 }
@@ -726,36 +640,28 @@ function renderPractice(data) {
   if (!root || !data) return;
 
   const cta = data.cta || {};
-  const process = data.process || {};
-  const steps = records(process.steps)
-    .filter((step) => hasText(step.title))
-    .map(
-      (step, index) => `
-        <li class="process-step">
-          <span class="process-index" aria-hidden="true">${pad2(index + 1)}</span>
-          <h4 class="process-title">${text(step.title)}</h4>
-          <p class="process-text">${text(step.text)}</p>
-        </li>`
-    )
-    .join("");
-
-  const offers = records(data.items)
+  const cards = records(data.items)
     .filter((item) => hasText(item.title))
-    .map((item) => {
-      const benefits = list(item.benefits).filter(hasText);
+    .map((item, index) => {
+      const includes = list(item.includes).filter(hasText);
       return `
-        <li class="offer-row">
-          <div class="offer-head">
-            <h4 class="offer-title">${text(item.title)}</h4>
-            <p class="offer-text">${text(item.text)}</p>
-          </div>
-          <div class="offer-body">
-            ${benefits.length ? `<ul class="offer-benefits">${benefits.map((line) => `<li>${text(line)}</li>`).join("")}</ul>` : ""}
-            ${hasText(item.addon) ? `<p class="offer-addon">${text(item.addon)}</p>` : ""}
-            ${hasText(cta.href)
-              ? `<a class="button button-ghost service-cta" href="${attr(cta.href)}" data-service="${attr(item.service || "")}">${text(cta.label)}</a>`
-              : ""}
-          </div>
+        <li class="practice-card" style="--i: ${index}" data-service-card="${attr(item.service)}">
+          <article class="practice-card-inner">
+            <div class="practice-copy">
+              <h3 class="practice-title">${text(item.title)}</h3>
+              <p class="practice-text">${text(item.text)}</p>
+              ${includes.length
+                ? `<div class="service-block">
+                    <ul class="service-includes">${includes.map((line) => `<li>${text(line)}</li>`).join("")}</ul>
+                  </div>`
+                : ""}
+              ${hasText(cta.href)
+                ? `<a class="button button-primary service-cta" href="${attr(cta.href)}" data-service="${attr(item.service || "")}">${text(cta.label)}</a>`
+                : ""}
+            </div>
+            <div class="practice-media">${picture(item.image, { eager: true })}</div>
+            <span class="practice-shade" aria-hidden="true"></span>
+          </article>
         </li>`;
     })
     .join("");
@@ -763,18 +669,7 @@ function renderPractice(data) {
   root.innerHTML = `
     <div class="section-inner">
       ${sectionTitle("services")}
-      ${steps
-        ? `<div class="services-part">
-            <h3 class="proof-heading services-heading">${text(process.heading)}</h3>
-            <ol class="process-steps">${steps}</ol>
-          </div>`
-        : ""}
-      ${offers
-        ? `<div class="services-part">
-            <h3 class="proof-heading services-heading">${text(data.offer?.heading)}</h3>
-            <ul class="offer-list">${offers}</ul>
-          </div>`
-        : ""}
+      <ul class="practice-stack">${cards}</ul>
     </div>`;
 }
 
@@ -784,6 +679,12 @@ function renderPractice(data) {
    the right of the list (js/interactions.js reads data-preview). On
    phones and touch screens the rows stay text-only, with no preview.
 ---------------------------------------------------------------- */
+
+function workTechnologies(tags) {
+  const items = list(tags).filter(hasText)
+    .map((name) => `<li class="work-tech">${text(name)}</li>`).join("");
+  return items ? `<ul class="work-tags" aria-label="Technologies used">${items}</ul>` : "";
+}
 
 function workRow(item, index, labels) {
   const href = hasText(item.href) ? item.href : "";
@@ -802,7 +703,7 @@ function workRow(item, index, labels) {
         <h3 class="work-title">${title}</h3>
         <p class="work-summary">${text(item.summary)}</p>
         <div class="work-meta">
-          ${tagList(item.tags, "work-tags")}
+          ${workTechnologies(item.tags)}
           ${code}
           ${href ? `<span class="work-arrow" aria-hidden="true">${ARROW}</span>` : ""}
         </div>
@@ -832,23 +733,24 @@ function renderWork(data) {
     </div>`;
 }
 
-/* ---- Selected edits ----------------------------------------------
-   Two tabs over the same card layout: "Edits" (each card links to
-   its post, with the reach as a badge) and "AI Hooks" (the Google
-   Flow product hooks; each card opens its video in the lightbox).
-   On phones each tab is one swipeable row with position dots; on
-   wider screens it is a grid. Videos are only attached (and
-   downloaded) on desktop hover or when a hook is opened, by
-   js/interactions.js.
----------------------------------------------------------------- */
+/* ---- Selected edits: looping rows with hover video previews -------- */
 
 function editMedia(item) {
   const video = hasText(item.video) ? ` data-video="${attr(item.video)}"` : "";
-  return `
-    <span class="edit-media"${video}>
-      ${picture({ src: item.image, alt: "", width: item.imageWidth, height: item.imageHeight })}
-      ${hasText(item.badge) ? `<span class="edit-badge">${text(item.badge)}</span>` : ""}
-    </span>`;
+  return `<span class="edit-media"${video}>
+    ${picture({ src: item.image, alt: "", width: item.imageWidth, height: item.imageHeight })}
+    ${hasText(item.badge) ? `<span class="edit-badge">${text(item.badge)}</span>` : ""}
+  </span>`;
+}
+
+function editCard(item, platform) {
+  const label = [item.title, item.badge, platform].filter(hasText).join(", ");
+  const body = `${editMedia(item)}${editMeta(item.title, platform)}`;
+  const target = hasText(item.href)
+    ? `<a class="edit-link" href="${attr(item.href)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(label)}">${body}</a>`
+    : `<button class="edit-link" type="button" aria-haspopup="dialog" aria-label="${attr(label)}"
+        data-lightbox-video="${attr(item.video)}" data-lightbox-alt="${attr(item.alt)}">${body}</button>`;
+  return `<li class="edit-card">${target}</li>`;
 }
 
 function editMeta(title, platform) {
@@ -863,7 +765,6 @@ function editPanel(id, cards, selected) {
   return `
     <div class="edits-panel" id="edits-panel-${id}" role="tabpanel" aria-labelledby="edits-tab-${id}"${selected ? "" : " hidden"}>
       <ul class="edits-grid">${cards}</ul>
-      <div class="edits-dots" aria-hidden="true"></div>
     </div>`;
 }
 
@@ -872,34 +773,10 @@ function renderEdits(data) {
   if (!root || !data) return;
 
   const editItems = records(data.items).filter((item) => hasText(item.title) && hasText(item.href));
-  const edits = editItems
-    .map((item) => {
-      const label = [item.title, item.badge, item.platform].filter(hasText).join(", ");
-      return `
-        <li class="edit-card">
-          <a class="edit-link" href="${attr(item.href)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(label)}">
-            ${editMedia(item)}
-            ${editMeta(item.title, item.platform)}
-          </a>
-        </li>`;
-    })
-    .join("");
-
+  const edits = editItems.map((item) => editCard(item, item.platform)).join("");
   const hookData = data.hooks || {};
   const hookItems = records(hookData.items).filter((item) => hasText(item.title) && hasText(item.video));
-  const hooks = hookItems
-    .map((item) => {
-      const label = [item.title, item.badge, hookData.platform, hookData.playLabel].filter(hasText).join(", ");
-      return `
-        <li class="edit-card">
-          <button class="edit-link" type="button" aria-haspopup="dialog" aria-label="${attr(label)}"
-            data-lightbox-video="${attr(item.video)}" data-lightbox-alt="${attr(item.alt)}">
-            ${editMedia(item)}
-            ${editMeta(item.title, hookData.platform)}
-          </button>
-        </li>`;
-    })
-    .join("");
+  const hooks = hookItems.map((item) => editCard(item, hookData.platform)).join("");
 
   const tabs = data.tabs || {};
   const tab = (id, label, count, selected) => `
@@ -1323,7 +1200,6 @@ function renderFooter(data) {
   root.innerHTML = `
     <div class="footer-inner">
       <span class="footer-copy">&copy; ${new Date().getFullYear()} ${text(data.name)}</span>
-      ${hasText(data.visits) ? `<span class="footer-visits" data-visits data-template="${attr(data.visits)}" hidden></span>` : ""}
       ${legal ? `<nav class="footer-legal" aria-label="${attr(data.legalLabel || "Legal")}">${legal}</nav>` : ""}
       <a class="footer-top" href="#hero">${text(data.backToTop)}</a>
     </div>`;

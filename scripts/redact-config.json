@@ -1,5 +1,5 @@
 {
-  "note": "Boxes are in pixels of the source image (x, y = top-left corner). sourceDir holds the unredacted originals, outside the repo (override with CERT_SOURCE_DIR). Run: node scripts/redact-certs.mjs --preview, then --apply.",
+  "note": "Boxes are optional masks in source pixels (x, y = top-left corner). Empty boxes preserve the original signature and verification details, as requested. sourceDir holds the originals outside the repo (override with CERT_SOURCE_DIR). Run: node scripts/redact-certs.mjs --preview, then --apply.",
   "sourceDir": "../private-certificates",
   "outDir": "assets/images/proof",
   "thumbWidth": 900,
@@ -8,18 +8,12 @@
     {
       "id": "cert-network-security",
       "source": "Information Technology Specialist - Network Security.jpg",
-      "boxes": [
-        { "label": "signature", "x": 50, "y": 392, "w": 190, "h": 68 },
-        { "label": "certificate-id", "x": 440, "y": 428, "w": 116, "h": 26 }
-      ]
+      "boxes": []
     },
     {
       "id": "cert-databases",
       "source": "Information Technology Specialist in Databases.jpg",
-      "boxes": [
-        { "label": "signature", "x": 112, "y": 932, "w": 516, "h": 172 },
-        { "label": "certificate-id", "x": 1080, "y": 1032, "w": 222, "h": 52 }
-      ]
+      "boxes": []
     },
     {
       "id": "cert-agentblazer",

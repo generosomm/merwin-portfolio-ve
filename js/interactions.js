@@ -26,7 +26,7 @@
     const list = document.querySelector(".work-list");
     const preview = document.querySelector(".work-preview");
     const image = preview?.querySelector("img");
-    if (!list || !preview || !image || !desktop.matches) return;
+    if (!list || !preview || !image) return;
 
     let current = null;
     let shown = "";
@@ -52,6 +52,7 @@
     }
 
     function show(row) {
+      if (!desktop.matches) return;
       const source = row?.dataset.preview;
       if (!source) {
         hide();
@@ -121,23 +122,18 @@
     });
 
     window.addEventListener("resize", () => {
+      if (!desktop.matches) { hide(); return; }
       if (current && preview.classList.contains("is-visible")) place(current, { instant: true });
     }, { passive: true });
   }
 
-  /* ---- Edit previews -----------------------------------------------
-     The <video> is only created on first hover, so none of the clips
-     download until someone actually points at one.
-  ---------------------------------------------------------------- */
-
+  /* Local clips load on the first desktop hover. */
   function initEditPreviews() {
     if (!finePointer.matches || reduceMotion.matches) return;
-
     document.querySelectorAll(".edit-card").forEach((card) => {
       const media = card.querySelector(".edit-media[data-video]");
       if (!media) return;
       let video = null;
-
       card.addEventListener("pointerenter", () => {
         if (!video) {
           video = document.createElement("video");
@@ -152,7 +148,6 @@
         }
         video.play().catch(() => {});
       });
-
       card.addEventListener("pointerleave", () => {
         if (!video) return;
         video.pause();
@@ -180,9 +175,11 @@
       if (!trigger) return;
 
       const clip = trigger.dataset.lightboxVideo;
+      event.preventDefault();
       if (clip && video) {
         image.hidden = true;
         video.hidden = false;
+        video.poster = trigger.dataset.lightboxPoster || "";
         video.src = clip;
         video.setAttribute("aria-label", trigger.dataset.lightboxAlt || "");
         video.play().catch(() => {});
@@ -214,6 +211,7 @@
       if (video && !video.hidden) {
         video.pause();
         video.removeAttribute("src");
+        video.removeAttribute("poster");
         video.load();
       }
       window.portfolio?.lenis?.start();
@@ -238,13 +236,8 @@
         if (panel) panel.hidden = !selected;
       });
       if (focus) tab.focus();
-      /* The newly shown row starts at its first card, and its dots are
-         re-measured now that it has a real width (it was hidden). */
-      const grid = document.getElementById(tab.getAttribute("aria-controls"))?.querySelector(".edits-grid");
-      if (grid) {
-        grid.scrollLeft = 0;
-        grid.dispatchEvent(new Event("scroll"));
-      }
+      const panel = document.getElementById(tab.getAttribute("aria-controls"));
+      panel?.dispatchEvent(new Event("edits:show"));
       window.ScrollTrigger?.refresh();
     }
 
@@ -259,33 +252,86 @@
     });
   }
 
-  /* ---- Swipe-row dots (phones) ----------------------------------------
-     One dot per card; the one for the card at the start of the row is
-     lit. Purely visual (the cards themselves are the controls).
-  ---------------------------------------------------------------- */
-
-  function initEditDots() {
+  /* ---- Edits: continuous loop and native swipe ----------------------- */
+  function initEditCarousels() {
     document.querySelectorAll(".edits-panel").forEach((panel) => {
       const grid = panel.querySelector(".edits-grid");
-      const dots = panel.querySelector(".edits-dots");
-      const cards = grid ? Array.from(grid.children) : [];
-      if (!grid || !dots || cards.length < 2) return;
+      const originals = [...(grid?.children || [])];
+      if (!grid || originals.length < 2) return;
+      const cloneSet = () => originals.map((card) => {
+        const clone = card.cloneNode(true);
+        clone.setAttribute("aria-hidden", "true");
+        clone.dataset.loopClone = "";
+        clone.querySelectorAll("a, button").forEach((el) => el.tabIndex = -1);
+        return clone;
+      });
+      grid.prepend(...cloneSet());
+      grid.append(...cloneSet());
+      let start = 0, cycle = 0, position = 0, frame = 0, last = 0;
+      let inView = false, hovered = false, touching = false;
+      let busyUntil = 0, resumeTimer = 0;
+      const focused = () => panel.contains(document.activeElement);
+      const canPlay = () => inView && !panel.hidden && !document.hidden && !reduceMotion.matches &&
+        !hovered && !touching && !focused() && !document.querySelector("dialog[open]") && performance.now() >= busyUntil;
 
-      dots.replaceChildren(...cards.map(() => document.createElement("span")));
-      let frame = 0;
-
-      const update = () => {
+      function stop() {
+        cancelAnimationFrame(frame); frame = 0; last = 0;
+      }
+      function normalize() {
+        if (!cycle) return;
+        const x = grid.scrollLeft;
+        if (x < start || x >= start + cycle) {
+          grid.scrollLeft = start + ((x - start) % cycle + cycle) % cycle;
+        }
+        position = grid.scrollLeft;
+      }
+      function tick(now) {
         frame = 0;
-        const step = cards[1].offsetLeft - cards[0].offsetLeft || 1;
-        const atEnd = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 2;
-        const active = atEnd ? cards.length - 1 : Math.round(grid.scrollLeft / step);
-        Array.from(dots.children).forEach((dot, index) => dot.classList.toggle("is-active", index === active));
-      };
-
-      grid.addEventListener("scroll", () => {
-        if (!frame) frame = requestAnimationFrame(update);
-      }, { passive: true });
-      update();
+        if (!canPlay() || !cycle) { last = 0; return; }
+        if (!last) position = grid.scrollLeft;
+        const delta = last ? Math.min(now - last, 50) : 0;
+        last = now;
+        position += delta * 0.024;
+        if (position >= start + cycle) position -= cycle;
+        if (position < start) position += cycle;
+        grid.scrollLeft = position;
+        frame = requestAnimationFrame(tick);
+      }
+      function sync() {
+        stop();
+        if (canPlay()) { normalize(); frame = requestAnimationFrame(tick); }
+      }
+      function measure() {
+        if (!grid.clientWidth) return;
+        const first = originals[0].offsetLeft;
+        const inset = window.matchMedia("(max-width: 767px)").matches ? (grid.clientWidth - originals[0].offsetWidth) / 2 : 0;
+        start = first - inset;
+        cycle = grid.querySelectorAll("[data-loop-clone]")[originals.length].offsetLeft - first;
+        grid.scrollLeft = start; position = start;
+        sync();
+      }
+      function hold(delay = 1800) {
+        stop(); busyUntil = performance.now() + delay;
+        clearTimeout(resumeTimer); resumeTimer = setTimeout(sync, delay + 20);
+      }
+      panel.addEventListener("pointerenter", (event) => {
+        if (event.pointerType !== "touch") { hovered = true; sync(); }
+      });
+      panel.addEventListener("pointerleave", () => { hovered = false; sync(); });
+      panel.addEventListener("focusin", stop);
+      panel.addEventListener("focusout", () => requestAnimationFrame(sync));
+      grid.addEventListener("pointerdown", () => { touching = true; stop(); }, { passive: true });
+      window.addEventListener("pointerup", () => { if (touching) { touching = false; hold(); } }, { passive: true });
+      grid.addEventListener("pointercancel", () => { touching = false; hold(); }, { passive: true });
+      grid.addEventListener("wheel", () => hold(), { passive: true });
+      grid.addEventListener("scrollend", () => { if (!frame && !focused() && !touching) normalize(); });
+      panel.addEventListener("edits:show", measure);
+      new ResizeObserver(measure).observe(grid);
+      new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; sync(); }).observe(grid);
+      document.addEventListener("visibilitychange", sync);
+      document.querySelector(".lightbox")?.addEventListener("close", sync);
+      reduceMotion.addEventListener("change", sync);
+      measure();
     });
   }
 
@@ -856,6 +902,33 @@
     });
   }
 
+  function initStackFit() {
+    const cards = Array.from(document.querySelectorAll(".practice-card"));
+    if (!cards.length) return;
+
+    function fit() {
+      cards.forEach((card) => {
+        card.style.removeProperty("top");
+        card.removeAttribute("data-flat");
+        const top = parseFloat(getComputedStyle(card).top);
+          if (!Number.isFinite(top) || getComputedStyle(card).position !== "sticky") return;
+        const height = card.offsetHeight;
+        const room = window.innerHeight - 16;
+          // Tall cards scroll into view completely before their bottom sticks.
+          card.style.top = `${Math.min(top, room - height)}px`;
+      });
+      window.ScrollTrigger?.refresh();
+    }
+
+    fit();
+    let timer = 0;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(fit, 150);
+    }, { passive: true });
+    if (document.fonts?.ready) document.fonts.ready.then(fit);
+  }
+
   /* ---- Folds: forms tucked behind a 3D key --------------------------
      Markup from js/content.js (foldBlock). Closed on load; the key
      toggles. While closed the form is inert (can't be tabbed into or
@@ -952,11 +1025,11 @@
 
   function boot() {
     initWorkPreview();
+    initEditCarousels();
     initEditPreviews();
     initProofCarousel();
     initLightbox();
     initEditTabs();
-    initEditDots();
     initCertTilt();
     initStackLogos();
     initGithubGraph();
@@ -964,6 +1037,7 @@
     initFolds();
     initProjectForm();
     initServiceLinks();
+    initStackFit();
   }
 
   if (window.portfolioContentReady?.then) {

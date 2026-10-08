@@ -1,5 +1,5 @@
-/* Redacts the certificate images (signatures, certificate IDs) by
-   baking the blur into the pixels, then writes the web versions.
+/* Exports certificate web versions, optionally baking configured
+   masks into the pixels. Empty boxes preserve signatures and IDs.
 
    node scripts/redact-certs.mjs --preview [dir]
      Draws the boxes from scripts/redact-config.json on each source

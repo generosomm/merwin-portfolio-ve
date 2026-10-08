@@ -132,3 +132,6 @@
     width: 100%;
   }
 }
+
+.notes-wrap { max-width: min(44rem, var(--page)); margin-inline: auto; }
+.notes-form { margin-inline: auto; }

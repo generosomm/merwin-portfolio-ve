@@ -1,28 +1,4 @@
 {
-  "process": {
-    "heading": "How I work",
-    "steps": [
-      {
-        "title": "Brief",
-        "text": "You tell me the goal, the audience and the deadline. I ask the questions that shape the work."
-      },
-      {
-        "title": "Plan",
-        "text": "A clear scope, timeline and price before anything starts, so there are no surprises."
-      },
-      {
-        "title": "Build or edit",
-        "text": "I make it and share progress as I go, with revisions built in."
-      },
-      {
-        "title": "Launch & report",
-        "text": "It goes live, and you get the results or a clean handover, so you know it worked."
-      }
-    ]
-  },
-  "offer": {
-    "heading": "What I offer"
-  },
   "cta": {
     "label": "Start a project",
     "href": "#project-brief"
@@ -30,35 +6,49 @@
   "items": [
     {
       "service": "promotion",
-      "title": "Music, Film & Brand Promotion",
-      "text": "Your release, edited for short-form and posted on my channels, where my edits have reached 74M+ documented views.",
-      "benefits": [
-        "Reach an audience that already watches edits like yours",
-        "An edit made for your release, ready to share on your own pages too",
-        "A results report with views, likes and shares, so you see what you got"
-      ]
+      "title": "Music, film & brand promotion",
+      "text": "Short-form edits for your release, shared through ERO | VISUALS.",
+      "includes": [
+        "An edit shaped around your release",
+        "Publishing across my social channels"
+      ],
+      "image": {
+        "src": "assets/images/edits/thats-so-true-thumb.webp",
+        "alt": "A frame from my That’s So True music edit",
+        "width": 600,
+        "height": 795
+      }
     },
     {
       "service": "website",
-      "title": "Business Websites",
-      "text": "A fast, modern website for your business, designed, built and launched for you.",
-      "benefits": [
-        "Look credible on every phone, tablet and laptop",
-        "Customers can contact or book you straight from the site, and find you on Google",
-        "One person handles design, build, admin panel and launch, so nothing falls through the cracks"
-      ]
+      "title": "Business websites",
+      "text": "A responsive home for your business, designed and built around what you do.",
+      "includes": [
+        "Help customers understand your offer",
+        "Make enquiries easy from any device"
+      ],
+      "image": {
+        "src": "assets/images/work/zero-to-deploy.webp",
+        "alt": "The actual Zero to Deploy website interface, designed and built by Merwin",
+        "width": 1200,
+        "height": 750
+      }
     },
     {
       "service": "editing",
-      "title": "Video Editing",
-      "text": "Short-form edits for creators, brands and businesses, built to hold attention.",
-      "benefits": [
-        "Hooks, captions and music sync that keep people watching",
-        "Ready for TikTok, Reels and YouTube Shorts",
-        "Fast turnaround, with revisions included"
+      "title": "Video editing",
+      "text": "Turn your footage into focused short-form content.",
+      "includes": [
+        "Hooks, captions and music that fit your story",
+        "Ready for TikTok, Reels and YouTube Shorts"
       ],
-      "addon": "Also available: AI product videos for e-commerce, made with Google Flow"
+      "image": {
+        "src": "assets/images/edits/seven-sundays-thumb.webp",
+        "alt": "Frame from the Glass Child: Seven Sundays edit",
+        "width": 576,
+        "height": 640
+      }
     }
   ],
-  "note": "The Services section: process (how I work, in order) and items (what I offer, in order of priority). service is the value the button preselects in the contact form (it must match a form option in 11-contact.json). benefits are written from the client's side: what they get by hiring me, not a feature list. Keep this section free of follower counts and screenshots; the numbers live in Track Record and Proof. No prices yet: add a price line when you decide."
+  "note": "Minimal image-led service cards: a title, one short description, two client benefits and one CTA. Keep statistics and case studies in Track Record, Work and Proof. service must match the contact form option so the CTA opens and preselects the project brief."
 }

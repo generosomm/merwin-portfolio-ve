@@ -133,7 +133,7 @@
           "height": 620
         },
         "full": "assets/images/proof/cert-network-security.webp",
-        "caption": "Signature and IDs redacted for privacy.",
+        "caption": "",
         "alt": "Information Technology Specialist Network Security certificate awarded to Merwin Generoso"
       },
       {
@@ -146,7 +146,7 @@
           "height": 696
         },
         "full": "assets/images/proof/cert-databases-full.webp",
-        "caption": "Signature and IDs redacted for privacy.",
+        "caption": "",
         "alt": "Information Technology Specialist Databases certificate awarded to Merwin Generoso"
       },
       {
@@ -179,5 +179,5 @@
     "label": "Preview",
     "close": "Close"
   },
-  "note": "thumb is the small WebP shown on the page; full is the larger image that opens in the lightbox. Every value must match its screenshot. Certificate images must only ever be the redacted files from scripts/redact-certs.mjs (never the originals); caption shows under the image in the lightbox, link (optional) shows under the card."
+  "note": "thumb is the small WebP shown on the page; full is the larger image that opens in the lightbox. Every value must match its screenshot. Certificate WebPs are exported from the originals using scripts/redact-certs.mjs with optional masks configured in scripts/redact-config.json. Signatures and verification details remain visible as requested. caption shows under the image in the lightbox, link (optional) shows under the card."
 }

@@ -204,9 +204,8 @@ function renderMenu(data) {
 
   const menuLinks = links
     .map(
-      (link, index) =>
+      (link) =>
         `<li><a class="menu-link" href="${attr(link.href)}">
-          <span class="menu-index" aria-hidden="true">${text(String(index + 1).padStart(2, "0"))}</span>
           <span>${text(link.label)}</span>
         </a></li>`
     )
@@ -358,17 +357,11 @@ function renderHero(data, chrome = {}) {
   const nameLines = lines
     .map((line, index) => {
       const inner = `<span class="hero-line-inner" data-line="${index}" style="--line: ${index}">${text(line)}</span>`;
-      /* Each line is drawn twice: the fill behind the portrait, an
-         outline-only twin in front of it. Over the photo only the
-         outline survives; elsewhere it sits on the fill unseen. On
-         desktop only the second line crosses the photo, so the first
-         line's twin is shown on phones only (css/hero.css). */
-      if (index === 0) {
-        return `<span class="hero-line hero-line-back">${inner}</span>
-        <span class="hero-line hero-line-outline hero-line-outline-first" aria-hidden="true">${inner}</span>`;
-      }
-      return `<span class="hero-line hero-line-front">${inner}</span>
-        <span class="hero-line hero-line-outline" aria-hidden="true">${inner}</span>`;
+      /* One solid, pure-white line each, drawn in front of the
+         portrait (css/hero.css). "back"/"front" name the two rows of
+         the desktop composition: the first line ends before the
+         head, the second crosses the shoulders. */
+      return `<span class="hero-line ${index === 0 ? "hero-line-back" : "hero-line-front"}">${inner}</span>`;
     })
     /* The newline is load-bearing: without whitespace between the
        block spans, the accessible name reads as one run-on word. */
@@ -512,27 +505,8 @@ function renderLiveFallback(social) {
     .join("");
   if (!rows) return "";
 
-  const methods = list(social.showPlatforms)
-    .map((name) => [name, social.platforms?.[name]?.documented])
-    .filter(([, documented]) => Number.isFinite(documented?.views))
-    .map(([name, documented]) => `<li><strong>${text(names[name] || name)}</strong> ${text(`${compactNumber.format(documented.views)} (${documented.window})`)}</li>`)
-    .join("");
-
   return `
     <div class="live" data-live-stats>
-      <div class="live-head">
-        <p class="live-status is-documented" data-live-status>
-          <span class="live-dot" aria-hidden="true"></span>
-          <span data-live-status-text>${text(display.status?.documented)}</span>
-        </p>
-        <details class="live-methods">
-          <summary>${text(display.methods?.summary)}</summary>
-          <div class="live-methods-body" data-live-methods>
-            <ul>${methods}</ul>
-            <p>${text(social.baseline?.note)}</p>
-          </div>
-        </details>
-      </div>
       <table class="live-table">
         <caption class="sr-only">${text(display.caption)}</caption>
         <thead>
@@ -738,60 +712,50 @@ function picture(image, { className = "", eager = false, sizes = "" } = {}) {
 const ARROW = `<svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>`;
 
 /* ---- Services ----------------------------------------------------
-   The offers, as cards that pin one over the next as the page
-   scrolls (the shade layer is what js/motion.js darkens on the card
-   underneath). Each card: what it is, the audience behind it where
-   that is the point, what the client gets, the proof, and a button
-   that jumps to the contact form with this service preselected.
+   Two calm parts on hairlines, no images or follower counts (the
+   numbers live in Track Record and Proof):
+   - How I work: the process, as short steps in a row.
+   - What I offer: one row per service. The title and a one-line
+     outcome on the left; on the right, what the client gains and a
+     button that jumps to the contact form with the service
+     preselected (js/interactions.js also unfolds the form).
 ---------------------------------------------------------------- */
-
-function serviceAudience(audience) {
-  if (!audience || !hasText(audience.total)) return "";
-  const platforms = records(audience.platforms)
-    .filter((platform) => hasText(platform.name) && hasText(platform.value))
-    .map((platform) => `<li><strong>${text(platform.value)}</strong> ${text(platform.name)}</li>`)
-    .join("");
-  return `
-    <div class="service-audience">
-      <p class="service-audience-total"><strong>${text(audience.total)}</strong> ${text(audience.label)}${hasText(audience.asOf) ? ` <span>${text(audience.asOf)}</span>` : ""}</p>
-      ${platforms ? `<ul class="service-platforms">${platforms}</ul>` : ""}
-    </div>`;
-}
 
 function renderPractice(data) {
   const root = document.querySelector('[data-section="services"]');
   if (!root || !data) return;
 
   const cta = data.cta || {};
-  const cards = records(data.items)
+  const process = data.process || {};
+  const steps = records(process.steps)
+    .filter((step) => hasText(step.title))
+    .map(
+      (step, index) => `
+        <li class="process-step">
+          <span class="process-index" aria-hidden="true">${pad2(index + 1)}</span>
+          <h4 class="process-title">${text(step.title)}</h4>
+          <p class="process-text">${text(step.text)}</p>
+        </li>`
+    )
+    .join("");
+
+  const offers = records(data.items)
     .filter((item) => hasText(item.title))
-    .map((item, index) => {
-      const includes = list(item.includes).filter(hasText);
+    .map((item) => {
+      const benefits = list(item.benefits).filter(hasText);
       return `
-        <li class="practice-card" style="--i: ${index}">
-          <article class="practice-card-inner">
-            <div class="practice-copy">
-              <span class="practice-index" aria-hidden="true">${pad2(index + 1)}</span>
-              <h3 class="practice-title">${text(item.title)}</h3>
-              <p class="practice-text">${text(item.text)}</p>
-              ${serviceAudience(item.audience)}
-              ${includes.length
-                ? `<div class="service-block">
-                    <p class="service-label">${text(data.includesLabel)}</p>
-                    <ul class="service-includes">${includes.map((line) => `<li>${text(line)}</li>`).join("")}</ul>
-                    ${hasText(item.addon) ? `<p class="service-addon">${text(item.addon)}</p>` : ""}
-                  </div>`
-                : ""}
-              ${hasText(item.proof)
-                ? `<p class="service-proof"><span class="service-label">${text(data.proofLabel)}</span> ${text(item.proof)}</p>`
-                : ""}
-              ${hasText(cta.href)
-                ? `<a class="button button-primary service-cta" href="${attr(cta.href)}" data-service="${attr(item.service || "")}">${text(cta.label)}</a>`
-                : ""}
-            </div>
-            <div class="practice-media">${picture(item.image)}</div>
-            <span class="practice-shade" aria-hidden="true"></span>
-          </article>
+        <li class="offer-row">
+          <div class="offer-head">
+            <h4 class="offer-title">${text(item.title)}</h4>
+            <p class="offer-text">${text(item.text)}</p>
+          </div>
+          <div class="offer-body">
+            ${benefits.length ? `<ul class="offer-benefits">${benefits.map((line) => `<li>${text(line)}</li>`).join("")}</ul>` : ""}
+            ${hasText(item.addon) ? `<p class="offer-addon">${text(item.addon)}</p>` : ""}
+            ${hasText(cta.href)
+              ? `<a class="button button-ghost service-cta" href="${attr(cta.href)}" data-service="${attr(item.service || "")}">${text(cta.label)}</a>`
+              : ""}
+          </div>
         </li>`;
     })
     .join("");
@@ -799,7 +763,18 @@ function renderPractice(data) {
   root.innerHTML = `
     <div class="section-inner">
       ${sectionTitle("services")}
-      <ol class="practice-stack">${cards}</ol>
+      ${steps
+        ? `<div class="services-part">
+            <h3 class="proof-heading services-heading">${text(process.heading)}</h3>
+            <ol class="process-steps">${steps}</ol>
+          </div>`
+        : ""}
+      ${offers
+        ? `<div class="services-part">
+            <h3 class="proof-heading services-heading">${text(data.offer?.heading)}</h3>
+            <ul class="offer-list">${offers}</ul>
+          </div>`
+        : ""}
     </div>`;
 }
 
@@ -1298,7 +1273,7 @@ function renderNotes(data) {
   const form = data.form || {};
 
   root.innerHTML = `
-    <div class="section-inner">
+    <div class="section-inner notes-wrap">
       ${sectionTitle("notes")}
       <p class="notes-intro">${text(data.intro)}</p>
       <div class="notes" data-notes hidden>

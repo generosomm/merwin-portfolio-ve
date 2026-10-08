@@ -4,37 +4,42 @@
    and the visit counter in the footer.
    ============================================================= */
 
+/* The whole section sits on one centred column, like Contact: no
+   empty half beside a single note on wide screens. */
+.notes-wrap > .section-head {
+  justify-content: center;
+  text-align: center;
+}
+
 .notes-intro {
-  max-width: 40em;
-  margin: 0 0 var(--s-6);
+  max-width: 34em;
+  margin: 0 auto var(--s-6);
   color: var(--text-mid);
   font-size: var(--fs-lead);
   line-height: 1.5;
+  text-align: center;
+  text-wrap: balance;
 }
 
-/* ---- Approved notes: quotes on hairlines, two across on wide screens */
+/* ---- Approved notes: centred quotes on hairlines ------------------- */
 
 .notes-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0 var(--s-7);
-  margin: 0;
+  max-width: 44rem;
+  margin: 0 auto;
   padding: 0;
   list-style: none;
-}
-
-@media (min-width: 900px) {
-  .notes-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .note {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--s-3);
   padding: var(--s-5) 0;
   border-top: 1px solid var(--line);
+  text-align: center;
 }
 
 .note-message {
@@ -58,6 +63,7 @@
 .note-meta {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--s-1) var(--s-3);
   margin: 0;
   color: var(--text-mid);
@@ -76,8 +82,10 @@
 }
 
 .notes-empty {
-  margin: 0;
+  max-width: 44rem;
+  margin: 0 auto;
   padding: var(--s-5) 0;
+  text-align: center;
   border-top: 1px solid var(--line);
   color: var(--text-mid);
 }

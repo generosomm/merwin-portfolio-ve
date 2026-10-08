@@ -265,31 +265,6 @@
     else countTableValues(block, previous);
   }
 
-  function renderMethods(block, stats, social) {
-    const target = block.querySelector("[data-live-methods]");
-    if (!target) return;
-    const display = social.display;
-    const listNode = el("ul");
-    for (const [name, platform] of shownPlatforms(stats, social)) {
-      const item = el("li");
-      item.append(el("strong", "", display.names?.[name] || name), document.createTextNode(` ${platform.viewsMethod || ""}`));
-      const note = display.methods?.notes?.[name];
-      if (note) item.append(el("span", "live-note", note));
-      listNode.append(item);
-    }
-    const total = el("li");
-    total.append(el("strong", "", display.methods?.total || ""), document.createTextNode(` ${stats.totals.viewsMethod || ""}`));
-    listNode.append(total);
-    const parts = [listNode];
-    const note = stats.baseline?.note || social.baseline?.note;
-    if (note) {
-      const baseline = el("p");
-      baseline.append(el("strong", "", display.methods?.baseline || ""), document.createTextNode(` ${note}`));
-      parts.push(baseline);
-    }
-    target.replaceChildren(...parts);
-  }
-
   function updateViewsCard(stats, social) {
     const card = document.querySelector('.number[data-live="views"]');
     const total = stats.totals.views;
@@ -320,39 +295,6 @@
       return;
     }
     tween(from, value, show);
-  }
-
-  /* ---- Status line --------------------------------------------------- */
-
-  function ago(iso, display) {
-    const minutes = Math.floor((Date.now() - new Date(iso)) / 60_000);
-    const words = display.ago || {};
-    if (!Number.isFinite(minutes) || minutes < 1) return words.now || "";
-    if (minutes < 60) return fill(words.minutes, { n: minutes });
-    if (minutes < 48 * 60) return fill(words.hours, { n: Math.floor(minutes / 60) });
-    return fill(words.days, { n: Math.floor(minutes / 1440) });
-  }
-
-  let statusState = { kind: "documented", updatedAt: null };
-
-  function paintStatus(block, display) {
-    const line = block.querySelector("[data-live-status]");
-    const label = block.querySelector("[data-live-status-text]");
-    if (!line || !label) return;
-    const { kind, updatedAt } = statusState;
-    line.classList.remove("is-live", "is-cached", "is-documented", "is-loading");
-    line.classList.add(`is-${kind}`);
-    label.textContent = fill(display.status?.[kind], { ago: updatedAt ? ago(updatedAt, display) : "" });
-  }
-
-  /* Announced once, politely, on first load. The minute-by-minute
-     "updated X min ago" ticks are not announced. */
-  function announceOnce(block) {
-    const line = block.querySelector("[data-live-status]");
-    if (!line || line.dataset.announced) return;
-    line.dataset.announced = "1";
-    line.setAttribute("aria-live", "polite");
-    window.setTimeout(() => line.removeAttribute("aria-live"), 2000);
   }
 
   /* ---- Top posts (Proof section) ------------------------------------- */
@@ -433,16 +375,7 @@
 
   function apply(block, stats, social, { first }) {
     lastUpdatedAt = stats.updatedAt;
-    statusState = {
-      kind: !stats.updatedAt ? "documented" : stats.stale ? "cached" : "live",
-      updatedAt: stats.updatedAt
-    };
-    if (block) {
-      renderTable(block, stats, social, { first });
-      renderMethods(block, stats, social);
-      paintStatus(block, social.display);
-      if (first) announceOnce(block);
-    }
+    if (block) renderTable(block, stats, social, { first });
     updateViewsCard(stats, social);
     renderTopPosts(stats, social);
   }
@@ -466,11 +399,7 @@
       return;
     }
 
-    if (block) {
-      block.classList.add("is-loading");
-      statusState = { kind: "loading", updatedAt: null };
-      paintStatus(block, social.display);
-    }
+    block?.classList.add("is-loading");
 
     /* After 3 s the visitor sees the documented figures instead of a
        skeleton, but the request keeps going: if the live numbers land
@@ -478,8 +407,6 @@
        without a reload. */
     const showDocumented = (reason) => {
       console.info(`[live-stats] showing documented figures (${reason}).`);
-      statusState = { kind: "documented", updatedAt: null };
-      if (block) paintStatus(block, social.display);
     };
     const soft = new Promise((resolve) => window.setTimeout(() => resolve("soft-timeout"), SOFT_TIMEOUT_MS));
     const first = await Promise.race([
@@ -501,9 +428,7 @@
     block?.classList.remove("is-loading");
     resolveReady();
 
-    /* Keep "updated X min ago" honest, and pick up new numbers if the
-       tab stays open. Polls only while the tab is visible. */
-    window.setInterval(() => { if (block) paintStatus(block, social.display); }, 60_000);
+    /* Pick up new numbers if the tab stays open (only while visible). */
     window.setInterval(async () => {
       if (document.visibilityState !== "visible") return;
       try {

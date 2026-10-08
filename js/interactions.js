@@ -856,39 +856,6 @@
     });
   }
 
-  /* ---- Service cards taller than the screen ----------------------------
-     The cards pin near the top while the next one slides over. A card
-     taller than the screen would be pinned with its bottom (and its
-     "Start a project" button) still off-screen, and then covered.
-     Such a card pins later instead: when its bottom edge reaches the
-     bottom of the screen, so all of it is seen first.
-  ---------------------------------------------------------------- */
-
-  function initStackFit() {
-    const cards = Array.from(document.querySelectorAll(".practice-card"));
-    if (!cards.length) return;
-
-    function fit() {
-      cards.forEach((card) => {
-        card.style.removeProperty("top");
-        const top = parseFloat(getComputedStyle(card).top);
-        if (!Number.isFinite(top)) return;
-        const height = card.offsetHeight;
-        const room = window.innerHeight - 16;
-        if (top + height > room) card.style.top = `${Math.round(room - height)}px`;
-      });
-      window.ScrollTrigger?.refresh();
-    }
-
-    fit();
-    let timer = 0;
-    window.addEventListener("resize", () => {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(fit, 150);
-    }, { passive: true });
-    if (document.fonts?.ready) document.fonts.ready.then(fit);
-  }
-
   /* ---- Folds: forms tucked behind a 3D key --------------------------
      Markup from js/content.js (foldBlock). Closed on load; the key
      toggles. While closed the form is inert (can't be tabbed into or
@@ -997,7 +964,6 @@
     initFolds();
     initProjectForm();
     initServiceLinks();
-    initStackFit();
   }
 
   if (window.portfolioContentReady?.then) {

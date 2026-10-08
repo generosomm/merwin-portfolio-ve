@@ -55,18 +55,6 @@
   },
   "display": {
     "caption": "Followers, views and posts on each platform",
-    "status": {
-      "loading": "checking live stats",
-      "live": "live · updated {ago}",
-      "cached": "cached · updated {ago}",
-      "documented": "documented figures"
-    },
-    "ago": {
-      "now": "just now",
-      "minutes": "{n} min ago",
-      "hours": "{n} h ago",
-      "days": "{n} d ago"
-    },
     "columns": {
       "platform": "Platform",
       "followers": "Followers",
@@ -91,17 +79,6 @@
     "viewsCard": {
       "label": "Views, documented + live",
       "detail": "Live from each connected platform, never below the documented screenshots"
-    },
-    "methods": {
-      "summary": "How these numbers are counted",
-      "total": "Total views",
-      "baseline": "Documented baseline",
-      "notes": {
-        "tiktok": "From TikTok's official API (developer sandbox, connected to my own account only).",
-        "youtube": "From the YouTube Data API's public channel statistics.",
-        "instagram": "From Instagram's official API (Professional account insights). Meta keeps post views for 2 years and none for posts inside carousels, so older views aren't included.",
-        "facebook": "From Facebook's Page insights (my own Page only). Views are summed over the newest posts."
-      }
     },
     "topPosts": {
       "show": true,

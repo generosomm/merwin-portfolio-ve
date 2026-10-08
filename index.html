@@ -52,24 +52,25 @@
 
   <!-- Parallel links, not an @import chain: each stylesheet starts
        downloading as soon as the HTML is parsed. -->
-  <link rel="stylesheet" href="css/fonts.css?v=r45">
-  <link rel="stylesheet" href="css/tokens.css?v=r45">
-  <link rel="stylesheet" href="css/base.css?v=r45">
-  <link rel="stylesheet" href="css/chrome.css?v=r45">
-  <link rel="stylesheet" href="css/sections.css?v=r45">
-  <link rel="stylesheet" href="css/hero.css?v=r45">
-  <link rel="stylesheet" href="css/story.css?v=r45">
-  <link rel="stylesheet" href="css/work.css?v=r45">
-  <link rel="stylesheet" href="css/closing.css?v=r45">
-  <link rel="stylesheet" href="css/live-stats.css?v=r45">
-  <link rel="stylesheet" href="css/notes.css?v=r45">
+  <link rel="stylesheet" href="css/fonts.css?v=r47">
+  <link rel="stylesheet" href="css/tokens.css?v=r47">
+  <link rel="stylesheet" href="css/base.css?v=r47">
+  <link rel="stylesheet" href="css/chrome.css?v=r47">
+  <link rel="stylesheet" href="css/sections.css?v=r47">
+  <link rel="stylesheet" href="css/hero.css?v=r47">
+  <link rel="stylesheet" href="css/story.css?v=r47">
+  <link rel="stylesheet" href="css/work.css?v=r47">
+  <link rel="stylesheet" href="css/services.css?v=r47">
+  <link rel="stylesheet" href="css/closing.css?v=r47">
+  <link rel="stylesheet" href="css/live-stats.css?v=r47">
+  <link rel="stylesheet" href="css/notes.css?v=r47">
 
   <!-- Nothing appears until content.js has run with the site's data,
        so both are fetched early, right after the render-blocking CSS:
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=r45" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=r47" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -87,21 +88,21 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=r45" defer></script>
-  <script src="js/site.js?v=r45" defer></script>
-  <script src="js/interactions.js?v=r45" defer></script>
-  <script src="js/cursor.js?v=r45" defer></script>
+  <script src="js/content.js?v=r47" defer></script>
+  <script src="js/site.js?v=r47" defer></script>
+  <script src="js/interactions.js?v=r47" defer></script>
+  <script src="js/cursor.js?v=r47" defer></script>
   <script src="vendor/lenis.min.js?v=1.1.18" defer></script>
   <script src="vendor/gsap.min.js?v=3.13.0" defer></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.13.0" defer></script>
-  <script src="js/motion.js?v=r45" defer></script>
+  <script src="js/motion.js?v=r47" defer></script>
   <!-- Live social stats (optional): upgrades the Numbers section with
        /api/stats. Remove it and the documented figures still show. -->
-  <script src="js/live-stats.js?v=r45" defer></script>
+  <script src="js/live-stats.js?v=r47" defer></script>
   <!-- Visitor notes and the footer visit counter (optional, like
        live-stats.js: remove them and the rest of the site is fine). -->
-  <script src="js/notes.js?v=r45" defer></script>
-  <script src="js/visits.js?v=r45" defer></script>
+  <script src="js/notes.js?v=r47" defer></script>
+  <script src="js/visits.js?v=r47" defer></script>
 
   <!-- Vercel Web Analytics: private visitor stats in the Vercel
        dashboard (no cookies). Starts working once Analytics is enabled

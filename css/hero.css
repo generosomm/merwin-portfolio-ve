@@ -130,11 +130,10 @@ html.preloading {
 .hero-name {
   position: relative;
   /* Must stay `auto`. Any numeric z-index here makes the h1 its own
-     stacking context, which traps .hero-line-outline behind the
-     portrait no matter how high its own z-index is. */
+     stacking context, and the lines could no longer sit in front of
+     the portrait (a sibling) whatever their own z-index. */
   z-index: auto;
-  /* A one-column grid rather than a flex column, so the outline twin
-     can share the second line's row and sit exactly on top of it. */
+  /* A one-column grid: each line is pinned to its own row. */
   display: grid;
   width: 100%;
   grid-template-columns: 100%;
@@ -161,49 +160,30 @@ html.preloading {
 
 .hero-line-inner {
   display: block;
+  color: var(--white);
+  /* The letters are tracked so tightly they touch, and where two
+     glyphs' anti-aliased edges meet the browser leaves a faint dark
+     hairline. A 2px shadow of the same white on each side fills it
+     (1px still left faint seams on standard-density screens). */
+  text-shadow: 2px 0 0 var(--white), -2px 0 0 var(--white);
   will-change: transform;
 }
 
-/* The sandwich: both filled lines sit behind the portrait, so the
-   photo is never hidden under solid type. Only the outline twin of
-   the second line crosses in front of it, keeping the letterforms
-   readable over the photo while the face shows through them. */
-/* Every line and twin is pinned to the single column: two items on
-   the same row with an auto column would otherwise be pushed into a
-   second, zero-width column. */
+/* Both lines are solid white and sit IN FRONT of the portrait
+   (z-index 2 over its 1): where the second line crosses the
+   shoulders it covers them, so the name always reads at full
+   strength. Each line is pinned to its own row of the one column. */
 .hero-line-back {
-  z-index: 0;
+  z-index: 2;
   grid-row: 1;
   grid-column: 1;
-}
-
-.hero-line-front,
-.hero-line-outline {
-  grid-row: 2;
-  grid-column: 1;
-  text-align: right;
 }
 
 .hero-line-front {
-  z-index: 0;
-}
-
-.hero-line-outline {
   z-index: 2;
-  color: transparent;
-  /* Scales with the type: a hairline on phones, ~2px at full size. */
-  -webkit-text-stroke: max(1px, 0.009em) var(--text);
-  pointer-events: none;
-  user-select: none;
-}
-
-/* The first line's twin. It shares the first line's row, and only
-   phones use it: on desktop "MERWIN" never crosses the photo. */
-.hero-line-outline-first {
-  display: none;
-  grid-row: 1;
+  grid-row: 2;
   grid-column: 1;
-  text-align: left;
+  text-align: right;
 }
 
 /* Geometry, in em of the hero type (1em = one cap-to-cap line):
@@ -537,8 +517,7 @@ html.hero-play .hero-foot > :nth-child(3) {
     line-height: 0.95;
   }
 
-  .hero-line-front,
-  .hero-line-outline {
+  .hero-line-front {
     text-align: left;
   }
 
@@ -640,14 +619,9 @@ html.hero-play .hero-foot > :nth-child(3) {
     font-size: clamp(3rem, 15.5vw, 8rem);
   }
 
-  /* Both lines left-aligned; the outline twin only matters when the
-     name crosses the portrait, which it no longer does here. */
+  /* Both lines left-aligned. */
   .hero-line-front {
     text-align: left;
-  }
-
-  .hero-line-outline {
-    display: none;
   }
 
   .hero-portrait {
@@ -748,17 +722,8 @@ html.hero-play .hero-foot > :nth-child(3) {
     display: contents;
   }
 
-  /* The same sandwich as desktop: both filled lines behind the photo,
-     the photo, then both outline twins in front. Letters crossing the
-     shirt become outlines; letters over the dark background stay
-     solid. The intro, buttons and socials sit above it all. */
-  .hero-line-outline,
-  .hero-line-outline-first {
-    display: block;
-    text-align: left;
-    -webkit-text-stroke-width: 1.5px;
-  }
-
+  /* The name sits in front of the photo (as on desktop); the intro,
+     buttons and socials sit above it all. */
   .hero-foot,
   .hero-scroll {
     position: relative;

@@ -298,14 +298,6 @@ html.menu-open {
   color: var(--accent);
 }
 
-.menu-index {
-  color: var(--text-mid);
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  font-weight: 400;
-  letter-spacing: var(--track-label);
-}
-
 .menu-socials {
   display: flex;
   flex-wrap: wrap;

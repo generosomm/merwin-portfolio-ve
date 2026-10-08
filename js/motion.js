@@ -52,7 +52,6 @@
     sectionTitles(gsap);
     countUps(gsap);
     experienceTracks(gsap);
-    practiceStack(gsap);
     entrances(gsap);
     closingStatement(gsap);
     stackWave(gsap);
@@ -103,37 +102,6 @@
     );
   }
 
-  /* ---- What I do: stacked cards ---------------------------------
-     CSS sticky does the stacking. This adds depth: while the next
-     card travels up to cover one, the covered card tips back a few
-     degrees, shrinks slightly and darkens, as if pushed into the
-     stack. Scrubbed, so it reverses on the way back up.
-  ---------------------------------------------------------------- */
-
-  function practiceStack(gsap) {
-    const cards = Array.from(document.querySelectorAll(".practice-card"));
-
-    cards.slice(0, -1).forEach((card, index) => {
-      const next = cards[index + 1];
-      const inner = card.querySelector(".practice-card-inner");
-      const shade = card.querySelector(".practice-shade");
-      if (!inner) return;
-
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: next,
-            start: "top bottom",
-            /* Ends exactly where the next card sticks. */
-            end: () => `top ${parseFloat(getComputedStyle(next).top) || 0}px`,
-            scrub: true
-          }
-        })
-        .to(inner, { scale: 0.93, rotateX: 6, ease: "none" }, 0)
-        .to(shade, { opacity: 0.55, ease: "none" }, 0);
-    });
-  }
-
   /* ---- Entrances ---------------------------------------------------
      Work rows and edit cards rise in once, staggered, as their list
      reaches the screen. `from` renders the start state immediately,
@@ -142,6 +110,8 @@
 
   function entrances(gsap) {
     [
+      [".process-steps", ".process-step"],
+      [".offer-list", ".offer-row"],
       [".work-list", ".work-row"],
       ["#edits-panel-edits .edits-grid", ".edit-card"],
       [".contact-list", ".contact-row"]

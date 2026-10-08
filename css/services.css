@@ -1,0 +1,158 @@
+/* =============================================================
+   SERVICES — "How I work" (process steps) and "What I offer"
+   (one row per service). Markup: renderPractice in js/content.js.
+   Hairlines and type only, like Work and Experience: no cards, no
+   images, one accent for small markers.
+   ============================================================= */
+
+.services-part + .services-part {
+  margin-top: var(--s-9);
+}
+
+/* .proof-heading (css/closing.css, loaded later) resets margin to 0,
+   so this needs the extra class to win. */
+.proof-heading.services-heading {
+  margin-bottom: var(--s-5);
+}
+
+/* ---- How I work: steps on one row (2x2 on tablets, stacked on phones) */
+
+.process-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 var(--s-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 600px) {
+  .process-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .process-steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.process-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-5) 0;
+  border-top: 1px solid var(--line);
+}
+
+.process-index {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+}
+
+.process-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  letter-spacing: var(--track-display);
+  line-height: var(--leading-snug);
+}
+
+.process-text {
+  max-width: 30ch;
+  margin: 0;
+  color: var(--text-mid);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+/* ---- What I offer: one row per service ------------------------------ */
+
+.offer-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--line);
+}
+
+.offer-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-4) var(--s-7);
+  padding: var(--s-6) 0;
+  border-top: 1px solid var(--line);
+}
+
+@media (min-width: 900px) {
+  .offer-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.offer-title {
+  margin: 0 0 var(--s-3);
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  letter-spacing: var(--track-display);
+  line-height: var(--leading-snug);
+}
+
+.offer-text {
+  max-width: 34em;
+  margin: 0;
+  color: var(--text-mid);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+.offer-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+}
+
+.offer-benefits {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.offer-benefits li {
+  position: relative;
+  padding-left: var(--s-5);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* A short accent dash instead of a bullet. */
+.offer-benefits li::before {
+  position: absolute;
+  top: 0.75em;
+  left: 0;
+  width: 0.75rem;
+  height: 1px;
+  background: var(--accent);
+  content: "";
+}
+
+.offer-addon {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+}
+
+/* Phones: the button runs the full width, thumb-sized. */
+@media (max-width: 599px) {
+  .offer-body .service-cta {
+    width: 100%;
+  }
+}

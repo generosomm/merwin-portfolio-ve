@@ -1,87 +1,64 @@
 {
+  "process": {
+    "heading": "How I work",
+    "steps": [
+      {
+        "title": "Brief",
+        "text": "You tell me the goal, the audience and the deadline. I ask the questions that shape the work."
+      },
+      {
+        "title": "Plan",
+        "text": "A clear scope, timeline and price before anything starts, so there are no surprises."
+      },
+      {
+        "title": "Build or edit",
+        "text": "I make it and share progress as I go, with revisions built in."
+      },
+      {
+        "title": "Launch & report",
+        "text": "It goes live, and you get the results or a clean handover, so you know it worked."
+      }
+    ]
+  },
+  "offer": {
+    "heading": "What I offer"
+  },
   "cta": {
     "label": "Start a project",
     "href": "#project-brief"
   },
-  "includesLabel": "What you get",
-  "proofLabel": "Proof",
   "items": [
     {
       "service": "promotion",
       "title": "Music, Film & Brand Promotion",
-      "text": "Your release, edited for short-form and posted to an audience that has reached 74M+ views.",
-      "audience": {
-        "total": "272K+",
-        "label": "followers across my channels",
-        "asOf": "as of Oct 2026",
-        "platforms": [
-          {
-            "name": "TikTok",
-            "value": "237.8K"
-          },
-          {
-            "name": "YouTube",
-            "value": "22.8K"
-          },
-          {
-            "name": "Facebook",
-            "value": "9.9K"
-          },
-          {
-            "name": "Instagram",
-            "value": "1.8K"
-          }
-        ]
-      },
-      "includes": [
-        "An edit made for your release",
-        "Posted on my TikTok, YouTube, Facebook and Instagram",
-        "A results report: views, likes and shares"
-      ],
-      "proof": "That's So True 3.9M · Home Along Da Riles 3.5M · Midnight Girls 700K",
-      "image": {
-        "src": "assets/images/edits/home-along-da-riles-thumb.webp",
-        "alt": "Frame from the Home Along Da Riles film promo edit",
-        "width": 600,
-        "height": 602
-      }
+      "text": "Your release, edited for short-form and posted on my channels, where my edits have reached 74M+ documented views.",
+      "benefits": [
+        "Reach an audience that already watches edits like yours",
+        "An edit made for your release, ready to share on your own pages too",
+        "A results report with views, likes and shares, so you see what you got"
+      ]
     },
     {
       "service": "website",
       "title": "Business Websites",
-      "text": "A fast, modern website for your business: designed, built and launched.",
-      "includes": [
-        "Mobile-friendly design and build",
-        "Contact or booking forms, basic Google (SEO) setup",
-        "Admin panels and databases when the business needs them",
-        "Launch and hosting setup"
-      ],
-      "proof": "MSC NU Laguna website · Document Tracking System · this portfolio",
-      "image": {
-        "src": "assets/images/work/msc-nu-laguna.webp",
-        "alt": "The MSC NU Laguna website repository on GitHub",
-        "width": 1200,
-        "height": 750
-      }
+      "text": "A fast, modern website for your business, designed, built and launched for you.",
+      "benefits": [
+        "Look credible on every phone, tablet and laptop",
+        "Customers can contact or book you straight from the site, and find you on Google",
+        "One person handles design, build, admin panel and launch, so nothing falls through the cracks"
+      ]
     },
     {
       "service": "editing",
       "title": "Video Editing",
-      "text": "Short-form edits built to hold attention, for creators, brands and businesses.",
-      "includes": [
-        "TikTok, Reels and YouTube Shorts",
-        "Hooks, captions and music sync",
-        "Revisions and fast turnaround"
+      "text": "Short-form edits for creators, brands and businesses, built to hold attention.",
+      "benefits": [
+        "Hooks, captions and music sync that keep people watching",
+        "Ready for TikTok, Reels and YouTube Shorts",
+        "Fast turnaround, with revisions included"
       ],
-      "addon": "Add-on: AI product videos for e-commerce, made with Google Flow",
-      "proof": "Seven Sundays 14M · The Chosen: Judas delivered in 24h",
-      "image": {
-        "src": "assets/images/seven-sundays-thumb.jpg",
-        "alt": "Frame from the Glass Child: Seven Sundays edit",
-        "width": 576,
-        "height": 640
-      }
+      "addon": "Also available: AI product videos for e-commerce, made with Google Flow"
     }
   ],
-  "note": "The Services section, in order of priority. service is the value the card's button preselects in the contact form (it must match a form option). audience appears on the card that has it; update the follower counts and asOf date now and then. No prices yet: add a price line when you decide."
+  "note": "The Services section: process (how I work, in order) and items (what I offer, in order of priority). service is the value the button preselects in the contact form (it must match a form option in 11-contact.json). benefits are written from the client's side: what they get by hiring me, not a feature list. Keep this section free of follower counts and screenshots; the numbers live in Track Record and Proof. No prices yet: add a price line when you decide."
 }

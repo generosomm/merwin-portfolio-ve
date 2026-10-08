@@ -17,6 +17,7 @@
 
   /* ---- Text --------------------------------------------------- */
   --text: #f2f2f0;             /* 18.4:1 on --ink-900 */
+  --white: #ffffff;            /* the hero name: pure white, full strength */
   --text-mid: #8c8c88;         /*  5.9:1 — passes AA for body copy */
   --text-dim: #6c6c66;         /*  3.4:1 — scroll-reveal START state; AA for large text */
 

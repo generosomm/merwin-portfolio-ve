@@ -1,126 +1,13 @@
 /* =============================================================
-   LIVE STATS — the per-platform table under the Numbers cards, its
-   status line and "how counted" note, and the Top posts strip in
-   Proof. Markup: js/content.js (static, documented figures) and
-   js/live-stats.js (live upgrade).
+   LIVE STATS — the per-platform table under the Numbers cards and
+   the Top posts strip in Proof. Markup: js/content.js (static,
+   documented figures) and js/live-stats.js (live upgrade).
    Same language as the rest of the page: hairlines instead of
    boxes, mono labels, the accent kept for "live" only.
    ============================================================= */
 
 .live {
   margin-top: var(--s-7);
-}
-
-/* ---- Status line + "how counted" ------------------------------- */
-
-.live-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-2) var(--s-6);
-  margin-bottom: var(--s-3);
-}
-
-.live-status {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s-2);
-  margin: 0;
-  color: var(--text-mid);
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  letter-spacing: 0.04em;
-}
-
-.live-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.live-status.is-live {
-  color: var(--accent);
-}
-
-/* A slow breath on the dot while live, so it reads as a signal. */
-.live-status.is-live .live-dot {
-  animation: live-breathe 2.4s ease-in-out infinite;
-}
-
-.live-status.is-loading .live-dot {
-  opacity: 0.4;
-}
-
-@keyframes live-breathe {
-  50% {
-    opacity: 0.35;
-  }
-}
-
-.live-methods {
-  color: var(--text-mid);
-  font-size: var(--fs-small);
-}
-
-.live-methods summary {
-  display: inline-flex;
-  min-height: var(--tap);
-  align-items: center;
-  gap: var(--s-2);
-  cursor: pointer;
-  list-style: none;
-  text-decoration: underline;
-  text-decoration-color: var(--line-strong);
-  text-underline-offset: 0.25em;
-  transition: color var(--dur-1) var(--ease-out);
-}
-
-.live-methods summary::-webkit-details-marker {
-  display: none;
-}
-
-.live-methods summary::after {
-  content: "+";
-  font-family: var(--font-mono);
-  text-decoration: none;
-}
-
-.live-methods[open] summary::after {
-  content: "–";
-}
-
-.live-methods summary:hover,
-.live-methods summary:focus-visible {
-  color: var(--accent);
-}
-
-.live-methods-body {
-  max-width: 62ch;
-  padding: var(--s-3) 0 var(--s-4);
-  line-height: 1.55;
-}
-
-.live-methods-body ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.live-methods-body li + li,
-.live-methods-body p {
-  margin-top: var(--s-2);
-}
-
-.live-methods-body strong {
-  color: var(--text);
-  font-weight: 500;
-}
-
-.live-note {
-  display: block;
-  color: var(--text-dim);
 }
 
 /* ---- Table ------------------------------------------------------ */
@@ -430,7 +317,6 @@ a.live-platform-link:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .live-status.is-live .live-dot,
   .live.is-loading .live-value {
     animation: none;
   }

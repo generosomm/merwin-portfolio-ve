@@ -136,5 +136,9 @@
       }
     ]
   },
-  "note": "Two looping horizontal carousels: edits link to their original posts, and AI hooks open the local video player. Videos load only on desktop hover or when a hook is opened."
+  "note": "Two looping horizontal carousels: edits link to their original posts, and AI hooks open the local video player. Videos load only on desktop hover or when a hook is opened.",
+  "carousel": {
+    "previous": "Previous video",
+    "next": "Next video"
+  }
 }

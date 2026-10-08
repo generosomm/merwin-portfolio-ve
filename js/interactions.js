@@ -314,6 +314,18 @@
         stop(); busyUntil = performance.now() + delay;
         clearTimeout(resumeTimer); resumeTimer = setTimeout(sync, delay + 20);
       }
+      panel.querySelectorAll("[data-edits-step]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          hold();
+          normalize();
+          const step = originals[1].offsetLeft - originals[0].offsetLeft;
+          if (event.detail) button.blur();
+          grid.scrollBy({
+            left: Number(button.dataset.editsStep) * step,
+            behavior: reduceMotion.matches ? "instant" : "smooth"
+          });
+        });
+      });
       panel.addEventListener("pointerenter", (event) => {
         if (event.pointerType !== "touch") { hovered = true; sync(); }
       });

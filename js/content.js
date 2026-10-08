@@ -761,10 +761,18 @@ function editMeta(title, platform) {
     </span>`;
 }
 
-function editPanel(id, cards, selected) {
+function chevron(direction) {
+  return `<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="${direction === "previous" ? "M10 3.5L5.5 8l4.5 4.5" : "M6 3.5L10.5 8 6 12.5"}" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>`;
+}
+
+function editPanel(id, cards, selected, controls) {
   return `
     <div class="edits-panel" id="edits-panel-${id}" role="tabpanel" aria-labelledby="edits-tab-${id}"${selected ? "" : " hidden"}>
       <ul class="edits-grid">${cards}</ul>
+      <div class="edits-navigation">
+        <button type="button" class="edits-arrow" data-edits-step="-1" aria-controls="edits-panel-${id}" aria-label="${attr(controls.previous)}">${chevron("previous")}</button>
+        <button type="button" class="edits-arrow" data-edits-step="1" aria-controls="edits-panel-${id}" aria-label="${attr(controls.next)}">${chevron("next")}</button>
+      </div>
     </div>`;
 }
 
@@ -796,8 +804,8 @@ function renderEdits(data) {
     <div class="section-inner">
       ${sectionTitle("edits")}
       ${tabList}
-      ${editPanel("edits", edits, true)}
-      ${hooks ? editPanel("hooks", hooks, false) : ""}
+      ${editPanel("edits", edits, true, data.carousel || {})}
+      ${hooks ? editPanel("hooks", hooks, false, data.carousel || {}) : ""}
     </div>`;
 }
 
@@ -848,9 +856,6 @@ function renderProof(data) {
         </div>`
     )
     .join("");
-
-  const chevron = (direction) =>
-    `<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="${direction === "previous" ? "M10 3.5L5.5 8l4.5 4.5" : "M6 3.5L10.5 8 6 12.5"}" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>`;
 
   /* Certificates use the same carousel markup as the analytics, but
      js/interactions.js only turns it into a carousel on phones (see

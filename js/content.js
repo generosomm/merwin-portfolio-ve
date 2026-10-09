@@ -708,6 +708,9 @@ function workRow(item, index, labels) {
   const code = hasText(item.code)
     ? `<a class="work-code" href="${attr(item.code)}" target="_blank" rel="noopener noreferrer">${text(labels.code)}${ARROW}</a>`
     : "";
+  const live = hasText(item.live)
+    ? `<a class="work-code" href="${attr(item.live)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(`Visit ${item.title} live site`)}">Live site${ARROW}</a>`
+    : "";
   const preview = hasText(item.image?.src) ? ` data-preview="${attr(item.image.src)}"` : "";
 
   return `
@@ -719,7 +722,8 @@ function workRow(item, index, labels) {
         <div class="work-meta">
           ${workTechnologies(item.tags)}
           ${code}
-          ${href ? `<span class="work-arrow" aria-hidden="true">${ARROW}</span>` : ""}
+          ${live}
+          ${href && !code && !live ? `<span class="work-arrow" aria-hidden="true">${ARROW}</span>` : ""}
         </div>
         ${hasText(item.status) ? `<p class="work-status">${text(item.status)}</p>` : ""}
       </div>

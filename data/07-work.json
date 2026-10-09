@@ -5,9 +5,15 @@
       "title": "ASINTA",
       "summary": "A workforce platform for security agencies. I build duty scheduling, secure guard check-in and role-based workflows across admin, guard and client portals.",
       "tags": ["React", "TypeScript", "Firebase", "Google Maps API"],
-      "status": "Private project · Final polishing",
-      "href": null,
-      "image": null
+      "status": "Landing page live · Platform in final polishing",
+      "href": "https://asinta-272f8.web.app/",
+      "live": "https://asinta-272f8.web.app/",
+      "image": {
+        "src": "assets/images/work/asinta-hero.png",
+        "alt": "ASINTA landing page hero with workforce operations headline and a 3D security site model",
+        "width": 1200,
+        "height": 750
+      }
     },
     {
       "title": "MSC NU Laguna Website",

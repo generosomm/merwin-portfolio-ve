@@ -122,6 +122,50 @@
   white-space: nowrap;
 }
 
+.work-status {
+  margin: var(--s-2) 0 0;
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.edit-delivery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-4);
+  margin: 0 0 var(--s-5);
+  padding-block: var(--s-4);
+  border-block: 1px solid var(--line);
+}
+
+.edit-delivery-item {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-2);
+}
+
+.edit-delivery dt {
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.edit-delivery dd {
+  order: -1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+@media (max-width: 767px) {
+  .edit-delivery { gap: var(--s-2); }
+  .edit-delivery-item { flex-direction: column; align-items: center; text-align: center; }
+  .edit-delivery dd { font-size: 1.375rem; }
+}
+
 /* Sits above the row's stretched link so it stays its own target. */
 .work-code {
   position: relative;
@@ -284,6 +328,12 @@
 }
 
 .edits-grid::-webkit-scrollbar { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .edits-grid, .edits-grid .edit-link { cursor: grab; }
+  .edits-grid { user-select: none; -webkit-user-select: none; }
+  .edits-grid.is-dragging, .edits-grid.is-dragging * { cursor: grabbing; }
+}
 
 .edits-navigation { display: none; }
 

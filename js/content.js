@@ -412,18 +412,32 @@ function heroSocials(socials = {}) {
 
 function aboutWords(value) {
   if (!hasText(value)) return "";
+  const output = [];
+  let word = "";
+  const flush = () => {
+    if (word) output.push(`<span class="about-word">${word}</span>`);
+    word = "";
+  };
 
-  return String(value)
+  // Split on whitespace, not accent boundaries: punctuation stays with its word.
+  String(value)
     .split(/(\{\{[^}]+\}\})/g)
-    .map((segment) => {
+    .forEach((segment) => {
       const accent = segment.match(/^\{\{([^}]+)\}\}$/);
-      const className = accent ? "about-word is-accent" : "about-word";
-      return (accent ? accent[1] : segment)
+      (accent ? accent[1] : segment)
         .split(/(\s+)/)
-        .map((token) => (token.trim() ? `<span class="${className}">${text(token)}</span>` : token))
-        .join("");
-    })
-    .join("");
+        .forEach((token) => {
+          if (!token) return;
+          if (!token.trim()) {
+            flush();
+            output.push(token);
+          } else {
+            word += accent ? `<span class="about-accent">${text(token)}</span>` : text(token);
+          }
+        });
+    });
+  flush();
+  return output.join("");
 }
 
 function renderAbout(data) {
@@ -707,6 +721,7 @@ function workRow(item, index, labels) {
           ${code}
           ${href ? `<span class="work-arrow" aria-hidden="true">${ARROW}</span>` : ""}
         </div>
+        ${hasText(item.status) ? `<p class="work-status">${text(item.status)}</p>` : ""}
       </div>
     </li>`;
 }
@@ -785,6 +800,12 @@ function renderEdits(data) {
   const hookData = data.hooks || {};
   const hookItems = records(hookData.items).filter((item) => hasText(item.title) && hasText(item.video));
   const hooks = hookItems.map((item) => editCard(item, hookData.platform)).join("");
+  const deliveryItems = records(data.delivery?.items)
+    .filter((item) => hasText(item.value) && hasText(item.label));
+  const delivery = deliveryItems.length
+    ? `<dl class="edit-delivery" aria-label="${attr(data.delivery.label)}">${deliveryItems.map((item) => `
+        <div class="edit-delivery-item"><dt>${text(item.label)}</dt><dd>${text(item.value)}</dd></div>`).join("")}</dl>`
+    : "";
 
   const tabs = data.tabs || {};
   const tab = (id, label, count, selected) => `
@@ -803,6 +824,7 @@ function renderEdits(data) {
   root.innerHTML = `
     <div class="section-inner">
       ${sectionTitle("edits")}
+      ${delivery}
       ${tabList}
       ${editPanel("edits", edits, true, data.carousel || {})}
       ${hooks ? editPanel("hooks", hooks, false, data.carousel || {}) : ""}

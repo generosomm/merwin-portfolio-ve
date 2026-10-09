@@ -269,6 +269,7 @@
       grid.append(...cloneSet());
       let start = 0, cycle = 0, position = 0, frame = 0, last = 0;
       let inView = false, hovered = false, touching = false;
+      let drag = null, suppressClickUntil = 0;
       let busyUntil = 0, resumeTimer = 0;
       const focused = () => panel.contains(document.activeElement);
       const canPlay = () => inView && !panel.hidden && !document.hidden && !reduceMotion.matches &&
@@ -332,9 +333,50 @@
       panel.addEventListener("pointerleave", () => { hovered = false; sync(); });
       panel.addEventListener("focusin", stop);
       panel.addEventListener("focusout", () => requestAnimationFrame(sync));
-      grid.addEventListener("pointerdown", () => { touching = true; stop(); }, { passive: true });
-      window.addEventListener("pointerup", () => { if (touching) { touching = false; hold(); } }, { passive: true });
-      grid.addEventListener("pointercancel", () => { touching = false; hold(); }, { passive: true });
+      grid.addEventListener("pointerdown", (event) => {
+        if (!event.isPrimary || event.button !== 0) return;
+        touching = true;
+        stop();
+        if (event.pointerType === "mouse") {
+          drag = { id: event.pointerId, startX: event.clientX, lastX: event.clientX, moved: false };
+        }
+      }, { passive: true });
+      window.addEventListener("pointermove", (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        if (!drag.moved) {
+          if (Math.abs(event.clientX - drag.startX) < 8) return;
+          drag.moved = true;
+          grid.setPointerCapture(event.pointerId);
+          grid.classList.add("is-dragging");
+        }
+        event.preventDefault();
+        grid.scrollLeft -= event.clientX - drag.lastX;
+        drag.lastX = event.clientX;
+        normalize();
+      }, { passive: false });
+      function finishDrag(event) {
+        if (drag && event?.pointerId !== undefined && event.pointerId !== drag.id) return;
+        const finished = drag;
+        drag = null;
+        grid.classList.remove("is-dragging");
+        if (finished?.moved) {
+          suppressClickUntil = performance.now() + 350;
+          if (grid.contains(document.activeElement)) document.activeElement.blur();
+        }
+        if (finished && grid.hasPointerCapture(finished.id)) grid.releasePointerCapture(finished.id);
+        if (touching) { touching = false; hold(); }
+      }
+      window.addEventListener("pointerup", finishDrag, { passive: true });
+      grid.addEventListener("pointercancel", finishDrag, { passive: true });
+      grid.addEventListener("lostpointercapture", finishDrag, { passive: true });
+      window.addEventListener("blur", () => finishDrag());
+      grid.addEventListener("dragstart", (event) => event.preventDefault());
+      grid.addEventListener("click", (event) => {
+        if (event.detail && (drag?.moved || performance.now() < suppressClickUntil)) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      }, true);
       grid.addEventListener("wheel", () => hold(), { passive: true });
       grid.addEventListener("scrollend", () => { if (!frame && !focused() && !touching) normalize(); });
       panel.addEventListener("edits:show", measure);

@@ -2,8 +2,16 @@
   "codeLabel": "Code",
   "items": [
     {
+      "title": "ASINTA",
+      "summary": "A workforce platform for security agencies. I build duty scheduling, secure guard check-in and role-based workflows across admin, guard and client portals.",
+      "tags": ["React", "TypeScript", "Firebase", "Google Maps API"],
+      "status": "Private project · Final polishing",
+      "href": null,
+      "image": null
+    },
+    {
       "title": "MSC NU Laguna Website",
-      "summary": "Community platform for members, events and updates. I led the backend.",
+      "summary": "A live community platform serving 307 members. I led the Node.js and Express backend for membership, events and updates.",
       "tags": [
         "Node.js",
         "Express",
@@ -21,7 +29,7 @@
     },
     {
       "title": "Document Tracking & Analytics",
-      "summary": "A document tracking system for the City Government of Sto. Tomas: documents, updates and reports in one place.",
+      "summary": "A document system covering 32 city departments in Sto. Tomas. I led project coordination and contributed document routing, digital signatures and an admin dashboard.",
       "tags": [
         "PHP",
         "MySQL"

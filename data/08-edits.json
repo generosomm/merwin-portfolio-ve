@@ -4,6 +4,14 @@
     "edits": "Edits",
     "hooks": "AI Hooks"
   },
+  "delivery": {
+    "label": "Client delivery highlights",
+    "items": [
+      { "value": "8+", "label": "Freelance clients" },
+      { "value": "10+", "label": "Music campaigns" },
+      { "value": "4", "label": "Film campaigns" }
+    ]
+  },
   "items": [
     {
       "title": "Glass Child — Seven Sundays",

@@ -2,12 +2,21 @@
   "heading": "Experience",
   "items": [
     {
+      "role": "Full-Stack Developer",
+      "organization": "ASINTA · Capstone Project",
+      "period": "Aug 2026 to Present",
+      "start": "2026-08",
+      "end": "present",
+      "summary": "Build the React, TypeScript and Firebase workforce platform with a five-member Scrum team. Focus on scheduling, secure check-in and role-based access; now in final polishing.",
+      "link": null
+    },
+    {
       "role": "Creator & Video Editor",
       "organization": "ERO | VISUALS",
       "period": "Aug 2022 to Present",
       "start": "2022-08",
       "end": "present",
-      "summary": "Film, music and entertainment edits through my own short-form content brand, ERO | VISUALS.",
+      "summary": "Deliver short-form content for 8+ freelance clients, handling briefs, revisions and deadlines. Campaign work includes music releases, film promotion and AI-generated video hooks.",
       "link": {
         "label": "TikTok",
         "href": "https://www.tiktok.com/@eroedtx"
@@ -31,7 +40,7 @@
       "period": "Jun 2025 to Jul 2026",
       "start": "2025-06",
       "end": "2026-07",
-      "summary": "Led backend development for the community platform, launched at SparkPoint 2026.",
+      "summary": "Led the production backend for a community of 307 members, launched at SparkPoint 2026. Coordinated API integration, troubleshooting and team documentation.",
       "link": {
         "label": "mscnulaguna.org",
         "href": "https://mscnulaguna.org/"
@@ -43,7 +52,7 @@
       "period": "2025 to 2026",
       "start": "2025-08",
       "end": "2026-06",
-      "summary": "Led requirements, stakeholder coordination and development planning for the city's PHP/MySQL document tracking system.",
+      "summary": "Led requirements and stakeholder coordination for a PHP/MySQL document system covering 32 city departments. Contributed routing, digital signatures and an admin dashboard.",
       "link": null
     }
   ]

@@ -34,7 +34,8 @@
   display: inline-block;
 }
 
-.about-word.is-accent {
+.about-word.is-accent,
+.about-accent {
   color: var(--accent);
 }
 

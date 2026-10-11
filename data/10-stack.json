@@ -64,7 +64,9 @@
           "name": "Firebase",
           "icon": "assets/icons/stack/firebase.svg",
           "color": "#FFCA28"
-        }
+        },
+        "Firestore",
+        "Cloud Functions"
       ]
     },
     {
@@ -156,6 +158,7 @@
     {
       "label": "Integration & more",
       "items": [
+        "Google Maps API",
         "REST APIs",
         "EDI (ANSI X12)",
         "Systems integration",

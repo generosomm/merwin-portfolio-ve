@@ -1,13 +1,16 @@
 {
-  "codeLabel": "Code",
   "items": [
     {
       "title": "ASINTA",
       "summary": "A workforce platform for security agencies. I build duty scheduling, secure guard check-in and role-based workflows across admin, guard and client portals.",
-      "tags": ["React", "TypeScript", "Firebase", "Google Maps API"],
+      "tags": [
+        "React",
+        "TypeScript",
+        "Firebase",
+        "Google Maps API"
+      ],
       "status": "Landing page live · Platform in final polishing",
       "href": "https://asinta-272f8.web.app/",
-      "live": "https://asinta-272f8.web.app/",
       "image": {
         "src": "assets/images/work/asinta-hero.png",
         "alt": "ASINTA landing page hero with workforce operations headline and a 3D security site model",
@@ -24,7 +27,6 @@
         "MySQL"
       ],
       "href": "https://mscnulaguna.org/",
-      "code": "https://github.com/mscnulaguna/MSC-Official-Website",
       "image": {
         "src": "assets/images/work/msc-nu-laguna.webp",
         "alt": "The MSC NU Laguna website repository on GitHub",
@@ -40,7 +42,7 @@
         "PHP",
         "MySQL"
       ],
-      "href": "https://github.com/generosomm/Document-Tracker",
+      "href": null,
       "image": {
         "src": "assets/images/work/document-tracker.webp",
         "alt": "The Document Tracker repository on GitHub",
@@ -59,7 +61,7 @@
       ],
       "href": null,
       "image": null,
-      "TODO": "Add a repo or live link (href) and a 1200x750 WebP screenshot (image) when available. Until then the row shows without a link or preview."
+      "TODO": "Add a live link (href) and a 1200x750 WebP screenshot (image) when available. Until then the row shows without a link or preview."
     },
     {
       "title": "Zero to Deploy",
@@ -70,7 +72,6 @@
         "JavaScript"
       ],
       "href": "https://generosomm.github.io/ZeroToDeploy/",
-      "code": "https://github.com/generosomm/ZeroToDeploy",
       "image": {
         "src": "assets/images/work/zero-to-deploy.webp",
         "alt": "The Zero to Deploy home screen",
@@ -87,7 +88,6 @@
         "JavaScript"
       ],
       "href": "https://generosomm.github.io/nexus-pass/",
-      "code": "https://github.com/generosomm/nexus-pass",
       "image": {
         "src": "assets/images/work/nexus-pass.webp",
         "alt": "The Nexus Pass registration screen",
@@ -103,7 +103,7 @@
         "CSS3",
         "JavaScript"
       ],
-      "href": "https://github.com/generosomm/merwin-portfolio-ve",
+      "href": "https://generosomm.dev/",
       "image": {
         "src": "assets/images/work/portfolio.webp",
         "alt": "The hero of this portfolio",
@@ -112,5 +112,5 @@
       }
     }
   ],
-  "note": "Rows link to href (opens in a new tab); code adds a separate Code link. Preview images are 1200x750 WebP in assets/images/work/: on desktop they appear as a 3D card when the row is hovered, on phones they sit under the row. A row with no href or image still shows, just without the link or preview."
+  "note": "Project titles and Live site links open deployed sites in a new tab. Projects without a live URL remain unlinked. Preview images appear as a shared 3D hover card on desktop."
 }

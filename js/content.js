@@ -700,16 +700,13 @@ function workTechnologies(tags) {
   return items ? `<ul class="work-tags" aria-label="Technologies used">${items}</ul>` : "";
 }
 
-function workRow(item, index, labels) {
+function workRow(item, index) {
   const href = hasText(item.href) ? item.href : "";
   const title = href
     ? `<a class="work-link" href="${attr(href)}" target="_blank" rel="noopener noreferrer">${text(item.title)}</a>`
     : text(item.title);
-  const code = hasText(item.code)
-    ? `<a class="work-code" href="${attr(item.code)}" target="_blank" rel="noopener noreferrer">${text(labels.code)}${ARROW}</a>`
-    : "";
-  const live = hasText(item.live)
-    ? `<a class="work-code" href="${attr(item.live)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(`Visit ${item.title} live site`)}">Live site${ARROW}</a>`
+  const live = href
+    ? `<a class="work-code" href="${attr(href)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(`Visit ${item.title} live site`)}">Live site${ARROW}</a>`
     : "";
   const preview = hasText(item.image?.src) ? ` data-preview="${attr(item.image.src)}"` : "";
 
@@ -721,9 +718,7 @@ function workRow(item, index, labels) {
         <p class="work-summary">${text(item.summary)}</p>
         <div class="work-meta">
           ${workTechnologies(item.tags)}
-          ${code}
           ${live}
-          ${href && !code && !live ? `<span class="work-arrow" aria-hidden="true">${ARROW}</span>` : ""}
         </div>
         ${hasText(item.status) ? `<p class="work-status">${text(item.status)}</p>` : ""}
       </div>
@@ -734,10 +729,9 @@ function renderWork(data) {
   const root = document.querySelector('[data-section="work"]');
   if (!root || !data) return;
 
-  const labels = { code: data.codeLabel };
   const rows = records(data.items)
     .filter((item) => hasText(item.title))
-    .map((item, index) => workRow(item, index, labels))
+    .map((item, index) => workRow(item, index))
     .join("");
 
   root.innerHTML = `

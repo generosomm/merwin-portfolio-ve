@@ -1006,7 +1006,10 @@ function renderStack(data) {
           ${hasText(link.href) ? `<a class="text-link" href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">${text(link.label)}${ARROW}</a>` : ""}
         </div>
         <div class="github-scroll" hidden>
-          <div class="gh-bars" role="img" aria-label="${attr(github.graphLabel)}"></div>
+          <div class="gh-chart" role="img" aria-label="${attr(github.graphLabel)}">
+            <div class="gh-months" aria-hidden="true"></div>
+            <div class="gh-grid" aria-hidden="true"></div>
+          </div>
           <dl class="gh-stats"></dl>
         </div>
       </div>

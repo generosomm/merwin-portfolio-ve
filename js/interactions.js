@@ -613,21 +613,22 @@
 
   /* ---- GitHub activity -----------------------------------------------
      Drawn from the saved snapshot (scripts/update-github-snapshot.mjs),
-     loaded once the section is close to the screen. One bar per month,
+     loaded once the section is close to the screen. A compact day grid
      from the month of the first active day to now, so the card shows
-     how activity has grown rather than a grid of empty days. Each bar
-     carries its month's total; hovering or tapping a bar highlights it.
-     Beside the chart (under it on phones): total, active days, longest
-     streak, busiest day.
+     the active stretch rather than a year of empty days. Each square
+     carries its day's count as a tooltip. Beside the grid (under it on
+     phones): total, active days, longest streak, busiest day.
   ---------------------------------------------------------------- */
 
   function initGithubGraph() {
     const box = document.querySelector(".github[data-snapshot]");
     const card = box?.querySelector(".github-scroll");
-    const bars = box?.querySelector(".gh-bars");
+    const chart = box?.querySelector(".gh-chart");
+    const months = chart?.querySelector(".gh-months");
+    const grid = chart?.querySelector(".gh-grid");
     const stats = box?.querySelector(".gh-stats");
     const source = box?.dataset.snapshot;
-    if (!box || !card || !bars || !source) return;
+    if (!box || !card || !chart || !months || !grid || !source) return;
 
     let labels = {};
     try {
@@ -652,46 +653,46 @@
       return fill(count === 1 ? tooltip.one : tooltip.many, { count: count.toLocaleString(locale) });
     }
 
-    /* One bar per month. Older snapshots have levels but no counts, so
-       a month then falls back to its number of active days. */
-    function drawBars(days) {
-      const months = [];
-      days.forEach((day) => {
-        const key = day.date.slice(0, 7);
-        let month = months[months.length - 1];
-        if (!month || month.key !== key) {
-          month = { key, total: 0, active: 0 };
-          months.push(month);
-        }
-        month.total += day.count !== null ? day.count : 0;
-        if (isActive(day)) month.active += 1;
+    /* One square per day, a column per week (Sunday on top), like
+       GitHub's own graph. Month names sit above the week holding the
+       1st. Days before the first shown day keep an invisible cell so
+       the weeks line up. */
+    function drawGrid(days) {
+      const lead = asDate(days[0].date).getUTCDay();
+      const weeks = Math.ceil((lead + days.length) / 7);
+      const cells = document.createDocumentFragment();
+      for (let i = 0; i < lead; i += 1) {
+        const pad = document.createElement("span");
+        pad.className = "gh-cell is-pad";
+        cells.appendChild(pad);
+      }
+      const marks = [];
+      days.forEach((day, index) => {
+        const week = Math.floor((lead + index) / 7);
+        const cell = document.createElement("span");
+        cell.className = "gh-cell";
+        cell.dataset.level = day.level;
+        cell.style.setProperty("--i", week);
+        cell.title = formatShort.format(asDate(day.date)) + (day.count !== null ? `: ${countLabel(day.count)}` : "");
+        cells.appendChild(cell);
+        if (index === 0 || day.date.endsWith("-01")) marks.push({ week, date: day.date });
       });
-      const hasCounts = days.some((day) => day.count !== null);
-      const value = (month) => (hasCounts ? month.total : month.active);
-      const max = Math.max(1, ...months.map(value));
+      grid.replaceChildren(cells);
 
-      const fragment = document.createDocumentFragment();
-      months.forEach((month, index) => {
-        const amount = value(month);
-        const bar = document.createElement("div");
-        bar.className = amount ? "gh-bar" : "gh-bar is-empty";
-        bar.style.setProperty("--h", (amount / max).toFixed(3));
-        bar.style.setProperty("--i", index);
-        bar.title = `${formatMonthYear.format(asDate(`${month.key}-01`))}: ${countLabel(month.total)}`;
-
-        const count = document.createElement("span");
-        count.className = "gh-bar-count";
-        count.textContent = amount ? amount.toLocaleString(locale) : "";
-        const column = document.createElement("span");
-        column.className = "gh-bar-fill";
+      /* A month name needs about three weeks of room, so a name that
+         would crowd the previous one is left out. */
+      const names = document.createDocumentFragment();
+      let last = -Infinity;
+      marks.forEach(({ week, date }) => {
+        if (week - last < 3) return;
+        last = week;
         const name = document.createElement("span");
-        name.className = "gh-bar-month";
-        name.textContent = formatMonth.format(asDate(`${month.key}-01`));
-        bar.append(count, column, name);
-        fragment.appendChild(bar);
+        name.style.gridColumnStart = week + 1;
+        name.textContent = formatMonth.format(asDate(date));
+        names.appendChild(name);
       });
-      bars.replaceChildren(fragment);
-      bars.style.setProperty("--months", months.length);
+      months.replaceChildren(names);
+      chart.style.setProperty("--weeks", weeks);
     }
 
     /* Total, active days, longest run of active days, and the single
@@ -760,13 +761,13 @@
         const shown = days.slice(from);
 
         card.hidden = false;
-        drawBars(shown);
+        drawGrid(shown);
         drawStats(shown, Number(data.total));
 
-        /* The bars rise once, left to right (css/closing.css). */
+        /* The weeks fade in once, left to right (css/closing.css). */
         if (!reduceMotion.matches) {
-          bars.classList.add("is-drawing");
-          window.setTimeout(() => bars.classList.remove("is-drawing"), 2000);
+          grid.classList.add("is-drawing");
+          window.setTimeout(() => grid.classList.remove("is-drawing"), 2500);
         }
       } catch {
         /* Missing or malformed snapshot: the GitHub link still works. */

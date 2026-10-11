@@ -964,7 +964,7 @@
       };
 
       fold.classList.add("fold-enhanced");
-      set(false);
+      set(fold.dataset.defaultOpen === "true");
       /* Transitions only after the closed state has painted, so the
          page doesn't animate the forms shut on load. */
       window.requestAnimationFrame(() => window.requestAnimationFrame(() => fold.classList.add("fold-ready")));

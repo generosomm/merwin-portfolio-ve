@@ -1031,9 +1031,9 @@ function renderStack(data) {
    stay open. Used by the contact brief and the visitor-note form.
 ---------------------------------------------------------------- */
 
-function foldBlock(id, label, body, { hidden = false, attrs = "" } = {}) {
+function foldBlock(id, label, body, { hidden = false, attrs = "", defaultOpen = false } = {}) {
   return `
-    <div class="fold" data-fold${hidden ? " hidden" : ""} ${attrs}>
+    <div class="fold" data-fold${defaultOpen ? ' data-default-open="true"' : ""}${hidden ? " hidden" : ""} ${attrs}>
       <button class="fold-key" type="button" aria-expanded="true" aria-controls="${attr(id)}" data-fold-toggle>
         <span class="fold-cap">
           <span class="fold-label">${text(label)}</span>
@@ -1088,7 +1088,7 @@ function projectForm(form, address) {
         <button class="button button-primary" type="submit">${text(form.submit)}</button>
         <p class="brief-status" role="status" aria-live="polite"></p>
       </div>
-    </form>`);
+    </form>`, { defaultOpen: true });
 }
 
 function renderContact(data) {

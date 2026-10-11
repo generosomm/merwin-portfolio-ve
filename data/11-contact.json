@@ -2,7 +2,7 @@
   "statement": "Need something built, or something cut?",
   "email": {
     "address": "generosomerwin10@gmail.com",
-    "label": "Email me",
+    "label": "Email me in Gmail",
     "subject": "Hello from your portfolio"
   },
   "form": {
@@ -31,14 +31,15 @@
     "deadline": "Deadline (optional)",
     "message": "Project details",
     "messageHint": "What are you promoting or building? Links help.",
-    "submit": "Send project brief",
+    "submit": "Open brief in Gmail",
     "sending": "Sending…",
     "sent": "Thanks! Your brief is on its way. I'll reply by email.",
-    "mailtoSent": "Your email app should now open with your brief filled in. Just press send.",
     "failed": "That didn't go through. Please email me directly instead.",
     "subject": "Project brief: {service}",
     "endpoint": "",
-    "accessKey": ""
+    "accessKey": "",
+    "gmailOpened": "Your brief is ready in Gmail. Review it and press Send. If no tab opened, use this link:",
+    "gmailRetry": "Open Gmail"
   },
   "booking": {
     "label": "Book a free 15-minute call",
@@ -117,5 +118,5 @@
       }
     ]
   },
-  "note": "form: until accessKey is set, the form opens the visitor's email app with their brief filled in. To receive briefs straight to your inbox, get a free access key at web3forms.com and paste it into accessKey (endpoint can stay empty). booking: paste your Cal.com (or Calendly) link into href to show the booking button. rows is the vertical label/value list; pair is the two-column row; a timeZone entry shows your live local time."
+  "note": "form: until accessKey is set, the form opens Gmail compose with the brief filled in. To receive briefs straight to your inbox, get a free access key at web3forms.com and paste it into accessKey (endpoint can stay empty). booking: paste your Cal.com (or Calendly) link into href to show the booking button. rows is the vertical label/value list; pair is the two-column row; a timeZone entry shows your live local time."
 }

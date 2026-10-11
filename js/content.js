@@ -1053,7 +1053,7 @@ function projectForm(form, address) {
     .map((option) => `<option value="${attr(option.value)}">${text(option.label)}</option>`)
     .join("");
   const messages = {
-    sending: form.sending, sent: form.sent, mailtoSent: form.mailtoSent, failed: form.failed,
+    sending: form.sending, sent: form.sent, gmailOpened: form.gmailOpened, gmailRetry: form.gmailRetry, failed: form.failed,
     subject: form.subject, name: form.name, replyTo: form.replyTo, service: form.service,
     deadline: form.deadline, message: form.message
   };
@@ -1097,15 +1097,15 @@ function renderContact(data) {
 
   root.classList.add("section-contact");
   const email = data.email || {};
-  const mailto = hasText(email.address)
-    ? `mailto:${email.address}${hasText(email.subject) ? `?subject=${encodeURIComponent(email.subject)}` : ""}`
+  const gmail = hasText(email.address)
+    ? `https://mail.google.com/mail/?${new URLSearchParams({ view: "cm", fs: "1", to: email.address, su: email.subject || "" })}`
     : "";
 
   /* One label/value row. The value is plain text, the email address,
      a single link, a list of links, or the live local time. */
   const rowValue = (row) => {
-    if (row.email && mailto) {
-      return `<a class="contact-value-link" href="${attr(mailto)}">${text(email.address)}</a>`;
+    if (row.email && gmail) {
+      return `<a class="contact-value-link" href="${attr(gmail)}" target="_blank" rel="noopener noreferrer">${text(email.address)}</a>`;
     }
     if (row.link && hasText(row.link.href)) {
       return `<a class="contact-value-link" href="${attr(row.link.href)}" target="_blank" rel="noopener">${text(row.link.label)}${ARROW}</a>`;
@@ -1137,7 +1137,7 @@ function renderContact(data) {
      set in data/11-contact.json. */
   const booking = data.booking || {};
   const buttons = [
-    mailto ? `<a class="button button-ghost" href="${attr(mailto)}">${text(email.label)}</a>` : "",
+    gmail ? `<a class="button button-ghost" href="${attr(gmail)}" target="_blank" rel="noopener noreferrer">${text(email.label)}</a>` : "",
     hasText(booking.href)
       ? `<a class="button button-ghost" href="${attr(booking.href)}" target="_blank" rel="noopener noreferrer">${text(booking.label)}</a>`
       : ""

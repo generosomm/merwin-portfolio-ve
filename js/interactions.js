@@ -832,8 +832,8 @@
 
   /* ---- Project brief form ----------------------------------------------
      With an access key (data/11-contact.json), the brief is posted to
-     Web3Forms and lands in the inbox. Without one, the visitor's email
-     app opens with the brief already written, so the form works from
+     Web3Forms and lands in the inbox. Without one, Gmail compose
+     opens with the brief already written, so the form works from
      day one with no account. The browser's own validation messages
      cover empty or malformed fields.
   ---------------------------------------------------------------- */
@@ -873,8 +873,16 @@
       const key = form.dataset.key;
       if (!key) {
         const address = form.dataset.address;
-        window.location.href = `mailto:${address}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n\n"))}`;
-        say("mailtoSent", "info");
+        const compose = new URL("https://mail.google.com/mail/");
+        compose.search = new URLSearchParams({ view: "cm", fs: "1", to: address, su: subject, body: lines.join("\n\n") }).toString();
+        window.open(compose.href, "_blank", "noopener,noreferrer");
+        say("gmailOpened", "info");
+        const retry = document.createElement("a");
+        retry.href = compose.href;
+        retry.target = "_blank";
+        retry.rel = "noopener noreferrer";
+        retry.textContent = messages.gmailRetry || "";
+        status.append(" ", retry);
         return;
       }
 

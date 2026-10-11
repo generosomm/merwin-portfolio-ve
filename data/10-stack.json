@@ -171,7 +171,7 @@
       "label": "View GitHub",
       "href": "https://github.com/generosomm"
     },
-    "graphLabel": "GitHub contributions per month since my first active month",
+    "graphLabel": "GitHub contributions per day since my first active month",
     "snapshot": "data/github-contributions.json",
     "tooltip": {
       "none": "No contributions",
@@ -187,5 +187,5 @@
       "days": "{count} days"
     }
   },
-  "note": "Items with an icon show as logos in their own colours; color is the brand colour used for the hover glow. mono: true is for single-colour logos, drawn in white. Plain strings show as text tags, for skills without a logo. Logos are saved in assets/icons/stack/ (sources and licences in CREDITS.txt there). The GitHub graph reads a saved snapshot, refreshed daily by .github/workflows/github-snapshot.yml (or by hand with: node scripts/update-github-snapshot.mjs). It shows one bar per month, starting at the month of the first active day."
+  "note": "Items with an icon show as logos in their own colours; color is the brand colour used for the hover glow. mono: true is for single-colour logos, drawn in white. Plain strings show as text tags, for skills without a logo. Logos are saved in assets/icons/stack/ (sources and licences in CREDITS.txt there). The GitHub graph reads a saved snapshot, refreshed daily by .github/workflows/github-snapshot.yml (or by hand with: node scripts/update-github-snapshot.mjs). It shows one square per day in week columns, starting at the month of the first active day."
 }

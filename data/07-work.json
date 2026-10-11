@@ -9,7 +9,12 @@
         "Vercel"
       ],
       "href": "https://nails-by-sharlin.vercel.app/",
-      "image": null
+      "image": {
+        "src": "assets/images/work/nails-by-sharline.png",
+        "alt": "Nails by Sharline website with nail color previews and nail services",
+        "width": 1239,
+        "height": 873
+      }
     },
     {
       "title": "ASINTA",

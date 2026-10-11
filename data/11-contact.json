@@ -2,7 +2,7 @@
   "statement": "Need something built, or something cut?",
   "email": {
     "address": "generosomerwin10@gmail.com",
-    "label": "Email me in Gmail",
+    "label": "Email me",
     "subject": "Hello from your portfolio"
   },
   "form": {
@@ -31,7 +31,7 @@
     "deadline": "Deadline (optional)",
     "message": "Project details",
     "messageHint": "What are you promoting or building? Links help.",
-    "submit": "Open brief in Gmail",
+    "submit": "Open email draft",
     "sending": "Sending…",
     "sent": "Thanks! Your brief is on its way. I'll reply by email.",
     "failed": "That didn't go through. Please email me directly instead.",
@@ -39,7 +39,9 @@
     "endpoint": "",
     "accessKey": "",
     "gmailOpened": "Your brief is ready in Gmail. Review it and press Send. If no tab opened, use this link:",
-    "gmailRetry": "Open Gmail"
+    "gmailRetry": "Open Gmail",
+    "mobileOpened": "Continue in your email app, review your brief, then press Send. If it did not open, try this link:",
+    "mobileRetry": "Open email app"
   },
   "booking": {
     "label": "Book a free 15-minute call",

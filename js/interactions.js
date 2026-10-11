@@ -875,13 +875,18 @@
         const address = form.dataset.address;
         const compose = new URL("https://mail.google.com/mail/");
         compose.search = new URLSearchParams({ view: "cm", fs: "1", to: address, su: subject, body: lines.join("\n\n") }).toString();
-        window.open(compose.href, "_blank", "noopener,noreferrer");
-        say("gmailOpened", "info");
+        const mobileEmail = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+        const emailUrl = mobileEmail
+          ? `mailto:${address}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n\n"))}`
+          : compose.href;
+        if (mobileEmail) window.location.href = emailUrl;
+        else window.open(emailUrl, "_blank", "noopener,noreferrer");
+        say(mobileEmail ? "mobileOpened" : "gmailOpened", "info");
         const retry = document.createElement("a");
-        retry.href = compose.href;
-        retry.target = "_blank";
+        retry.href = emailUrl;
+        if (!mobileEmail) retry.target = "_blank";
         retry.rel = "noopener noreferrer";
-        retry.textContent = messages.gmailRetry || "";
+        retry.textContent = (mobileEmail ? messages.mobileRetry : messages.gmailRetry) || "";
         status.append(" ", retry);
         return;
       }

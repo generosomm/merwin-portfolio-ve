@@ -1009,6 +1009,8 @@ function renderStack(data) {
           <div class="gh-chart" role="img" aria-label="${attr(github.graphLabel)}">
             <div class="gh-months" aria-hidden="true"></div>
             <div class="gh-grid" aria-hidden="true"></div>
+            <span class="gh-playhead" aria-hidden="true"></span>
+            <span class="gh-tip" aria-hidden="true"></span>
           </div>
           <dl class="gh-stats"></dl>
         </div>

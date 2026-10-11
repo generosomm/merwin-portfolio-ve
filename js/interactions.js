@@ -615,8 +615,8 @@
      Drawn from the saved snapshot (scripts/update-github-snapshot.mjs),
      loaded once the section is close to the screen. A compact day grid
      from the month of the first active day to now, so the card shows
-     the active stretch rather than a year of empty days. Each square
-     carries its day's count as a tooltip. Beside the grid (under it on
+     the active stretch rather than a year of empty days. Hovering or
+     tapping a square runs a playhead down its week with the day's count. Beside the grid (under it on
      phones): total, active days, longest streak, busiest day.
   ---------------------------------------------------------------- */
 
@@ -626,6 +626,8 @@
     const chart = box?.querySelector(".gh-chart");
     const months = chart?.querySelector(".gh-months");
     const grid = chart?.querySelector(".gh-grid");
+    const playhead = chart?.querySelector(".gh-playhead");
+    const tip = chart?.querySelector(".gh-tip");
     const stats = box?.querySelector(".gh-stats");
     const source = box?.dataset.snapshot;
     if (!box || !card || !chart || !months || !grid || !source) return;
@@ -640,6 +642,7 @@
       String(template || "").replace(/\{(\w+)\}/g, (match, key) => (key in values ? values[key] : match));
 
     const locale = document.documentElement.lang || "en";
+    const formatDay = new Intl.DateTimeFormat(locale, { weekday: "short", month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
     const formatShort = new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", timeZone: "UTC" });
     const formatMonth = new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" });
     const formatMonthYear = new Intl.DateTimeFormat(locale, { month: "short", year: "numeric", timeZone: "UTC" });
@@ -673,7 +676,8 @@
         cell.className = "gh-cell";
         cell.dataset.level = day.level;
         cell.style.setProperty("--i", week);
-        cell.title = formatShort.format(asDate(day.date)) + (day.count !== null ? `: ${countLabel(day.count)}` : "");
+        cell.dataset.date = day.date;
+        if (day.count !== null) cell.dataset.count = day.count;
         cells.appendChild(cell);
         if (index === 0 || day.date.endsWith("-01")) marks.push({ week, date: day.date });
       });
@@ -694,6 +698,46 @@
       months.replaceChildren(names);
       chart.style.setProperty("--weeks", weeks);
     }
+
+    /* Hover (or tap) a day: playhead down its week, tooltip above it. */
+    function point(square) {
+      if (!playhead || !tip) return;
+      if (!square?.dataset.date) {
+        chart.classList.remove("is-pointing");
+        return;
+      }
+      const chartBox = chart.getBoundingClientRect();
+      const box = square.getBoundingClientRect();
+      const x = box.left - chartBox.left + box.width / 2;
+      playhead.style.left = `${x}px`;
+      /* Older snapshots have levels but no counts: an empty day is
+         still known to be zero; any other day just shows its date. */
+      const count = square.dataset.count !== undefined
+        ? Number(square.dataset.count)
+        : square.dataset.level === "0" ? 0 : null;
+      tip.textContent = "";
+      const strong = document.createElement("strong");
+      strong.textContent = count !== null ? countLabel(count) : "";
+      const when = document.createElement("span");
+      when.textContent = formatDay.format(asDate(square.dataset.date));
+      tip.append(strong, when);
+      /* Keep the tooltip inside the chart at both ends. */
+      const half = tip.offsetWidth / 2;
+      tip.style.left = `${Math.min(Math.max(x, half), chart.clientWidth - half)}px`;
+      tip.style.top = `${box.top - chartBox.top}px`;
+      grid.querySelector(".is-pointed")?.classList.remove("is-pointed");
+      square.classList.add("is-pointed");
+      chart.classList.add("is-pointing");
+    }
+
+    grid.addEventListener("pointerover", (event) => point(event.target.closest(".gh-cell")));
+    grid.addEventListener("pointerdown", (event) => point(event.target.closest(".gh-cell")));
+    chart.addEventListener("pointerleave", (event) => {
+      if (event.pointerType === "mouse") {
+        chart.classList.remove("is-pointing");
+        grid.querySelector(".is-pointed")?.classList.remove("is-pointed");
+      }
+    });
 
     /* Total, active days, longest run of active days, and the single
        busiest day. */

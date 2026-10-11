@@ -616,9 +616,11 @@
      loaded once the section is close to the screen. Laid out like a
      strip of timeline: a month ruler with tick marks over the weeks,
      Mon / Wed / Fri down the side, and only as many recent weeks as fit
-     the card (never a sideways scroll). Hovering or tapping a day runs
-     a green playhead down its week and shows that day's count. Under
-     the graph: total, longest streak, busiest day.
+     the card (never a sideways scroll). The strip starts at the month
+     of the first active day, so it shows the active stretch rather than
+     a year of empty weeks. Hovering or tapping a day runs a green
+     playhead down its week and shows that day's count. Under the graph:
+     total, active days, longest streak, busiest day.
   ---------------------------------------------------------------- */
 
   function initGithubGraph() {
@@ -647,6 +649,7 @@
     const formatDay = new Intl.DateTimeFormat(locale, { weekday: "short", month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
     const formatShort = new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", timeZone: "UTC" });
     const formatMonth = new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" });
+    const formatMonthYear = new Intl.DateTimeFormat(locale, { month: "short", year: "numeric", timeZone: "UTC" });
     const formatWeekday = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" });
 
     /* One entry per day: { date, level, count }, padded with nulls at
@@ -654,6 +657,8 @@
     let weeks = [];
     let shownWeeks = 0;
     let shownCell = 0;
+
+    const isActive = (day) => (day.count !== null ? day.count > 0 : day.level > 0);
 
     function countLabel(count) {
       const tooltip = labels.tooltip || {};
@@ -756,22 +761,27 @@
       dayLabels?.replaceChildren(rows);
     }
 
-    /* Total, longest run of active days, and the single busiest day. */
+    /* Total, active days, longest run of active days, and the single
+       busiest day. */
     function drawStats(days, total) {
       if (!stats) return;
       const names = labels.stats || {};
       let longest = 0;
       let run = 0;
+      let activeDays = 0;
       let busiest = null;
       days.forEach((day) => {
-        const active = day.count !== null ? day.count > 0 : day.level > 0;
+        const active = isActive(day);
+        if (active) activeDays += 1;
         run = active ? run + 1 : 0;
         longest = Math.max(longest, run);
         if (day.count !== null && (!busiest || day.count > busiest.count)) busiest = day;
       });
 
       const items = [];
-      if (Number.isFinite(total)) items.push([names.total, total.toLocaleString(locale), ""]);
+      const since = days.length ? formatMonthYear.format(new Date(`${days[0].date}T00:00:00Z`)) : "";
+      if (Number.isFinite(total)) items.push([fill(names.total, { since }), total.toLocaleString(locale), ""]);
+      if (activeDays) items.push([names.active, activeDays.toLocaleString(locale), ""]);
       items.push([names.streak, fill(longest === 1 ? names.day : names.days, { count: longest }), ""]);
       if (busiest && busiest.count > 0) {
         items.push([names.busiest, formatShort.format(new Date(`${busiest.date}T00:00:00Z`)), countLabel(busiest.count)]);
@@ -854,14 +864,19 @@
             count: Number.isFinite(Number(counts[index])) && index < counts.length ? Number(counts[index]) : null
           };
         });
-        const padded = [...Array(start.getUTCDay()).fill(null), ...days];
+        /* Begin at the first day of the month with the first activity. */
+        const first = days.findIndex(isActive);
+        const from = first > 0 ? days.findIndex((day) => day.date.slice(0, 7) === days[first].date.slice(0, 7)) : 0;
+        const shown = days.slice(from);
+        const shownStart = new Date(`${shown[0].date}T00:00:00Z`);
+        const padded = [...Array(shownStart.getUTCDay()).fill(null), ...shown];
         weeks = [];
         for (let index = 0; index < padded.length; index += 7) weeks.push(padded.slice(index, index + 7));
 
         card.hidden = false;
         drawDays();
         render();
-        drawStats(days, Number(data.total));
+        drawStats(shown, Number(data.total));
         if ("ResizeObserver" in window) new ResizeObserver(render).observe(wrap);
 
         /* The squares fill in column by column, once, like a render

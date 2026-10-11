@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "title": "Nails by Sharline",
+      "summary": "A nail service website I designed and developed for a local business, helping clients explore services and contact the owner through Facebook.",
+      "tags": [
+        "Web Design",
+        "Web Development",
+        "Vercel"
+      ],
+      "href": "https://nails-by-sharlin.vercel.app/",
+      "image": null
+    },
+    {
       "title": "ASINTA",
       "summary": "A workforce platform for security agencies. I build duty scheduling, secure guard check-in and role-based workflows across admin, guard and client portals.",
       "tags": [

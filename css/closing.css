@@ -646,10 +646,11 @@
 }
 
 /* ---- GitHub activity --------------------------------------------------
-   One bar per month from the first active month, each with its total,
-   rising left to right when the card scrolls in, with the stats beside
-   the chart on wide screens. All drawn by js/interactions.js from the
-   snapshot.
+   A strip of timeline rather than a plain heatmap: a month ruler with
+   tick marks over the weeks, Mon / Wed / Fri down the side, squares
+   that fill in column by column, and a green playhead that runs down
+   the hovered week with the day's count above it. All drawn by
+   js/interactions.js from the snapshot.
 ---------------------------------------------------------------- */
 
 .github {
@@ -666,8 +667,12 @@
 }
 
 /* The card. A faint green glow rises from the top-right corner, the
-   only colour besides the bars themselves. */
+   only colour besides the squares themselves. */
 .github-scroll {
+  --cell: clamp(10px, 0.5rem + 0.4vw, 15px);
+  --gap: 3px;
+  --day-col: 2.25rem;
+
   position: relative;
   overflow: hidden;
   padding: clamp(1.25rem, 0.9rem + 1.4vw, 2.25rem);
@@ -678,130 +683,185 @@
     var(--ink-850);
 }
 
-/* Monthly bars: one column per month, its total above it and the
-   month name below, on a hairline baseline. Heights come from --h
-   (0-1, set by js/interactions.js); empty months keep a thin stub so
-   the timeline still reads as continuous. */
-.gh-bars {
-  display: grid;
-  grid-template-columns: repeat(var(--months, 12), minmax(0, 1fr));
-  align-items: end;
-  gap: clamp(4px, 0.2rem + 0.4vw, 10px);
-  height: clamp(9rem, 7rem + 6vw, 12.5rem);
-  padding-bottom: 1.75rem;
+/* Month ruler: a hairline baseline, a short tick per week, a taller
+   one where a month begins, and the month name above it. */
+.gh-ruler {
+  position: relative;
+  width: var(--ruler-w, 100%);
+  height: 1.9rem;
+  margin-left: calc(var(--day-col) + var(--s-2));
+  margin-bottom: var(--s-2);
   border-bottom: 1px solid var(--line-strong);
-  position: relative;
 }
 
-.gh-bar {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: stretch;
-  height: 100%;
-  min-width: 0;
-}
-
-.gh-bar-fill {
-  display: block;
-  height: max(calc(var(--h) * 100% - 1.4rem), 6px);
-  border-radius: 6px 6px 2px 2px;
-  background: linear-gradient(180deg, var(--accent), rgba(43, 212, 125, 0.35));
-  transform-origin: bottom;
-  transition: filter var(--dur-1) var(--ease-out);
-}
-
-.gh-bar.is-empty .gh-bar-fill {
-  height: 3px;
+.gh-tick {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 4px;
   background: var(--line-strong);
 }
 
-.gh-bar-count {
-  margin-bottom: 0.35rem;
-  color: var(--text-mid);
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  letter-spacing: 0.04em;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+.gh-tick.is-month {
+  height: 9px;
+  background: var(--text-mid);
 }
 
-.gh-bar-month {
+.gh-month {
   position: absolute;
-  left: 50%;
-  bottom: -1.75rem;
-  transform: translateX(-50%);
+  top: 0;
   color: var(--text-mid);
   font-family: var(--font-mono);
   font-size: var(--fs-label);
-  letter-spacing: var(--track-label);
+  letter-spacing: 0.08em;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.gh-bar:hover .gh-bar-fill,
-.gh-bar:focus-within .gh-bar-fill {
-  filter: brightness(1.25);
+.gh-body {
+  display: flex;
+  gap: var(--s-2);
 }
 
-.gh-bar:hover .gh-bar-count {
-  color: var(--text);
+.gh-days {
+  display: grid;
+  flex: none;
+  width: var(--day-col);
+  grid-template-rows: repeat(7, var(--cell-fit, var(--cell)));
+  gap: var(--gap);
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: var(--cell-fit, var(--cell));
 }
 
-.gh-bars.is-drawing .gh-bar-fill {
-  animation: gh-rise 0.7s var(--ease-out) both;
-  animation-delay: calc(var(--i) * 60ms);
+.gh-grid-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
 }
 
-@keyframes gh-rise {
+/* --cell is the base size; js/interactions.js sets --cell-fit when
+   the squares can grow to fill the card. */
+.github-graph {
+  display: grid;
+  width: max-content;
+  grid-auto-columns: var(--cell-fit, var(--cell));
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, var(--cell-fit, var(--cell)));
+  gap: var(--gap);
+}
+
+.github-cell {
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
+}
+
+.github-cell[data-level="1"] {
+  background: color-mix(in srgb, var(--accent) 28%, var(--ink-900));
+}
+
+.github-cell[data-level="2"] {
+  background: color-mix(in srgb, var(--accent) 50%, var(--ink-900));
+}
+
+.github-cell[data-level="3"] {
+  background: color-mix(in srgb, var(--accent) 74%, var(--ink-900));
+}
+
+/* The busiest days glow faintly, like lit pixels. */
+.github-cell[data-level="4"] {
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.github-cell.is-empty {
+  background: transparent;
+}
+
+.github-cell.is-pointed {
+  outline: 1.5px solid var(--text);
+  outline-offset: 1px;
+  transform: scale(1.15);
+}
+
+/* The render pass: columns fill in left to right, once. */
+.github-graph.is-drawing .github-cell {
+  animation: gh-fill 0.45s var(--ease-out) both;
+  animation-delay: calc(var(--c, 0) * 22ms);
+}
+
+@keyframes gh-fill {
   from {
-    transform: scaleY(0);
-  }
-  to {
-    transform: scaleY(1);
+    opacity: 0;
+    transform: scale(0.4);
   }
 }
 
-/* Wide screens: chart on the left, stats stacked on the right. */
-@media (min-width: 900px) {
-  .github-scroll {
-    display: grid;
-    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 1rem + 2vw, 3rem);
-    align-items: end;
-  }
-
-  .github-scroll[hidden] {
-    display: none;
-  }
-
-  .github-scroll .gh-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin: 0;
-    padding: 0 0 0 clamp(1.5rem, 1rem + 2vw, 3rem);
-    border-top: 0;
-    border-left: 1px solid var(--line);
-  }
+/* The playhead: a green line down the hovered week, with a dot at
+   the top, the same mark as the scroll bar along the page edge. */
+.gh-playhead {
+  position: absolute;
+  top: -0.6rem;
+  bottom: -0.35rem;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transition: left 0.18s var(--ease-out), opacity var(--dur-1) var(--ease-out);
 }
 
-/* Phones: month names would collide, so every other one is shown. */
-@media (max-width: 479px) {
-  .gh-bar:nth-child(even) .gh-bar-month {
-    visibility: hidden;
-  }
-
-  .gh-bar-count {
-    font-size: 0.6875rem;
-    letter-spacing: 0;
-  }
+.gh-playhead::before {
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateX(-50%);
+  content: "";
 }
 
-/* Stats under the chart, on a hairline (beside it on wide screens). */
+.gh-tip {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 0.6rem;
+  background: var(--ink-900);
+  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.9);
+  color: var(--text-mid);
+  font-size: var(--fs-small);
+  line-height: 1.3;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 0.75rem));
+  transition: opacity var(--dur-1) var(--ease-out);
+}
+
+.gh-tip strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.is-pointing .gh-playhead,
+.is-pointing .gh-tip {
+  opacity: 1;
+}
+
+/* Stats under the strip, on a hairline. */
 .gh-stats {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
   gap: var(--s-4) var(--s-6);
   margin: clamp(1.25rem, 1rem + 1vw, 2rem) 0 0;
   padding-top: clamp(1.25rem, 1rem + 1vw, 1.75rem);
@@ -843,8 +903,15 @@
   letter-spacing: 0;
 }
 
+/* Narrow phones: the side labels take space the squares need. */
+@media (max-width: 479px) {
+  .github-scroll {
+    --day-col: 1.9rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .gh-bars.is-drawing .gh-bar-fill {
+  .github-graph.is-drawing .github-cell {
     animation: none;
   }
 }

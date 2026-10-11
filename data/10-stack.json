@@ -171,7 +171,7 @@
       "label": "View GitHub",
       "href": "https://github.com/generosomm"
     },
-    "graphLabel": "GitHub contribution graph for the last year",
+    "graphLabel": "GitHub contribution graph from my first active month",
     "snapshot": "data/github-contributions.json",
     "tooltip": {
       "none": "No contributions",
@@ -179,12 +179,13 @@
       "many": "{count} contributions"
     },
     "stats": {
-      "total": "Contributions, last 12 months",
+      "total": "Contributions since {since}",
+      "active": "Active days",
       "streak": "Longest streak",
       "busiest": "Busiest day",
       "day": "{count} day",
       "days": "{count} days"
     }
   },
-  "note": "Items with an icon show as logos in their own colours; color is the brand colour used for the hover glow. mono: true is for single-colour logos, drawn in white. Plain strings show as text tags, for skills without a logo. Logos are saved in assets/icons/stack/ (sources and licences in CREDITS.txt there). The GitHub graph reads a saved snapshot; refresh it with: node scripts/update-github-snapshot.mjs"
+  "note": "Items with an icon show as logos in their own colours; color is the brand colour used for the hover glow. mono: true is for single-colour logos, drawn in white. Plain strings show as text tags, for skills without a logo. Logos are saved in assets/icons/stack/ (sources and licences in CREDITS.txt there). The GitHub graph reads a saved snapshot, refreshed daily by .github/workflows/github-snapshot.yml (or by hand with: node scripts/update-github-snapshot.mjs). It starts at the month of the first active day."
 }

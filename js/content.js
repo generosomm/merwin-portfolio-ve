@@ -990,9 +990,8 @@ function renderStack(data) {
     .join("");
 
   /* The GitHub card is an empty frame here: js/interactions.js fills
-     it from the snapshot (month ruler, weekday labels, the graph, a
-     hover playhead with a tooltip, three stats), and leaves it hidden
-     if the snapshot is missing. */
+     it from the snapshot (one bar per month and the stats beside it),
+     and leaves it hidden if the snapshot is missing. */
   const github = data.github || {};
   const link = github.link || {};
 
@@ -1007,15 +1006,7 @@ function renderStack(data) {
           ${hasText(link.href) ? `<a class="text-link" href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">${text(link.label)}${ARROW}</a>` : ""}
         </div>
         <div class="github-scroll" hidden>
-          <div class="gh-ruler" aria-hidden="true"></div>
-          <div class="gh-body">
-            <div class="gh-days" aria-hidden="true"></div>
-            <div class="gh-grid-wrap">
-              <div class="github-graph" role="img" aria-label="${attr(github.graphLabel)}"></div>
-              <span class="gh-playhead" aria-hidden="true"></span>
-              <span class="gh-tip" aria-hidden="true"></span>
-            </div>
-          </div>
+          <div class="gh-bars" role="img" aria-label="${attr(github.graphLabel)}"></div>
           <dl class="gh-stats"></dl>
         </div>
       </div>

@@ -611,30 +611,23 @@
     });
   }
 
-  /* ---- GitHub contribution graph -------------------------------------
+  /* ---- GitHub activity -----------------------------------------------
      Drawn from the saved snapshot (scripts/update-github-snapshot.mjs),
-     loaded once the section is close to the screen. Laid out like a
-     strip of timeline: a month ruler with tick marks over the weeks,
-     Mon / Wed / Fri down the side, and only as many recent weeks as fit
-     the card (never a sideways scroll). The strip starts at the month
-     of the first active day, so it shows the active stretch rather than
-     a year of empty weeks. Hovering or tapping a day runs a green
-     playhead down its week and shows that day's count. Under the graph:
-     total, active days, longest streak, busiest day.
+     loaded once the section is close to the screen. One bar per month,
+     from the month of the first active day to now, so the card shows
+     how activity has grown rather than a grid of empty days. Each bar
+     carries its month's total; hovering or tapping a bar highlights it.
+     Beside the chart (under it on phones): total, active days, longest
+     streak, busiest day.
   ---------------------------------------------------------------- */
 
   function initGithubGraph() {
     const box = document.querySelector(".github[data-snapshot]");
     const card = box?.querySelector(".github-scroll");
-    const graph = box?.querySelector(".github-graph");
-    const ruler = box?.querySelector(".gh-ruler");
-    const dayLabels = box?.querySelector(".gh-days");
-    const wrap = box?.querySelector(".gh-grid-wrap");
-    const playhead = box?.querySelector(".gh-playhead");
-    const tip = box?.querySelector(".gh-tip");
+    const bars = box?.querySelector(".gh-bars");
     const stats = box?.querySelector(".gh-stats");
     const source = box?.dataset.snapshot;
-    if (!box || !card || !graph || !wrap || !source) return;
+    if (!box || !card || !bars || !source) return;
 
     let labels = {};
     try {
@@ -646,17 +639,10 @@
       String(template || "").replace(/\{(\w+)\}/g, (match, key) => (key in values ? values[key] : match));
 
     const locale = document.documentElement.lang || "en";
-    const formatDay = new Intl.DateTimeFormat(locale, { weekday: "short", month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
     const formatShort = new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", timeZone: "UTC" });
     const formatMonth = new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" });
     const formatMonthYear = new Intl.DateTimeFormat(locale, { month: "short", year: "numeric", timeZone: "UTC" });
-    const formatWeekday = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" });
-
-    /* One entry per day: { date, level, count }, padded with nulls at
-       the front so every column starts on a Sunday. */
-    let weeks = [];
-    let shownWeeks = 0;
-    let shownCell = 0;
+    const asDate = (day) => new Date(`${day}T00:00:00Z`);
 
     const isActive = (day) => (day.count !== null ? day.count > 0 : day.level > 0);
 
@@ -666,99 +652,46 @@
       return fill(count === 1 ? tooltip.one : tooltip.many, { count: count.toLocaleString(locale) });
     }
 
-    function render() {
-      /* Base square size from the CSS clamp(), read with any earlier
-         fit removed (grid-auto-columns resolves it to pixels). */
-      card.style.removeProperty("--cell-fit");
-      const style = getComputedStyle(graph);
-      const base = parseFloat(style.gridAutoColumns) || 12;
-      const gap = parseFloat(style.columnGap) || 3;
-      const room = wrap.clientWidth;
-      const fit = Math.max(1, Math.min(weeks.length, Math.floor((room + gap) / (base + gap))));
-      /* When the whole year fits with room to spare, the squares grow
-         (up to 20px) so the strip fills the card instead of stopping
-         two-thirds of the way across. */
-      const cell = fit === weeks.length
-        ? Math.min(20, Math.max(base, Math.floor((room + gap) / weeks.length - gap)))
-        : base;
-      card.style.setProperty("--cell-fit", `${cell}px`);
-      if (fit === shownWeeks && cell === shownCell) return;
-      shownWeeks = fit;
-      shownCell = cell;
-      const visible = weeks.slice(-fit);
-
-      const squares = document.createDocumentFragment();
-      visible.forEach((week, column) => {
-        week.forEach((day) => {
-          const square = document.createElement("span");
-          square.className = day ? "github-cell" : "github-cell is-empty";
-          square.style.setProperty("--c", column);
-          if (day) {
-            square.dataset.level = day.level;
-            square.dataset.date = day.date;
-            if (day.count !== null) square.dataset.count = day.count;
-          }
-          squares.appendChild(square);
-        });
-      });
-      graph.replaceChildren(squares);
-
-      /* Month ruler: a tick on every week, a taller tick and a label
-         where a month starts. A label too close to the previous one is
-         dropped rather than overlapped. */
-      const step = cell + gap;
-      const marks = document.createDocumentFragment();
-      let lastMonth = null;
-      let lastLabelAt = -Infinity;
-      let lastLabel = null;
-      visible.forEach((week, column) => {
-        const first = week.find(Boolean);
-        const tick = document.createElement("span");
-        tick.className = "gh-tick";
-        tick.style.left = `${column * step + cell / 2}px`;
-        if (first) {
-          const month = first.date.slice(0, 7);
-          if (month !== lastMonth) {
-            if (lastMonth !== null || column === 0) {
-              tick.classList.add("is-month");
-              /* Too close to the previous label: if that one is just the
-                 sliver of a month at the very start, it gives way (as on
-                 GitHub); otherwise this one is skipped. */
-              const crowded = column - lastLabelAt < 3;
-              if (crowded && lastLabel && lastLabelAt === 0) {
-                lastLabel.remove();
-                lastLabel = null;
-              }
-              if (!crowded || !lastLabel) {
-                const label = document.createElement("span");
-                label.className = "gh-month";
-                label.style.left = `${column * step}px`;
-                label.textContent = formatMonth.format(new Date(`${first.date}T00:00:00Z`));
-                marks.appendChild(label);
-                lastLabelAt = column;
-                lastLabel = label;
-              }
-            }
-            lastMonth = month;
-          }
+    /* One bar per month. Older snapshots have levels but no counts, so
+       a month then falls back to its number of active days. */
+    function drawBars(days) {
+      const months = [];
+      days.forEach((day) => {
+        const key = day.date.slice(0, 7);
+        let month = months[months.length - 1];
+        if (!month || month.key !== key) {
+          month = { key, total: 0, active: 0 };
+          months.push(month);
         }
-        marks.appendChild(tick);
+        month.total += day.count !== null ? day.count : 0;
+        if (isActive(day)) month.active += 1;
       });
-      ruler.replaceChildren(marks);
-      ruler.style.setProperty("--ruler-w", `${visible.length * step - gap}px`);
-    }
+      const hasCounts = days.some((day) => day.count !== null);
+      const value = (month) => (hasCounts ? month.total : month.active);
+      const max = Math.max(1, ...months.map(value));
 
-    /* Weekday labels down the side: Mon, Wed, Fri, like GitHub's own,
-       generated in the page language rather than written out. */
-    function drawDays() {
-      const rows = document.createDocumentFragment();
-      for (let row = 0; row < 7; row += 1) {
-        const label = document.createElement("span");
-        /* 2023-01-01 was a Sunday; row 0 is Sunday. */
-        if (row % 2 === 1) label.textContent = formatWeekday.format(new Date(Date.UTC(2023, 0, 1 + row)));
-        rows.appendChild(label);
-      }
-      dayLabels?.replaceChildren(rows);
+      const fragment = document.createDocumentFragment();
+      months.forEach((month, index) => {
+        const amount = value(month);
+        const bar = document.createElement("div");
+        bar.className = amount ? "gh-bar" : "gh-bar is-empty";
+        bar.style.setProperty("--h", (amount / max).toFixed(3));
+        bar.style.setProperty("--i", index);
+        bar.title = `${formatMonthYear.format(asDate(`${month.key}-01`))}: ${countLabel(month.total)}`;
+
+        const count = document.createElement("span");
+        count.className = "gh-bar-count";
+        count.textContent = amount ? amount.toLocaleString(locale) : "";
+        const column = document.createElement("span");
+        column.className = "gh-bar-fill";
+        const name = document.createElement("span");
+        name.className = "gh-bar-month";
+        name.textContent = formatMonth.format(asDate(`${month.key}-01`));
+        bar.append(count, column, name);
+        fragment.appendChild(bar);
+      });
+      bars.replaceChildren(fragment);
+      bars.style.setProperty("--months", months.length);
     }
 
     /* Total, active days, longest run of active days, and the single
@@ -779,12 +712,12 @@
       });
 
       const items = [];
-      const since = days.length ? formatMonthYear.format(new Date(`${days[0].date}T00:00:00Z`)) : "";
+      const since = days.length ? formatMonthYear.format(asDate(days[0].date)) : "";
       if (Number.isFinite(total)) items.push([fill(names.total, { since }), total.toLocaleString(locale), ""]);
       if (activeDays) items.push([names.active, activeDays.toLocaleString(locale), ""]);
       items.push([names.streak, fill(longest === 1 ? names.day : names.days, { count: longest }), ""]);
       if (busiest && busiest.count > 0) {
-        items.push([names.busiest, formatShort.format(new Date(`${busiest.date}T00:00:00Z`)), countLabel(busiest.count)]);
+        items.push([names.busiest, formatShort.format(asDate(busiest.date)), countLabel(busiest.count)]);
       }
 
       const fragment = document.createDocumentFragment();
@@ -806,46 +739,6 @@
       stats.replaceChildren(fragment);
     }
 
-    /* Hover (or tap) a day: playhead down its week, tooltip above it. */
-    function point(square) {
-      if (!square?.dataset.date) {
-        wrap.classList.remove("is-pointing");
-        return;
-      }
-      const wrapBox = wrap.getBoundingClientRect();
-      const box = square.getBoundingClientRect();
-      const x = box.left - wrapBox.left + box.width / 2;
-      playhead.style.left = `${x}px`;
-      /* Older snapshots have levels but no counts: an empty day is
-         still known to be zero; any other day just shows its date. */
-      const count = square.dataset.count !== undefined
-        ? Number(square.dataset.count)
-        : square.dataset.level === "0" ? 0 : null;
-      const date = formatDay.format(new Date(`${square.dataset.date}T00:00:00Z`));
-      tip.textContent = "";
-      const strong = document.createElement("strong");
-      strong.textContent = count !== null ? countLabel(count) : "";
-      const when = document.createElement("span");
-      when.textContent = date;
-      tip.append(strong, when);
-      /* Keep the tooltip inside the card at both ends. */
-      const half = tip.offsetWidth / 2;
-      tip.style.left = `${Math.min(Math.max(x, half), wrap.clientWidth - half)}px`;
-      tip.style.top = `${box.top - wrapBox.top}px`;
-      graph.querySelector(".is-pointed")?.classList.remove("is-pointed");
-      square.classList.add("is-pointed");
-      wrap.classList.add("is-pointing");
-    }
-
-    graph.addEventListener("pointerover", (event) => point(event.target.closest(".github-cell")));
-    graph.addEventListener("pointerdown", (event) => point(event.target.closest(".github-cell")));
-    wrap.addEventListener("pointerleave", (event) => {
-      if (event.pointerType === "mouse") {
-        wrap.classList.remove("is-pointing");
-        graph.querySelector(".is-pointed")?.classList.remove("is-pointed");
-      }
-    });
-
     async function draw() {
       try {
         const response = await fetch(source);
@@ -853,37 +746,27 @@
         const data = await response.json();
         const levels = String(data.levels || "");
         const counts = Array.isArray(data.counts) ? data.counts : [];
-        const start = new Date(`${data.start}T00:00:00Z`);
+        const start = asDate(data.start);
         if (!levels.length || Number.isNaN(start.getTime())) return;
 
-        const days = Array.from(levels, (level, index) => {
-          const date = new Date(start.getTime() + index * 86400000).toISOString().slice(0, 10);
-          return {
-            date,
-            level: /[0-4]/.test(level) ? Number(level) : 0,
-            count: Number.isFinite(Number(counts[index])) && index < counts.length ? Number(counts[index]) : null
-          };
-        });
+        const days = Array.from(levels, (level, index) => ({
+          date: new Date(start.getTime() + index * 86400000).toISOString().slice(0, 10),
+          level: /[0-4]/.test(level) ? Number(level) : 0,
+          count: Number.isFinite(Number(counts[index])) && index < counts.length ? Number(counts[index]) : null
+        }));
         /* Begin at the first day of the month with the first activity. */
         const first = days.findIndex(isActive);
         const from = first > 0 ? days.findIndex((day) => day.date.slice(0, 7) === days[first].date.slice(0, 7)) : 0;
         const shown = days.slice(from);
-        const shownStart = new Date(`${shown[0].date}T00:00:00Z`);
-        const padded = [...Array(shownStart.getUTCDay()).fill(null), ...shown];
-        weeks = [];
-        for (let index = 0; index < padded.length; index += 7) weeks.push(padded.slice(index, index + 7));
 
         card.hidden = false;
-        drawDays();
-        render();
+        drawBars(shown);
         drawStats(shown, Number(data.total));
-        if ("ResizeObserver" in window) new ResizeObserver(render).observe(wrap);
 
-        /* The squares fill in column by column, once, like a render
-           bar crossing the strip (css/closing.css). */
+        /* The bars rise once, left to right (css/closing.css). */
         if (!reduceMotion.matches) {
-          graph.classList.add("is-drawing");
-          window.setTimeout(() => graph.classList.remove("is-drawing"), 2200);
+          bars.classList.add("is-drawing");
+          window.setTimeout(() => bars.classList.remove("is-drawing"), 2000);
         }
       } catch {
         /* Missing or malformed snapshot: the GitHub link still works. */

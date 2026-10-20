@@ -35,6 +35,60 @@
       }
     },
     {
+      "title": "Modern Way Redesign",
+      "summary": "A website redesign I proposed for a virtual assistant agency, built around the US–Manila time difference with clear services, pricing comparison and a free delegation plan.",
+      "tags": [
+        "Web Design",
+        "HTML5",
+        "CSS3",
+        "Vercel"
+      ],
+      "status": "Client proposal",
+      "href": "https://mw-redesign-proposal.vercel.app/",
+      "image": {
+        "src": "assets/images/work/modern-way-redesign.webp",
+        "alt": "Modern Way redesign hero with the headline Your workday ends, theirs begins, and a New York to Manila time arc",
+        "width": 1200,
+        "height": 750
+      }
+    },
+    {
+      "title": "AyosPapel",
+      "summary": "A landing page I proposed for a client's receipt-to-SLSP tool, with an interactive demo where sample receipts fill the quarterly sales and purchases list.",
+      "tags": [
+        "Web Design",
+        "HTML5",
+        "CSS3",
+        "JavaScript"
+      ],
+      "status": "Client proposal",
+      "href": "https://ayospapel.vercel.app/",
+      "image": {
+        "src": "assets/images/work/ayospapel.webp",
+        "alt": "AyosPapel landing page hero with the headline Resibo in, SLSP out, and extracted TIN and VAT tags",
+        "width": 1200,
+        "height": 750
+      }
+    },
+    {
+      "title": "Off Axis",
+      "summary": "A small collection of 3D spatial puzzles that run in the browser. Roll, the first puzzle, is playable with six practice levels.",
+      "tags": [
+        "React",
+        "TypeScript",
+        "Three.js",
+        "Supabase"
+      ],
+      "status": "In progress · 1 of 2 puzzles playable",
+      "href": "https://off-axis-azure.vercel.app/",
+      "image": {
+        "src": "assets/images/work/off-axis.webp",
+        "alt": "Off Axis home with 3D previews of the Roll and Unlink puzzles",
+        "width": 1200,
+        "height": 750
+      }
+    },
+    {
       "title": "MSC NU Laguna Website",
       "summary": "A live community platform serving 307 members. I led the Node.js and Express backend for membership, events and updates.",
       "tags": [

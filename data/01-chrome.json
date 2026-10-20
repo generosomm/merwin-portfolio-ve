@@ -2,7 +2,8 @@
   "brand": {
     "name": "Merwin Generoso",
     "href": "#hero",
-    "ariaLabel": "Merwin Generoso — back to the top"
+    "ariaLabel": "Merwin Generoso — back to the top",
+    "mark": "Merwin"
   },
   "nav": {
     "ariaLabel": "Primary navigation",
@@ -11,16 +12,20 @@
     "menuAriaLabel": "Site menu",
     "links": [
       {
+        "label": "Work",
+        "href": "#work"
+      },
+      {
+        "label": "Edits",
+        "href": "#edits"
+      },
+      {
         "label": "About",
         "href": "#about"
       },
       {
         "label": "Services",
         "href": "#services"
-      },
-      {
-        "label": "Work",
-        "href": "#work"
       },
       {
         "label": "Proof",
@@ -34,7 +39,8 @@
         "label": "Contact",
         "href": "#contact"
       }
-    ]
+    ],
+    "toggleLabel": ""
   },
   "socials": {
     "ariaLabel": "Social profiles",
@@ -90,7 +96,7 @@
     },
     {
       "id": "work",
-      "title": "Selected Work",
+      "title": "Selected websites",
       "viewAll": {
         "label": "View all on GitHub",
         "href": "https://github.com/generosomm"

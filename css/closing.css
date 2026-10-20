@@ -731,10 +731,9 @@
 .gh-cell[data-level="2"] { background: rgba(43, 212, 125, 0.55); }
 .gh-cell[data-level="3"] { background: rgba(43, 212, 125, 0.8); }
 
-/* The busiest days glow faintly, like lit pixels. */
+/* Activity levels are restyled as monochrome dots in studio.css. */
 .gh-cell[data-level="4"] {
   background: var(--accent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 .gh-cell.is-pointed {
@@ -752,7 +751,6 @@
   width: 2px;
   margin-left: -1px;
   background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
   opacity: 0;
   pointer-events: none;
   transition: left 0.18s var(--ease-out), opacity var(--dur-1) var(--ease-out);

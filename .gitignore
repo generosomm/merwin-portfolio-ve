@@ -8,6 +8,8 @@ node_modules/
 dist/
 coverage/
 *.log
+.taste-skill/
+.impeccable/
 
 # Secrets: real values live only in Vercel's environment variables
 # (and in .env.local on your own machine, created by `vercel env pull`).

@@ -407,15 +407,12 @@
       }
     });
 
-    /* Resizing past the breakpoint hides the menu in CSS, so its
-       state has to be reset or the toggle lies about it. */
-    window.addEventListener(
-      "resize",
-      debounce(() => {
-        if (open && window.innerWidth >= 1024) setState(false);
-      }, 180),
-      { passive: true }
-    );
+    document.addEventListener("pointerdown", (event) => {
+      if (open && !menu.contains(event.target) && !toggle.contains(event.target)) {
+        setState(false);
+        toggle.focus();
+      }
+    });
   }
 
   /* ---- Anchor navigation -------------------------------------- */

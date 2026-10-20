@@ -7,21 +7,7 @@
   <meta name="robots" content="index, follow">
 
   <script>
-    /* Runs before first paint so the render screen never flashes the
-       page behind it, and the hero never flashes its final layout. */
-    (() => {
-      const root = document.documentElement;
-      root.classList.toggle("in-hero", !location.hash || location.hash === "#hero");
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-      root.classList.add("hero-armed");
-
-      /* The render screen shows on every visit, phones included. It's
-         short (0.85 s minimum) and doubles as the wait for the live
-         stats, capped at 2 s (js/site.js). Visitors who ask for reduced
-         motion skip it entirely (the return above). */
-      root.classList.add("preloading");
-    })();
+    document.documentElement.classList.toggle("in-hero", !location.hash || location.hash === "#hero");
   </script>
 
   <!-- Static copies of data/00-meta.json so crawlers that do not run
@@ -42,11 +28,8 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0A0A'/><rect x='14' y='18' width='72' height='3' fill='%232BD47D'/><text x='50' y='74' font-size='50' font-family='system-ui,sans-serif' font-weight='700' fill='%23F2F2F0' text-anchor='middle'>M</text></svg>">
 
-  <!-- The hero portrait is the largest thing on the first screen:
-       start fetching the right size before the CSS and JS arrive. -->
-  <link rel="preload" as="image" type="image/webp" fetchpriority="high"
-    imagesrcset="assets/images/pfp-640.webp 640w, assets/images/pfp-800.webp 800w, assets/images/pfp.webp 1067w"
-    imagesizes="(max-width: 767px) 100vw, (max-width: 1023px) 64vw, 30vw">
+
+  <link rel="preload" as="image" type="image/webp" fetchpriority="high" imagesrcset="assets/images/pfp-640.webp 640w, assets/images/pfp-800.webp 800w, assets/images/pfp.webp 1067w" imagesizes="(max-width: 767px) 76vw, (max-width: 1023px) 44vw, (min-width: 1286px) 422px, 33vw">
 
   <!-- Everything below comes from this domain: no other servers to
        connect to before the page can render. -->
@@ -65,13 +48,14 @@
   <link rel="stylesheet" href="css/closing.css?v=r73">
   <link rel="stylesheet" href="css/live-stats.css?v=r69">
   <link rel="stylesheet" href="css/notes.css?v=r69">
+  <link rel="stylesheet" href="css/studio.css?v=studio10">
 
   <!-- Nothing appears until content.js has run with the site's data,
        so both are fetched early, right after the render-blocking CSS:
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=r76" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=studio10" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -89,14 +73,16 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=r76" defer></script>
-  <script src="js/site.js?v=r69" defer></script>
-  <script src="js/interactions.js?v=r76" defer></script>
+  <script src="js/content.js?v=studio10" defer></script>
+  <script src="js/studio.js?v=studio10" defer></script>
+  <script src="js/studio-motion.js?v=studio10" defer></script>
+  <script src="js/site.js?v=studio10" defer></script>
+  <script src="js/interactions.js?v=studio4" defer></script>
   <script src="js/cursor.js?v=r69" defer></script>
   <script src="vendor/lenis.min.js?v=1.1.18" defer></script>
   <script src="vendor/gsap.min.js?v=3.13.0" defer></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.13.0" defer></script>
-  <script src="js/motion.js?v=r69" defer></script>
+  <script src="js/motion.js?v=studio10" defer></script>
   <!-- Live social stats (optional): upgrades the Numbers section with
        /api/stats. Remove it and the documented figures still show. -->
   <script src="js/live-stats.js?v=r69" defer></script>
@@ -128,11 +114,11 @@
 
   <main id="main">
     <section class="section section-hero" id="hero" data-section="hero"></section>
+    <section class="section" id="work" data-section="work"></section>
+    <section class="section" id="edits" data-section="edits"></section>
     <section class="section" id="about" data-section="about"></section>
     <section class="section" id="numbers" data-section="numbers"></section>
     <section class="section" id="services" data-section="services"></section>
-    <section class="section" id="work" data-section="work"></section>
-    <section class="section" id="edits" data-section="edits"></section>
     <section class="section" id="proof" data-section="proof"></section>
     <section class="section" id="experience" data-section="experience"></section>
     <section class="section" id="stack" data-section="stack"></section>

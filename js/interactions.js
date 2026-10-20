@@ -613,11 +613,10 @@
 
   /* ---- GitHub activity -----------------------------------------------
      Drawn from the saved snapshot (scripts/update-github-snapshot.mjs),
-     loaded once the section is close to the screen. A compact day grid
-     from the month of the first active day to now, so the card shows
-     the active stretch rather than a year of empty days. Hovering or
-     tapping a square runs a playhead down its week with the day's count. Beside the grid (under it on
-     phones): total, active days, longest streak, busiest day.
+     loaded once the section is close to the screen. One dot per day
+     for the entire saved year, with size and brightness following
+     contribution level. Hovering or tapping reveals the day's count.
+     The total and exact saved date range sit below the graph.
   ---------------------------------------------------------------- */
 
   function initGithubGraph() {
@@ -643,12 +642,9 @@
 
     const locale = document.documentElement.lang || "en";
     const formatDay = new Intl.DateTimeFormat(locale, { weekday: "short", month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
-    const formatShort = new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", timeZone: "UTC" });
     const formatMonth = new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" });
-    const formatMonthYear = new Intl.DateTimeFormat(locale, { month: "short", year: "numeric", timeZone: "UTC" });
     const asDate = (day) => new Date(`${day}T00:00:00Z`);
 
-    const isActive = (day) => (day.count !== null ? day.count > 0 : day.level > 0);
 
     function countLabel(count) {
       const tooltip = labels.tooltip || {};
@@ -739,49 +735,19 @@
       }
     });
 
-    /* Total, active days, longest run of active days, and the single
-       busiest day. */
+    /* One truthful total paired with the complete saved period. */
     function drawStats(days, total) {
-      if (!stats) return;
-      const names = labels.stats || {};
-      let longest = 0;
-      let run = 0;
-      let activeDays = 0;
-      let busiest = null;
-      days.forEach((day) => {
-        const active = isActive(day);
-        if (active) activeDays += 1;
-        run = active ? run + 1 : 0;
-        longest = Math.max(longest, run);
-        if (day.count !== null && (!busiest || day.count > busiest.count)) busiest = day;
-      });
-
-      const items = [];
-      const since = days.length ? formatMonthYear.format(asDate(days[0].date)) : "";
-      if (Number.isFinite(total)) items.push([fill(names.total, { since }), total.toLocaleString(locale), ""]);
-      if (activeDays) items.push([names.active, activeDays.toLocaleString(locale), ""]);
-      items.push([names.streak, fill(longest === 1 ? names.day : names.days, { count: longest }), ""]);
-      if (busiest && busiest.count > 0) {
-        items.push([names.busiest, formatShort.format(asDate(busiest.date)), countLabel(busiest.count)]);
-      }
-
-      const fragment = document.createDocumentFragment();
-      items.filter(([label]) => label).forEach(([label, value, detail]) => {
-        const item = document.createElement("div");
-        item.className = "gh-stat";
-        const dt = document.createElement("dt");
-        dt.textContent = label;
-        const dd = document.createElement("dd");
-        dd.textContent = value;
-        if (detail) {
-          const small = document.createElement("span");
-          small.textContent = detail;
-          dd.appendChild(small);
-        }
-        item.append(dt, dd);
-        fragment.appendChild(item);
-      });
-      stats.replaceChildren(fragment);
+      if (!stats || !days.length || !Number.isFinite(total)) return;
+      const date = new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+      const label = fill(labels.stats?.total, { from: date.format(asDate(days[0].date)), to: date.format(asDate(days.at(-1).date)) });
+      const item = document.createElement('div');
+      item.className = 'gh-stat';
+      const dt = document.createElement('dt');
+      dt.textContent = label;
+      const dd = document.createElement('dd');
+      dd.textContent = total.toLocaleString(locale);
+      item.append(dt, dd);
+      stats.replaceChildren(item);
     }
 
     async function draw() {
@@ -799,14 +765,9 @@
           level: /[0-4]/.test(level) ? Number(level) : 0,
           count: Number.isFinite(Number(counts[index])) && index < counts.length ? Number(counts[index]) : null
         }));
-        /* Begin at the first day of the month with the first activity. */
-        const first = days.findIndex(isActive);
-        const from = first > 0 ? days.findIndex((day) => day.date.slice(0, 7) === days[first].date.slice(0, 7)) : 0;
-        const shown = days.slice(from);
-
         card.hidden = false;
-        drawGrid(shown);
-        drawStats(shown, Number(data.total));
+        drawGrid(days);
+        drawStats(days, Number(data.total));
 
         /* The weeks fade in once, left to right (css/closing.css). */
         if (!reduceMotion.matches) {

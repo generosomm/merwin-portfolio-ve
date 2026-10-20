@@ -60,7 +60,7 @@
 
   /* ---- About ---------------------------------------------------
      Scrubbed to the scroll, not played once: each word starts faint,
-     blurred and slightly low, and sharpens into place as you scroll.
+     slightly low, and settles into place as you scroll.
      On wide screens the section pins for most of a screen's worth of
      scrolling so the whole sentence resolves while it holds still;
      on phones it resolves as it passes, without the pin.
@@ -72,8 +72,8 @@
     if (!words?.length) return;
 
     /* 0.55 keeps even the green words above 3:1 at their dimmest. */
-    const from = { opacity: 0.55, filter: "blur(10px)", yPercent: 35 };
-    const to = { opacity: 1, filter: "blur(0px)", yPercent: 0, ease: "power2.out", stagger: 0.08, duration: 0.6 };
+    const from = { opacity: 0.55, yPercent: 35 };
+    const to = { opacity: 1, yPercent: 0, ease: "power2.out", stagger: 0.08, duration: 0.6 };
 
     /* Pinning only where it is reliable: a laptop or desktop with a real
        pointer. Tablets and phones get the same reveal as the section
@@ -178,7 +178,7 @@
   }
 
   /* ---- Closing statement --------------------------------------
-     The same blur-to-sharp words as About, scrubbed as the contact
+     The same opacity and position reveal as About, scrubbed as the contact
      section scrolls in, without the pin.
   ---------------------------------------------------------------- */
 
@@ -189,10 +189,9 @@
 
     gsap.fromTo(
       words,
-      { opacity: 0.55, filter: "blur(10px)", yPercent: 35 },
+      { opacity: 0.55, yPercent: 35 },
       {
         opacity: 1,
-        filter: "blur(0px)",
         yPercent: 0,
         ease: "power2.out",
         stagger: 0.08,

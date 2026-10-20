@@ -182,5 +182,13 @@
       }
     }
   ],
-  "note": "Project titles and Live site links open deployed sites in a new tab. Projects without a live URL remain unlinked. Preview images appear as a shared 3D hover card on desktop."
+  "note": "Live websites appear as a three-preview depth deck, browsable with arrows, keyboard or swipe. Other systems retain text-only details without repository screenshots.",
+  "viewer": {
+    "defaultProject": "ASINTA",
+    "visit": "Visit live site",
+    "archiveTitle": "Other systems",
+    "label": "Selected website projects",
+    "previous": "Previous website",
+    "next": "Next website"
+  }
 }

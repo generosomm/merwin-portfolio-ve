@@ -1,0 +1,57 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import vm from 'node:vm';
+
+const source = await readFile('js/content.js', 'utf8');
+const html = await readFile('index.html', 'utf8');
+assert.equal([...html.matchAll(/id="work"/g)].length, 1, 'Website section must have a unique anchor');
+const nodes = new Map();
+const context = vm.createContext({ document: { querySelector(selector) {
+  if (!nodes.has(selector)) nodes.set(selector, { innerHTML: '', setAttribute() {} });
+  return nodes.get(selector);
+} } });
+vm.runInContext(source.split('window.portfolioContentReady =')[0], context);
+context.hero = JSON.parse(await readFile('data/02-hero.json', 'utf8'));
+context.work = JSON.parse(await readFile('data/07-work.json', 'utf8'));
+context.edits = JSON.parse(await readFile('data/08-edits.json', 'utf8'));
+context.chrome = JSON.parse(await readFile('data/01-chrome.json', 'utf8'));
+vm.runInContext('renderTopChrome(chrome)', context);
+const header = nodes.get('[data-chrome="top"]').innerHTML;
+assert.match(header, /class="brand-name">Merwin</);
+assert.doesNotMatch(header, /class="nav-toggle-label"/);
+assert.match(header, /aria-label="Open menu"/);
+assert.doesNotMatch(header, /class="chrome-nav-list"/);
+vm.runInContext('renderHero(hero, {}, work, edits)', context);
+const markup = nodes.get('[data-section="hero"]').innerHTML;
+assert.match(markup, /class="portrait-hero section-inner"/);
+assert.match(markup, /id="hero-title"/);
+assert.match(markup, /href="#work"/);
+assert.match(markup, /View CV/);
+assert.doesNotMatch(markup, /data-studio-panel|studio-showcase|<video/);
+assert.match(markup, /class="portrait-cutout"/);
+assert.match(markup, /class="portrait-outline" aria-hidden="true"/);
+context.experience = JSON.parse(await readFile('data/05-experience.json', 'utf8'));
+vm.runInContext('renderExperience(experience)', context);
+const experience = nodes.get('[data-section="experience"]').innerHTML;
+assert.equal([...experience.matchAll(/class="experience-entry"/g)].length, context.experience.items.length);
+assert.match(experience, /<summary class="experience-row">/);
+assert.match(experience, /City Government of Sto. Tomas/);
+vm.runInContext('renderHero(hero, {}, {items: [null, {}]}, {items: []})', context);
+assert.doesNotMatch(nodes.get('[data-section="hero"]').innerHTML, /src="undefined"/);
+vm.runInContext('renderWork(work)', context);
+const gallery = nodes.get('[data-section="work"]').innerHTML;
+assert.match(gallery, /class="studio-project-image"/);
+assert.match(gallery, /Document Tracking/);
+assert.doesNotMatch(gallery, /href="null"/);
+assert.match(gallery, /class="project-deck"/);
+assert.match(gallery, /data-visit-label="Visit live site"/);
+assert.ok(context.hero.intro.split(/\s+/).length <= 10, 'Hero copy must stay concise');
+assert.equal([...gallery.matchAll(/class="deck-card"/g)].length, context.work.items.filter(item => item.href).length);
+assert.match(gallery, /data-deck-step="-1"/);
+assert.match(gallery, /data-deck-step="1"/);
+assert.doesNotMatch(gallery, /class="project-browser"/);
+assert.match(gallery, /class="work-archive"/);
+for (const project of context.work.items.filter(item => !item.href && item.image?.src)) {
+  assert.ok(!gallery.includes(project.image.src), `Non-live project preview must stay hidden: ${project.title}`);
+}
+console.log('Studio rendering: portrait hero, header, experience disclosures, project deck and non-live preview checks passed.');

@@ -12,20 +12,29 @@
    slides under the section being read, and the pill tucks away while
    you scroll down (js/studio.js). Phones get it at the bottom, within
    thumb reach, with four links and More for the rest. */
-.chrome-top { top: max(16px, env(safe-area-inset-top)); left: 50%; right: auto; width: auto; min-height: 0; padding: 5px; display: flex; align-items: center; background: var(--studio-glass); border: 1px solid var(--studio-edge); border-radius: 100px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transform: translateX(-50%); transition: transform 320ms cubic-bezier(.23, 1, .32, 1); }
+.chrome-top { top: max(16px, env(safe-area-inset-top)); left: 50%; right: auto; width: auto; min-height: 0; padding: 5px; display: flex; align-items: center; border-radius: 100px; transform: translateX(-50%); transition: transform 320ms cubic-bezier(.23, 1, .32, 1); }
+/* Liquid glass, used only on things that float over imagery: the
+   navbar, the deck's arrow row and the phone menu. A white sheen over a
+   dark tint (readable over light screenshots), a hairline border, and a
+   brighter, thicker rim at the top-left and bottom-right. */
+.chrome-top, .deck-controls, .menu { background: linear-gradient(rgba(255, 255, 255, .07), rgba(255, 255, 255, .07)), rgba(14, 14, 14, .6); border: 1px solid rgba(255, 255, 255, .12); box-shadow: 0 10px 30px rgba(0, 0, 0, .28); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%); }
+/* The menu is a big panel over text, so it gets a heavier tint. */
+.menu { background: linear-gradient(rgba(255, 255, 255, .06), rgba(255, 255, 255, .06)), rgba(14, 14, 14, .78); }
+.chrome-top::after, .deck-controls::after, .menu::after { content: ""; position: absolute; inset: -1px; padding: 1.5px; border-radius: inherit; background: linear-gradient(135deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .06) 32%, rgba(255, 255, 255, .06) 68%, rgba(255, 255, 255, .38)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); pointer-events: none; }
 html.nav-tucked .chrome-top { transform: translate(-50%, calc(-100% - 28px)); }
 .chrome-top::before, body::after { display: none; }
-.chrome-top .pill-nav { position: relative; display: flex; align-items: center; padding: 0; background: none; border: 0; }
+.chrome-top .pill-nav { position: relative; z-index: 0; display: flex; align-items: center; padding: 0; background: none; border: 0; }
 .chrome-top .chrome-nav-list { display: flex; align-items: center; gap: 0; margin: 0; padding: 0; list-style: none; }
-.chrome-top .chrome-nav-link { display: inline-flex; align-items: center; min-height: 40px; padding: 0 15px; border-radius: 100px; font: 500 14px var(--font-body); letter-spacing: 0; text-transform: none; color: var(--studio-muted); transition: color 160ms ease-out; }
+.chrome-top .chrome-nav-link { display: inline-flex; align-items: center; min-height: 40px; padding: 0 15px; border-radius: 100px; font: 500 14px var(--font-body); letter-spacing: 0; text-transform: none; color: rgba(242, 242, 240, .82); transition: color 160ms ease-out; }
 .chrome-top .chrome-nav-link::after { display: none; }
 .chrome-top .chrome-nav-link:hover, .chrome-top .chrome-nav-link:focus-visible, .chrome-top .chrome-nav-link[aria-current="true"] { color: var(--text); }
-.pill-indicator { position: absolute; left: 0; bottom: 4px; width: 1px; height: 2px; border-radius: 2px; background: var(--accent); opacity: 0; transform-origin: left; transform: translateX(var(--x, 0px)) scaleX(var(--w, 0)); transition: transform 340ms cubic-bezier(.23, 1, .32, 1), opacity 200ms ease-out; pointer-events: none; }
+/* The active link sits in a soft glass capsule that slides between links. */
+.pill-indicator { position: absolute; z-index: -1; top: 0; left: 0; height: 100%; width: var(--w, 0px); border-radius: 100px; background: rgba(255, 255, 255, .12); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18); opacity: 0; transform: translateX(var(--x, 0px)); transition: transform 340ms cubic-bezier(.23, 1, .32, 1), width 340ms cubic-bezier(.23, 1, .32, 1), opacity 200ms ease-out; pointer-events: none; }
 .pill-nav.has-active .pill-indicator { opacity: 1; }
-.chrome-top .nav-toggle { display: none; min-height: 40px; padding: 0 15px; border: 0; border-radius: 100px; background: none; color: var(--studio-muted); cursor: pointer; }
+.chrome-top .nav-toggle { display: none; min-height: 40px; padding: 0 15px; border: 0; border-radius: 100px; background: none; color: rgba(242, 242, 240, .82); cursor: pointer; }
 .nav-toggle-label { font: 500 14px var(--font-body); }
 html.menu-open .chrome-top .nav-toggle { color: var(--text); }
-.menu { display: flex; inset: auto 5% auto auto; top: max(82px, calc(env(safe-area-inset-top) + 64px)); width: min(330px, 90vw); max-height: calc(100svh - 110px); padding: 20px 24px; gap: 20px; border-radius: 16px; background: var(--studio-surface); transform-origin: top right; transform: translateY(-6px) scale(.97); transition: opacity 180ms cubic-bezier(.23, 1, .32, 1), transform 180ms cubic-bezier(.23, 1, .32, 1); }
+.menu { display: flex; inset: auto 5% auto auto; top: max(82px, calc(env(safe-area-inset-top) + 64px)); width: min(330px, 90vw); max-height: calc(100svh - 110px); padding: 20px 24px; gap: 20px; border-radius: 16px; transform-origin: top right; transform: translateY(-6px) scale(.97); transition: opacity 180ms cubic-bezier(.23, 1, .32, 1), transform 180ms cubic-bezier(.23, 1, .32, 1); }
 .menu.is-open { transform: translateY(0) scale(1); }
 .menu .menu-link { font: 500 22px var(--font-body); border: 0; padding-block: 8px; min-height: 44px; }
 .menu .menu-index { display: none; }
@@ -67,11 +76,12 @@ html.keyboard-input .menu, html.keyboard-input .chrome-top, html.keyboard-input 
 .deck-card .studio-project-image { border-radius: 0; }
 .project-cursor-cue { position: fixed; top: 0; left: 0; z-index: 1000; pointer-events: none; padding: 9px 14px; border-radius: 100px; background: var(--text); color: var(--ink-900); font: 600 13px var(--font-body); white-space: nowrap; }
 .project-cursor-cue[hidden] { display: none; }
-.deck-controls { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 22px; margin-top: 10px; }
+.deck-controls { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 6px; width: fit-content; margin: 10px auto 0; padding: 4px; border-radius: 100px; }
 .deck-controls[hidden], .deck-card[hidden], .deck-info[hidden] { display: none; }
-.deck-controls button { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--studio-surface); color: var(--text); font: 400 20px var(--font-body); cursor: pointer; transition: transform 140ms cubic-bezier(.23, 1, .32, 1); }
+.deck-controls button { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: var(--text); font: 400 20px var(--font-body); cursor: pointer; transition: transform 140ms cubic-bezier(.23, 1, .32, 1); }
 .deck-controls button:active { transform: scale(.96); }
 .deck-controls button:disabled { opacity: .35; cursor: default; }
+.deck-controls button:hover:not(:disabled), .deck-controls button:focus-visible { background: rgba(255, 255, 255, .12); }
 .deck-position { min-width: 52px; text-align: center; color: var(--studio-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
 .deck-descriptions { max-width: 520px; margin-inline: auto; }
 /* Every live site stays one click away under the deck. */
@@ -149,14 +159,16 @@ html.keyboard-input .project-deck .deck-info { animation: none; }
   .studio-project-image img { transition: none; }
   .studio-project-image:hover img { transform: none; }
 }
+/* Opaque fallbacks: no blur support, or reduced transparency asked for. */
 @media (prefers-reduced-transparency: reduce) {
-  .chrome-top { background: var(--studio-surface); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .chrome-top, .deck-controls, .menu { background: var(--studio-surface); backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .chrome-top, .deck-controls, .menu { background: var(--studio-surface); }
+}
+/* Touch screens: a lighter blur keeps scrolling smooth. */
 @media (hover: none), (pointer: coarse) {
-  .chrome-top { backdrop-filter: none; -webkit-backdrop-filter: none; }
-}
-@supports not (backdrop-filter: blur(1px)) {
-  .chrome-top { background: var(--studio-surface); }
+  .chrome-top, .deck-controls, .menu { backdrop-filter: blur(10px) saturate(150%); -webkit-backdrop-filter: blur(10px) saturate(150%); }
 }
 
 /* GitHub: a monochrome dot field, backed by the saved daily counts. */

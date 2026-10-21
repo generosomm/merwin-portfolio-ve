@@ -171,7 +171,7 @@ window.portfolioContentReady.then(() => {
   });
 });
 
-/* Navbar pill: the green line follows the section being read (js/site.js
+/* Navbar pill: the glass capsule follows the section being read (js/site.js
    sets aria-current), and the pill tucks away while scrolling down. */
 window.portfolioContentReady.then(() => {
   const nav = document.querySelector('.pill-nav');
@@ -183,9 +183,8 @@ window.portfolioContentReady.then(() => {
     const link = [...nav.querySelectorAll('.chrome-nav-link[aria-current="true"]')].find(item => item.offsetParent);
     nav.classList.toggle('has-active', Boolean(link));
     if (!link) return;
-    const inset = 12;
-    indicator.style.setProperty('--x', `${link.offsetLeft + inset}px`);
-    indicator.style.setProperty('--w', String(Math.max(0, link.offsetWidth - inset * 2)));
+    indicator.style.setProperty('--x', `${link.offsetLeft}px`);
+    indicator.style.setProperty('--w', `${link.offsetWidth}px`);
   }
   new MutationObserver(place).observe(nav, { subtree: true, attributes: true, attributeFilter: ['aria-current'] });
   new ResizeObserver(place).observe(nav);

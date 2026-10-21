@@ -71,9 +71,13 @@
 }
 @media (max-width: 899px) {
   .service-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .service-item { gap: 10px; padding-block: 20px 32px; }
-  .service-object { width: auto; height: 130px; padding-left: 12px; transform: scale(.8); transform-origin: left center; }
+  /* Phones: each service centered under its object. */
+  .service-item { align-items: center; gap: 10px; padding-block: 20px 32px; text-align: center; }
+  .service-object { height: 130px; transform: scale(.8); }
   .service-title { margin: 0; }
+  .service-text { margin-inline: auto; }
+  .service-includes { justify-items: center; }
+  .service-cta { margin-top: 6px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .shape, .service-cta .icon-arrow { transition: none; }

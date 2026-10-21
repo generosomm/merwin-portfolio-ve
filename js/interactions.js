@@ -733,13 +733,23 @@
       chart.classList.add("is-pointing");
     }
 
+    function unpoint() {
+      chart.classList.remove("is-pointing");
+      grid.querySelector(".is-pointed")?.classList.remove("is-pointed");
+    }
+
     grid.addEventListener("pointerover", (event) => point(event.target.closest(".gh-cell")));
     grid.addEventListener("pointerdown", (event) => point(event.target.closest(".gh-cell")));
     chart.addEventListener("pointerleave", (event) => {
-      if (event.pointerType === "mouse") {
-        chart.classList.remove("is-pointing");
-        grid.querySelector(".is-pointed")?.classList.remove("is-pointed");
-      }
+      if (event.pointerType === "mouse") unpoint();
+    });
+    /* A tap keeps the tooltip open (touch has no hover to end it), so a
+       tap anywhere outside the graph, or Escape, closes it. */
+    document.addEventListener("pointerdown", (event) => {
+      if (chart.classList.contains("is-pointing") && !chart.contains(event.target)) unpoint();
+    }, { passive: true });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && chart.classList.contains("is-pointing")) unpoint();
     });
 
     /* One truthful total paired with the complete saved period. */

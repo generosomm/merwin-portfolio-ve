@@ -190,16 +190,36 @@ window.portfolioContentReady.then(() => {
   new ResizeObserver(place).observe(nav);
   place();
 
+  /* Phones keep the pill in view: it is the main navigation there, and
+     some browsers' bottom toolbars already come and go while scrolling.
+     Lift it by however much of the layout viewport a toolbar covers. */
+  const touch = matchMedia('(hover: none), (pointer: coarse)');
+  const viewport = window.visualViewport;
+  if (viewport) {
+    const lift = () => {
+      const covered = Math.max(0, Math.round(window.innerHeight - viewport.height - viewport.offsetTop));
+      root.style.setProperty('--vv-bottom', `${covered}px`);
+    };
+    viewport.addEventListener('resize', lift);
+    viewport.addEventListener('scroll', lift);
+    lift();
+  }
+
+  /* Elsewhere it tucks away after ~24px of scrolling down and returns
+     after ~16px back up, however slowly the scroll moves. */
   let last = window.scrollY;
+  let turn = last;
+  let down = true;
   let frame = 0;
   window.addEventListener('scroll', () => {
     if (frame) return;
     frame = requestAnimationFrame(() => {
       frame = 0;
       const y = window.scrollY;
-      const busy = root.classList.contains('menu-open') || nav.contains(document.activeElement);
-      if (y < 120 || busy || y < last - 6) root.classList.remove('nav-tucked');
-      else if (y > last + 6) root.classList.add('nav-tucked');
+      if ((y > last) !== down) { down = y > last; turn = last; }
+      const busy = touch.matches || root.classList.contains('menu-open') || nav.contains(document.activeElement);
+      if (y < 120 || busy || (!down && turn - y > 16)) root.classList.remove('nav-tucked');
+      else if (down && y - turn > 24) root.classList.add('nav-tucked');
       last = y;
     });
   }, { passive: true });

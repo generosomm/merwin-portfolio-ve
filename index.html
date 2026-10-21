@@ -42,20 +42,20 @@
   <link rel="stylesheet" href="css/chrome.css?v=r69">
   <link rel="stylesheet" href="css/sections.css?v=r69">
   <link rel="stylesheet" href="css/hero.css?v=r69">
-  <link rel="stylesheet" href="css/story.css?v=r69">
+  <link rel="stylesheet" href="css/story.css?v=r71">
   <link rel="stylesheet" href="css/work.css?v=r69">
-  <link rel="stylesheet" href="css/services.css?v=r69">
+  <link rel="stylesheet" href="css/services.css?v=r72">
   <link rel="stylesheet" href="css/closing.css?v=r73">
   <link rel="stylesheet" href="css/live-stats.css?v=r69">
   <link rel="stylesheet" href="css/notes.css?v=r69">
-  <link rel="stylesheet" href="css/studio.css?v=studio10">
+  <link rel="stylesheet" href="css/studio.css?v=studio14">
 
   <!-- Nothing appears until content.js has run with the site's data,
        so both are fetched early, right after the render-blocking CSS:
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=studio10" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=studio13" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -73,16 +73,16 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=studio10" defer></script>
-  <script src="js/studio.js?v=studio10" defer></script>
+  <script src="js/content.js?v=studio13" defer></script>
+  <script src="js/studio.js?v=studio12" defer></script>
   <script src="js/studio-motion.js?v=studio10" defer></script>
   <script src="js/site.js?v=studio10" defer></script>
-  <script src="js/interactions.js?v=studio4" defer></script>
+  <script src="js/interactions.js?v=studio6" defer></script>
   <script src="js/cursor.js?v=r69" defer></script>
   <script src="vendor/lenis.min.js?v=1.1.18" defer></script>
   <script src="vendor/gsap.min.js?v=3.13.0" defer></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.13.0" defer></script>
-  <script src="js/motion.js?v=studio10" defer></script>
+  <script src="js/motion.js?v=studio11" defer></script>
   <!-- Live social stats (optional): upgrades the Numbers section with
        /api/stats. Remove it and the documented figures still show. -->
   <script src="js/live-stats.js?v=r69" defer></script>

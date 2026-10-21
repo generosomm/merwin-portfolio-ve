@@ -6,49 +6,34 @@
   "items": [
     {
       "service": "promotion",
+      "shape": "disc",
       "title": "Music, film & brand promotion",
       "text": "Short-form edits for your release, shared through ERO | VISUALS.",
       "includes": [
         "An edit shaped around your release",
         "Publishing across my social channels"
-      ],
-      "image": {
-        "src": "assets/images/edits/thats-so-true-thumb.webp",
-        "alt": "A frame from my That’s So True music edit",
-        "width": 600,
-        "height": 795
-      }
+      ]
     },
     {
       "service": "website",
+      "shape": "cube",
       "title": "Business websites",
       "text": "A responsive home for your business, designed and built around what you do.",
       "includes": [
         "Help customers understand your offer",
         "Make enquiries easy from any device"
-      ],
-      "image": {
-        "src": "assets/images/work/zero-to-deploy.webp",
-        "alt": "The actual Zero to Deploy website interface, designed and built by Merwin",
-        "width": 1200,
-        "height": 750
-      }
+      ]
     },
     {
       "service": "editing",
+      "shape": "film",
       "title": "Video editing",
       "text": "Turn your footage into focused short-form content.",
       "includes": [
         "Hooks, captions and music that fit your story",
         "Ready for TikTok, Reels and YouTube Shorts"
-      ],
-      "image": {
-        "src": "assets/images/edits/seven-sundays-thumb.webp",
-        "alt": "Frame from the Glass Child: Seven Sundays edit",
-        "width": 576,
-        "height": 640
-      }
+      ]
     }
   ],
-  "note": "Minimal image-led service cards: a title, one short description, two client benefits and one CTA. Keep statistics and case studies in Track Record, Work and Proof. service must match the contact form option so the CTA opens and preselects the project brief."
+  "note": "Three minimal service columns with no images: a title, one short description, two client benefits and one CTA. shape picks the small CSS 3D object above each one (cube, disc or film). Keep statistics and case studies in Track Record, Work and Proof. service must match the contact form option so the CTA opens and preselects the project brief."
 }

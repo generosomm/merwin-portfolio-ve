@@ -36,6 +36,8 @@ window.portfolioContentReady.then(() => {
   const stage = deck.querySelector('.deck-stage');
   const controls = deck.querySelector('.deck-controls');
   const position = deck.querySelector('.deck-position');
+  const thumbStrip = deck.querySelector('.deck-thumbs');
+  const thumbs = thumbStrip ? [...thumbStrip.querySelectorAll('[data-deck-jump]')] : [];
   let index = 0;
   let pointer = null;
   let suppressClick = false;
@@ -89,10 +91,22 @@ window.portfolioContentReady.then(() => {
       descriptions[i].hidden = i !== index;
     });
     position.textContent = `${index + 1} / ${cards.length}`;
+    thumbs.forEach((thumb, i) => {
+      if (i === index) thumb.setAttribute('aria-current', 'true');
+      else thumb.removeAttribute('aria-current');
+    });
   }
   show(0);
   deck.classList.add('is-enhanced');
   controls.hidden = false;
+  if (thumbs.length > 1) {
+    thumbStrip.hidden = false;
+    deck.classList.add('has-thumbs');
+  }
+  thumbStrip?.addEventListener('click', event => {
+    const thumb = event.target.closest('[data-deck-jump]');
+    if (thumb) show(Number(thumb.dataset.deckJump));
+  });
   controls.querySelectorAll('button').forEach(button => { button.disabled = cards.length < 2; });
   stage.querySelectorAll('img').forEach(image => { image.draggable = false; });
 
@@ -127,4 +141,32 @@ window.portfolioContentReady.then(() => {
       suppressClick = false;
     }
   }, true);
+});
+
+/* Services: the 3D object turns toward a fine pointer, then settles. */
+window.portfolioContentReady.then(() => {
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll('.service-item').forEach(item => {
+    const shape = item.querySelector('.shape');
+    if (!shape) return;
+    let frame = 0;
+    item.addEventListener('pointermove', event => {
+      if (!finePointer.matches || reduce.matches || event.pointerType !== 'mouse' || frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const box = item.getBoundingClientRect();
+        const x = (event.clientX - box.left) / box.width - .5;
+        const y = (event.clientY - box.top) / box.height - .5;
+        shape.style.setProperty('--tx', `${(x * 40).toFixed(1)}deg`);
+        shape.style.setProperty('--ty', `${(-y * 24).toFixed(1)}deg`);
+      });
+    }, { passive: true });
+    item.addEventListener('pointerleave', () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      shape.style.removeProperty('--tx');
+      shape.style.removeProperty('--ty');
+    });
+  });
 });

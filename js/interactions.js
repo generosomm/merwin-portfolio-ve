@@ -12,6 +12,10 @@
 (function initInteractions() {
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  /* Touch screens: the edits strip doesn't drift on its own. Moving it
+     means a scroll-position write every frame, which costs phones a
+     steady share of every frame; swiping and the arrows still work. */
+  const touchFirst = window.matchMedia("(hover: none), (pointer: coarse)");
 
   /* ---- Selected work: 3D preview card ---------------------------------
      One card for the whole list. Hovering (or tabbing to) a row swings
@@ -272,7 +276,7 @@
       let drag = null, suppressClickUntil = 0;
       let busyUntil = 0, resumeTimer = 0;
       const focused = () => panel.contains(document.activeElement);
-      const canPlay = () => inView && !panel.hidden && !document.hidden && !reduceMotion.matches &&
+      const canPlay = () => inView && !panel.hidden && !document.hidden && !reduceMotion.matches && !touchFirst.matches &&
         !hovered && !touching && !focused() && !document.querySelector("dialog[open]") && performance.now() >= busyUntil;
 
       function stop() {
@@ -315,6 +319,9 @@
         stop(); busyUntil = performance.now() + delay;
         clearTimeout(resumeTimer); resumeTimer = setTimeout(sync, delay + 20);
       }
+      /* Pause while the page itself is scrolling, so the loop never
+         competes with the user's scroll for frames. */
+      window.addEventListener("scroll", () => { if (inView) hold(250); }, { passive: true });
       panel.querySelectorAll("[data-edits-step]").forEach((button) => {
         button.addEventListener("click", (event) => {
           hold();

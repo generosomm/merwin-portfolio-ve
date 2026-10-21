@@ -34,6 +34,25 @@
   display: inline-block;
 }
 
+/* Phones and tablets: a one-time blur-to-sharp reveal (js/motion.js
+   arms it and adds .is-in). Filter and will-change are dropped once
+   the words land, so nothing is left to repaint while scrolling. */
+.about-text.is-armed .about-word {
+  opacity: 0.55;
+  filter: blur(6px);
+  transform: translateY(35%);
+  transition: opacity 0.5s ease-out, filter 0.5s ease-out, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transition-delay: calc(var(--i, 0) * 35ms);
+}
+.about-text.is-armed:not(.is-in) .about-word {
+  will-change: opacity, filter, transform;
+}
+.about-text.is-armed.is-in .about-word {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+}
+
 .about-word.is-accent,
 .about-accent {
   color: var(--accent);
@@ -98,17 +117,19 @@
   text-align: center;
 }
 
-/* The texture: a 24px grid that fades out from the centre. */
+/* The texture: a 24px grid that fades out from the centre. The fade
+   is a card-coloured gradient on top rather than a mask: a mask needs
+   an extra offscreen pass on every repaint, and the cards repaint on
+   every frame while they count up. */
 .number::before {
   position: absolute;
   inset: 0;
   background-image:
+    radial-gradient(circle at 50% 45%, transparent, var(--ink-850) 72%),
     linear-gradient(var(--line) 1px, transparent 1px),
     linear-gradient(90deg, var(--line) 1px, transparent 1px);
   background-position: center;
-  background-size: 24px 24px;
-  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000, transparent 72%);
-  mask-image: radial-gradient(circle at 50% 45%, #000, transparent 72%);
+  background-size: 100% 100%, 24px 24px, 24px 24px;
   opacity: 0.7;
   pointer-events: none;
   content: "";

@@ -509,11 +509,15 @@ function renderLiveFallback(social) {
     </div>`;
 }
 
-function renderNumbers(data, social) {
+function renderNumbers(data, social, work) {
   const root = document.querySelector('[data-section="numbers"]');
   if (!root || !data) return;
 
+  /* "from": "work" counts the projects in the Work list, so adding one
+     there updates this figure. A project with "shipped": false is left out. */
+  const shipped = records(work?.items).filter((item) => hasText(item.title) && item.shipped !== false).length;
   const items = records(data.items)
+    .map((item) => (item.from === "work" && work ? { ...item, value: shipped } : item))
     .map(
       (item) => `
       <div class="number"${hasText(item.live) ? ` data-live="${attr(item.live)}"` : ""}>
@@ -541,7 +545,7 @@ function trackRow(item) {
   const year = String(item.start || '').slice(0, 4);
   const link = item.link && hasText(item.link.href) ? item.link : null;
   return `<details class="experience-entry">
-    <summary class="experience-row"><span class="experience-year">${text(year)}</span><span class="experience-role">${text(item.role)}</span><span class="experience-org">${text(item.organization)}</span></summary>
+    <summary class="experience-row"><span class="experience-role">${text(item.role)}</span><span class="experience-meta"><span class="experience-year">${text(year)}</span><span class="experience-org">${text(item.organization)}</span></span></summary>
     <div class="experience-panel"><div class="experience-body"><p class="experience-period">${text(item.period)}</p><p class="experience-summary">${text(item.summary)}</p>${link ? `<a class="experience-link" href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">${text(link.label)} ↗</a>` : ''}</div></div>
   </details>`;
 }
@@ -580,42 +584,32 @@ function picture(image, { className = "", eager = false, sizes = "" } = {}) {
 const ARROW = `<svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>`;
 
 /* ---- Services ----------------------------------------------------
-   Two calm parts on hairlines, no images or follower counts (the
-   numbers live in Track Record and Proof):
-   - How I work: the process, as short steps in a row.
-   - What I offer: one row per service. The title and a one-line
-     outcome on the left; on the right, what the client gains and a
-     button that jumps to the contact form with the service
-     preselected (js/interactions.js also unfolds the form).
+   Three columns on hairlines, no images or follower counts (the
+   numbers live in Track Record and Proof). Each service has one small
+   CSS 3D object (item.shape: cube, disc or film) that turns toward the
+   pointer on hover (js/studio.js). The link jumps to the contact form
+   with the service preselected (js/interactions.js unfolds the form).
 ---------------------------------------------------------------- */
+
+const SERVICE_SHAPES = { cube: 6, disc: 2, film: 2 };
 
 function renderPractice(data) {
   const root = document.querySelector('[data-section="services"]');
   if (!root || !data) return;
 
   const cta = data.cta || {};
-  const cards = records(data.items)
+  const items = records(data.items)
     .filter((item) => hasText(item.title))
-    .map((item, index) => {
+    .map((item) => {
       const includes = list(item.includes).filter(hasText);
+      const faces = SERVICE_SHAPES[item.shape];
       return `
-        <li class="practice-card" style="--i: ${index}" data-service-card="${attr(item.service)}">
-          <article class="practice-card-inner">
-            <div class="practice-copy">
-              <h3 class="practice-title">${text(item.title)}</h3>
-              <p class="practice-text">${text(item.text)}</p>
-              ${includes.length
-                ? `<div class="service-block">
-                    <ul class="service-includes">${includes.map((line) => `<li>${text(line)}</li>`).join("")}</ul>
-                  </div>`
-                : ""}
-              ${hasText(cta.href)
-                ? `<a class="button button-primary service-cta" href="${attr(cta.href)}" data-service="${attr(item.service || "")}">${text(cta.label)}</a>`
-                : ""}
-            </div>
-            <div class="practice-media">${picture(item.image, { eager: true })}</div>
-            <span class="practice-shade" aria-hidden="true"></span>
-          </article>
+        <li class="service-item" data-service-card="${attr(item.service)}">
+          ${faces ? `<div class="service-object" data-shape="${attr(item.shape)}" aria-hidden="true"><div class="shape">${"<i></i>".repeat(faces)}</div></div>` : ""}
+          <h3 class="service-title">${text(item.title)}</h3>
+          <p class="service-text">${text(item.text)}</p>
+          ${includes.length ? `<ul class="service-includes">${includes.map((line) => `<li>${text(line)}</li>`).join("")}</ul>` : ""}
+          ${hasText(cta.href) ? `<a class="service-cta" href="${attr(cta.href)}" data-service="${attr(item.service || "")}">${text(cta.label)} ${ARROW}</a>` : ""}
         </li>`;
     })
     .join("");
@@ -623,7 +617,7 @@ function renderPractice(data) {
   root.innerHTML = `
     <div class="section-inner">
       ${sectionTitle("services")}
-      <ul class="practice-stack">${cards}</ul>
+      <ul class="service-grid">${items}</ul>
     </div>`;
 }
 
@@ -661,11 +655,13 @@ function renderWork(data) {
     <div class="studio-project-image"><a href="${attr(item.href)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(item.title)}" draggable="false">${hasText(item.image?.src) ? picture(item.image) : `<p>${text(item.title)}</p>`}</a></div>
   </div>`).join('');
   const descriptions = live.map(item => `<div class="deck-info project-description">${projectContent(item, config)}</div>`).join('');
+  const thumbs = live.map((item, i) => `<button type="button" class="deck-thumb" data-deck-jump="${i}" aria-label="${attr(item.title)}">${hasText(item.image?.src) ? `<img src="${attr(item.image.src)}" alt="" loading="lazy" decoding="async" draggable="false">` : `<span>${text(item.title)}</span>`}</button>`).join('');
   root.innerHTML = `<div class="section-inner">
     ${sectionTitle('work')}
     ${live.length ? `<div class="project-deck" data-visit-label="${attr(config.visit)}" role="region" aria-label="${attr(config.label)}" tabindex="0">
       <div class="deck-stage">${cards}</div>
       <div class="deck-controls" hidden><button type="button" data-deck-step="-1" aria-label="${attr(config.previous)}">←</button><span class="deck-position" aria-live="polite" aria-atomic="true"></span><button type="button" data-deck-step="1" aria-label="${attr(config.next)}">→</button></div>
+      <div class="deck-thumbs" role="group" hidden aria-label="${attr(config.thumbs)}">${thumbs}</div>
       <div class="deck-descriptions">${descriptions}</div>
     </div>` : ''}
     ${archive.length ? `<details class="work-archive"><summary>${text(config.archiveTitle)} <span>${archive.length}</span></summary><ul>${archive.map(item => `<li><h3>${text(item.title)}</h3><p>${text(item.summary)}</p>${workTechnologies(item.tags)}${hasText(item.status) ? `<p class="project-status">${text(item.status)}</p>` : ''}</li>`).join('')}</ul></details>` : ''}
@@ -1190,7 +1186,7 @@ function renderPortfolio(payload) {
 
   renderHero(data.hero);
   renderAbout(data.about);
-  renderNumbers(data.numbers, data.social);
+  renderNumbers(data.numbers, data.social, data.work);
   renderExperience(data.experience);
   renderPractice(data.practice);
   renderWork(data.work);

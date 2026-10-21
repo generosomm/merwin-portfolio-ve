@@ -59,25 +59,20 @@
   }
 
   /* ---- About ---------------------------------------------------
-     Scrubbed to the scroll, not played once: each word starts faint,
-     slightly low, and settles into place as you scroll.
-     On wide screens the section pins for most of a screen's worth of
-     scrolling so the whole sentence resolves while it holds still;
-     on phones it resolves as it passes, without the pin.
+     Each word starts faint, blurred and slightly low, and sharpens
+     into place. On a laptop or desktop with a real pointer this is
+     scrubbed to the scroll. Animating a blur repaints every word on
+     every frame, which phones can't afford while scrolling, so
+     tablets and phones play the same reveal once as the paragraph
+     comes in (css/story.css), and the blur is gone when it ends.
   ---------------------------------------------------------------- */
 
   function aboutScroll(gsap) {
     const section = document.querySelector(".section-about");
-    const words = section?.querySelectorAll(".about-word");
+    const text = section?.querySelector(".about-text");
+    const words = text?.querySelectorAll(".about-word");
     if (!words?.length) return;
 
-    /* 0.55 keeps even the green words above 3:1 at their dimmest. */
-    const from = { opacity: 0.55, yPercent: 35 };
-    const to = { opacity: 1, yPercent: 0, ease: "power2.out", stagger: 0.08, duration: 0.6 };
-
-    /* Pinning only where it is reliable: a laptop or desktop with a real
-       pointer. Tablets and phones get the same reveal as the section
-       passes, without holding the page still. */
     gsap.matchMedia().add(
       {
         wide: "(min-width: 1024px) and (hover: hover) and (pointer: fine)",
@@ -85,17 +80,41 @@
       },
       ({ conditions }) => {
         if (conditions.wide) {
-          gsap
-            .timeline({
+          /* 0.55 keeps even the green words above 3:1 at their dimmest. */
+          gsap.fromTo(
+            words,
+            { opacity: 0.55, filter: "blur(10px)", yPercent: 35 },
+            {
+              opacity: 1,
+              filter: "blur(0px)",
+              yPercent: 0,
+              ease: "power2.out",
+              stagger: 0.08,
+              duration: 0.6,
               scrollTrigger: { trigger: section, start: "top 85%", end: "bottom 55%", scrub: 0.8 }
-            })
-            .fromTo(words, from, to);
-        } else {
-          gsap.fromTo(words, from, {
-            ...to,
-            scrollTrigger: { trigger: section.querySelector(".about-text"), start: "top 85%", end: "bottom 55%", scrub: 0.8 }
-          });
+            }
+          );
+          return;
         }
+        let done = 0;
+        words.forEach((word, index) => word.style.setProperty("--i", index));
+        text.classList.add("is-armed");
+        const trigger = window.ScrollTrigger.create({
+          trigger: text,
+          start: "top 80%",
+          once: true,
+          onEnter: () => {
+            text.classList.add("is-in");
+            /* After the last word lands, drop the armed state so no
+               filter or layer stays on the words. */
+            done = window.setTimeout(() => text.classList.remove("is-armed", "is-in"), words.length * 35 + 700);
+          }
+        });
+        return () => {
+          trigger.kill();
+          window.clearTimeout(done);
+          text.classList.remove("is-armed", "is-in");
+        };
       }
     );
   }
@@ -165,13 +184,16 @@
     const tiles = groups?.querySelectorAll(".stack-logo, .stack-pills li");
     if (!tiles?.length) return;
 
+    /* Touch screens skip the springy scale: re-rasterising ~30 scaled
+       tiles is what made this section stutter on phones. */
+    const touch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
     gsap.from(tiles, {
       opacity: 0,
-      scale: 0.6,
+      scale: touch ? 1 : 0.6,
       y: 18,
-      duration: 0.6,
-      ease: "back.out(2.2)",
-      stagger: 0.035,
+      duration: touch ? 0.45 : 0.6,
+      ease: touch ? "power2.out" : "back.out(2.2)",
+      stagger: touch ? 0.02 : 0.035,
       clearProps: "opacity,transform",
       scrollTrigger: { trigger: groups, start: "top 80%", once: true }
     });

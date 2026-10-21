@@ -42,6 +42,31 @@ Progress: first checkpoint implemented, awaiting the user's visual review under 
 
 ## Next checkpoint
 
+### About blur restored and phone scroll cost
+
+The user asked for the About blur-to-sharp reveal back and reported lag on phones. Desktop with a fine pointer keeps the scrubbed reveal (blur 10px→0, opacity, rise). Tablets and phones play it once as the paragraph enters: a CSS transition from blur 6px, staggered 35ms per word. The armed classes are then removed, so no filter or layer stays on the words.
+
+Phone profiling used Playwright's bundled Chromium with iPhone-sized emulation and 4x CPU slowdown. Scripts are in the session scratchpad, not the repo. Main-thread frames stayed at about 16.7ms in every section, and long animation frames showed no scroll-time JavaScript jank. Lenis is already off on touch. The trace's raster time pointed at Stack (205ms while scrolling) and Track Record (218ms). Changes, each re-measured:
+- Stack tiles on touch screens rise and fade without the springy scale: raster 205→96–105ms.
+- About on phones no longer scrubs per scroll frame: raster 34→15–17ms, layout 24→0–2ms.
+- The Edits strip no longer auto-drifts on touch screens. It wrote scrollLeft every frame while visible; swipe and arrows remain. Desktop drift now pauses while the page scrolls.
+- The Track Record texture's mask was replaced by a gradient overlay (same look). It made no measurable difference; that section's cost is its one-time count-up and fade-in.
+- Layout containment on the number cards also made no difference and was reverted.
+
+Not verified: real phones (headless raster is software and only relative), Safari, battery use.
+
+### Work side by side, 3D services, big-type experience
+
+The user picked the recommended set. At 1024px and wider, the deck's active-site details sit in a right column level with the deck (CSS grid areas on the existing markup); below 1024px the stacked layout is unchanged. Services is now three columns on hairlines with no cards or images. Each service has one small CSS 3D object chosen by `shape` in data/06-practice.json (cube, disc or film). The objects rest still and turn toward a fine pointer through js/studio.js. They keep their resting pose on touch and with reduced motion. On phones the object sits above full-width text. The old stacked-card styles were removed from css/services.css. motion.js `practiceStack` and interactions.js `initStackFit` now find no cards and do nothing; delete them in the cleanup phase. Experience rows set the role in display type with year and organisation small on the right. The open row's title slides in, its details fade in beneath, and the other rows dim. Hover, focus, pin and Escape behaviour is unchanged. The grey hover box and green side bar are gone.
+
+Evidence: the renderer test failed before the change, then passed. It covers shapes, the CTA wiring, unknown shapes, and the new experience row markup. The content validator, syntax checks and `git diff --check` passed. In-app browser at 1920×1080, 1440×900, 1366×768, 1024×768, 768×1000 and 375×812: no horizontal overflow, and the side cards never reach the details column. The active description and the strip fit on screen at every desktop size. Measured section heights at 1440: Work 1033→872px, Services 1504→709px. Pointer tilt sets and clears its values. Experience hover dims the other rows to 0.4 and shifts the title by 18px; click pins it and Escape closes it. A review then caught two bugs at 1024px, both fixed and rechecked. The strip wrapped to 7 + 1; it now uses one auto-column row. The front card covered the arrow buttons; the arrows now sit above the stage like the strip. Live stats only rewrite the views card (`[data-live="views"]`), so the automatic shipped count is not overwritten. Not verified: physical devices, Safari's handling of `:has()` dimming (rows simply don't dim without it), and a full reduced-motion pass.
+
+### Website thumbnail strip
+
+The user kept the 3D deck and asked for an always-visible strip of all eight live sites under it, each one jumping the deck to that site. The strip is rendered from the same live-project list (label in data/07-work.json `viewer.thumbs`), shown only once the deck enhancement runs, and marks the active site with `aria-current`. Desktop and tablet: one row of eight under the arrows. Phones: a 4×2 grid replaces the arrow row (swipe remains); phones 700px tall or less use one row of eight small tiles (at least 30×25px). Short laptop screens (≥768px wide, ≤820px tall) use flatter tiles and a tighter arrow row. The strip sits above the deck's stacking context, so a rotated side-card corner never covers a tile.
+
+Evidence: the renderer test failed before the strip existed, then passed. The bundle build, content validator, syntax checks and `git diff --check` passed. The existing `.taste-skill` browser scripts could not launch headless Chrome on this machine, so their assertions were repeated by hand in the in-app browser. At 1920×1080, 1440×900, 1366×768, 1024×768, 768×1000, 390×844, 375×812, 375×667 and 320×640, the active description stayed on screen for all eight sites, all eight tiles were visible and nothing overflowed horizontally. At 844×390 landscape (exempt from the fit rule, as before) nothing overflowed. Clicks, arrow keys from a focused tile, and inactive cards staying inert all passed. The 1366×768 fit is tight (767 of 768px). Not verified: physical devices, real touch swipe after the change, and reduced-motion emulation. Not optimised: tiles load the full-size screenshots, about 470KB for all eight with the PNGs, instead of small thumbnail files.
+
 ### Compact release refinement
 
 User authorized committing and publishing the accumulated portfolio redesign. Narrowed the hero composition to 1080px maximum, reduced the mobile portrait/name group and shortened introductory copy to seven words. Desktop hero now measures about 691px at 1440px and 701px at 1920px, down from 940px. Retained the layered portrait signature. Mobile Experience uses a down chevron which turns upward when open.

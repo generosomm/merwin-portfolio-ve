@@ -49,9 +49,29 @@ assert.ok(context.hero.intro.split(/\s+/).length <= 10, 'Hero copy must stay con
 assert.equal([...gallery.matchAll(/class="deck-card"/g)].length, context.work.items.filter(item => item.href).length);
 assert.match(gallery, /data-deck-step="-1"/);
 assert.match(gallery, /data-deck-step="1"/);
+const liveCount = context.work.items.filter(item => item.href).length;
+assert.match(gallery, /class="deck-thumbs" role="group" hidden aria-label="Jump to a website"/);
+assert.equal([...gallery.matchAll(/data-deck-jump="\d+"/g)].length, liveCount, 'Every live site needs a thumbnail');
+assert.match(gallery, /data-deck-jump="0" aria-label="ASINTA"/);
 assert.doesNotMatch(gallery, /class="project-browser"/);
 assert.match(gallery, /class="work-archive"/);
 for (const project of context.work.items.filter(item => !item.href && item.image?.src)) {
   assert.ok(!gallery.includes(project.image.src), `Non-live project preview must stay hidden: ${project.title}`);
 }
+context.numbers = JSON.parse(await readFile('data/04-numbers.json', 'utf8'));
+context.practice = JSON.parse(await readFile('data/06-practice.json', 'utf8'));
+vm.runInContext('renderNumbers(numbers, {}, work)', context);
+const shipped = context.work.items.filter(item => item.title && item.shipped !== false).length;
+assert.match(nodes.get('[data-section="numbers"]').innerHTML, new RegExp(`data-count-to="${shipped}">${shipped}<`), 'Shipped count follows the work list');
+vm.runInContext('renderNumbers(numbers, {}, {items: [{title: "A"}, {title: "B", shipped: false}]})', context);
+assert.match(nodes.get('[data-section="numbers"]').innerHTML, /data-count-to="1">1</);
+vm.runInContext('renderPractice(practice)', context);
+const services = nodes.get('[data-section="services"]').innerHTML;
+assert.doesNotMatch(services, /<img|practice-media|practice-card/, 'Services carry no images or stacked cards');
+assert.equal([...services.matchAll(/class="service-object" data-shape="(cube|disc|film)" aria-hidden="true"/g)].length, context.practice.items.length);
+assert.equal([...services.matchAll(/class="service-cta" href="#project-brief" data-service="/g)].length, context.practice.items.length);
+vm.runInContext('renderPractice({cta: {}, items: [{title: "X", shape: "pyramid"}]})', context);
+assert.doesNotMatch(nodes.get('[data-section="services"]').innerHTML, /data-shape="pyramid"|service-cta/, 'Unknown shapes and missing CTA render nothing');
+vm.runInContext('renderExperience(experience)', context);
+assert.match(nodes.get('[data-section="experience"]').innerHTML, /<summary class="experience-row"><span class="experience-role">[^<]+<\/span><span class="experience-meta">/);
 console.log('Studio rendering: portrait hero, header, experience disclosures, project deck and non-live preview checks passed.');

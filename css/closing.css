@@ -1140,6 +1140,17 @@
   text-align: left;
 }
 
+/* The contact brief is always open; its heading lines up with the form. */
+.brief-block {
+  max-width: 56rem;
+  margin: var(--head-gap) auto 0;
+  text-align: left;
+}
+
+.brief-block > .brief {
+  margin-top: 0;
+}
+
 .brief-heading {
   margin: 0 0 var(--s-5);
   font-family: var(--font-display);

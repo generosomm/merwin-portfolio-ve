@@ -294,6 +294,7 @@
     const updateBrand = () => {
       const inHero = hero.getBoundingClientRect().bottom > 56;
       root.classList.toggle("in-hero", inHero);
+      if (!brand) return; // the centered pill has no brand
       brand.inert = inHero;
       brand.setAttribute("aria-hidden", String(inHero));
     };

@@ -5,10 +5,10 @@
       "Generoso"
     ]
   },
-  "intro": "Web developer. Video editor. Creative at heart.",
+  "intro": "I make things you click and things you watch.",
   "ctas": {
     "primary": {
-      "label": "Explore websites",
+      "label": "View work",
       "href": "#work"
     },
     "secondary": {
@@ -49,9 +49,7 @@
     ]
   },
   "scrollHint": {
-    "label": "Selected websites",
+    "label": "Scroll",
     "href": "#work"
-  },
-  "role": "Web developer & video editor",
-  "location": "Based in Batangas, Philippines"
+  }
 }

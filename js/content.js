@@ -143,22 +143,27 @@ function socialIcon(name) {
 
 /* ---- Chrome: brand, nav, toggle ------------------------------ */
 
+/* The centered pill: every section link, with a green line under the
+   one being read (js/studio.js moves it and hides the pill while
+   scrolling down). Phones show the links marked "phone" plus a More
+   button that opens the full menu. */
 function renderTopChrome(data) {
   const root = document.querySelector('[data-chrome="top"]');
   if (!root) return;
 
-  const brand = data.brand || {};
   const nav = data.nav || {};
+  const links = records(nav.links)
+    .filter((link) => hasText(link.href) && hasText(link.label))
+    .map((link) => `<li${link.phone ? ' class="is-phone"' : ""}><a class="chrome-nav-link" href="${attr(link.href)}">${text(link.label)}</a></li>`)
+    .join("");
   root.innerHTML = `
-    <a class="brand" href="${attr(brand.href || "#hero")}" aria-label="${attr(brand.ariaLabel)}">
-      <span class="brand-name">${text(brand.mark || brand.name)}</span>
-    </a>
-    <nav class="chrome-nav" aria-label="${attr(nav.ariaLabel)}">
+    <nav class="chrome-nav pill-nav" aria-label="${attr(nav.ariaLabel)}">
+      <ul class="chrome-nav-list">${links}</ul>
+      <span class="pill-indicator" aria-hidden="true"></span>
       <button class="nav-toggle" id="nav-toggle" type="button"
         aria-controls="menu" aria-expanded="false" aria-label="${attr(nav.openLabel)}"
         data-close-label="${attr(nav.closeLabel)}">
         ${hasText(nav.toggleLabel) ? `<b class="nav-toggle-label">${text(nav.toggleLabel)}</b>` : ""}
-        <i class="nav-toggle-icon" aria-hidden="true"><span></span><span></span></i>
       </button>
     </nav>`;
 }
@@ -311,7 +316,7 @@ function portraitSlot(portrait) {
 /* Phones download the 640px WebP, larger screens the full one; the
    PNG is only for browsers without WebP. The sizes hint matches the
    layout: full width on phones, ~64% on tablets, ~30% on desktop. */
-const PORTRAIT_SIZES = "(max-width: 767px) 76vw, (max-width: 1023px) 44vw, (min-width: 1286px) 422px, 33vw";
+const PORTRAIT_SIZES = "(max-width: 767px) 100vw, (max-width: 1023px) 64vw, 30vw";
 
 function portraitImage(portrait) {
   const set = records(portrait.sources)
@@ -332,21 +337,52 @@ function portraitImage(portrait) {
     </picture>`;
 }
 
-function renderHero(data) {
+function renderHero(data, chrome = {}) {
   const root = document.querySelector('[data-section="hero"]');
   if (!root || !data) return;
-  const lines = list(data.name?.lines);
+
+  const name = data.name || {};
+  const lines = list(name.lines);
   const portrait = data.portrait || {};
-  const primary = data.ctas?.primary || {};
-  const secondary = data.ctas?.secondary || {};
-  root.setAttribute('aria-labelledby', 'hero-title');
-  root.innerHTML = `<div class="portrait-hero section-inner">
-    <div class="portrait-stage">
-      <h1 class="portrait-name" id="hero-title"><span class="portrait-first">${text(lines[0])}</span> <span class="portrait-last"><span class="portrait-solid">${text(lines.slice(1).join(' '))}</span><span class="portrait-outline" aria-hidden="true">${text(lines.slice(1).join(' '))}</span></span></h1>
-      <div class="portrait-cutout">${hasText(portrait.src) ? portraitImage(portrait) : portraitSlot(portrait)}</div>
-    </div>
-    <div class="portrait-foot"><p>${text(data.intro)}</p><div class="portrait-actions"><a class="button button-primary" href="${attr(primary.href)}">${text(primary.label)}<span aria-hidden="true">↗</span></a><a class="studio-cv" href="${attr(secondary.href)}">${text(secondary.label)}<span aria-hidden="true">↗</span></a></div></div>
-  </div>`;
+  const ctas = data.ctas || {};
+  const primary = ctas.primary || {};
+  const secondary = ctas.secondary || {};
+  const scroll = data.scrollHint || {};
+
+  const nameLines = lines
+    .map((line, index) => {
+      const inner = `<span class="hero-line-inner" data-line="${index}" style="--line: ${index}">${text(line)}</span>`;
+      // Filled type behind the portrait; a matching outline stays in front.
+      const outline = `<span class="hero-line-inner hero-line-outline" aria-hidden="true" data-line="${index}" style="--line: ${index}">${text(line)}</span>`;
+      return `<span class="hero-line ${index === 0 ? "hero-line-back" : "hero-line-front"}">${inner}${outline}</span>`;
+    })
+    /* The newline is load-bearing: without whitespace between the
+       block spans, the accessible name reads as one run-on word. */
+    .join("\n");
+
+  const portraitContent = hasText(portrait.src)
+    ? portraitImage(portrait)
+    : portraitSlot(portrait);
+
+  root.setAttribute("aria-labelledby", "hero-title");
+  root.innerHTML = `
+    <div class="section-inner hero-inner">
+      <div class="hero-stage">
+        <div class="hero-lockup">
+          <h1 class="hero-name" id="hero-title">${nameLines}</h1>
+          <div class="hero-portrait">${portraitContent}</div>
+        </div>
+      </div>
+      <div class="hero-foot">
+        <p class="hero-intro">${text(data.intro)}</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="${attr(primary.href)}">${text(primary.label)}</a>
+          <a class="button button-ghost" href="${attr(secondary.href)}">${text(secondary.label)}</a>
+        </div>
+        ${heroSocials(chrome.socials)}
+      </div>
+      ${hasText(scroll.href) ? `<a class="hero-scroll" href="${attr(scroll.href)}">${text(scroll.label)}</a>` : ""}
+    </div>`;
 }
 
 /* Phones and tablets have no social rail, so the icons sit in the
@@ -545,7 +581,7 @@ function trackRow(item) {
   const year = String(item.start || '').slice(0, 4);
   const link = item.link && hasText(item.link.href) ? item.link : null;
   return `<details class="experience-entry">
-    <summary class="experience-row"><span class="experience-role">${text(item.role)}</span><span class="experience-meta"><span class="experience-year">${text(year)}</span><span class="experience-org">${text(item.organization)}</span></span></summary>
+    <summary class="experience-row"><span class="experience-year">${text(year)}</span><span class="experience-role">${text(item.role)}</span><span class="experience-org">${text(item.organization)}</span></summary>
     <div class="experience-panel"><div class="experience-body"><p class="experience-period">${text(item.period)}</p><p class="experience-summary">${text(item.summary)}</p>${link ? `<a class="experience-link" href="${attr(link.href)}" target="_blank" rel="noopener noreferrer">${text(link.label)} ↗</a>` : ''}</div></div>
   </details>`;
 }
@@ -664,7 +700,7 @@ function renderWork(data) {
       <div class="deck-thumbs" role="group" hidden aria-label="${attr(config.thumbs)}">${thumbs}</div>
       <div class="deck-descriptions">${descriptions}</div>
     </div>` : ''}
-    ${archive.length ? `<details class="work-archive"><summary>${text(config.archiveTitle)} <span>${archive.length}</span></summary><ul>${archive.map(item => `<li><h3>${text(item.title)}</h3><p>${text(item.summary)}</p>${workTechnologies(item.tags)}${hasText(item.status) ? `<p class="project-status">${text(item.status)}</p>` : ''}</li>`).join('')}</ul></details>` : ''}
+    ${archive.length ? `<div class="work-archive"><h3 class="work-archive-title">${text(config.archiveTitle)}</h3><ul>${archive.map(item => `<li><h4>${text(item.title)}</h4><p>${text(item.summary)}</p>${workTechnologies(item.tags)}${hasText(item.status) ? `<p class="project-status">${text(item.status)}</p>` : ''}</li>`).join('')}</ul></div>` : ''}
   </div>`;
 }
 
@@ -980,7 +1016,10 @@ function projectForm(form, address) {
     deadline: form.deadline, message: form.message
   };
 
-  return foldBlock("project-brief-panel", form.heading, `
+  /* Always open: the brief is the point of the contact section, so it
+     has a plain heading instead of a fold key. */
+  return `<div class="brief-block">
+    <h3 class="brief-heading">${text(form.heading)}</h3>
     <form class="brief" id="project-brief" novalidate
       data-endpoint="${attr(form.endpoint || "")}" data-key="${attr(form.accessKey || "")}"
       data-address="${attr(address || "")}" data-messages="${attr(JSON.stringify(messages))}">
@@ -1010,7 +1049,8 @@ function projectForm(form, address) {
         <button class="button button-primary" type="submit">${text(form.submit)}</button>
         <p class="brief-status" role="status" aria-live="polite"></p>
       </div>
-    </form>`, { defaultOpen: true });
+    </form>
+  </div>`;
 }
 
 function renderContact(data) {
@@ -1184,7 +1224,7 @@ function renderPortfolio(payload) {
     renderMenu(data.chrome);
   }
 
-  renderHero(data.hero);
+  renderHero(data.hero, data.chrome);
   renderAbout(data.about);
   renderNumbers(data.numbers, data.social, data.work);
   renderExperience(data.experience);

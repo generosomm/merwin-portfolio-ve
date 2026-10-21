@@ -170,3 +170,39 @@ window.portfolioContentReady.then(() => {
     });
   });
 });
+
+/* Navbar pill: the green line follows the section being read (js/site.js
+   sets aria-current), and the pill tucks away while scrolling down. */
+window.portfolioContentReady.then(() => {
+  const nav = document.querySelector('.pill-nav');
+  const indicator = nav?.querySelector('.pill-indicator');
+  if (!nav || !indicator) return;
+  const root = document.documentElement;
+
+  function place() {
+    const link = [...nav.querySelectorAll('.chrome-nav-link[aria-current="true"]')].find(item => item.offsetParent);
+    nav.classList.toggle('has-active', Boolean(link));
+    if (!link) return;
+    const inset = 12;
+    indicator.style.setProperty('--x', `${link.offsetLeft + inset}px`);
+    indicator.style.setProperty('--w', String(Math.max(0, link.offsetWidth - inset * 2)));
+  }
+  new MutationObserver(place).observe(nav, { subtree: true, attributes: true, attributeFilter: ['aria-current'] });
+  new ResizeObserver(place).observe(nav);
+  place();
+
+  let last = window.scrollY;
+  let frame = 0;
+  window.addEventListener('scroll', () => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      const y = window.scrollY;
+      const busy = root.classList.contains('menu-open') || nav.contains(document.activeElement);
+      if (y < 120 || busy || y < last - 6) root.classList.remove('nav-tucked');
+      else if (y > last + 6) root.classList.add('nav-tucked');
+      last = y;
+    });
+  }, { passive: true });
+  nav.addEventListener('focusin', () => root.classList.remove('nav-tucked'));
+});

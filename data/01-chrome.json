@@ -13,15 +13,18 @@
     "links": [
       {
         "label": "Work",
-        "href": "#work"
+        "href": "#work",
+        "phone": true
       },
       {
         "label": "Edits",
-        "href": "#edits"
+        "href": "#edits",
+        "phone": true
       },
       {
         "label": "About",
-        "href": "#about"
+        "href": "#about",
+        "phone": true
       },
       {
         "label": "Services",
@@ -37,10 +40,11 @@
       },
       {
         "label": "Contact",
-        "href": "#contact"
+        "href": "#contact",
+        "phone": true
       }
     ],
-    "toggleLabel": ""
+    "toggleLabel": "More"
   },
   "socials": {
     "ariaLabel": "Social profiles",

@@ -8,6 +8,8 @@
 
   <script>
     document.documentElement.classList.toggle("in-hero", !location.hash || location.hash === "#hero");
+    /* The hero waits in its start pose until js/site.js plays the entrance. */
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("hero-armed");
   </script>
 
   <!-- Static copies of data/00-meta.json so crawlers that do not run
@@ -29,7 +31,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0A0A'/><rect x='14' y='18' width='72' height='3' fill='%232BD47D'/><text x='50' y='74' font-size='50' font-family='system-ui,sans-serif' font-weight='700' fill='%23F2F2F0' text-anchor='middle'>M</text></svg>">
 
 
-  <link rel="preload" as="image" type="image/webp" fetchpriority="high" imagesrcset="assets/images/pfp-640.webp 640w, assets/images/pfp-800.webp 800w, assets/images/pfp.webp 1067w" imagesizes="(max-width: 767px) 76vw, (max-width: 1023px) 44vw, (min-width: 1286px) 422px, 33vw">
+  <link rel="preload" as="image" type="image/webp" fetchpriority="high" imagesrcset="assets/images/pfp-640.webp 640w, assets/images/pfp-800.webp 800w, assets/images/pfp.webp 1067w" imagesizes="(max-width: 767px) 100vw, (max-width: 1023px) 64vw, 30vw">
 
   <!-- Everything below comes from this domain: no other servers to
        connect to before the page can render. -->
@@ -45,17 +47,17 @@
   <link rel="stylesheet" href="css/story.css?v=r71">
   <link rel="stylesheet" href="css/work.css?v=r69">
   <link rel="stylesheet" href="css/services.css?v=r72">
-  <link rel="stylesheet" href="css/closing.css?v=r73">
+  <link rel="stylesheet" href="css/closing.css?v=r74">
   <link rel="stylesheet" href="css/live-stats.css?v=r69">
   <link rel="stylesheet" href="css/notes.css?v=r69">
-  <link rel="stylesheet" href="css/studio.css?v=studio14">
+  <link rel="stylesheet" href="css/studio.css?v=studio18">
 
   <!-- Nothing appears until content.js has run with the site's data,
        so both are fetched early, right after the render-blocking CSS:
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=studio13" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=studio15" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -73,10 +75,10 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=studio13" defer></script>
-  <script src="js/studio.js?v=studio12" defer></script>
+  <script src="js/content.js?v=studio15" defer></script>
+  <script src="js/studio.js?v=studio13" defer></script>
   <script src="js/studio-motion.js?v=studio10" defer></script>
-  <script src="js/site.js?v=studio10" defer></script>
+  <script src="js/site.js?v=studio11" defer></script>
   <script src="js/interactions.js?v=studio6" defer></script>
   <script src="js/cursor.js?v=r69" defer></script>
   <script src="vendor/lenis.min.js?v=1.1.18" defer></script>

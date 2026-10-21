@@ -1266,10 +1266,21 @@
   color: var(--danger);
 }
 
-/* Phones: the send button runs the full width, thumb-sized. */
+/* Phones: the send button runs the full width, thumb-sized, with the
+   status message centered under it (side by side, the empty message's
+   gap kept the button short of the form's right edge). */
 @media (max-width: 599px) {
+  .brief-foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .brief-foot .button {
     width: 100%;
+  }
+
+  .brief-status {
+    text-align: center;
   }
 }
 

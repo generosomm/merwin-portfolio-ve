@@ -32,7 +32,9 @@ html.nav-tucked .chrome-top { transform: translate(-50%, calc(-100% - 28px)); }
 .pill-indicator { position: absolute; z-index: -1; top: 0; left: 0; height: 100%; width: var(--w, 0px); border-radius: 100px; background: rgba(255, 255, 255, .12); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18); opacity: 0; transform: translateX(var(--x, 0px)); transition: transform 340ms cubic-bezier(.23, 1, .32, 1), width 340ms cubic-bezier(.23, 1, .32, 1), opacity 200ms ease-out; pointer-events: none; }
 .pill-nav.has-active .pill-indicator { opacity: 1; }
 .chrome-top .nav-toggle { display: none; min-height: 40px; padding: 0 15px; border: 0; border-radius: 100px; background: none; color: rgba(242, 242, 240, .82); cursor: pointer; }
-.nav-toggle-label { font: 500 14px var(--font-body); }
+.chrome-top .nav-toggle-icon { display: block; width: 20px; height: 20px; flex: none; }
+.chrome-top .icon-close, html.menu-open .chrome-top .icon-menu { display: none; }
+html.menu-open .chrome-top .icon-close { display: block; }
 html.menu-open .chrome-top .nav-toggle { color: var(--text); }
 .menu { display: flex; inset: auto 5% auto auto; top: max(82px, calc(env(safe-area-inset-top) + 64px)); width: min(330px, 90vw); max-height: calc(100svh - 110px); padding: 20px 24px; gap: 20px; border-radius: 16px; transform-origin: top right; transform: translateY(-6px) scale(.97); transition: opacity 180ms cubic-bezier(.23, 1, .32, 1), transform 180ms cubic-bezier(.23, 1, .32, 1); }
 .menu.is-open { transform: translateY(0) scale(1); }
@@ -320,22 +322,16 @@ html.keyboard-input .experience-entry[open] .experience-body > * { animation: no
   #numbers .live-cell { text-align: center; }
 }
 
-/* Phones: Proof centered, and Experience as a centered chain of dots
-   (each role's dot sits above its year, joined by a short line). */
+/* Phones: Proof centered. Experience keeps its left rail. */
 @media (max-width: 767px) {
-  #proof .section-head, #proof .proof-head, #experience .section-head { justify-content: center; text-align: center; }
+  #proof .section-head, #proof .proof-head { justify-content: center; text-align: center; }
   #proof .proof-intro { margin-inline: auto; }
-  #experience .experience-list { padding-left: 0; }
-  #experience .experience-list::before { display: none; }
-  #experience .experience-entry { padding-top: 30px; text-align: center; }
-  #experience .experience-entry::before { top: 18px; left: 50%; margin-left: -5.5px; }
-  #experience .experience-entry + .experience-entry::after { content: ""; position: absolute; top: 0; left: 50%; width: 1px; height: 16px; background: var(--line-strong); }
-  #experience .experience-row { justify-items: center; padding-top: 10px; }
-  #experience .experience-org { text-align: center; }
-  #experience .experience-body { margin-inline: auto; }
   /* Stack: label and logo rows centered so no row ends in empty space.
      The GitHub header keeps its two sides, which already balance. */
   #stack .section-head { justify-content: center; text-align: center; }
   #stack .stack-group { justify-items: center; text-align: center; }
   #stack .stack-logos, #stack .stack-pills { justify-content: center; }
+  /* Other systems: each project centered between its hairlines. */
+  .work-archive { text-align: center; }
+  .work-archive .work-tags { justify-content: center; }
 }

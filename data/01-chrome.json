@@ -44,7 +44,7 @@
         "phone": true
       }
     ],
-    "toggleLabel": "More"
+    "toggleLabel": ""
   },
   "socials": {
     "ariaLabel": "Social profiles",

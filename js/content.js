@@ -143,6 +143,13 @@ function socialIcon(name) {
 
 /* ---- Chrome: brand, nav, toggle ------------------------------ */
 
+/* Menu toggle icons: Lucide "menu" and "x" (lucide.dev, ISC licence),
+   inlined because the site has no build step. The button's aria-label
+   carries the name; the icons are decorative. */
+const LUCIDE = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"';
+const MENU_ICON = `<svg class="nav-toggle-icon icon-menu" ${LUCIDE}><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>`;
+const CLOSE_ICON = `<svg class="nav-toggle-icon icon-close" ${LUCIDE}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
+
 /* The centered pill: every section link, with a green line under the
    one being read (js/studio.js moves it and hides the pill while
    scrolling down). Phones show the links marked "phone" plus a More
@@ -163,7 +170,7 @@ function renderTopChrome(data) {
       <button class="nav-toggle" id="nav-toggle" type="button"
         aria-controls="menu" aria-expanded="false" aria-label="${attr(nav.openLabel)}"
         data-close-label="${attr(nav.closeLabel)}">
-        ${hasText(nav.toggleLabel) ? `<b class="nav-toggle-label">${text(nav.toggleLabel)}</b>` : ""}
+        ${MENU_ICON}${CLOSE_ICON}
       </button>
     </nav>`;
 }

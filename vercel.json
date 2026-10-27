@@ -11,5 +11,6 @@
       "path": "/api/refresh",
       "schedule": "0 19 * * *"
     }
-  ]
+  ],
+  "buildCommand": ""
 }

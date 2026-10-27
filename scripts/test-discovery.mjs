@@ -14,3 +14,6 @@ assert.doesNotMatch(sitemap, /notes-admin|\/api\//);
 const robots = await fs.readFile('robots.txt', 'utf8');
 assert.match(robots, /Sitemap: https:\/\/generosomm\.dev\/sitemap\.xml/);
 console.log('Discovery checks passed: factual schema, metadata parity and existing public sitemap routes.');
+
+const deployment = JSON.parse(await fs.readFile("vercel.json", "utf8"));
+assert.equal(deployment.buildCommand, "", "Static deployment uses the committed bundle; excluded local tooling must not run on Vercel");

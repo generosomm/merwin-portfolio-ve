@@ -76,7 +76,7 @@ Static title/description/social tags and JSON-LD also live in `index.html` for c
 
 ## Deployment and credentials
 
-Vercel serves the root directory and automatically deploys authorized pushes to `main`. Rebuild and validate the bundle before a push. Enable the optional commit hook with `git config core.hooksPath .githooks`; it rebuilds/stages the bundle and validates content.
+Vercel serves the root directory and automatically deploys authorized pushes to `main`. `vercel.json` disables automatic build-command detection because deployment uses the committed content bundle and excludes local scripts. `npm run build` is a local pre-push step. Rebuild and validate the bundle before a push. Enable the optional commit hook with `git config core.hooksPath .githooks`; it rebuilds/stages the bundle and validates content.
 
 Keep credentials in Vercel environment variables or ignored local environment files. `.env.example` documents names only. Do not commit secrets, unredacted certificates or provider tokens. `.vercelignore` excludes original video masters and repository tooling from CLI deployment. Original video masters stay in Git; the browser plays compressed files under `assets/videos/web/`.
 

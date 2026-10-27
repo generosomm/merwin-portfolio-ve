@@ -925,23 +925,39 @@ function renderStack(data) {
   const root = document.querySelector('[data-section="stack"]');
   if (!root || !data) return;
 
-  /* Items with an icon render as logos; plain strings as text tags
-     (for skills that have no logo). */
+  /* Items with an icon render as logos; the rest (or plain strings)
+     as text tags, for skills that have no logo. An item with an http(s)
+     href links to a page explaining it; its description is read out
+     with the link and shown as a tooltip by js/interactions.js. */
+  let tipCount = 0;
+  const stackName = (item, className) => {
+    const href = /^https?:\/\//i.test(item.href || "") ? item.href : "";
+    if (!href) return `<span class="${className}">${text(item.name)}</span>`;
+    const tip = hasText(item.description) ? `stack-tip-${++tipCount}` : "";
+    const described = tip ? ` aria-describedby="${tip}" data-tip="${attr(item.description)}"` : "";
+    return `<a class="${className} stack-link" href="${attr(href)}" target="_blank" rel="noopener noreferrer"${described}>${text(item.name)}</a>${
+      tip ? `<span class="sr-only" id="${tip}">${text(item.description)}</span>` : ""}`;
+  };
+
   const stackItems = (items) => {
-    const logos = records(items)
-      .filter((item) => hasText(item.name) && hasText(item.icon))
+    const entries = list(items).map((item) => (hasText(item) ? { name: item } : item)).filter((item) => hasText(item?.name));
+    const logos = entries
+      .filter((item) => hasText(item.icon))
       .map((item) => {
         /* Only a plain hex colour reaches the style attribute. */
         const brand = /^#[0-9a-f]{3,8}$/i.test(item.color || "") ? ` style="--brand: ${item.color}"` : "";
         return `
           <li class="stack-logo${item.mono ? " is-mono" : ""}"${brand}>
             <span class="stack-logo-icon"><img src="${attr(item.icon)}" alt="" width="40" height="40" loading="lazy" decoding="async"></span>
-            <span class="stack-logo-name">${text(item.name)}</span>
+            ${stackName(item, "stack-logo-name")}
           </li>`;
       })
       .join("");
-    const tags = list(items).filter(hasText);
-    return `${logos ? `<ul class="stack-logos">${logos}</ul>` : ""}${tagList(tags, "stack-pills")}`;
+    const tags = entries
+      .filter((item) => !hasText(item.icon))
+      .map((item) => `<li>${stackName(item, "stack-pill-name")}</li>`)
+      .join("");
+    return `${logos ? `<ul class="stack-logos">${logos}</ul>` : ""}${tags ? `<ul class="stack-pills">${tags}</ul>` : ""}`;
   };
 
   const groups = records(data.groups)

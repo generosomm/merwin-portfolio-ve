@@ -171,7 +171,11 @@
       "tags": [
         "HTML5",
         "CSS3",
-        "JavaScript"
+        "JavaScript",
+        "GSAP",
+        "Vercel Functions",
+        "Upstash Redis",
+        "OAuth 2.0"
       ],
       "href": "https://generosomm.dev/",
       "image": {

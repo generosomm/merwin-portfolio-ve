@@ -1042,6 +1042,56 @@
     window.setInterval(tick, 30000);
   }
 
+  /* ---- Stack tooltips ------------------------------------------------
+     One shared bubble shows an item's one-sentence description above
+     it on mouse hover or keyboard focus, flipped below when there is no
+     room and kept inside the viewport. Touch taps just open the link;
+     screen readers hear the description through aria-describedby.
+  ---------------------------------------------------------------- */
+
+  function initStackTips() {
+    const links = document.querySelectorAll(".stack-link[data-tip]");
+    if (!links.length) return;
+    const tip = document.createElement("div");
+    tip.className = "stack-tooltip";
+    tip.setAttribute("aria-hidden", "true");
+    document.body.appendChild(tip);
+    let current = null;
+
+    const show = (link) => {
+      current = link;
+      tip.textContent = link.dataset.tip;
+      const item = link.closest("li").getBoundingClientRect();
+      const box = tip.getBoundingClientRect();
+      const gap = 8;
+      const left = Math.min(Math.max(gap, item.left + item.width / 2 - box.width / 2), window.innerWidth - box.width - gap);
+      const top = item.top - box.height - gap >= gap ? item.top - box.height - gap : item.bottom + gap;
+      tip.style.left = `${Math.round(left)}px`;
+      tip.style.top = `${Math.round(top)}px`;
+      tip.classList.add("is-visible");
+    };
+    const hide = () => {
+      if (!current) return;
+      current = null;
+      tip.classList.remove("is-visible");
+    };
+
+    links.forEach((link) => {
+      const item = link.closest("li");
+      item.addEventListener("pointerenter", (event) => { if (event.pointerType === "mouse") show(link); });
+      item.addEventListener("pointerleave", hide);
+      link.addEventListener("focus", () => { if (link.matches(":focus-visible")) show(link); });
+      link.addEventListener("blur", hide);
+    });
+    /* Keyboard focus can scroll the page; the bubble follows a focused
+       item and closes for a hovered one. */
+    window.addEventListener("scroll", () => {
+      if (current && current === document.activeElement) show(current);
+      else hide();
+    }, { passive: true });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") hide(); });
+  }
+
   function boot() {
     initWorkPreview();
     initEditCarousels();
@@ -1051,6 +1101,7 @@
     initEditTabs();
     initCertTilt();
     initStackLogos();
+    initStackTips();
     initGithubGraph();
     initLocalTime();
     initFolds();

@@ -645,6 +645,83 @@
   margin-top: var(--s-3);
 }
 
+/* Each name is a link; its ::after stretches over the whole tile or
+   pill, so the entire item is clickable and shows one focus ring. */
+.stack-pills li {
+  position: relative;
+}
+
+.stack-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.stack-link::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border-radius: inherit;
+  content: "";
+}
+
+.stack-pills li,
+.stack-pills .stack-link {
+  border-radius: var(--r-pill);
+}
+
+.stack-link:focus-visible {
+  outline: none;
+}
+
+.stack-link:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.stack-logo:has(.stack-link:focus-visible) {
+  border-color: color-mix(in srgb, var(--brand) 55%, transparent);
+  color: var(--text);
+}
+
+@media (max-width: 767px) {
+  .stack-logo .stack-link {
+    border-radius: var(--r-pill);
+  }
+}
+
+/* One shared tooltip, placed by js/interactions.js above the hovered
+   or focused item and kept inside the viewport. Screen readers get the
+   same sentence from the link's aria-describedby instead. */
+.stack-tooltip {
+  position: fixed;
+  z-index: 60;
+  top: 0;
+  left: 0;
+  max-width: min(17rem, calc(100vw - 2rem));
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.5rem;
+  background: var(--ink-800);
+  color: var(--text);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+
+.stack-tooltip.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-tooltip {
+    transform: none;
+  }
+}
+
 /* ---- GitHub activity --------------------------------------------------
    One bar per month from the first active month, each with its total,
    rising left to right when the card scrolls in, with the stats beside

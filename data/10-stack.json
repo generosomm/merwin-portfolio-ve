@@ -5,28 +5,53 @@
       "items": [
         {
           "name": "HTML5",
+          "href": "https://developer.mozilla.org/en-US/docs/Web/HTML",
+          "description": "The markup language that gives every web page its structure and content.",
           "icon": "assets/icons/stack/html5.svg",
           "color": "#E44D26"
         },
         {
           "name": "CSS3",
+          "href": "https://developer.mozilla.org/en-US/docs/Web/CSS",
+          "description": "The style sheet language that controls how web pages look on every screen.",
           "icon": "assets/icons/stack/css3.svg",
           "color": "#33A9DC"
         },
         {
           "name": "JavaScript",
+          "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+          "description": "The programming language that makes web pages interactive.",
           "icon": "assets/icons/stack/javascript.svg",
           "color": "#F7DF1E"
         },
         {
           "name": "TypeScript",
+          "href": "https://www.typescriptlang.org/",
+          "description": "JavaScript with types, so mistakes show up before the code runs.",
           "icon": "assets/icons/stack/typescript.svg",
           "color": "#3178C6"
         },
         {
           "name": "React",
+          "href": "https://react.dev/",
+          "description": "A JavaScript library for building user interfaces from reusable components.",
           "icon": "assets/icons/stack/react.svg",
           "color": "#61DAFB"
+        },
+        {
+          "name": "Three.js",
+          "href": "https://threejs.org/",
+          "description": "A JavaScript library for drawing 3D graphics in the browser with WebGL.",
+          "icon": "assets/icons/stack/threejs.svg",
+          "mono": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "name": "GSAP",
+          "href": "https://gsap.com/",
+          "description": "A JavaScript animation library for smooth, timeline-based and scroll-driven motion.",
+          "icon": "assets/icons/stack/gsap.svg",
+          "color": "#88CE02"
         }
       ]
     },
@@ -35,19 +60,30 @@
       "items": [
         {
           "name": "Node.js",
+          "href": "https://nodejs.org/en/learn/getting-started/introduction-to-nodejs",
+          "description": "A runtime that runs JavaScript on servers, outside the browser.",
           "icon": "assets/icons/stack/nodejs.svg",
           "color": "#5FA04E"
         },
         {
           "name": "Express",
+          "href": "https://expressjs.com/",
+          "description": "A minimal Node.js framework for building web servers and APIs.",
           "icon": "assets/icons/stack/express.svg",
           "mono": true,
           "color": "#FFFFFF"
         },
         {
           "name": "PHP",
+          "href": "https://www.php.net/manual/en/introduction.php",
+          "description": "A server-side scripting language widely used to build dynamic websites.",
           "icon": "assets/icons/stack/php.svg",
           "color": "#8892BF"
+        },
+        {
+          "name": "Vercel Functions",
+          "href": "https://vercel.com/docs/functions",
+          "description": "Server code that runs on demand on Vercel, with no server to manage."
         }
       ]
     },
@@ -56,17 +92,43 @@
       "items": [
         {
           "name": "MySQL",
+          "href": "https://dev.mysql.com/doc/refman/8.4/en/what-is-mysql.html",
+          "description": "An open-source relational database that stores data in tables and is queried with SQL.",
           "icon": "assets/icons/stack/mysql.svg",
           "mono": true,
           "color": "#4479A1"
         },
         {
           "name": "Firebase",
+          "href": "https://firebase.google.com/",
+          "description": "Google's platform of backend services for apps: sign-in, databases, hosting and more.",
           "icon": "assets/icons/stack/firebase.svg",
           "color": "#FFCA28"
         },
-        "Firestore",
-        "Cloud Functions"
+        {
+          "name": "Supabase",
+          "href": "https://supabase.com/docs",
+          "description": "An open-source backend platform built on Postgres, with sign-in, storage and instant APIs.",
+          "icon": "assets/icons/stack/supabase.svg",
+          "color": "#3ECF8E"
+        },
+        {
+          "name": "Upstash Redis",
+          "href": "https://upstash.com/docs/redis/overall/getstarted",
+          "description": "A serverless Redis key-value database that apps reach over HTTP.",
+          "icon": "assets/icons/stack/upstash.svg",
+          "color": "#00E9A3"
+        },
+        {
+          "name": "Firestore",
+          "href": "https://firebase.google.com/docs/firestore",
+          "description": "Firebase's NoSQL document database that keeps app data in sync in real time."
+        },
+        {
+          "name": "Cloud Functions",
+          "href": "https://firebase.google.com/docs/functions",
+          "description": "Backend code that runs automatically in response to Firebase events or web requests."
+        }
       ]
     },
     {
@@ -74,45 +136,68 @@
       "items": [
         {
           "name": "Claude",
+          "href": "https://www.anthropic.com/claude",
+          "description": "Anthropic's AI assistant for writing, research and coding.",
           "icon": "assets/icons/stack/claude.svg",
           "color": "#D97757"
         },
         {
           "name": "OpenAI",
+          "href": "https://openai.com/",
+          "description": "The AI company behind ChatGPT and the GPT models.",
           "icon": "assets/icons/stack/openai.svg",
           "mono": true,
           "color": "#FFFFFF"
         },
         {
           "name": "Git",
+          "href": "https://git-scm.com/",
+          "description": "A version control system that tracks every change to a codebase.",
           "icon": "assets/icons/stack/git.svg",
           "color": "#F05032"
         },
         {
           "name": "GitHub",
+          "href": "https://github.com/about",
+          "description": "A platform for hosting Git repositories and collaborating on code.",
           "icon": "assets/icons/stack/github.svg",
           "mono": true,
           "color": "#FFFFFF"
         },
         {
+          "name": "GitHub Actions",
+          "href": "https://docs.github.com/en/actions",
+          "description": "GitHub's automation for running builds, tests and scheduled jobs.",
+          "icon": "assets/icons/stack/githubactions.svg",
+          "color": "#2088FF"
+        },
+        {
           "name": "VS Code",
+          "href": "https://code.visualstudio.com/",
+          "description": "Microsoft's free code editor, extended with plugins for almost any language.",
           "icon": "assets/icons/stack/vscode.svg",
           "color": "#23A9F2"
         },
         {
           "name": "Vercel",
+          "href": "https://vercel.com/docs",
+          "description": "A cloud platform for deploying websites and serverless functions.",
           "icon": "assets/icons/stack/vercel.svg",
           "mono": true,
           "color": "#FFFFFF"
         },
         {
           "name": "Notion",
+          "href": "https://www.notion.com/",
+          "description": "A workspace for notes, docs and project planning in one place.",
           "icon": "assets/icons/stack/notion.svg",
           "mono": true,
           "color": "#FFFFFF"
         },
         {
           "name": "Trello",
+          "href": "https://trello.com/",
+          "description": "A board-and-card tool for organizing tasks and projects.",
           "icon": "assets/icons/stack/trello.svg",
           "color": "#2684FF"
         }
@@ -123,32 +208,44 @@
       "items": [
         {
           "name": "Premiere Pro",
+          "href": "https://www.adobe.com/products/premiere.html",
+          "description": "Adobe's professional video editing software.",
           "icon": "assets/icons/stack/premierepro.svg",
           "color": "#E976B9"
         },
         {
           "name": "After Effects",
+          "href": "https://www.adobe.com/products/aftereffects.html",
+          "description": "Adobe's software for motion graphics and visual effects.",
           "icon": "assets/icons/stack/aftereffects.svg",
           "color": "#D490C5"
         },
         {
           "name": "CapCut",
+          "href": "https://www.capcut.com/",
+          "description": "A video editor built for fast short-form edits on phone and desktop.",
           "icon": "assets/icons/stack/capcut.svg",
           "mono": true,
           "color": "#FFFFFF"
         },
         {
           "name": "Canva",
+          "href": "https://www.canva.com/",
+          "description": "An online design tool for graphics, presentations and social posts.",
           "icon": "assets/icons/stack/canva.svg",
           "color": "#00C4CC"
         },
         {
           "name": "Picsart",
+          "href": "https://picsart.com/",
+          "description": "A photo and video editing app with AI-powered tools.",
           "icon": "assets/icons/stack/picsart.svg",
           "color": "#C209C1"
         },
         {
           "name": "Google Flow",
+          "href": "https://labs.google/fx/tools/flow",
+          "description": "Google's AI filmmaking tool that generates video clips from prompts.",
           "icon": "assets/icons/stack/google-flow.webp",
           "mono": true,
           "color": "#8AB4F8"
@@ -158,12 +255,61 @@
     {
       "label": "Integration & more",
       "items": [
-        "Google Maps API",
-        "REST APIs",
-        "EDI (ANSI X12)",
-        "Systems integration",
-        "Database design",
-        "SQL"
+        {
+          "name": "Google Maps API",
+          "href": "https://developers.google.com/maps",
+          "description": "Google's APIs for adding maps, places and directions to apps."
+        },
+        {
+          "name": "REST APIs",
+          "href": "https://en.wikipedia.org/wiki/REST",
+          "description": "A common style of web API that exchanges data through standard HTTP requests."
+        },
+        {
+          "name": "YouTube Data API",
+          "href": "https://developers.google.com/youtube/v3",
+          "description": "Google's API for reading YouTube channel and video data."
+        },
+        {
+          "name": "Meta Graph API",
+          "href": "https://developers.facebook.com/docs/graph-api/",
+          "description": "Meta's API for reading and managing Facebook and Instagram data."
+        },
+        {
+          "name": "TikTok API",
+          "href": "https://developers.tiktok.com/",
+          "description": "TikTok's developer APIs for sign-in, profile and video data."
+        },
+        {
+          "name": "OAuth 2.0",
+          "href": "https://oauth.net/2/",
+          "description": "The standard that lets an app use an account with the owner's permission, without their password."
+        },
+        {
+          "name": "EDI (ANSI X12)",
+          "href": "https://en.wikipedia.org/wiki/ASC_X12",
+          "description": "A standard format businesses use to exchange orders, invoices and other documents electronically."
+        },
+        {
+          "name": "Systems integration",
+          "href": "https://en.wikipedia.org/wiki/System_integration",
+          "description": "Connecting separate software systems so they share data and work as one."
+        },
+        {
+          "name": "Database design",
+          "href": "https://en.wikipedia.org/wiki/Database_design",
+          "description": "Planning how data is structured, related and stored in a database."
+        },
+        {
+          "name": "SQL",
+          "href": "https://en.wikipedia.org/wiki/SQL",
+          "description": "The standard language for querying and managing relational databases."
+        },
+        {
+          "name": "Scrum",
+          "href": "https://www.scrum.org/resources/what-scrum-module",
+          "description": "An agile framework where a team delivers work in short, fixed-length sprints."
+        }
       ]
     }
   ],
@@ -190,5 +336,5 @@
       "days": "{count} days"
     }
   },
-  "note": "Items with an icon show as logos in their own colours; color is the brand colour used for the hover glow. mono: true is for single-colour logos, drawn in white. Plain strings show as text tags, for skills without a logo. Logos are saved in assets/icons/stack/ (sources and licences in CREDITS.txt there). The GitHub graph reads a saved snapshot, refreshed daily by .github/workflows/github-snapshot.yml (or by hand with: node scripts/update-github-snapshot.mjs). It shows one circular dot per day in week columns for the complete saved yearly snapshot."
+  "note": "Items with an icon show as logos in their own colours; color is the brand colour used for the hover glow. mono: true is for single-colour logos, drawn in white. Items without an icon (or plain strings) show as text tags, for skills without a logo. href links each item to a page explaining it, and description is the one-sentence tooltip shown on hover and keyboard focus. Logos are saved in assets/icons/stack/ (sources and licences in CREDITS.txt there). The GitHub graph reads a saved snapshot, refreshed daily by .github/workflows/github-snapshot.yml (or by hand with: node scripts/update-github-snapshot.mjs). It shows one circular dot per day in week columns for the complete saved yearly snapshot."
 }

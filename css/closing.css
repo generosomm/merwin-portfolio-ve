@@ -742,7 +742,7 @@
   animation: guide-bob 1.6s ease-in-out infinite;
 }
 
-.stack-guide-eyes {
+.guide-eyes {
   transform-origin: 16px 17px;
   animation: guide-blink 4s infinite;
 }
@@ -823,13 +823,13 @@
   }
 
   .stack-guide.is-on .stack-guide-bot,
-  .stack-guide-eyes {
+  .guide-eyes {
     animation: none;
   }
 }
 
 .perf-lite .stack-guide.is-on .stack-guide-bot,
-.perf-lite .stack-guide-eyes {
+.perf-lite .guide-eyes {
   animation: none;
 }
 

@@ -400,3 +400,158 @@ html.dialog-open .ios-cursor { opacity: 0; }
 /* Keep the hero name as the only wordmark on the opening screen. */
 .brand { transition: opacity var(--dur-1) var(--ease-out); }
 html.in-hero .brand { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* ---- Site guide ---------------------------------------------------------
+   The stack bot's twin, docked bottom right. js/interactions.js adds
+   .is-ready once the page has loaded and .is-talking while a line shows;
+   the bubble sits above the bot. Phones lift it above the bottom nav. */
+.site-guide {
+  position: fixed;
+  z-index: calc(var(--z-menu) - 2);
+  right: max(1.5rem, var(--safe-right));
+  bottom: max(1.5rem, var(--safe-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  color: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out);
+}
+
+.site-guide.is-ready {
+  opacity: 1;
+  transform: none;
+}
+
+.site-guide.is-ready .site-guide-bot,
+.site-guide.is-ready .site-guide-hide {
+  pointer-events: auto;
+}
+
+.site-guide-bubble {
+  max-width: min(17rem, calc(100vw - 3rem));
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 0.75rem 0.75rem 0.2rem 0.75rem;
+  background: var(--ink-800);
+  color: var(--text);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  opacity: 0;
+  transform: translateY(6px) scale(0.97);
+  transform-origin: bottom right;
+  transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+
+.site-guide.is-talking .site-guide-bubble {
+  opacity: 1;
+  transform: none;
+}
+
+.site-guide-bot {
+  display: grid;
+  width: var(--tap);
+  height: var(--tap);
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--ink-800);
+  color: inherit;
+  cursor: pointer;
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+
+.site-guide-bot:hover,
+.site-guide-bot:focus-visible {
+  border-color: var(--accent);
+}
+
+.site-guide-face {
+  display: block;
+  width: 1.6rem;
+  max-width: none;
+  height: 1.6rem;
+}
+
+.site-guide.is-talking .site-guide-face {
+  animation: guide-bob 1.6s ease-in-out infinite;
+}
+
+/* Small close button on the bot's top-left; shown while it talks, or
+   on hover/focus. */
+.site-guide-hide {
+  position: absolute;
+  bottom: calc(var(--tap) - 0.9rem);
+  right: calc(var(--tap) - 0.9rem);
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--ink-900);
+  color: var(--text-mid);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
+}
+
+/* A bigger invisible touch target around the small circle. */
+.site-guide-hide::before {
+  position: absolute;
+  inset: -0.6rem;
+  content: "";
+}
+
+.site-guide.is-talking .site-guide-hide,
+.site-guide:hover .site-guide-hide,
+.site-guide:focus-within .site-guide-hide {
+  opacity: 1;
+}
+
+.site-guide-hide:hover,
+.site-guide-hide:focus-visible {
+  color: var(--text);
+}
+
+.site-guide.is-ready:not(.is-talking):not(:hover):not(:focus-within) .site-guide-hide {
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  /* Above the bottom nav pill, and out of its way when it tucks. */
+  .site-guide {
+    right: max(1rem, var(--safe-right));
+    bottom: calc(max(24px, env(safe-area-inset-bottom)) + var(--vv-bottom, 0px) + 68px);
+  }
+
+  .site-guide-bubble {
+    max-width: min(15rem, calc(100vw - 2rem));
+  }
+}
+
+html.dialog-open .site-guide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-guide,
+  .site-guide-bubble {
+    transform: none;
+  }
+
+  .site-guide.is-talking .site-guide-face {
+    animation: none;
+  }
+}
+
+.perf-lite .site-guide.is-talking .site-guide-face {
+  animation: none;
+}

@@ -1257,6 +1257,81 @@
     document.addEventListener("keydown", (event) => { if (event.key === "Escape" && held) release(held); });
   }
 
+  /* ---- Site guide ----------------------------------------------------
+     The docked bot says one line the first time each section reaches
+     the middle of the screen, for about six seconds, then goes quiet.
+     Lines already said are remembered for this visit (sessionStorage);
+     a section flown past in under ~0.7s is skipped until the visitor
+     actually stops there. Tapping the bot repeats the current
+     section's line. The close button hides it for good on this device.
+  ---------------------------------------------------------------- */
+
+  function initSiteGuide() {
+    const guide = document.querySelector(".site-guide");
+    if (!guide || !("IntersectionObserver" in window)) return;
+    const HIDDEN = "siteGuideHidden";
+    const SAID = "siteGuideSaid";
+    try {
+      if (localStorage.getItem(HIDDEN)) { guide.remove(); return; }
+    } catch { /* storage blocked: show it this visit */ }
+
+    let lines = {};
+    try { lines = JSON.parse(guide.dataset.lines || "{}"); } catch { return; }
+    const bubble = guide.querySelector(".site-guide-bubble");
+    const said = new Set();
+    try { JSON.parse(sessionStorage.getItem(SAID) || "[]").forEach((id) => said.add(id)); } catch { /* fine */ }
+
+    let current = "";
+    let settle = 0;
+    let quiet = 0;
+
+    const talk = (id) => {
+      const line = lines[id];
+      if (!line) return;
+      bubble.textContent = line;
+      guide.classList.add("is-talking");
+      clearTimeout(quiet);
+      quiet = setTimeout(() => guide.classList.remove("is-talking"), 6000);
+      said.add(id);
+      try { sessionStorage.setItem(SAID, JSON.stringify([...said])); } catch { /* fine */ }
+    };
+
+    const sections = [...document.querySelectorAll("main > section[id]")].filter((section) => lines[section.id]);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        current = entry.target.id;
+        clearTimeout(settle);
+        if (said.has(current)) return;
+        settle = setTimeout(() => talk(current), 700);
+      });
+    }, { rootMargin: "-45% 0px -45% 0px" });
+
+    /* Appear after the hero's entrance, then start watching. */
+    setTimeout(() => {
+      guide.classList.add("is-ready");
+      sections.forEach((section) => observer.observe(section));
+    }, 1600);
+
+    guide.querySelector(".site-guide-bot").addEventListener("click", () => {
+      if (guide.classList.contains("is-talking")) {
+        clearTimeout(quiet);
+        guide.classList.remove("is-talking");
+      } else if (current) {
+        talk(current);
+      }
+    });
+
+    guide.querySelector(".site-guide-hide").addEventListener("click", () => {
+      try { localStorage.setItem(HIDDEN, "1"); } catch { /* fine */ }
+      observer.disconnect();
+      clearTimeout(settle);
+      clearTimeout(quiet);
+      guide.classList.remove("is-ready", "is-talking");
+      setTimeout(() => guide.remove(), 500);
+    });
+  }
+
   function boot() {
     initWorkPreview();
     initEditCarousels();
@@ -1268,6 +1343,7 @@
     initStackLogos();
     initStackTips();
     initStackGuide();
+    initSiteGuide();
     initGithubGraph();
     initLocalTime();
     initFolds();

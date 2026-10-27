@@ -921,6 +921,36 @@ function renderProof(data) {
    snapshot, and leaves it hidden if that file is missing.
 ---------------------------------------------------------------- */
 
+/* The guide bot drawing, shared by the stack guide and the site guide.
+   It takes the colour of its container (currentColor). */
+function guideBot(className) {
+  return `<svg class="${className}" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
+    <path d="M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="16" cy="3" r="2" fill="currentColor"/>
+    <rect x="5" y="8" width="22" height="18" rx="6" fill="#0a0a0a" stroke="currentColor" stroke-width="2"/>
+    <g class="guide-eyes" fill="currentColor"><circle cx="12" cy="17" r="2.2"/><circle cx="20" cy="17" r="2.2"/></g>
+    <path d="M9 30h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>`;
+}
+
+/* The site guide: the same bot docked in a corner. js/interactions.js
+   shows one line the first time each section comes into view. Lines
+   are keyed by section id; the visitor can hide it for good. */
+function renderSiteGuide(chrome) {
+  const guide = chrome?.guide;
+  const lines = Object.fromEntries(Object.entries(guide?.lines || {}).filter(([, line]) => hasText(line)));
+  if (!Object.keys(lines).length || !document.body) return;
+  document.querySelector(".site-guide")?.remove();
+  document.body.insertAdjacentHTML("beforeend", `
+    <aside class="site-guide" aria-label="${attr(guide.label || "")}" data-lines="${attr(JSON.stringify(lines))}">
+      <p class="site-guide-bubble" role="status"></p>
+      <button class="site-guide-bot" type="button" aria-label="${attr(guide.label || "")}">${guideBot("site-guide-face")}</button>
+      <button class="site-guide-hide" type="button" aria-label="${attr(guide.hideLabel || "")}">
+        <svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </aside>`);
+}
+
 /* The stack guide: a small bot that js/interactions.js moves across the
    tools, and to the one being hovered, to show they open on click.
    Decorative for screen readers,
@@ -930,13 +960,7 @@ function stackGuide(guide) {
   return `<div class="stack-guide" aria-hidden="true" data-hint="${attr(guide.hint)}"
         data-touch-hint="${attr(guide.touchHint || guide.hint)}">
         <span class="stack-guide-bubble"></span>
-        <svg class="stack-guide-bot" viewBox="0 0 32 32" width="32" height="32">
-          <path d="M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="16" cy="3" r="2" fill="currentColor"/>
-          <rect x="5" y="8" width="22" height="18" rx="6" fill="#0a0a0a" stroke="currentColor" stroke-width="2"/>
-          <g class="stack-guide-eyes" fill="currentColor"><circle cx="12" cy="17" r="2.2"/><circle cx="20" cy="17" r="2.2"/></g>
-          <path d="M9 30h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+        ${guideBot("stack-guide-bot")}
       </div>`;
 }
 
@@ -1279,6 +1303,7 @@ function renderPortfolio(payload) {
   renderStack(data.stack);
   renderNotes(data.notes);
   renderContact(data.contact);
+  renderSiteGuide(data.chrome);
   renderSectionShell();
 
   reportErrors(errors);

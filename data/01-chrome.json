@@ -134,5 +134,23 @@
       "id": "contact",
       "title": "Contact"
     }
-  ]
+  ],
+  "guide": {
+    "label": "Site guide",
+    "hideLabel": "Hide the guide",
+    "lines": {
+      "hero": "Hi! I’m Merwin’s little helper. I’ll point out a few things as you scroll.",
+      "work": "From small business sites to a workforce platform: here’s what Merwin has been building.",
+      "edits": "Merwin’s edits have 74M+ documented views across TikTok and YouTube.",
+      "about": "Websites and video edits: Merwin does both.",
+      "numbers": "Each number here traces back to something on this page.",
+      "services": "Need something made? Pick a service and send a short brief.",
+      "proof": "Real screenshots, straight from Merwin’s TikTok and YouTube dashboards.",
+      "experience": "Open a role to see what Merwin did there.",
+      "stack": "Every tool here opens a page about it. My twin up there will show you.",
+      "notes": "Leave Merwin a note. It shows up here once it’s approved.",
+      "contact": "Got a project in mind? Send Merwin a message right here."
+    },
+    "note": "A small bot docked in the corner says one line the first time a visitor reaches each section, then stays quiet. Visitors can hide it (remembered on their device). Keys are section ids; remove a line to keep the bot quiet there, or remove this block to turn it off."
+  }
 }

@@ -689,6 +689,150 @@
   }
 }
 
+/* Stack guide: a small bot perched on a tool's top-right corner, with
+   a bubble above it. js/interactions.js sets --x/--y (the perch, in px
+   from the section's top left) and --bx (the bubble's left edge from
+   the perch, kept inside the section). It glides between tools. */
+#stack .section-inner {
+  position: relative;
+}
+
+.stack-guide {
+  --x: 0px;
+  --y: 0px;
+  --bx: 0px;
+
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  color: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(var(--x), var(--y));
+  transition: transform 0.7s var(--ease-out), opacity var(--dur-1) var(--ease-out);
+}
+
+.stack-guide.is-on {
+  opacity: 1;
+}
+
+.stack-guide.is-quick {
+  transition: transform 0.3s var(--ease-out), opacity var(--dur-1) var(--ease-out);
+}
+
+.stack-guide.is-jump {
+  transition: opacity var(--dur-1) var(--ease-out);
+}
+
+.stack-guide-bot {
+  position: absolute;
+  bottom: -6px;
+  left: -16px;
+  display: block;
+  width: 32px;
+  max-width: none;
+  height: 32px;
+  filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--accent) 35%, transparent));
+}
+
+.stack-guide.is-on .stack-guide-bot {
+  animation: guide-bob 1.6s ease-in-out infinite;
+}
+
+.stack-guide-eyes {
+  transform-origin: 16px 17px;
+  animation: guide-blink 4s infinite;
+}
+
+.stack-guide-bubble {
+  position: absolute;
+  bottom: 32px;
+  left: var(--bx);
+  display: grid;
+  gap: 0.2rem;
+  width: max-content;
+  max-width: min(16rem, 80vw);
+  padding: 0.55rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 0.6rem;
+  background: var(--ink-800);
+  color: var(--text);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+
+.stack-guide.is-talking .stack-guide-bubble {
+  opacity: 1;
+  transform: none;
+}
+
+.stack-guide-bubble strong {
+  font-weight: 600;
+}
+
+.stack-guide-bubble span {
+  color: var(--text-mid);
+}
+
+.stack-guide-bubble em {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-style: normal;
+  letter-spacing: 0.02em;
+}
+
+/* The tool the bot is on lights up like a hover. */
+.stack-logo.is-guided {
+  border-color: color-mix(in srgb, var(--brand) 55%, transparent);
+  color: var(--text);
+}
+
+.stack-logo.is-guided::before {
+  opacity: 1;
+}
+
+.stack-pills li.is-guided {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@keyframes guide-bob {
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes guide-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-guide,
+  .stack-guide-bubble {
+    transition: opacity var(--dur-1) linear;
+  }
+
+  .stack-guide-bubble {
+    transform: none;
+  }
+
+  .stack-guide.is-on .stack-guide-bot,
+  .stack-guide-eyes {
+    animation: none;
+  }
+}
+
+.perf-lite .stack-guide.is-on .stack-guide-bot,
+.perf-lite .stack-guide-eyes {
+  animation: none;
+}
+
 /* One shared tooltip, placed by js/interactions.js above the hovered
    or focused item and kept inside the viewport. Screen readers get the
    same sentence from the link's aria-describedby instead. */

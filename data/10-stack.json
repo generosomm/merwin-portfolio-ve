@@ -313,6 +313,11 @@
       ]
     }
   ],
+  "guide": {
+    "hint": "Click to learn more",
+    "touchHint": "Tap to learn more",
+    "note": "A small bot roams the tools while the section is on screen and flies to the one the visitor hovers or tabs to, showing its description and the hint. Remove this block to turn it off (the plain hover tooltip comes back)."
+  },
   "github": {
     "heading": "GitHub activity",
     "username": "generosomm",

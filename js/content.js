@@ -921,6 +921,25 @@ function renderProof(data) {
    snapshot, and leaves it hidden if that file is missing.
 ---------------------------------------------------------------- */
 
+/* The stack guide: a small bot that js/interactions.js moves across the
+   tools, and to the one being hovered, to show they open on click.
+   Decorative for screen readers,
+   which already hear each tool's description with its link. */
+function stackGuide(guide) {
+  if (!guide || !hasText(guide.hint)) return "";
+  return `<div class="stack-guide" aria-hidden="true" data-hint="${attr(guide.hint)}"
+        data-touch-hint="${attr(guide.touchHint || guide.hint)}">
+        <span class="stack-guide-bubble"></span>
+        <svg class="stack-guide-bot" viewBox="0 0 32 32" width="32" height="32">
+          <path d="M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="16" cy="3" r="2" fill="currentColor"/>
+          <rect x="5" y="8" width="22" height="18" rx="6" fill="#0a0a0a" stroke="currentColor" stroke-width="2"/>
+          <g class="stack-guide-eyes" fill="currentColor"><circle cx="12" cy="17" r="2.2"/><circle cx="20" cy="17" r="2.2"/></g>
+          <path d="M9 30h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>`;
+}
+
 function renderStack(data) {
   const root = document.querySelector('[data-section="stack"]');
   if (!root || !data) return;
@@ -981,6 +1000,7 @@ function renderStack(data) {
     <div class="section-inner">
       ${sectionTitle("stack")}
       <dl class="stack-groups">${groups}</dl>
+      ${stackGuide(data.guide)}
       <div class="github" id="github-activity" data-snapshot="${attr(github.snapshot)}"
         data-labels="${attr(JSON.stringify({ tooltip: github.tooltip || {}, stats: github.stats || {} }))}">
         <div class="github-head">

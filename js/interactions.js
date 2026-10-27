@@ -1050,6 +1050,8 @@
   ---------------------------------------------------------------- */
 
   function initStackTips() {
+    /* The stack guide bot explains these items itself when it is on. */
+    if (document.querySelector(".stack-guide")) return;
     const links = document.querySelectorAll(".stack-link[data-tip]");
     if (!links.length) return;
     const tip = document.createElement("div");
@@ -1092,6 +1094,169 @@
     document.addEventListener("keydown", (event) => { if (event.key === "Escape") hide(); });
   }
 
+  /* ---- Stack guide ---------------------------------------------------
+     A small bot lives in the Stack section while it is on screen. It
+     roams: perches on a random tool that is fully visible, says what it
+     is and "click (or tap) to learn more", and every few stops rests
+     quietly. When the visitor hovers or tabs to a tool, it flies
+     straight there and explains that one instead; on leaving, it goes
+     back to roaming. Paused while the section is off screen or the tab
+     is hidden. It replaces the plain tooltip for these items.
+  ---------------------------------------------------------------- */
+
+  function initStackGuide() {
+    const guide = document.querySelector(".stack-guide");
+    const groups = document.querySelector(".stack-groups");
+    const host = guide?.parentElement;
+    if (!guide || !groups || !host || !("IntersectionObserver" in window)) return;
+
+    const bubble = guide.querySelector(".stack-guide-bubble");
+    const hint = () => (finePointer.matches ? guide.dataset.hint : guide.dataset.touchHint);
+    const STEP = 3200;
+    const REST_EVERY = 4;
+    const REST = 7000;
+    const ITEMS = ".stack-logos li, .stack-pills li";
+    let timer = 0;
+    let inView = false;
+    let held = null;
+    let current = null;
+    let stops = 0;
+
+    const later = (fn, ms) => { clearTimeout(timer); timer = setTimeout(fn, ms); };
+    const active = () => inView && !document.hidden;
+
+    const say = (link) => {
+      bubble.replaceChildren(...[
+        ["strong", link.textContent],
+        ["span", link.dataset.tip],
+        ["em", hint()]
+      ].filter(([, words]) => words).map(([tag, words]) => {
+        const node = document.createElement(tag);
+        node.textContent = words;
+        return node;
+      }));
+    };
+
+    /* Perch on a tool's top-right corner; the bubble is centred on the
+       perch but kept inside the section. The first perch jumps there. */
+    const perch = (item) => {
+      const first = !guide.classList.contains("is-on");
+      const box = host.getBoundingClientRect();
+      const tile = item.getBoundingClientRect();
+      const x = tile.right - box.left - 8;
+      const y = tile.top - box.top + 6;
+      if (first) {
+        guide.classList.add("is-jump");
+        void guide.offsetWidth;
+      }
+      guide.style.setProperty("--x", `${Math.round(x)}px`);
+      guide.style.setProperty("--y", `${Math.round(y)}px`);
+      const width = bubble.offsetWidth;
+      const left = Math.min(Math.max(0, x - width / 2), box.width - width);
+      guide.style.setProperty("--bx", `${Math.round(left - x)}px`);
+      if (first) {
+        void guide.offsetWidth;
+        guide.classList.remove("is-jump");
+      }
+    };
+
+    const visit = (item) => {
+      const link = item.querySelector(".stack-link[data-tip]");
+      if (!link) return;
+      say(link);
+      perch(item);
+      current?.classList.remove("is-guided");
+      current = item;
+      item.classList.add("is-guided");
+      guide.classList.add("is-on", "is-talking");
+    };
+
+    const quiet = () => {
+      current?.classList.remove("is-guided");
+      current = null;
+      guide.classList.remove("is-talking");
+    };
+
+    const hide = () => {
+      clearTimeout(timer);
+      quiet();
+      guide.classList.remove("is-on");
+    };
+
+    /* A random tool fully on screen (below the floating nav), not the
+       one the bot is on. */
+    const pick = () => {
+      const items = [...groups.querySelectorAll(ITEMS)].filter((item) => {
+        const box = item.getBoundingClientRect();
+        return item !== current && item.querySelector(".stack-link[data-tip]") &&
+          box.height && box.top > 120 && box.bottom < window.innerHeight - 16;
+      });
+      return items[Math.floor(Math.random() * items.length)] || null;
+    };
+
+    const roam = () => {
+      if (held || !active()) return;
+      if (stops > 0 && stops % REST_EVERY === 0) {
+        stops += 1;
+        quiet();
+        later(roam, REST);
+        return;
+      }
+      const item = pick();
+      if (!item) { later(roam, 1500); return; }
+      stops += 1;
+      visit(item);
+      later(roam, STEP);
+    };
+
+    /* The visitor points at (or tabs to) a tool: the bot flies there
+       quickly and stays until they leave, then roams again. */
+    const hold = (item) => {
+      if (!item.querySelector(".stack-link[data-tip]")) return;
+      held = item;
+      clearTimeout(timer);
+      guide.classList.add("is-quick");
+      visit(item);
+    };
+
+    const release = (item) => {
+      if (held !== item) return;
+      held = null;
+      later(() => {
+        guide.classList.remove("is-quick");
+        quiet();
+        stops = 0;
+        roam();
+      }, 450);
+    };
+
+    new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      if (!inView) hide();
+      else if (!guide.classList.contains("is-on") && !held) later(roam, 1200);
+    }, { threshold: 0.35 }).observe(groups);
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) hide();
+      else if (inView && !held) later(roam, 800);
+    });
+
+    let scrolledAt = 0;
+    window.addEventListener("scroll", () => { scrolledAt = performance.now(); }, { passive: true });
+
+    groups.querySelectorAll(ITEMS).forEach((item) => {
+      /* Ignored right after a scroll: wheel-scrolling under a still
+         cursor also fires hover events, and the bot should not chase them. */
+      item.addEventListener("pointermove", (event) => {
+        if (event.pointerType === "mouse" && held !== item && performance.now() - scrolledAt > 200) hold(item);
+      });
+      item.addEventListener("pointerleave", (event) => { if (event.pointerType === "mouse") release(item); });
+      item.addEventListener("focusin", (event) => { if (event.target.matches(":focus-visible")) hold(item); });
+      item.addEventListener("focusout", () => release(item));
+    });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape" && held) release(held); });
+  }
+
   function boot() {
     initWorkPreview();
     initEditCarousels();
@@ -1102,6 +1267,7 @@
     initCertTilt();
     initStackLogos();
     initStackTips();
+    initStackGuide();
     initGithubGraph();
     initLocalTime();
     initFolds();

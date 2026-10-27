@@ -190,10 +190,7 @@ window.portfolioContentReady.then(() => {
   new ResizeObserver(place).observe(nav);
   place();
 
-  /* Phones keep the pill in view: it is the main navigation there, and
-     some browsers' bottom toolbars already come and go while scrolling.
-     Lift it by however much of the layout viewport a toolbar covers. */
-  const touch = matchMedia('(hover: none), (pointer: coarse)');
+  /* Lift the pill above browser toolbars and the software keyboard. */
   const viewport = window.visualViewport;
   if (viewport) {
     const lift = () => {
@@ -205,7 +202,7 @@ window.portfolioContentReady.then(() => {
     lift();
   }
 
-  /* Elsewhere it tucks away after ~24px of scrolling down and returns
+  /* It tucks away after ~24px of scrolling down and returns
      after ~16px back up, however slowly the scroll moves. */
   let last = window.scrollY;
   let turn = last;
@@ -217,7 +214,7 @@ window.portfolioContentReady.then(() => {
       frame = 0;
       const y = window.scrollY;
       if ((y > last) !== down) { down = y > last; turn = last; }
-      const busy = touch.matches || root.classList.contains('menu-open') || nav.contains(document.activeElement);
+      const busy = root.classList.contains('menu-open') || nav.contains(document.activeElement);
       if (y < 120 || busy || (!down && turn - y > 16)) root.classList.remove('nav-tucked');
       else if (down && y - turn > 24) root.classList.add('nav-tucked');
       last = y;

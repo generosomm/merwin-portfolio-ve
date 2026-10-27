@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /notes-admin.html
+
+Sitemap: https://generosomm.dev/sitemap.xml

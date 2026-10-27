@@ -835,6 +835,8 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      const button = form.querySelector('button[type="submit"]');
+      if (button.disabled) return;
       if (!form.reportValidity()) return;
 
       const fields = Object.fromEntries(new FormData(form).entries());
@@ -869,22 +871,25 @@
         return;
       }
 
-      const button = form.querySelector('button[type="submit"]');
       button.disabled = true;
       say("sending", "info");
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
       try {
         const response = await fetch(form.dataset.endpoint || "https://api.web3forms.com/submit", {
           method: "POST",
+          signal: controller.signal,
           headers: { "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify({ access_key: key, subject, from_name: fields.name, email: fields.email, message: lines.join("\n\n") })
         });
         const result = await response.json().catch(() => ({}));
-        if (!response.ok || result.success === false) throw new Error("rejected");
+        if (!response.ok || result.success !== true) throw new Error("rejected");
         form.reset();
         say("sent", "ok");
       } catch {
         say("failed", "error");
       } finally {
+        clearTimeout(timer);
         button.disabled = false;
       }
     });

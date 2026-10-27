@@ -1246,6 +1246,7 @@
 
 .brief-foot {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s-3) var(--s-5);
@@ -1254,6 +1255,7 @@
 
 .brief-status {
   margin: 0;
+  text-align: center;
   color: var(--text-mid);
   font-size: var(--fs-small);
 }

@@ -1,12 +1,33 @@
 {
-  "title": "Merwin Generoso — Systems Developer & Creative Technologist",
+  "title": "Merwin Generoso \u2014 Systems Developer & Creative Technologist",
   "description": "Systems developer and creative technologist from the Philippines. Node.js, Express, PHP, MySQL and EDI integrations, alongside short-form edits with 74M+ documented organic views.",
-  "socialTitle": "Merwin Generoso — Systems Developer & Creative Technologist",
+  "socialTitle": "Merwin Generoso \u2014 Systems Developer & Creative Technologist",
   "socialDescription": "Backend systems, EDI integrations and AI-generated media. 74M+ documented organic views.",
   "canonicalUrl": "https://generosomm.dev/",
   "socialImage": "https://generosomm.dev/assets/images/social-preview-2026-10.jpg",
-  "socialImageAlt": "Merwin Generoso — systems developer and creative technologist",
+  "socialImageAlt": "Merwin Generoso \u2014 systems developer and creative technologist",
   "socialImageWidth": "1200",
   "socialImageHeight": "630",
-  "themeColor": "#0A0A0A"
+  "themeColor": "#0A0A0A",
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://generosomm.dev/#website",
+        "url": "https://generosomm.dev/",
+        "name": "Merwin Generoso | Portfolio"
+      },
+      {
+        "@type": "Person",
+        "@id": "https://generosomm.dev/#person",
+        "name": "Merwin Generoso",
+        "url": "https://generosomm.dev/",
+        "sameAs": [
+          "https://github.com/generosomm",
+          "https://linkedin.com/in/generosomm"
+        ]
+      }
+    ]
+  }
 }

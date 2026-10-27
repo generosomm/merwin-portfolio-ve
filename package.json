@@ -5,5 +5,10 @@
   "type": "module",
   "engines": {
     "node": "24.x"
+  },
+  "scripts": {
+    "build": "node scripts/build-data.mjs",
+    "validate": "node scripts/validate-content.mjs",
+    "test": "node scripts/test-rendering.mjs && node scripts/test-studio.mjs && node scripts/test-motion.mjs && node scripts/test-navigation.mjs && node scripts/test-discovery.mjs && node scripts/test-contact-form.mjs && node scripts/test-live-stats.mjs"
   }
 }

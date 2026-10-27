@@ -31,13 +31,13 @@
     "deadline": "Deadline (optional)",
     "message": "Project details",
     "messageHint": "What are you promoting or building? Links help.",
-    "submit": "Open email draft",
-    "sending": "Sending…",
-    "sent": "Thanks! Your brief is on its way. I'll reply by email.",
-    "failed": "That didn't go through. Please email me directly instead.",
+    "submit": "Send project inquiry",
+    "sending": "Sending\u00e2\u20ac\u00a6",
+    "sent": "Thanks! Your inquiry was submitted. I'll reply by email.",
+    "failed": "Your inquiry could not be sent. Please try again or email me directly.",
     "subject": "Project brief: {service}",
-    "endpoint": "",
-    "accessKey": "",
+    "endpoint": "https://api.web3forms.com/submit",
+    "accessKey": "d79c9427-f0e8-4620-b3b8-7c35174a9fb0",
     "gmailOpened": "Your brief is ready in Gmail. Review it and press Send. If no tab opened, use this link:",
     "gmailRetry": "Open Gmail",
     "mobileOpened": "Continue in your email app, review your brief, then press Send. If it did not open, try this link:",
@@ -57,7 +57,7 @@
       "value": "Available for freelance projects & remote work"
     },
     {
-      "label": "Résumé",
+      "label": "R\u00c3\u00a9sum\u00c3\u00a9",
       "link": {
         "label": "View CV",
         "href": "assets/Merwin_Generoso_CV.pdf"

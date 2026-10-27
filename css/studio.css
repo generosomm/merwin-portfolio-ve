@@ -147,7 +147,9 @@ html.keyboard-input .project-deck .deck-info { animation: none; }
 .work-archive h4 { font-family: var(--font-display); font-size: clamp(21px, 1.7vw, 26px); font-weight: 600; line-height: 1.15; letter-spacing: -.03em; }
 .work-archive > ul > li > p { color: var(--studio-muted); font-size: 15px; line-height: 1.6; margin-block: 10px 14px; }
 @media (max-width: 767px) {
-  .project-description { padding-top: 16px; }
+  .project-description { padding-top: 16px; text-align: center; }
+  .project-description > p { margin-inline: auto; }
+  #work .project-description .work-tags { justify-content: center; }
   .project-description h3 { font-size: 25px; }
   /* Phones: the live link is a full-width button under the tags, easy to hit with a thumb. */
   .project-meta { flex-direction: column; align-items: stretch; gap: 16px; }

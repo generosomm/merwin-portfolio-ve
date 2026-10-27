@@ -52,6 +52,8 @@ window.portfolioContentReady.then(() => {
   let cueX = 0;
   let cueY = 0;
   function hideCue() {
+    /* Runs on every scroll event: touch the DOM only when it is showing. */
+    if (cue.hidden && !cueFrame) return;
     cancelAnimationFrame(cueFrame);
     cueFrame = 0;
     cue.hidden = true;
@@ -193,8 +195,12 @@ window.portfolioContentReady.then(() => {
   /* Lift the pill above browser toolbars and the software keyboard. */
   const viewport = window.visualViewport;
   if (viewport) {
+    /* A variable on <html> restyles the whole page, so only on change. */
+    let liftedBy = -1;
     const lift = () => {
       const covered = Math.max(0, Math.round(window.innerHeight - viewport.height - viewport.offsetTop));
+      if (covered === liftedBy) return;
+      liftedBy = covered;
       root.style.setProperty('--vv-bottom', `${covered}px`);
     };
     viewport.addEventListener('resize', lift);
@@ -215,8 +221,9 @@ window.portfolioContentReady.then(() => {
       const y = window.scrollY;
       if ((y > last) !== down) { down = y > last; turn = last; }
       const busy = root.classList.contains('menu-open') || nav.contains(document.activeElement);
-      if (y < 120 || busy || (!down && turn - y > 16)) root.classList.remove('nav-tucked');
-      else if (down && y - turn > 24) root.classList.add('nav-tucked');
+      const tucked = root.classList.contains('nav-tucked');
+      if (tucked && (y < 120 || busy || (!down && turn - y > 16))) root.classList.remove('nav-tucked');
+      else if (!tucked && !busy && y >= 120 && down && y - turn > 24) root.classList.add('nav-tucked');
       last = y;
     });
   }, { passive: true });

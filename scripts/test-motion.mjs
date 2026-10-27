@@ -9,7 +9,7 @@ assert.ok(index.indexOf('vendor/ScrollTrigger.min.js') < index.indexOf('js/motio
 async function boot({ reduced = false, libraries = true, site = true } = {}) {
   let registrations = 0, configurations = 0, bindings = 0;
   const ready = Promise.resolve();
-  const window = { portfolioContentReady: ready, addEventListener() {}, ...(site ? { portfolio: { reduceMotion: reduced, lenis: { on() { bindings++; } } } } : {}), ...(libraries ? { gsap: { registerPlugin() { registrations++; }, matchMedia: () => ({ add() {} }) }, ScrollTrigger: { config() { configurations++; }, update() {}, refresh() {} } } : {}) };
+  const window = { portfolioContentReady: ready, addEventListener() {}, ...(site ? { portfolio: { reduceMotion: reduced, lenis: { on() { bindings++; } } } } : {}), ...(libraries ? { gsap: { registerPlugin() { registrations++; }, matchMedia: () => ({ add() {} }) }, ScrollTrigger: { config() { configurations++; }, update() {}, refresh() {}, addEventListener() {} } } : {}) };
   vm.runInNewContext(motion, { window, document: { querySelector: () => null, querySelectorAll: () => [], documentElement: { classList: { add() {} } }, addEventListener() {} }, navigator: {} });
   await ready; await Promise.resolve();
   return { registrations, configurations, bindings };

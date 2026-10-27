@@ -17,7 +17,11 @@
     root.classList.remove("has-ios-cursor");
   }
   window.addEventListener("pointermove", (event) => {
-    if (event.pointerType !== "mouse" || !fine.matches || forced.matches) { hide(); return; }
+    /* Lite mode (js/site.js) keeps the system cursor: no blending pass. */
+    if (event.pointerType !== "mouse" || !fine.matches || forced.matches || root.classList.contains("perf-lite")) {
+      if (cursor.classList.contains("is-visible")) hide();
+      return;
+    }
     cursor.style.transform = `translate3d(${event.clientX - 2.5}px, ${event.clientY - 1.9}px, 0)`;
     cursor.classList.add("is-visible");
     root.classList.add("has-ios-cursor");

@@ -10,6 +10,20 @@
     document.documentElement.classList.toggle("in-hero", !location.hash || location.hash === "#hero");
     /* The hero waits in its start pose until js/site.js plays the entrance. */
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("hero-armed");
+    /* Lite mode for weak devices: no smooth-scroll layer, no glass blur,
+       no scrubbed blur and no self-moving strips. Clearly low-end
+       hardware starts in it; js/site.js also switches it on if scrolling
+       drops frames. ?lite=1 or ?lite=0 forces it either way. */
+    (function () {
+      var n = navigator, forced = /[?&]lite=([01])/.exec(location.search);
+      /* Core counts are only trusted where memory is reported too
+         (Chromium): Safari caps them and privacy browsers fake them. */
+      var real = "deviceMemory" in n, cores = n.hardwareConcurrency || 8, memory = n.deviceMemory || 8;
+      var lite = forced ? forced[1] === "1"
+        : Boolean(n.connection && n.connection.saveData) || (real && (cores <= 2 || memory <= 2 || (cores <= 4 && memory <= 4)));
+      if (forced) document.documentElement.dataset.liteForced = forced[1];
+      if (lite) document.documentElement.classList.add("perf-lite");
+    })();
   </script>
 
   <!-- Static copies of data/00-meta.json so crawlers that do not run
@@ -73,14 +87,14 @@
   <link rel="stylesheet" href="css/closing.css?v=r76">
   <link rel="stylesheet" href="css/live-stats.css?v=r69">
   <link rel="stylesheet" href="css/notes.css?v=r69">
-  <link rel="stylesheet" href="css/studio.css?v=studio31">
+  <link rel="stylesheet" href="css/studio.css?v=studio32">
 
   <!-- Nothing appears until content.js has run with the site's data,
        so both are fetched early, right after the render-blocking CSS:
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=studio16" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=studio17" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -98,16 +112,16 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=studio16" defer></script>
-  <script src="js/studio.js?v=studio16" defer></script>
+  <script src="js/content.js?v=studio17" defer></script>
+  <script src="js/studio.js?v=studio17" defer></script>
   <script src="js/studio-motion.js?v=studio10" defer></script>
-  <script src="js/site.js?v=studio11" defer></script>
-  <script src="js/interactions.js?v=studio8" defer></script>
-  <script src="js/cursor.js?v=r69" defer></script>
+  <script src="js/site.js?v=studio13" defer></script>
+  <script src="js/interactions.js?v=studio10" defer></script>
+  <script src="js/cursor.js?v=r70" defer></script>
   <script src="vendor/lenis.min.js?v=1.1.18" defer></script>
   <script src="vendor/gsap.min.js?v=3.13.0" defer></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.13.0" defer></script>
-  <script src="js/motion.js?v=studio11" defer></script>
+  <script src="js/motion.js?v=studio13" defer></script>
   <!-- Live social stats (optional): upgrades the Numbers section with
        /api/stats. Remove it and the documented figures still show. -->
   <script src="js/live-stats.js?v=r69" defer></script>

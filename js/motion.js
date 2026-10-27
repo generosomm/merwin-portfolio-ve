@@ -37,12 +37,18 @@
     window.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
 
     /* Lazy images change heights below the fold as they arrive; one
-       debounced refresh after a burst of them keeps triggers honest. */
+       debounced refresh after a burst of them keeps triggers honest.
+       Most images have reserved boxes, so skip the refresh (a long
+       task mid-scroll) when the page height didn't actually change. */
     let refreshTimer = 0;
+    let measuredHeight = document.documentElement.scrollHeight;
+    ScrollTrigger.addEventListener("refresh", () => { measuredHeight = document.documentElement.scrollHeight; });
     document.addEventListener("load", (event) => {
       if (event.target.tagName !== "IMG") return;
       window.clearTimeout(refreshTimer);
-      refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 250);
+      refreshTimer = window.setTimeout(() => {
+        if (document.documentElement.scrollHeight !== measuredHeight) ScrollTrigger.refresh();
+      }, 250);
     }, true);
 
     /* Set up the introduction before the section and card reveals. */
@@ -79,9 +85,17 @@
         narrow: "(max-width: 1023px), (hover: none), (pointer: coarse)"
       },
       ({ conditions }) => {
-        if (conditions.wide) {
+        /* Lite mode (js/site.js) gets the one-shot reveal too. If it
+           switches on mid-visit, the scrub stops and the words settle. */
+        if (conditions.wide && !window.portfolio.lite) {
+          const settle = () => {
+            scrub.scrollTrigger?.kill();
+            scrub.kill();
+            gsap.set(words, { clearProps: "opacity,filter,transform" });
+          };
+          window.addEventListener("portfolio:lite", settle, { once: true });
           /* 0.55 keeps even the green words above 3:1 at their dimmest. */
-          gsap.fromTo(
+          const scrub = gsap.fromTo(
             words,
             { opacity: 0.55, filter: "blur(10px)", yPercent: 35 },
             {
@@ -94,7 +108,7 @@
               scrollTrigger: { trigger: section, start: "top 85%", end: "bottom 55%", scrub: 0.8 }
             }
           );
-          return;
+          return () => window.removeEventListener("portfolio:lite", settle);
         }
         let done = 0;
         words.forEach((word, index) => word.style.setProperty("--i", index));
@@ -187,6 +201,13 @@
     /* Touch screens skip the springy scale: re-rasterising ~30 scaled
        tiles is what made this section stutter on phones. */
     const touch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    const scrollTrigger = { trigger: groups, start: "top 80%", once: true };
+    /* Lite mode (js/site.js): one fade for the whole block instead of
+       ~30 staggered tiles, which cost weak phones most of a second. */
+    if (window.portfolio.lite) {
+      gsap.from(groups, { opacity: 0, y: 18, duration: 0.45, ease: "power2.out", clearProps: "opacity,transform", scrollTrigger });
+      return;
+    }
     gsap.from(tiles, {
       opacity: 0,
       scale: touch ? 1 : 0.6,
@@ -195,7 +216,7 @@
       ease: touch ? "power2.out" : "back.out(2.2)",
       stagger: touch ? 0.02 : 0.035,
       clearProps: "opacity,transform",
-      scrollTrigger: { trigger: groups, start: "top 80%", once: true }
+      scrollTrigger
     });
   }
 

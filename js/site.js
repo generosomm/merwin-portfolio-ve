@@ -73,7 +73,7 @@
   const touchFirst = window.matchMedia("(hover: none), (pointer: coarse)").matches;
 
   function initLenis() {
-    if (reduceMotion || touchFirst || lenis || typeof window.Lenis !== "function") return null;
+    if (reduceMotion || touchFirst || lite() || lenis || typeof window.Lenis !== "function") return null;
 
     const instance = new window.Lenis({
       autoRaf: true,
@@ -481,6 +481,71 @@
     };
   }
 
+  /* ---- Lite mode -----------------------------------------------
+     index.html starts clearly low-end devices in lite mode. Everyone
+     else is watched while they scroll: if two short samples both drop
+     a lot of frames, the page switches to lite for the rest of the
+     visit. CSS reacts to the class; scripts read portfolio.lite or
+     listen for "portfolio:lite". ?lite=0 turns the watch off.
+  ------------------------------------------------------------- */
+
+  function lite() {
+    return root.classList.contains("perf-lite");
+  }
+
+  function dropSmoothScroll() {
+    if (!lenis) return;
+    lenis.destroy();
+    lenis = null;
+    window.addEventListener("scroll", queueEmit, { passive: true });
+    emit();
+  }
+
+  function enterLite() {
+    if (lite()) return;
+    root.classList.add("perf-lite");
+    dropSmoothScroll();
+    window.dispatchEvent(new CustomEvent("portfolio:lite"));
+  }
+
+  function watchFrameRate() {
+    if (lite() || root.dataset.liteForced === "0") return;
+    let sampling = false;
+    let slowSamples = 0;
+    let samples = 0;
+
+    function sample() {
+      sampling = true;
+      let frames = 0, slow = 0, last = 0, lastScroll = performance.now();
+      const markScroll = () => { lastScroll = performance.now(); };
+      window.addEventListener("scroll", markScroll, { passive: true });
+
+      function frame(now) {
+        /* Only frames spent actually scrolling, in a visible tab. */
+        if (last && !document.hidden && now - lastScroll < 200) {
+          frames++;
+          /* 45 ms, not 34: battery savers cap rAF at 30 fps by design. */
+          if (now - last > 45) slow++;
+        }
+        last = now;
+        if (frames < 90 && now - lastScroll < 1500) { requestAnimationFrame(frame); return; }
+        window.removeEventListener("scroll", markScroll);
+        sampling = false;
+        if (frames < 45) return;
+        samples++;
+        if (slow / frames >= 0.3) slowSamples++;
+        if (slowSamples >= 2) enterLite();
+        if (lite() || samples >= 4) window.removeEventListener("scroll", start);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (!sampling) sample();
+    }
+    window.addEventListener("scroll", start, { passive: true });
+  }
+
   /* ---- Boot ---------------------------------------------------- */
 
   function boot() {
@@ -495,6 +560,9 @@
       get lenis() {
         return lenis;
       },
+      get lite() {
+        return lite();
+      },
       onScroll,
       readScroll,
       ready
@@ -506,6 +574,8 @@
     ready.then(() => {
       root.classList.add("hero-play");
       window.setTimeout(() => root.classList.remove("hero-armed"), 2500);
+      /* Judge frame rate only after the entrance has played. */
+      window.setTimeout(watchFrameRate, 2500);
     });
 
     initHeroLockup();
@@ -523,12 +593,7 @@
 
   motionQuery.addEventListener?.("change", (event) => {
     reduceMotion = event.matches;
-    if (reduceMotion && lenis) {
-      lenis.destroy();
-      lenis = null;
-      window.addEventListener("scroll", queueEmit, { passive: true });
-      emit();
-    }
+    if (reduceMotion) dropSmoothScroll();
   });
 
   if (window.portfolioContentReady?.then) {

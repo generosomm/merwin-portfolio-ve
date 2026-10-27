@@ -16,6 +16,28 @@
      means a scroll-position write every frame, which costs phones a
      steady share of every frame; swiping and the arrows still work. */
   const touchFirst = window.matchMedia("(hover: none), (pointer: coarse)");
+  /* Lite mode for weak devices (index.html, js/site.js). */
+  const lite = () => document.documentElement.classList.contains("perf-lite");
+
+  /* Pointer-driven tilts: high-rate mice send several moves per frame,
+     and each one would measure and restyle. Handle the latest move
+     once per frame instead. */
+  function onPointerFrame(element, handler) {
+    let frame = 0;
+    let latest = null;
+    element.addEventListener("pointermove", (event) => {
+      latest = event;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        handler(latest);
+      });
+    }, { passive: true });
+    element.addEventListener("pointerleave", () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    });
+  }
 
   /* ---- Selected work: 3D preview card ---------------------------------
      One card for the whole list. Hovering (or tabbing to) a row swings
@@ -105,14 +127,14 @@
       if (row && row !== current) show(row);
     });
 
-    list.addEventListener("pointermove", (event) => {
+    onPointerFrame(list, (event) => {
       if (!current || reduceMotion.matches || !preview.classList.contains("is-visible")) return;
       const box = current.getBoundingClientRect();
       const dx = Math.max(-1, Math.min(1, (event.clientX - (box.left + box.width / 2)) / (box.width / 2)));
       const dy = Math.max(-1, Math.min(1, (event.clientY - (box.top + box.height / 2)) / (box.height / 2)));
       preview.style.setProperty("--ry", `${(dx * 12).toFixed(2)}deg`);
       preview.style.setProperty("--rx", `${(-dy * 10).toFixed(2)}deg`);
-    }, { passive: true });
+    });
 
     list.addEventListener("pointerleave", hide);
 
@@ -139,6 +161,9 @@
       if (!media) return;
       let video = null;
       card.addEventListener("pointerenter", () => {
+        /* Lite mode keeps the still: decoding a clip per hover is what
+           weak machines and slow connections can least afford. */
+        if (!video && lite()) return;
         if (!video) {
           video = document.createElement("video");
           video.muted = true;
@@ -276,7 +301,7 @@
       let drag = null, suppressClickUntil = 0;
       let busyUntil = 0, resumeTimer = 0;
       const focused = () => panel.contains(document.activeElement);
-      const canPlay = () => inView && !panel.hidden && !document.hidden && !reduceMotion.matches && !touchFirst.matches &&
+      const canPlay = () => inView && !panel.hidden && !document.hidden && !reduceMotion.matches && !touchFirst.matches && !lite() &&
         !hovered && !touching && !focused() && !document.querySelector("dialog[open]") && performance.now() >= busyUntil;
 
       function stop() {
@@ -392,6 +417,7 @@
       document.addEventListener("visibilitychange", sync);
       document.querySelector(".lightbox")?.addEventListener("close", sync);
       reduceMotion.addEventListener("change", sync);
+      window.addEventListener("portfolio:lite", sync);
       measure();
     });
   }
@@ -565,7 +591,7 @@
     if (!finePointer.matches) return;
 
     document.querySelectorAll(".stack-logo").forEach((tile) => {
-      tile.addEventListener("pointermove", (event) => {
+      onPointerFrame(tile, (event) => {
         const box = tile.getBoundingClientRect();
         const x = (event.clientX - box.left) / box.width;
         const y = (event.clientY - box.top) / box.height;
@@ -598,7 +624,7 @@
       const media = card.querySelector(".cert-media");
       if (!media) return;
 
-      card.addEventListener("pointermove", (event) => {
+      onPointerFrame(card, (event) => {
         const box = media.getBoundingClientRect();
         const x = Math.min(Math.max((event.clientX - box.left) / box.width, 0), 1);
         const y = Math.min(Math.max((event.clientY - box.top) / box.height, 0), 1);
@@ -962,7 +988,7 @@
       fold.openFold = () => set(true);
 
       if (finePointer && !reduce) {
-        key.addEventListener("pointermove", (event) => {
+        onPointerFrame(key, (event) => {
           const box = key.getBoundingClientRect();
           const x = (event.clientX - box.left) / box.width - 0.5;
           const y = (event.clientY - box.top) / box.height - 0.5;

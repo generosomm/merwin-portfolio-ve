@@ -714,7 +714,8 @@ function renderWork(data) {
 /* ---- Selected edits: looping rows with hover video previews -------- */
 
 function editMedia(item) {
-  const video = hasText(item.video) ? ` data-video="${attr(item.video)}"` : "";
+  const clip = hasText(item.preview) ? item.preview : item.video;
+  const video = hasText(clip) ? ` data-video="${attr(clip)}"` : "";
   return `<span class="edit-media"${video}>
     ${picture({ src: item.image, alt: "", width: item.imageWidth, height: item.imageHeight })}
     ${hasText(item.badge) ? `<span class="edit-badge">${text(item.badge)}</span>` : ""}

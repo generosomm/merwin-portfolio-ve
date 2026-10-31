@@ -490,14 +490,19 @@ section + section {
   /* Work page on phones: everything on the centre line. */
   .wp-head,
   .wp-body,
-  .wp-archive li {
+  .wp-archive li,
+  .xp-row,
+  .xp-certs li {
     text-align: center;
   }
 
   .wp-head p,
-  .wp-summary {
+  .wp-summary,
+  .xp-summary {
     margin-inline: auto;
   }
+
+  .xp-notes { padding-left: 0; }
 
   .wp-heading {
     justify-content: center;

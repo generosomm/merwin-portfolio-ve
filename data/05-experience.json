@@ -55,5 +55,53 @@
       "summary": "Led requirements and stakeholder coordination for a PHP/MySQL document system covering 32 city departments. Contributed routing, digital signatures and an admin dashboard.",
       "link": null
     }
-  ]
+  ],
+  "all": {
+    "label": "See full history",
+    "href": "experience.html"
+  },
+  "page": {
+    "title": "Experience",
+    "intro": "Where I’ve built, edited and led, plus the studies and certifications behind it.",
+    "rolesHeading": "Roles",
+    "educationHeading": "Education",
+    "education": {
+      "degree": "BS Information Technology",
+      "school": "National University Laguna × Asia Pacific College",
+      "period": "Fourth year · Expected July 2027",
+      "notes": [
+        "Dean’s Lister for consecutive academic years",
+        "City Government of Sto. Tomas scholar"
+      ]
+    },
+    "certificationsHeading": "Certifications",
+    "certifications": [
+      {
+        "name": "IT Specialist: Network Security",
+        "issuer": "Certiport",
+        "year": "2026"
+      },
+      {
+        "name": "IT Specialist: Databases",
+        "issuer": "Certiport",
+        "year": "2025"
+      },
+      {
+        "name": "Agentblazer Champion, 16 superbadges",
+        "issuer": "Salesforce Trailhead",
+        "year": "2025 & 2026"
+      }
+    ],
+    "moreHeading": "Also",
+    "more": [
+      {
+        "role": "Volunteer Technical Support",
+        "organization": "NU Laguna",
+        "period": "2025",
+        "summary": "Set up lab PCs for the intramurals esports event and supported the MSC UI/UX development workshop."
+      }
+    ],
+    "languages": "Filipino (native) · English (fluent)",
+    "note": "Generates experience.html at build time (scripts/initial-html.mjs). Facts come from the resume; keep them in sync."
+  }
 }

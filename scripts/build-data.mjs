@@ -3,6 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { writeInitialHTML } from './initial-html.mjs';
 
 /* =============================================================
    Data bundle.
@@ -43,5 +44,6 @@ export async function buildBundle() {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const bundle = await buildBundle();
   await writeFile(OUTPUT, JSON.stringify(bundle));
+  await writeInitialHTML(bundle.files);
   console.log(`Built data/site.json from ${Object.keys(bundle.files).length} files (sources ${bundle.sources}).`);
 }

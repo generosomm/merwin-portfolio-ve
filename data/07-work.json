@@ -14,7 +14,21 @@
         "alt": "Nails by Sharline website with nail color previews and nail services",
         "width": 1239,
         "height": 873
-      }
+      },
+      "caseStudy": [
+        {
+          "label": "Challenge",
+          "text": "A local nail business needed one clear place to show its services and take inquiries."
+        },
+        {
+          "label": "My role",
+          "text": "Designed and built the whole site, from the first layout to launch."
+        },
+        {
+          "label": "Approach",
+          "text": "Services and nail colours up front, with one tap to message the owner on Facebook."
+        }
+      ]
     },
     {
       "title": "ASINTA",
@@ -32,7 +46,21 @@
         "alt": "ASINTA landing page hero with workforce operations headline and a 3D security site model",
         "width": 1200,
         "height": 750
-      }
+      },
+      "caseStudy": [
+        {
+          "label": "Challenge",
+          "text": "Security agencies juggle schedules, guard check-ins and client updates across separate tools."
+        },
+        {
+          "label": "My role",
+          "text": "Full-stack developer in a five-person Scrum team."
+        },
+        {
+          "label": "Approach",
+          "text": "Admin, guard and client portals on one Firebase backend, with location-verified check-in and role-based access."
+        }
+      ]
     },
     {
       "title": "Modern Way Redesign",
@@ -50,7 +78,21 @@
         "alt": "Modern Way redesign hero with the headline Your workday ends, theirs begins, and a New York to Manila time arc",
         "width": 1200,
         "height": 750
-      }
+      },
+      "caseStudy": [
+        {
+          "label": "Challenge",
+          "text": "A virtual assistant agency needed US clients to see the Manila time difference as an advantage."
+        },
+        {
+          "label": "My role",
+          "text": "Proposed, designed and built the redesign."
+        },
+        {
+          "label": "Approach",
+          "text": "Lead with the time difference, then clear services, a pricing comparison and a free delegation plan."
+        }
+      ]
     },
     {
       "title": "AyosPapel",
@@ -68,7 +110,21 @@
         "alt": "AyosPapel landing page hero with the headline Resibo in, SLSP out, and extracted TIN and VAT tags",
         "width": 1200,
         "height": 750
-      }
+      },
+      "caseStudy": [
+        {
+          "label": "Challenge",
+          "text": "Turning a pile of receipts into the quarterly SLSP is slow, manual work."
+        },
+        {
+          "label": "My role",
+          "text": "Designed and built the landing page proposal."
+        },
+        {
+          "label": "Approach",
+          "text": "An interactive demo where sample receipts fill the sales and purchases list, so visitors see the result in seconds."
+        }
+      ]
     },
     {
       "title": "Off Axis",
@@ -86,7 +142,21 @@
         "alt": "Off Axis home with 3D previews of the Roll and Unlink puzzles",
         "width": 1200,
         "height": 750
-      }
+      },
+      "caseStudy": [
+        {
+          "label": "Challenge",
+          "text": "I wanted puzzles that make you think in 3D, right in the browser, with nothing to install."
+        },
+        {
+          "label": "My role",
+          "text": "Designed and built it."
+        },
+        {
+          "label": "Approach",
+          "text": "React, Three.js and Supabase. Roll, the first puzzle, has six practice levels; the second is on the way."
+        }
+      ]
     },
     {
       "title": "MSC NU Laguna Website",
@@ -134,20 +204,37 @@
       "TODO": "Add a live link (href) and a 1200x750 WebP screenshot (image) when available. Until then the row shows without a link or preview."
     },
     {
-      "title": "Zero to Deploy",
-      "summary": "A guided planner that turns a client idea into a clear, approved project plan.",
+      "title": "Universal Web Dev",
+      "summary": "A free skill that helps AI coding assistants plan, build and check websites before they launch.",
+      "status": "Free · Open source",
       "tags": [
-        "HTML5",
-        "CSS3",
-        "JavaScript"
+        "Agent Skill",
+        "Python",
+        "Claude Code",
+        "Codex"
       ],
-      "href": "https://generosomm.github.io/ZeroToDeploy/",
+      "href": "https://www.agensi.io/skills/universal-web-dev",
+      "visitLabel": "Get it free",
       "image": {
-        "src": "assets/images/work/zero-to-deploy.webp",
-        "alt": "The Zero to Deploy home screen",
+        "src": "assets/images/work/universal-web-dev.webp",
+        "alt": "Universal Web Dev banner with its one-message install command",
         "width": 1200,
         "height": 750
-      }
+      },
+      "caseStudy": [
+        {
+          "label": "Challenge",
+          "text": "AI-built websites tend to look the same and skip launch basics like phone layouts and broken links."
+        },
+        {
+          "label": "My role",
+          "text": "Created it and keep it updated."
+        },
+        {
+          "label": "Approach",
+          "text": "It began as Zero to Deploy, a planning website. Now it lives inside your AI: one install, 33 vetted skills and a Launch Readiness Score at the end."
+        }
+      ]
     },
     {
       "title": "Nexus Pass",
@@ -163,7 +250,21 @@
         "alt": "The Nexus Pass registration screen",
         "width": 1200,
         "height": 750
-      }
+      },
+      "caseStudy": [
+        {
+          "label": "Challenge",
+          "text": "Event passes are easy to lose and hard to check at the door."
+        },
+        {
+          "label": "My role",
+          "text": "Designed and built the demo."
+        },
+        {
+          "label": "Approach",
+          "text": "Fill a short form and get a live digital pass with a role, access level, QR code and a tap-to-scan check."
+        }
+      ]
     },
     {
       "title": "This Portfolio",
@@ -184,7 +285,21 @@
         "width": 1200,
         "height": 750
       },
-      "shipped": false
+      "shipped": false,
+      "caseStudy": [
+        {
+          "label": "Challenge",
+          "text": "One place to show both my websites and my video work, without slowing down."
+        },
+        {
+          "label": "My role",
+          "text": "Designed and built it from scratch."
+        },
+        {
+          "label": "Approach",
+          "text": "Built from scratch with plain HTML, CSS and JavaScript, so it stays fast. Live view counts update on their own."
+        }
+      ]
     }
   ],
   "note": "Live websites appear as a three-preview depth deck, browsable with arrows, keyboard or swipe. Other systems retain text-only details without repository screenshots.",
@@ -192,9 +307,20 @@
     "defaultProject": "ASINTA",
     "visit": "Visit live site",
     "archiveTitle": "Other systems",
-    "label": "Selected website projects",
-    "previous": "Previous website",
-    "next": "Next website",
-    "thumbs": "Jump to a website"
+    "label": "Selected projects",
+    "previous": "Previous project",
+    "next": "Next project",
+    "thumbs": "Jump to a project",
+    "caseLabel": "Behind the build"
+  },
+  "page": {
+    "title": "All work",
+    "intro": "Every website, system and tool I’ve built, with the challenge, my role and the approach behind each one.",
+    "liveHeading": "Websites & tools",
+    "note": "Generates work.html at build time (scripts/initial-html.mjs). liveHeading titles the projects with a link; viewer.archiveTitle titles the rest."
+  },
+  "all": {
+    "label": "See all projects",
+    "href": "work.html"
   }
 }

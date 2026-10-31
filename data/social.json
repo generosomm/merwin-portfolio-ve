@@ -13,9 +13,9 @@
       "url": "https://www.tiktok.com/@eroedtx",
       "enabled": true,
       "documented": {
-        "views": 57900000,
+        "views": 45600000,
         "window": "last 365 days",
-        "asOf": "TODO: date of the TikTok Studio screenshot",
+        "asOf": "2026-10-29",
         "source": "#proof"
       }
     },
@@ -24,9 +24,9 @@
       "url": "https://www.youtube.com/@eroedtx",
       "enabled": true,
       "documented": {
-        "views": 16400000,
+        "views": 23608578,
         "window": "lifetime",
-        "asOf": "TODO: date of the YouTube Studio screenshot",
+        "asOf": "2026-10-30",
         "source": "#proof"
       }
     },
@@ -44,14 +44,14 @@
     }
   },
   "baseline": {
-    "note": "Documented historical totals from my own analytics screenshots, used when an API can't reach full history. 74.3M = TikTok 57.9M (last 365 days) + YouTube 16.4M (lifetime), both shown in the Proof section.",
-    "totalViews": 74300000,
-    "asOf": "TODO: date of the newer of the two screenshots",
+    "note": "Screenshot-backed view counts supplied October 31, 2026: TikTok 45.6M for the displayed last-365-days period ending October 29, 2026, plus YouTube 23,608,578 lifetime channel views through October 30, 2026. This mixed-period sum is not a combined lifetime or annual total. TikTok is dashboard-rounded. Public Proof uses original Shorts screenshots without revenue; exact YouTube channel count comes from the Overview supplied privately in chat.",
+    "totalViews": 69208578,
+    "asOf": "2026-10-30",
     "source": "#proof"
   },
   "fallback": {
     "followersTotal": null,
-    "viewsTotal": 74300000
+    "viewsTotal": 69208578
   },
   "display": {
     "caption": "Followers, views and posts on each platform",

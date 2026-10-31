@@ -10,5 +10,10 @@
     "maxWaitMs": 2000
   },
   "phasePending": "Builds in a later phase",
-  "contentError": "Some portfolio content could not be loaded. Please refresh the page."
+  "contentError": "Some portfolio content could not be loaded. Please refresh the page.",
+  "initial": {
+    "label": "Work and contact links",
+    "title": "Explore my work",
+    "note": "These links work without JavaScript. The full interactive portfolio appears when scripts and content are available."
+  }
 }

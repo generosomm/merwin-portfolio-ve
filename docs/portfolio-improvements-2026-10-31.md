@@ -1,0 +1,19 @@
+# Portfolio refinement
+
+The user approved implementing the 2026-10-31 audit findings and featuring their Universal Web Dev authorship. Preserve the existing portrait/name identity, vanilla JS/JSON architecture and website-first showcase. No publishing is authorized by this implementation request.
+
+Scope: stabilize/defer Proof enhancement, prioritize critical assets and render the hero before JavaScript; quiet the mobile guide; add a separate open-source AI workflow feature and factual skill descriptions; add compact case-study disclosures; collapse secondary tools; provide no-JavaScript work/contact access and branded 404 recovery; correct privacy metadata.
+
+Analytics screenshots supplied October 31, 2026 are recorded under docs/analytics with original revenue-free assets. Capture dates remain unspecified; reporting endpoints are taken from the dashboards. TikTok 45.6M is a rolling-period count; YouTube 23,608,578 is lifetime. The documented 69M+ fallback explicitly describes this mixed-period sum and is not presented as a combined lifetime or annual total.
+
+Acceptance: the original identity, navigation, work deck, media and contact behavior remain usable; the authored skill has a working repository link and clear attribution; secondary skills are reachable by keyboard/touch; the mobile guide does not auto-speak over contact; essential identity/contact/work remain available without JavaScript. Run build, validation, regression scripts and rendered checks at 320, 390, 768 and 1440px. Compare mobile lab performance under equivalent conditions. Form tests remain intercepted; inbox delivery is separate.
+
+Status: independent implementation verified locally. Analytics proof and related copy are now aligned with the supplied screenshots.
+
+Implemented: hero authorship link and dedicated Universal Web Dev feature; original/upstream attribution; AI workflow skills and compact tools disclosure; two project case studies; touch guide quiet by default and hidden during form focus; deferred Proof setup; generated initial hero/work/contact access; automatic asset hashes checked by validation; branded 404 and corrected privacy description. The commit hook stages generated HTML and bundle together. No portfolio commit, push or deployment has been performed.
+
+Verification: build, content validation, full existing npm test chain and new refinement checks passed. Browser checks at 320, 390, 768 and 1440px found no horizontal overflow or JavaScript exceptions. Case-study/tool disclosures, Proof lightbox, contact success interception and no-JavaScript contact/work access passed. Mobile axe scan found no automatic violations after correcting video-link accessible names. A reviewer found delayed-content navigation could strand a visitor at the fallback; the fallback now shares #work and restores a relevant active destination after hydration. Delayed-data and no-JavaScript navigation regressions passed.
+
+Controlled local performance checkpoint: same Brotli preview server, cold cache, 390x844 viewport, 4x CPU slowdown, 150ms latency, 1.6Mbps download, three runs per version. Before LCP 3.424/2.808/2.648s (median 2.808s), CLS 0.0188 each. After LCP 1.204/1.472/1.188s (median 1.204s), CLS 0 each. This is a local checkpoint, not deployed/field verification. The initial public-site audit used different delivery conditions and must not be used as the direct before value for this comparison.
+
+Limits: physical phones, assistive-technology journey, provider inbox delivery and production 404 behavior remain unverified. Revenue is excluded from all new public assets and repository data. A separate generated redacted Overview is provided as an edited copy only; original revenue-free Shorts screenshots supply public proof. Current YouTube monthly audience is 37.7K; the former 4M card was removed. Top YouTube Short updated to 18.7M and Home Along trailer to 4.1M. Live counts remain distinct and can exceed the screenshot fallback.

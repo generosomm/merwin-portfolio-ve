@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="has-initial-hero">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,7 +9,7 @@
   <script>
     document.documentElement.classList.toggle("in-hero", !location.hash || location.hash === "#hero");
     /* The hero waits in its start pose until js/site.js plays the entrance. */
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("hero-armed");
+    if (!document.documentElement.classList.contains("has-initial-hero") && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("hero-armed");
     /* Lite mode for weak devices: no smooth-scroll layer, no glass blur,
        no scrubbed blur and no self-moving strips. Clearly low-end
        hardware starts in it; js/site.js also switches it on if scrolling
@@ -30,10 +30,10 @@
        JS still see real metadata. js/content.js overwrites these from
        the JSON at runtime, which stays the single source of truth. -->
   <title>Merwin Generoso — Systems Developer &amp; Creative Technologist</title>
-  <meta name="description" content="Systems developer and creative technologist from the Philippines. Node.js, Express, PHP, MySQL and EDI integrations, alongside short-form edits with 74M+ documented organic views.">
+  <meta name="description" content="Merwin Generoso builds business websites and systems, edits short-form content, and created Universal Web Dev. Documented: 45.6M TikTok views in 365 days and 23.6M YouTube lifetime views.">
   <link rel="canonical" href="https://generosomm.dev/">
   <meta property="og:title" content="Merwin Generoso — Systems Developer &amp; Creative Technologist">
-  <meta property="og:description" content="Backend systems, EDI integrations and AI-generated media. 74M+ documented organic views.">
+  <meta property="og:description" content="Business websites, systems and short-form editing. Creator of Universal Web Dev. 45.6M TikTok views in 365 days; 23.6M YouTube lifetime views.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://generosomm.dev/">
   <meta property="og:image" content="https://generosomm.dev/assets/images/social-preview-2026-10.jpg">
@@ -75,26 +75,29 @@
 
   <!-- Parallel links, not an @import chain: each stylesheet starts
        downloading as soon as the HTML is parsed. -->
-  <link rel="stylesheet" href="css/fonts.css?v=r69">
-  <link rel="stylesheet" href="css/tokens.css?v=r69">
-  <link rel="stylesheet" href="css/base.css?v=r69">
-  <link rel="stylesheet" href="css/chrome.css?v=r70">
-  <link rel="stylesheet" href="css/sections.css?v=r69">
-  <link rel="stylesheet" href="css/hero.css?v=r69">
-  <link rel="stylesheet" href="css/story.css?v=r71">
-  <link rel="stylesheet" href="css/work.css?v=r69">
-  <link rel="stylesheet" href="css/services.css?v=r73">
-  <link rel="stylesheet" href="css/closing.css?v=r80">
-  <link rel="stylesheet" href="css/live-stats.css?v=r69">
-  <link rel="stylesheet" href="css/notes.css?v=r69">
-  <link rel="stylesheet" href="css/studio.css?v=studio32">
+  <link rel="stylesheet" href="css/fonts.css?v=1da91407db">
+  <link rel="stylesheet" href="css/tokens.css?v=13cf6c349b">
+  <link rel="stylesheet" href="css/base.css?v=809d4ebc4e">
+  <link rel="stylesheet" href="css/chrome.css?v=f72961e767">
+  <link rel="stylesheet" href="css/sections.css?v=6db1f32fa7">
+  <link rel="stylesheet" href="css/hero.css?v=94688041d6">
+  <link rel="stylesheet" href="css/story.css?v=2b145ecfd8">
+  <link rel="stylesheet" href="css/work.css?v=9b8fbdcd74">
+  <link rel="stylesheet" href="css/services.css?v=b921079b14">
+  <link rel="stylesheet" href="css/closing.css?v=e584053ace">
+  <link rel="stylesheet" href="css/live-stats.css?v=00e7723969">
+  <link rel="stylesheet" href="css/notes.css?v=92e19bb746">
+  <link rel="stylesheet" href="css/studio.css?v=ef9c13f558">
+  <link rel="stylesheet" href="css/refinements.css?v=5ffdc635c6">
+  <link rel="preload" href="assets/fonts/clash-display-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
 
-  <!-- Nothing appears until content.js has run with the site's data,
-       so both are fetched early, right after the render-blocking CSS:
+  <!-- The initial hero is built into this file. Fetch enhancement data
+       and the renderer early, right after the render-blocking CSS:
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=studio21" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=7b7ef03226" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -112,21 +115,22 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=studio21" defer></script>
-  <script src="js/studio.js?v=studio17" defer></script>
-  <script src="js/studio-motion.js?v=studio10" defer></script>
-  <script src="js/site.js?v=studio13" defer></script>
-  <script src="js/interactions.js?v=studio14" defer></script>
-  <script src="js/cursor.js?v=r70" defer></script>
-  <script src="vendor/lenis.min.js?v=1.1.18" defer></script>
-  <script src="vendor/gsap.min.js?v=3.13.0" defer></script>
-  <script src="vendor/ScrollTrigger.min.js?v=3.13.0" defer></script>
-  <script src="js/motion.js?v=studio13" defer></script>
+  <script src="js/content.js?v=7b7ef03226" defer></script>
+  <script src="js/studio.js?v=027ae88645" defer></script>
+  <script src="js/studio-motion.js?v=e8e7d88fb4" defer></script>
+  <script src="js/site.js?v=44b5a3877c" defer></script>
+  <script src="js/interactions.js?v=3b2429fcaf" defer></script>
+  <script src="js/sound.js?v=ca7bc1fff9" defer></script>
+  <script src="js/cursor.js?v=93eea0e5eb" defer></script>
+  <script src="vendor/lenis.min.js?v=0bf174d39b" defer></script>
+  <script src="vendor/gsap.min.js?v=96c01b81f4" defer></script>
+  <script src="vendor/ScrollTrigger.min.js?v=308219390e" defer></script>
+  <script src="js/motion.js?v=7246a47dd0" defer></script>
   <!-- Live social stats (optional): upgrades the Numbers section with
        /api/stats. Remove it and the documented figures still show. -->
-  <script src="js/live-stats.js?v=r69" defer></script>
+  <script src="js/live-stats.js?v=8df0e0e5f5" defer></script>
   <!-- Visitor notes are optional; the rest of the site works without them. -->
-  <script src="js/notes.js?v=r69" defer></script>
+  <script src="js/notes.js?v=058ff2d754" defer></script>
 
   <!-- Vercel Web Analytics: private visitor stats in the Vercel
        dashboard (no cookies). Starts working once Analytics is enabled
@@ -152,8 +156,37 @@
   <div class="menu" id="menu" data-chrome="menu"></div>
 
   <main id="main">
-    <section class="section section-hero" id="hero" data-section="hero"></section>
-    <section class="section" id="work" data-section="work"></section>
+    <section class="section section-hero" id="hero" data-section="hero"><!-- initial:hero:start -->
+    <div class="section-inner hero-inner">
+      <div class="hero-stage">
+        <div class="hero-lockup">
+          <h1 class="hero-name" id="hero-title"><span class="hero-line hero-line-back"><span class="hero-line-inner" data-line="0" style="--line: 0">Merwin</span><span class="hero-line-inner hero-line-outline" aria-hidden="true" data-line="0" style="--line: 0">Merwin</span></span>
+<span class="hero-line hero-line-front"><span class="hero-line-inner" data-line="1" style="--line: 1">Generoso</span><span class="hero-line-inner hero-line-outline" aria-hidden="true" data-line="1" style="--line: 1">Generoso</span></span></h1>
+          <div class="hero-portrait"><picture>
+      <source srcset="assets/images/pfp-640.webp 640w, assets/images/pfp-800.webp 800w, assets/images/pfp.webp 1067w" sizes="(max-width: 767px) 100vw, (max-width: 1023px) 64vw, 30vw" type="image/webp">
+      <img src="assets/images/pfp.png" alt="Merwin Generoso"
+        width="1067" height="2345"
+        fetchpriority="high" decoding="async">
+    </picture></div>
+        </div>
+      </div>
+      <div class="hero-foot">
+        <p class="hero-intro">I build business websites and edit short-form content.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#work">View work</a>
+          <a class="button button-ghost" href="assets/Merwin_Generoso_CV.pdf">View CV</a>
+        </div>
+        <nav class="hero-socials" aria-label="Social profiles"><a href="https://github.com/generosomm" target="_blank" rel="noopener noreferrer"
+        aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.9c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 0 1.6 1 1.6 1 .9 1.6 2.4 1.1 2.9.9.1-.7.4-1.1.7-1.3-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7.9.7 1.8V21c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg></a><a href="https://linkedin.com/in/generosomm" target="_blank" rel="noopener noreferrer"
+        aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.4 7.8H2.2V22h3.2V7.8ZM3.8 2A1.9 1.9 0 1 0 3.8 5.8 1.9 1.9 0 0 0 3.8 2ZM22 13.8c0-4.3-2.3-6.3-5.4-6.3a4.7 4.7 0 0 0-4.2 2.3v-2H9.2V22h3.2v-7c0-1.8.4-3.6 2.7-3.6 2.3 0 2.3 2.1 2.3 3.7V22h3.2l1.4-8.2Z"/></svg></a><a href="https://www.tiktok.com/@eroedtx" target="_blank" rel="noopener noreferrer"
+        aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 3v11.1a4.6 4.6 0 1 1-3.8-4.5v3.1a1.7 1.7 0 1 0 .8 1.4V3h3Zm0 0c.4 2.2 1.7 3.6 4 4.1v3.1a8.2 8.2 0 0 1-4-1.8V3Z"/></svg></a><a href="https://www.youtube.com/@eroedtx" target="_blank" rel="noopener noreferrer"
+        aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21.4 6.5a2.7 2.7 0 0 0-1.9-1.9C17.8 4.2 12 4.2 12 4.2s-5.8 0-7.5.4a2.7 2.7 0 0 0-1.9 1.9A28 28 0 0 0 2.2 12c0 1.9.1 3.7.4 5.5a2.7 2.7 0 0 0 1.9 1.9c1.7.4 7.5.4 7.5.4s5.8 0 7.5-.4a2.7 2.7 0 0 0 1.9-1.9c.3-1.8.4-3.6.4-5.5s-.1-3.7-.4-5.5ZM10 15.4V8.6l5.8 3.4-5.8 3.4Z"/></svg></a><a href="https://www.instagram.com/eroedtx/" target="_blank" rel="noopener noreferrer"
+        aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M7.2 2h9.6A5.2 5.2 0 0 1 22 7.2v9.6a5.2 5.2 0 0 1-5.2 5.2H7.2A5.2 5.2 0 0 1 2 16.8V7.2A5.2 5.2 0 0 1 7.2 2Zm0 2A3.2 3.2 0 0 0 4 7.2v9.6A3.2 3.2 0 0 0 7.2 20h9.6a3.2 3.2 0 0 0 3.2-3.2V7.2A3.2 3.2 0 0 0 16.8 4H7.2Zm10.1 1.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a><a href="https://www.facebook.com/eroedtx" target="_blank" rel="noopener noreferrer"
+        aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13.8 22v-9h3l.5-3.5h-3.5V7.3c0-1 .3-1.8 1.8-1.8h1.9V2.4c-.3 0-1.5-.1-2.8-.1-2.8 0-4.7 1.7-4.7 4.8v2.4H7V13h3v9h3.8Z"/></svg></a></nav>
+      </div>
+      <a class="hero-scroll" href="#work">Scroll</a>
+    </div><!-- initial:hero:end --></section>
+    <section class="section" id="work" data-section="work"><!-- initial:access:start --><div class="static-access" role="region" aria-label="Work and contact links"><div class="section-inner"><h2>Explore my work</h2><ul><li><a href="https://nails-by-sharlin.vercel.app/">Nails by Sharline</a></li><li><a href="https://asinta-272f8.web.app/">ASINTA</a></li><li><a href="https://mw-redesign-proposal.vercel.app/">Modern Way Redesign</a></li><li><a href="https://ayospapel.vercel.app/">AyosPapel</a></li><li><a href="https://off-axis-azure.vercel.app/">Off Axis</a></li><li><a href="https://www.agensi.io/skills/universal-web-dev">Universal Web Dev</a></li><li><a href="https://generosomm.github.io/nexus-pass/">Nexus Pass</a></li><li><a href="https://generosomm.dev/">This Portfolio</a></li></ul><p><a href="mailto:generosomerwin10@gmail.com">generosomerwin10@gmail.com</a></p><p>These links work without JavaScript. The full interactive portfolio appears when scripts and content are available.</p></div></div><!-- initial:access:end --></section>
     <section class="section" id="edits" data-section="edits"></section>
     <section class="section" id="about" data-section="about"></section>
     <section class="section" id="numbers" data-section="numbers"></section>
@@ -164,6 +197,7 @@
     <section class="section" id="notes" data-section="notes"></section>
     <section class="section" id="contact" data-section="contact"></section>
   </main>
+
 
   <footer class="site-footer" data-content="footer"></footer>
 </body>

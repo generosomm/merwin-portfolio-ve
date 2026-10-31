@@ -148,24 +148,27 @@ function socialIcon(name) {
    carries the name; the icons are decorative. */
 const LUCIDE = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"';
 const MENU_ICON = `<svg class="nav-toggle-icon icon-menu" ${LUCIDE}><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>`;
+const SOUND_ON_ICON = `<svg class="sound-icon sound-on" ${LUCIDE}><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/></svg>`;
+const SOUND_OFF_ICON = `<svg class="sound-icon sound-off" ${LUCIDE}><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`;
 const CLOSE_ICON = `<svg class="nav-toggle-icon icon-close" ${LUCIDE}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
 
 /* The centered pill: every section link, with a green line under the
    one being read (js/studio.js moves it and hides the pill while
-   scrolling down). Phones show the links marked "phone" plus a More
-   button that opens the full menu. */
+   scrolling down). Below 1024px the links fold into the menu, which also
+   lists the menuOnly links. The sound button mutes js/sound.js. */
 function renderTopChrome(data) {
   const root = document.querySelector('[data-chrome="top"]');
   if (!root) return;
 
   const nav = data.nav || {};
   const links = records(nav.links)
-    .filter((link) => hasText(link.href) && hasText(link.label))
+    .filter((link) => hasText(link.href) && hasText(link.label) && !link.menuOnly)
     .map((link) => `<li${link.phone ? ' class="is-phone"' : ""}><a class="chrome-nav-link" href="${attr(link.href)}">${text(link.label)}</a></li>`)
     .join("");
   root.innerHTML = `
     <nav class="chrome-nav pill-nav" aria-label="${attr(nav.ariaLabel)}">
       <ul class="chrome-nav-list">${links}</ul>
+      ${hasText(nav.soundLabel) ? `<button class="sound-toggle" type="button" aria-pressed="true" aria-label="${attr(nav.soundLabel)}">${SOUND_ON_ICON}${SOUND_OFF_ICON}</button>` : ""}
       <span class="pill-indicator" aria-hidden="true"></span>
       <button class="nav-toggle" id="nav-toggle" type="button"
         aria-controls="menu" aria-expanded="false" aria-label="${attr(nav.openLabel)}"
@@ -596,7 +599,7 @@ function trackRow(item) {
 function renderExperience(data) {
   const root = document.querySelector('[data-section="experience"]');
   if (!root || !data) return;
-  root.innerHTML = `<div class="section-inner">${sectionTitle('experience')}<div class="experience-list">${records(data.items).filter(item => hasText(item.role)).map(trackRow).join('')}</div></div>`;
+  root.innerHTML = `<div class="section-inner">${sectionTitle('experience')}<div class="experience-list">${records(data.items).filter(item => hasText(item.role)).map(trackRow).join('')}</div>${seeAll(data.all)}</div>`;
 }
 
 /* ---- Shared bits for the work sections ------------------------- */
@@ -620,7 +623,13 @@ function picture(image, { className = "", eager = false, sizes = "" } = {}) {
     .join(", ");
   const responsive = set && sizes ? ` srcset="${attr(set)}" sizes="${attr(sizes)}"` : "";
   return `<img class="${attr(className)}" src="${attr(image.src)}" alt="${attr(image.alt || "")}"${size}${responsive}
-    loading="${eager ? "eager" : "lazy"}" decoding="async">`;
+    loading="${eager ? "eager" : "lazy"}" fetchpriority="${eager ? "auto" : "low"}" decoding="async">`;
+}
+
+/* "See all …": the button under a section that opens its full page
+   (work.html, edits.html, experience.html; built by npm run build). */
+function seeAll(link) {
+  return hasText(link?.href) ? `<a class="page-all" href="${attr(link.href)}">${text(link.label)}<span aria-hidden="true">→</span></a>` : "";
 }
 
 /* A small arrow drawn in SVG, so no glyph lives in the code. */
@@ -681,7 +690,8 @@ function projectContent(item, config) {
   return `<h3><a href="${attr(item.href)}" target="_blank" rel="noopener noreferrer">${text(item.title)}</a></h3>
     <p>${text(item.summary)}</p>
     ${hasText(item.status) ? `<p class="project-status">${text(item.status)}</p>` : ''}
-    <div class="project-meta">${workTechnologies(item.tags)}<a class="project-visit" href="${attr(item.href)}" target="_blank" rel="noopener noreferrer">${text(config.visit)} ↗</a></div>`;
+    <div class="project-meta">${workTechnologies(item.tags)}<a class="project-visit" href="${attr(item.href)}" target="_blank" rel="noopener noreferrer">${text(item.visitLabel || config.visit)} ↗</a></div>
+    ${item.caseStudy ? `<details class="project-case"><summary>${text(config.caseLabel)}</summary><dl>${records(item.caseStudy).map(row => `<div><dt>${text(row.label)}</dt><dd>${text(row.text)}</dd></div>`).join('')}</dl></details>` : ''}`;
 }
 
 function renderWork(data) {
@@ -695,7 +705,7 @@ function renderWork(data) {
   const archive = projects.filter(item => !hasText(item.href));
   const cards = live.map(item => `<div class="deck-card">
     <div class="deck-browser-bar" aria-hidden="true"><div class="mac-window-controls"><i class="mac-close"></i><i class="mac-minimize"></i><i class="mac-zoom"></i></div><span>${text(item.title)}</span></div>
-    <div class="studio-project-image"><a href="${attr(item.href)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(item.title)}" draggable="false">${hasText(item.image?.src) ? picture(item.image) : `<p>${text(item.title)}</p>`}</a></div>
+    <div class="studio-project-image"><a href="${attr(item.href)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(item.title)}"${hasText(item.visitLabel) ? ` data-visit-label="${attr(item.visitLabel)}"` : ''} draggable="false">${hasText(item.image?.src) ? picture(item.image) : `<p>${text(item.title)}</p>`}</a></div>
   </div>`).join('');
   const descriptions = live.map(item => `<div class="deck-info project-description">${projectContent(item, config)}</div>`).join('');
   const thumbs = live.map((item, i) => `<button type="button" class="deck-thumb" data-deck-jump="${i}" aria-label="${attr(item.title)}">${hasText(item.image?.src) ? `<img src="${attr(item.image.src)}" alt="" loading="lazy" decoding="async" draggable="false">` : `<span>${text(item.title)}</span>`}</button>`).join('');
@@ -708,6 +718,7 @@ function renderWork(data) {
       <div class="deck-descriptions">${descriptions}</div>
     </div>` : ''}
     ${archive.length ? `<div class="work-archive"><h3 class="work-archive-title">${text(config.archiveTitle)}</h3><ul>${archive.map(item => `<li><h4>${text(item.title)}</h4><p>${text(item.summary)}</p>${workTechnologies(item.tags)}${hasText(item.status) ? `<p class="project-status">${text(item.status)}</p>` : ''}</li>`).join('')}</ul></div>` : ''}
+    ${seeAll(data.all)}
   </div>`;
 }
 
@@ -723,11 +734,10 @@ function editMedia(item) {
 }
 
 function editCard(item, platform) {
-  const label = [item.title, item.badge, platform].filter(hasText).join(", ");
   const body = `${editMedia(item)}${editMeta(item.title, platform)}`;
   const target = hasText(item.href)
-    ? `<a class="edit-link" href="${attr(item.href)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(label)}">${body}</a>`
-    : `<button class="edit-link" type="button" aria-haspopup="dialog" aria-label="${attr(label)}"
+    ? `<a class="edit-link" href="${attr(item.href)}" target="_blank" rel="noopener noreferrer">${body}</a>`
+    : `<button class="edit-link" type="button" aria-haspopup="dialog"
         data-lightbox-video="${attr(item.video)}" data-lightbox-alt="${attr(item.alt)}">${body}</button>`;
   return `<li class="edit-card">${target}</li>`;
 }
@@ -792,6 +802,7 @@ function renderEdits(data) {
       ${tabList}
       ${editPanel("edits", edits, true, data.carousel || {})}
       ${hooks ? editPanel("hooks", hooks, false, data.carousel || {}) : ""}
+      ${seeAll(data.all)}
     </div>`;
 }
 
@@ -1003,7 +1014,7 @@ function renderStack(data) {
     return `${logos ? `<ul class="stack-logos">${logos}</ul>` : ""}${tags ? `<ul class="stack-pills">${tags}</ul>` : ""}`;
   };
 
-  const groups = records(data.groups)
+  const renderGroups = (entries) => records(entries)
     .filter((group) => hasText(group.label))
     .map(
       (group) => `
@@ -1013,6 +1024,7 @@ function renderStack(data) {
         </div>`
     )
     .join("");
+  const groups = renderGroups(data.groups);
 
   /* The GitHub card is an empty frame here: js/interactions.js fills
      it from the snapshot (one bar per month and the stats beside it),
@@ -1307,12 +1319,18 @@ function renderPortfolio(payload) {
   renderSectionShell();
 
   reportErrors(errors);
+  if (data.hero && data.work && data.contact) document.documentElement.classList.add("has-loaded-content");
   document.documentElement.classList.add("is-ready");
 }
 
 window.portfolioContentReady = loadPortfolioContent()
   .then((payload) => {
+    const initialWork = document.querySelector('#work .static-access');
+    const workRect = initialWork?.getBoundingClientRect();
+    const restoreWork = window.location.hash === '#work' && workRect && workRect.top < window.innerHeight && workRect.bottom > 0;
     renderPortfolio(payload);
+    // A short fallback page cannot initially scroll as far as the full deck.
+    if (restoreWork && payload.data.work) requestAnimationFrame(() => document.getElementById('work')?.scrollIntoView({ behavior: 'instant', block: 'start' }));
     return payload;
   })
   .catch((error) => {

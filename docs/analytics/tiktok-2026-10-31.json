@@ -1,0 +1,238 @@
+{
+  "platform": "TikTok",
+  "handle": "@eroedtx",
+  "providedOn": "2026-10-31",
+  "capturedOn": null,
+  "precision": "Dashboard-rounded values, not exact counts.",
+  "sources": {
+    "overview": {
+      "file": "assets/images/proof/2026-10-31/tiktok-overview.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "aab0708a3275a6a549f5d592094e6bc109021b901a3ad05e76d43d7bdbddc88a"
+    },
+    "top-views": {
+      "file": "assets/images/proof/2026-10-31/tiktok-top-views.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "89d5e82c386cde18df83fe926d3fc90230d308fa315f4e4bc80d50946d7c2124"
+    },
+    "top-new-viewers": {
+      "file": "assets/images/proof/2026-10-31/tiktok-top-new-viewers.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "3042d7380985d0d44440fbdb671b4b985551649ea08469dfa16adb5883d64e0d"
+    },
+    "top-likes": {
+      "file": "assets/images/proof/2026-10-31/tiktok-top-likes.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "ecee1b8329ca0c43d2f174fa21f5201a47a7bdbdb3eb3587c73ef0c68ba17f38"
+    },
+    "top-new-followers": {
+      "file": "assets/images/proof/2026-10-31/tiktok-top-new-followers.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "191b2c649512982e9c406e9cbec5041fae55d975f2a668b800db400e36cadbf5"
+    },
+    "viewers": {
+      "file": "assets/images/proof/2026-10-31/tiktok-viewers.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "0ca1085749a90325ff30836bfa380807b8e04d59007f06febc1e80123e0ce87a"
+    },
+    "viewer-demographics": {
+      "file": "assets/images/proof/2026-10-31/tiktok-viewer-demographics.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "31e4ef76d19bb414241a2e5baa06da96ee33602b7fe58ecf61286fe750ff874c"
+    },
+    "viewer-locations": {
+      "file": "assets/images/proof/2026-10-31/tiktok-viewer-locations.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "436a3128022c2f8c4e7fe088ee0347bd93e45293d2f5e9988a1e9810c874c898"
+    },
+    "followers": {
+      "file": "assets/images/proof/2026-10-31/tiktok-followers.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "043d1827b46f92ceb10d754c00a1f46b64b53f04ce8665d43376d5623a5d74e5"
+    },
+    "follower-demographics": {
+      "file": "assets/images/proof/2026-10-31/tiktok-follower-demographics.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "508f6be49198e7198ae14439c42282a4dcf95d9adaa6969a33b752292d383e46"
+    }
+  },
+  "overview": {
+    "period": {
+      "label": "Last 365 days",
+      "start": "2025-10-30",
+      "end": "2026-10-29",
+      "basis": "Displayed chart endpoints; retain the dashboard label."
+    },
+    "videoViews": "45.6M",
+    "profileViews": "167.2K",
+    "likes": "3.7M",
+    "comments": "13.2K",
+    "shares": "210.9K",
+    "trafficPercent": {
+      "Search": 92.2,
+      "Personal profile": 3.6,
+      "Sound": 2.3,
+      "For You": 1.7,
+      "Following": 0.1
+    }
+  },
+  "viewers": {
+    "period": {
+      "label": "Last 365 days",
+      "start": "2025-10-31",
+      "end": "2026-10-30",
+      "basis": "Viewers tab displays different chart endpoints from Overview and Followers."
+    },
+    "total": "35.5M",
+    "new": "1.6M",
+    "genderPercent": {
+      "Female": 60,
+      "Male": 36,
+      "Other": 4
+    },
+    "agePercent": {
+      "18-24": 49.6,
+      "25-34": 36.2,
+      "35-44": 8.2,
+      "45-54": 2.7,
+      "55+": 3.3
+    },
+    "locationPercent": {
+      "Philippines": 86.7,
+      "United States": 5.1,
+      "Singapore": 2.2,
+      "India": 1.0,
+      "New Zealand": "<1",
+      "Japan": "<1",
+      "United Arab Emirates": "<1",
+      "Canada": "<1",
+      "Cambodia": "<1",
+      "Australia": "<1",
+      "Others": 2.3
+    }
+  },
+  "followers": {
+    "total": "237K",
+    "totalScope": "All time",
+    "net": "3.9K",
+    "netPeriod": {
+      "label": "Last 365 days",
+      "start": "2025-10-30",
+      "end": "2026-10-29",
+      "basis": "Displayed chart endpoints; retain the dashboard label."
+    },
+    "genderPercent": {
+      "Male": 68,
+      "Female": 31,
+      "Other": 1
+    },
+    "agePercent": {
+      "18-24": 44.2,
+      "25-34": 33.1,
+      "35-44": 12.5,
+      "45-54": 4.9,
+      "55+": 5.3
+    },
+    "locationPercent": {
+      "Philippines": 63.3,
+      "United States": 4.2,
+      "New Zealand": 2.3,
+      "Japan": "<1",
+      "Singapore": "<1",
+      "Indonesia": "<1",
+      "India": "<1",
+      "Malaysia": "<1",
+      "Saudi Arabia": "<1",
+      "Brazil": "<1",
+      "Others": 27.5
+    }
+  },
+  "selectedPosts": [
+    {
+      "title": "Miss Universe Top 5 2025",
+      "periodViews": "6.5M",
+      "allViews": "6.5M",
+      "newViewers": "1.8M",
+      "newLikes": "993K",
+      "newFollowers": "4.1K"
+    },
+    {
+      "title": "Home Along Da Reels - Trailer Edit",
+      "portfolioTitle": "Home Along Da Riles",
+      "periodViews": "4.1M",
+      "allViews": "4.1M",
+      "newViewers": "1.8M",
+      "newLikes": "609K",
+      "newFollowers": "3.3K"
+    },
+    {
+      "title": "Monday Afternoon - Dionela",
+      "periodViews": "3.8M",
+      "allViews": "3.8M",
+      "newViewers": "1.2M",
+      "newLikes": "191K",
+      "newFollowers": "976"
+    },
+    {
+      "title": "Please wake up / Dollhouse",
+      "periodViews": "3.4M",
+      "allViews": "3.4M",
+      "newViewers": "1.1M",
+      "newLikes": "289K",
+      "newFollowers": "8.9K"
+    },
+    {
+      "title": "Billy & Jordan",
+      "periodViews": "2.9M",
+      "allViews": "2.9M",
+      "newViewers": "623K"
+    },
+    {
+      "title": "Heneral Luna / Heneral Mascardo",
+      "periodViews": "1.9M",
+      "allViews": "23M",
+      "newLikes": "115K",
+      "newFollowers": "4.3K"
+    },
+    {
+      "title": "The Loved One - Communication without understanding",
+      "allViews": "1.7M",
+      "newViewers": "266K",
+      "newLikes": "164K"
+    },
+    {
+      "title": "Kwentong Jollibee: Kahera",
+      "allViews": "6.8M",
+      "newFollowers": "1.2K"
+    }
+  ],
+  "postMetricPeriod": {
+    "label": "Last 365 days",
+    "start": "2025-10-30",
+    "end": "2026-10-29",
+    "basis": "Displayed chart endpoints; retain the dashboard label."
+  },
+  "interpretationNotes": [
+    "The screenshots are supplied as current, but an exact capture date was not stated. providedOn is not capturedOn.",
+    "45.6M is a rolling-period view count, not lifetime TikTok views.",
+    "237K followers is an all-time total; 3.9K is net growth for the selected period.",
+    "35.5M viewers must not be added to 45.6M views. Preserve the dashboard metric names without assuming deduplication.",
+    "New followers attributed to posts are not account-level net follower growth.",
+    "Creators and posts that viewers also watched are third-party content, not clients, partnerships, or this account performance.",
+    "Viewer and follower demographics are separate populations.",
+    "Do not infer exact values from rounded counts or less-than-one-percent bounds.",
+    "No combined-platform or lifetime total can be derived from these screenshots alone.",
+    "Active-hour panels cover the past seven days and show no explicit timezone; they are not annual audience behavior."
+  ],
+  "integrationStatus": "TikTok and YouTube proof aligned locally with screenshots supplied October 31, 2026."
+}

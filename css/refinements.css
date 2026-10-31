@@ -1,0 +1,53 @@
+/* Refinements preserve the established portrait, palette and project deck. */
+/* "Behind the build": a small plus toggle that opens three labelled rows. */
+.project-case { margin-top: 22px; }
+.project-case summary { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer; list-style: none;
+  font: 500 12px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--studio-muted); transition: color .2s ease; }
+.project-case summary::-webkit-details-marker { display: none; }
+.project-case summary::before { content: "+"; display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--line-strong);
+  border-radius: 50%; font: 400 16px/1 var(--font-body); color: var(--accent); transition: transform .3s cubic-bezier(.2, .8, .2, 1), border-color .2s ease; }
+.project-case summary:hover, .project-case[open] summary { color: var(--text); }
+.project-case summary:hover::before { border-color: var(--accent); }
+.project-case[open] summary::before { transform: rotate(45deg); }
+.project-case dl { margin: 10px 0 0; }
+.project-case dl > div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding-block: 12px; border-top: 1px solid var(--line-strong); }
+.project-case dt { padding-top: 3px; font: 500 11px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.project-case dd { margin: 0; color: var(--studio-muted); font-size: 15px; line-height: 1.55; }
+.project-case[open] dl > div { animation: case-row .4s cubic-bezier(.2, .8, .2, 1) both; }
+.project-case[open] dl > div:nth-child(2) { animation-delay: .05s; }
+.project-case[open] dl > div:nth-child(3) { animation-delay: .1s; }
+@keyframes case-row { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .project-case[open] dl > div { animation: none; } }
+.static-access { padding-block: 32px; background: var(--ink-900); }
+.static-access h2 { font: 600 28px var(--font-display); margin-bottom: 20px; }
+.static-access ul { display: flex; flex-wrap: wrap; gap: 12px 24px; list-style: none; padding: 0; }
+.static-access a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
+.static-access p { margin-top: 20px; max-width: 65ch; }
+.has-loaded-content .static-access { display: none; }
+body:has(#project-brief :focus) .site-guide { visibility: hidden; }
+.section:empty { display: none; }
+.recovery { max-width: 720px; margin: auto; min-height: 100svh; display: grid; align-content: center; padding: 48px 24px; }
+.recovery h1 { font: 700 clamp(36px, 7vw, 64px) var(--font-display); line-height: 1.1; }
+.recovery p { margin-block: 24px; color: var(--text-mid); font-size: 18px; }
+.recovery nav { display: flex; flex-wrap: wrap; gap: 16px; }
+.recovery a { min-height: 44px; display: inline-flex; align-items: center; padding: 10px 16px; border: 1px solid var(--line-strong); }
+@media (max-width: 767px) {
+  .project-case { text-align: left; }
+  .project-case dl > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+
+/* "See all …": the way from each highlight section to its full page. */
+.page-all { display: flex; width: fit-content; align-items: center; gap: 12px; min-height: 48px; margin: 56px auto 0; padding: 12px 26px;
+  border: 1px solid var(--line-strong); border-radius: 999px; font: 500 12px var(--font-mono); letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text); transition: border-color .2s ease, color .2s ease, gap .25s cubic-bezier(.2, .8, .2, 1); }
+.page-all:hover, .page-all:focus-visible { border-color: var(--accent); color: var(--accent); gap: 18px; }
+
+/* Sound button at the end of the nav pill (js/sound.js). */
+.sound-toggle { display: grid; place-items: center; width: 36px; height: 36px; margin-inline: 2px 4px; border-radius: 50%;
+  color: var(--studio-muted); transition: color .2s ease, background-color .2s ease; }
+.sound-toggle:hover, .sound-toggle:focus-visible { color: var(--text); background: rgb(255 255 255 / .06); }
+.sound-toggle .sound-icon { width: 18px; height: 18px; }
+.sound-toggle[aria-pressed="true"] .sound-off, .sound-toggle[aria-pressed="false"] .sound-on { display: none; }
+
+/* Nav labels stay on one line ("AI work" wrapped at desktop widths). */
+.chrome-nav-link { white-space: nowrap; }

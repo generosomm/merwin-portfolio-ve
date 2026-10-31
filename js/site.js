@@ -572,7 +572,7 @@
        page is ready, without waiting for the animation library. Once
        it has finished, the start pose is dropped. */
     ready.then(() => {
-      root.classList.add("hero-play");
+      if (!root.classList.contains("has-initial-hero")) root.classList.add("hero-play");
       window.setTimeout(() => root.classList.remove("hero-armed"), 2500);
       /* Judge frame rate only after the entrance has played. */
       window.setTimeout(watchFrameRate, 2500);

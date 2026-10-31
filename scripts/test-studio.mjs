@@ -17,9 +17,10 @@ context.edits = JSON.parse(await readFile('data/08-edits.json', 'utf8'));
 context.chrome = JSON.parse(await readFile('data/01-chrome.json', 'utf8'));
 vm.runInContext('renderTopChrome(chrome)', context);
 const header = nodes.get('[data-chrome="top"]').innerHTML;
-// Centered pill: every section link, no brand, and a "More" button for phones.
+// Centered pill: the main links (menuOnly ones live in the phone menu), no brand, a sound button and a menu button for phones.
 assert.doesNotMatch(header, /class="brand"/);
-assert.equal([...header.matchAll(/class="chrome-nav-link"/g)].length, context.chrome.nav.links.length);
+assert.equal([...header.matchAll(/class="chrome-nav-link"/g)].length, context.chrome.nav.links.filter(link => !link.menuOnly).length);
+assert.match(header, /class="sound-toggle" type="button" aria-pressed="true"/);
 assert.equal([...header.matchAll(/<li class="is-phone">/g)].length, context.chrome.nav.links.filter(link => link.phone).length);
 assert.match(header, /class="pill-indicator" aria-hidden="true"/);
 assert.match(header, /class="nav-toggle-icon icon-menu"/);
@@ -56,7 +57,7 @@ assert.equal([...gallery.matchAll(/class="deck-card"/g)].length, context.work.it
 assert.match(gallery, /data-deck-step="-1"/);
 assert.match(gallery, /data-deck-step="1"/);
 const liveCount = context.work.items.filter(item => item.href).length;
-assert.match(gallery, /class="deck-thumbs" role="group" hidden aria-label="Jump to a website"/);
+assert.match(gallery, /class="deck-thumbs" role="group" hidden aria-label="Jump to a project"/);
 assert.equal([...gallery.matchAll(/data-deck-jump="\d+"/g)].length, liveCount, 'Every live site needs a thumbnail');
 assert.match(gallery, /data-deck-jump="0" aria-label="ASINTA"/);
 assert.doesNotMatch(gallery, /class="project-browser"/);

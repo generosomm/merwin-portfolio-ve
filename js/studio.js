@@ -66,6 +66,7 @@ window.portfolioContentReady.then(() => {
       if (cueFrame) return;
       cueFrame = requestAnimationFrame(() => {
         cueFrame = 0;
+        cue.textContent = link.dataset.visitLabel || deck.dataset.visitLabel;
         cue.hidden = false;
         const x = Math.max(8, Math.min(cueX + 16, innerWidth - cue.offsetWidth - 8));
         const y = Math.max(8, Math.min(cueY + 16, innerHeight - cue.offsetHeight - 8));

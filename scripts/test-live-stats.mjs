@@ -81,7 +81,7 @@ const videos = Array.from({ length: VIDEO_COUNT }, (_, i) => ({
   likes: i % 10 === 0 ? undefined : 10 // some videos hide their likes
 }));
 
-let youtube = { mode: "ok", calls: 0, failuresLeft: 0, lifetimeViews: 18_000_000, hidden: false };
+let youtube = { mode: "ok", calls: 0, failuresLeft: 0, lifetimeViews: 30_000_000, hidden: false };
 
 function youtubeResponse(url) {
   youtube.calls += 1;
@@ -350,8 +350,8 @@ await test("empty storage: fetches YouTube, saves, returns the public shape", as
   assert.equal(yt.status, "ok");
   assert.equal(yt.followers, 16700);
   assert.equal(yt.followersLabel, "subscribers");
-  assert.equal(yt.liveViews, 18_000_000);
-  assert.equal(yt.views, 18_000_000, "live beats documented 16.4M");
+  assert.equal(yt.liveViews, 30_000_000);
+  assert.equal(yt.views, 30_000_000, "live beats documented 23.6M");
   assert.equal(yt.viewsMethod, "lifetime channel viewCount (live)");
   assert.equal(yt.posts, VIDEO_COUNT);
   assert.ok(redis.has(KEYS.snapshot), "snapshot saved");
@@ -383,15 +383,15 @@ await test("likes: summed only from videos that show them", async () => {
 await test("other platforms: TikTok documented (manual), Instagram not connected, Facebook disabled", async () => {
   const { body } = await get();
   assert.equal(body.platforms.tiktok.status, "manual");
-  assert.equal(body.platforms.tiktok.views, 57_900_000);
-  assert.match(body.platforms.tiktok.viewsMethod, /^documented 57\.9M \(last 365 days\)/);
+  assert.equal(body.platforms.tiktok.views, 45_600_000);
+  assert.match(body.platforms.tiktok.viewsMethod, /^documented 45\.6M \(last 365 days\)/);
   assert.equal(body.platforms.instagram.status, "disabled");
   assert.equal(body.platforms.facebook.status, "disabled");
 });
 
 await test("totals: per-platform max(live, documented), summed, never below the baseline", async () => {
   const { body } = await get();
-  assert.equal(body.totals.views, 57_900_000 + 18_000_000);
+  assert.equal(body.totals.views, 45_600_000 + 30_000_000);
   assert.equal(body.totals.viewsMethod, "sum of each platform's max(live, documented)");
   assert.equal(body.totals.followers, 16700);
   assert.equal(body.stale, false);
@@ -406,10 +406,10 @@ await test("fresh snapshot: no API calls on the next request", async () => {
 
 await test("rate limited twice, then OK: retries with backoff and succeeds", async () => {
   makeDue();
-  youtube = { ...youtube, mode: "flaky", failuresLeft: 2, calls: 0, lifetimeViews: 18_500_000 };
+  youtube = { ...youtube, mode: "flaky", failuresLeft: 2, calls: 0, lifetimeViews: 30_500_000 };
   const { body } = await get();
   assert.equal(body.platforms.youtube.status, "ok");
-  assert.equal(body.platforms.youtube.views, 18_500_000);
+  assert.equal(body.platforms.youtube.views, 30_500_000);
   assert.equal(youtube.calls, 9, "2 retries + 7 normal calls");
 });
 
@@ -421,7 +421,7 @@ await test("bad API key: no retry, status error, last good numbers kept, clear l
   assert.equal(youtube.calls, 1, "4xx auth errors are not retried");
   const yt = body.platforms.youtube;
   assert.equal(yt.status, "error");
-  assert.equal(yt.views, 18_500_000, "kept the last good data");
+  assert.equal(yt.views, 30_500_000, "kept the last good data");
   assert.equal(body.stale, true);
   const ageMin = (Date.now() - new Date(body.updatedAt)) / 60_000;
   assert.ok(ageMin > 30, "a failed refresh does not move updatedAt");
@@ -435,7 +435,7 @@ await test("API down (503 every time): 3 attempts, then stale with last good dat
   const { body } = await get();
   assert.equal(youtube.calls, 3);
   assert.equal(body.platforms.youtube.status, "stale");
-  assert.equal(body.platforms.youtube.views, 18_500_000);
+  assert.equal(body.platforms.youtube.views, 30_500_000);
 });
 
 await test("quota exceeded: no retry, stale", async () => {
@@ -472,7 +472,7 @@ await test("storage down: documented-only numbers, short cache", async () => {
   assert.match(response.headers.get("cache-control"), /s-maxage=60\b/);
   assert.equal(body.updatedAt, null);
   assert.equal(body.platforms.youtube.status, "manual");
-  assert.equal(body.totals.views, 74_300_000, "57.9M + 16.4M documented");
+  assert.equal(body.totals.views, 69_208_578, "45.6M + 23,608,578 documented");
   assert.equal(body.stale, false, "documented-only is not 'stale', it is undated");
 });
 
@@ -485,7 +485,7 @@ await test("keys not set yet: YouTube falls back to documented, nothing crashes"
   process.env.YOUTUBE_API_KEY = saved;
   assert.equal(youtube.calls, 0);
   assert.equal(body.platforms.youtube.status, "manual");
-  assert.equal(body.platforms.youtube.views, 16_400_000);
+  assert.equal(body.platforms.youtube.views, 23_608_578);
   assert.equal(body.updatedAt, null, "no live data, so no 'updated X ago'");
 });
 
@@ -535,12 +535,12 @@ await test("helpers: unsafe URLs dropped, counts coerced", async () => {
 
 const call = (handler, path, init) => handler.fetch(new Request(`https://generosomm.dev${path}`, init));
 
-await test("TikTok before connecting: documented 57.9M, no API calls", async () => {
+await test("TikTok before connecting: documented 45.6M, no API calls", async () => {
   redis.clear();
   tiktok.calls = 0;
   const { body } = await get();
   assert.equal(body.platforms.tiktok.status, "manual");
-  assert.equal(body.platforms.tiktok.views, 57_900_000);
+  assert.equal(body.platforms.tiktok.views, 45_600_000);
   assert.equal(tiktok.calls, 0);
 });
 
@@ -612,7 +612,7 @@ await test("TikTok live: followers, likes, posts; views = max(sum of 45 videos, 
   assert.equal(tt.likes, 4_800_000);
   assert.equal(tt.posts, 45);
   assert.equal(tt.liveViews, 103_500_000);
-  assert.equal(tt.views, 103_500_000, "live sum beats documented 57.9M here");
+  assert.equal(tt.views, 103_500_000, "live sum beats documented 45.6M here");
   assert.equal(tt.viewsMethod, "sum of view_count across 45 public videos (live)");
   assert.equal(body.totals.followers, 250000 + 16700);
   assert.ok(!text.includes("tt-access") && !text.includes("tiktokcdn"), "no tokens or raw CDN URLs in public JSON");
@@ -703,8 +703,8 @@ await test("big account: the index walks a few pages per refresh and finishes in
   let { body } = await get();
   assert.equal(body.platforms.tiktok.status, "ok");
   assert.equal(tiktok.listCalls, 7, "newest page + 6 older pages, no more");
-  assert.match(body.platforms.tiktok.viewsMethod, /^documented 57\.9M .*partial: sum of view_count across the first 140 of 300/);
-  assert.equal(body.platforms.tiktok.views, 57_900_000, "documented wins while the index is partial");
+  assert.match(body.platforms.tiktok.viewsMethod, /^documented 45\.6M .*partial: sum of view_count across the first 140 of 300/);
+  assert.equal(body.platforms.tiktok.views, 45_600_000, "documented wins while the index is partial");
 
   makeDue();
   ({ body } = await get());
@@ -777,7 +777,7 @@ await test("due snapshot + waitUntil: replies instantly with saved numbers, refr
   makeDue();
   const before = JSON.parse(redis.get(KEYS.snapshot));
   const pending = [];
-  youtube = { ...youtube, mode: "ok", calls: 0, lifetimeViews: 19_000_000 };
+  youtube = { ...youtube, mode: "ok", calls: 0, lifetimeViews: 31_000_000 };
   const response = await stats.fetch(new Request("https://generosomm.dev/api/stats"), { waitUntil: (p) => pending.push(p) });
   const body = await response.json();
   assert.equal(pending.length, 1, "refresh handed to waitUntil");
@@ -787,7 +787,7 @@ await test("due snapshot + waitUntil: replies instantly with saved numbers, refr
   assert.ok(youtube.calls > 0, "the background refresh ran");
   assert.equal(redis.has(KEYS.lock("refresh")), false, "lock released");
   const after = await get();
-  assert.equal(after.body.platforms.youtube.views, 19_000_000, "next request gets the fresh numbers");
+  assert.equal(after.body.platforms.youtube.views, 31_000_000, "next request gets the fresh numbers");
   assert.match(after.response.headers.get("cache-control"), /s-maxage=900/);
 });
 

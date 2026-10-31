@@ -3,6 +3,7 @@ import { constants } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { buildBundle } from "./build-data.mjs";
+import { initialHTML, versionAssets } from './initial-html.mjs';
 
 /* =============================================================
    Content validation.
@@ -103,7 +104,13 @@ try {
   const bundleTag = `<link rel="preload" href="data/site.json" as="fetch" crossorigin>`;
   if (!index.includes(bundleTag)) errors.push(`index.html: missing ${bundleTag}`);
 
-  const body = index.match(/<body[\s\S]*<\/body>/i)?.[0] || "";
+  const generated = await initialHTML((await buildBundle()).files);
+  if (await versionAssets(index) !== index) errors.push('index.html: asset versions are stale; run npm run build');
+  for (const [name, expected] of Object.entries(generated)) {
+    const actual = index.match(new RegExp(`<!-- initial:${name}:start -->([\\s\\S]*?)<!-- initial:${name}:end -->`))?.[1];
+    if (actual !== expected) errors.push(`index.html: initial ${name} is stale; run npm run build`);
+  }
+  const body = (index.match(/<body[\s\S]*<\/body>/i)?.[0] || "").replace(/<!-- initial:(hero|access):start -->[\s\S]*?<!-- initial:\1:end -->/g, '');
   const bodyText = [...body.matchAll(/>([^<]+)</g)]
     .map((match) => match[1].trim())
     .filter(Boolean);

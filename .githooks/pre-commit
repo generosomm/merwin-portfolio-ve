@@ -5,5 +5,5 @@
 # Enabled once per clone with:  git config core.hooksPath .githooks
 
 node scripts/build-data.mjs || exit 1
-git add data/site.json
+git add data/site.json index.html work.html edits.html experience.html
 node scripts/validate-content.mjs || exit 1

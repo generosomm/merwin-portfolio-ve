@@ -2,11 +2,11 @@
   "heading": "By the numbers",
   "items": [
     {
-      "value": 74,
+      "value": 69,
       "suffix": "M+",
       "live": "views",
       "label": "Documented views",
-      "detail": "TikTok (last 365 days) plus YouTube (lifetime), from the dashboards in Proof",
+      "detail": "45.6M TikTok views (last 365 days) + 23.6M YouTube views (lifetime), with separate windows shown in Proof",
       "icon": "views"
     },
     {
@@ -32,5 +32,5 @@
       "icon": "certificate"
     }
   ],
-  "note": "Every figure here must be traceable to something else on this site. Documented views is 57.9M (TikTok, last 365 days) + 16.4M (YouTube, lifetime) = 74.3M, both screenshots in 09-proof.json, rounded down to 74M+. Shipped projects is counted automatically from data/07-work.json (every project except those marked \"shipped\": false, which is this portfolio); value is only the fallback."
+  "note": "69M+ rounds down the mixed-period screenshot sum: TikTok 45.6M (last 365 days ending October 29, 2026) + YouTube 23,608,578 (lifetime through October 30, 2026). This is not a combined lifetime or annual total. Live totals may be higher and are identified separately. Shipped projects is counted from data/07-work.json, excluding shipped:false."
 }

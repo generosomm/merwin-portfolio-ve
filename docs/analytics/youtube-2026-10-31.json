@@ -1,0 +1,166 @@
+{
+  "platform": "YouTube",
+  "handle": "@eroedtx",
+  "providedOn": "2026-10-31",
+  "capturedOn": null,
+  "period": {
+    "label": "Lifetime",
+    "start": "2023-09-11",
+    "end": "2026-10-30"
+  },
+  "sources": {
+    "top-content": {
+      "file": "assets/images/proof/2026-10-31/youtube-top-content.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "6bc0f23431dfad17fed6f065f60fe85f01eaa1bd3d8ad8fde9bd3423d0fdfc4e"
+    },
+    "shorts-overview": {
+      "file": "assets/images/proof/2026-10-31/youtube-shorts-overview.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "d95fc599744733bc5d01d5101a95df3ec58896a15302e04e3de2c897ed6e44a5"
+    },
+    "shorts-discovery": {
+      "file": "assets/images/proof/2026-10-31/youtube-shorts-discovery.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "8f270b8662a5d242c09b5e6867ddc46f94a16ac0a9f501c3a20621d72d7b0fb8"
+    },
+    "remixes": {
+      "file": "assets/images/proof/2026-10-31/youtube-remixes.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "53c1649b982d61965a30959f6a0e08c2c62959e6063c8c514ac2cbee39bb733c"
+    },
+    "audience-overview": {
+      "file": "assets/images/proof/2026-10-31/youtube-audience-overview.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "54a7e9f957661550a1af5333bbc649404e67f6eeec8a0a17bffd942545d77ebb"
+    },
+    "audience-behavior": {
+      "file": "assets/images/proof/2026-10-31/youtube-audience-behavior.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "dfc0fadb529d7f38d677b9fb8eff74849e14d2ee1c72c88b40e1bae34e1161bc"
+    },
+    "audience-times": {
+      "file": "assets/images/proof/2026-10-31/youtube-audience-times.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "54bbd74815b148d72d0a1dce61c2dfaaf5cf5d45412df3813668b8210d63d5e0"
+    },
+    "audience-demographics": {
+      "file": "assets/images/proof/2026-10-31/youtube-audience-demographics.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "d54b03ed54ab8e7fc01c2ab83c7e40273aa84ffc61ff519c2281847552e50198"
+    },
+    "audience-geographies": {
+      "file": "assets/images/proof/2026-10-31/youtube-audience-geographies.png",
+      "width": 1874,
+      "height": 970,
+      "sha256": "26ddf262c0392d0d87d8cd1cb061a36faba044a928f0ba9d9c7192d656fcf34f"
+    }
+  },
+  "channelOverview": {
+    "views": 23608578,
+    "watchHours": "118.5K",
+    "netSubscribers": "+22.9K",
+    "realtimeSubscribers": 22867,
+    "realtimeSubscribersScope": "Realtime card, separate from historical net subscriber growth",
+    "sourceNote": "Original channel Overview supplied in chat. Not copied into the repository because it contains private revenue."
+  },
+  "shorts": {
+    "views": "23.6M",
+    "engagedViews": "13.7M",
+    "likes": "508.8K",
+    "attributedSubscribers": "+26.8K",
+    "stayedToWatchPercent": 68.2,
+    "swipedAwayPercent": 31.8,
+    "trafficPercent": {
+      "Shorts feed": 75.9,
+      "YouTube search": 17.2,
+      "Browse features": 4.0,
+      "Channel pages": 0.8,
+      "Suggested videos": 0.7,
+      "Others": 1.3
+    }
+  },
+  "topContent": [
+    {
+      "title": "The Blueprint of the Trend",
+      "views": 18656828,
+      "averageViewDuration": "0:30",
+      "averagePercentageViewed": 90.6
+    },
+    {
+      "title": "i love ~",
+      "views": 1754469,
+      "averageViewDuration": "0:27",
+      "averagePercentageViewed": 95.9
+    },
+    {
+      "title": "Cup of Joe Live at the Cozy Cove - Multo",
+      "views": 814297,
+      "averageViewDuration": "0:49",
+      "averagePercentageViewed": 84.7
+    }
+  ],
+  "remixes": {
+    "views": "579K",
+    "count": "1K",
+    "scope": "Views of remixes using this content; not added to channel totals"
+  },
+  "audience": {
+    "monthly": "37.7K",
+    "monthlyAsOf": "2026-10-30",
+    "monthlyBehaviorPercent": {
+      "New": 79.3,
+      "Casual": 20.5,
+      "Regular": 0.2
+    },
+    "watchTimeSubscriberPercent": {
+      "Not subscribed": 99.7,
+      "Subscribed": 0.3
+    },
+    "genderViewsPercent": {
+      "Female": 56.3,
+      "Male": 43.5,
+      "User-specified": 0.3
+    },
+    "ageViewsPercent": {
+      "13-17": 17.9,
+      "18-24": 13.9,
+      "25-34": 25.1,
+      "35-44": 25.8,
+      "45-54": 12.6,
+      "55-64": 2.7,
+      "65+": 1.9
+    },
+    "deviceWatchTimePercent": {
+      "Mobile phone": 51.6,
+      "TV": 26.6,
+      "Tablet": 13.9,
+      "Computer": 7.7
+    },
+    "topGeographyViewsPercent": {
+      "United States": 25.3,
+      "Philippines": 16.5,
+      "United Kingdom": 4.7,
+      "Germany": 4.7,
+      "India": 3.6
+    }
+  },
+  "notes": [
+    "Revenue is excluded from all repository data and public proof assets.",
+    "Rounded dashboard values are not exact counts.",
+    "Monthly audience is 37.7K as of Oct 30, not the historical graph peak of approximately 4M.",
+    "Shorts-attributed subscriber growth is distinct from channel net growth and current subscriber count.",
+    "68.2% stayed to watch is a Shorts engagement metric, not average retention or completion rate.",
+    "Different audience panels use lifetime, monthly, 28-day, 90-day and 7-day scopes; do not apply Lifetime to every panel.",
+    "Third-party audience-watched channels are not clients or partnerships.",
+    "Generated revenue-redacted Overview is a shareable edited copy only; public proof uses original unedited screenshots without revenue."
+  ]
+}

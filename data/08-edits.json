@@ -7,9 +7,18 @@
   "delivery": {
     "label": "Client delivery highlights",
     "items": [
-      { "value": "8+", "label": "Freelance clients" },
-      { "value": "10+", "label": "Music campaigns" },
-      { "value": "4", "label": "Film campaigns" }
+      {
+        "value": "8+",
+        "label": "Freelance clients"
+      },
+      {
+        "value": "10+",
+        "label": "Music campaigns"
+      },
+      {
+        "value": "4",
+        "label": "Film campaigns"
+      }
     ]
   },
   "items": [
@@ -27,7 +36,7 @@
     {
       "title": "The Blueprint of the Trend",
       "platform": "YouTube",
-      "badge": "12.7M views",
+      "badge": "18.7M views",
       "image": "assets/images/edits/youtube-blueprint-thumb.webp",
       "alt": "Frame from The Blueprint of the Trend YouTube Short",
       "video": "assets/videos/web/preview-the-blueprint-of-the-trend.mp4",
@@ -49,7 +58,7 @@
     {
       "title": "Home Along Da Riles",
       "platform": "TikTok",
-      "badge": "3.5M views",
+      "badge": "4.1M views",
       "image": "assets/images/edits/home-along-da-riles-thumb.webp",
       "alt": "Frame from the Home Along Da Riles trailer edit",
       "video": "assets/videos/web/preview-home-along-da-riles.mp4",
@@ -152,5 +161,17 @@
   "carousel": {
     "previous": "Previous video",
     "next": "Next video"
+  },
+  "all": {
+    "label": "See all videos",
+    "href": "edits.html"
+  },
+  "page": {
+    "title": "All edits",
+    "intro": "Short-form edits for music releases, films and brands, plus AI-generated product hooks. Tap any edit to watch the original post.",
+    "editsHeading": "Edits",
+    "hooksHeading": "AI hooks",
+    "watchLabel": "Watch on",
+    "note": "Generates edits.html at build time (scripts/initial-html.mjs)."
   }
 }

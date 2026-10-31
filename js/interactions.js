@@ -431,7 +431,16 @@
   ---------------------------------------------------------------- */
 
   function initProofCarousel() {
-    document.querySelectorAll(".proof-carousel").forEach(setupCarousel);
+    const carousels = document.querySelectorAll(".proof-carousel");
+    if (!("IntersectionObserver" in window)) { carousels.forEach(setupCarousel); return; }
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        setupCarousel(entry.target);
+      });
+    }, { rootMargin: "300px 0px" });
+    carousels.forEach(carousel => observer.observe(carousel));
   }
 
   /* One carousel. A data-carousel-media query (the certificates use
@@ -482,6 +491,7 @@
 
     function enable() {
       enabled = true;
+      track.style.setProperty("--track-h", `${track.offsetHeight}px`);
       carousel.classList.add("is-3d");
       layout();
       measure();
@@ -1281,6 +1291,7 @@
     const said = new Set();
     try { JSON.parse(sessionStorage.getItem(SAID) || "[]").forEach((id) => said.add(id)); } catch { /* fine */ }
 
+    const autoGuide = window.matchMedia("(hover: hover) and (pointer: fine)");
     let current = "";
     let settle = 0;
     let quiet = 0;
@@ -1303,7 +1314,8 @@
         current = entry.target.id;
         clearTimeout(settle);
         if (said.has(current)) return;
-        settle = setTimeout(() => talk(current), 700);
+        if (autoGuide.matches && current !== "contact") settle = setTimeout(() => talk(current), 700);
+        else { clearTimeout(quiet); guide.classList.remove("is-talking"); }
       });
     }, { rootMargin: "-45% 0px -45% 0px" });
 

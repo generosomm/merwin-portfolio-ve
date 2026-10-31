@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://generosomm.dev/</loc></url>
+  <url><loc>https://generosomm.dev/work.html</loc></url>
+  <url><loc>https://generosomm.dev/edits.html</loc></url>
+  <url><loc>https://generosomm.dev/experience.html</loc></url>
   <url><loc>https://generosomm.dev/privacy.html</loc></url>
   <url><loc>https://generosomm.dev/terms.html</loc></url>
 </urlset>

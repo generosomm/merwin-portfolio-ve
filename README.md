@@ -6,7 +6,7 @@ A framework-free portfolio featuring website projects, video edits, experience, 
 
 ## Architecture
 
-- `index.html` provides section mounts through `data-section` attributes and static crawler metadata.
+- `index.html` provides section mounts, static crawler metadata and a generated initial hero. Essential work/contact links remain available without JavaScript or when content fails to load.
 - `js/content.js` owns `CONTENT_FILES`, fetches content and renders the page. Localhost reads the individual JSON files; production prefers the generated `data/site.json` bundle and falls back to individual sources.
 - Stylesheets load directly from `index.html`. `css/hero.css` controls the layered portrait/name layout; `css/studio.css` styles the navigation, website deck and Experience disclosures.
 - `js/site.js` handles core navigation, scrolling and hero behavior. `js/interactions.js` handles galleries, media, disclosures, GitHub activity and the project-brief form.
@@ -17,9 +17,11 @@ A framework-free portfolio featuring website projects, video edits, experience, 
 
 Hero, Selected websites, Selected Edits, About, Track Record, Services, Proof, Experience, Stack, Visitor Notes, Contact, footer.
 
-The desktop social rail has six links. Below 1100px they appear inside the hero. Desktop navigation sits at the top; phone navigation sits above the bottom safe area and browser keyboard. Navigation tucks while scrolling down and returns after a short upward scroll, while an open menu or focused navigation stays visible.
+The desktop social rail has six links. Below 1100px they appear inside the hero. Desktop navigation sits at the top; phone navigation sits above the bottom safe area and browser keyboard. Navigation tucks while scrolling down and returns after a short upward scroll, while an open menu or focused navigation stays visible. The hero links to the author's Universal Web Dev repository; an AI work navigation item leads to its dedicated feature within Work.
 
 Website projects use a three-preview deck with arrows, thumbnails, keyboard navigation and horizontal swipe. One active project has its description and live-site link below. Systems without a live link remain in a text-only archive. Traffic-light window dots are decorative. Experience supports hover, focus, tap pinning and Escape.
+
+Selected projects offer native case-study disclosures. The separate Universal Web Dev feature explains original authorship, workflow design and Python tooling while crediting upstream specialist authors. Stack shows four tools from each primary group, with the complete catalog in an accessible disclosure. The site guide is tap-to-speak on touch devices and stays quiet automatically around Contact. Proof carousels enhance only near the viewport.
 
 ## Content map
 
@@ -66,13 +68,15 @@ npm run validate
 npm test
 ```
 
-- `build` regenerates `data/site.json`.
-- `validate` checks wired JSON, referenced assets and bundle freshness.
+- `build` regenerates `data/site.json`, the initial hero/access markup and content-derived asset version hashes. Do not hand-edit generated regions in index.html.
+- `validate` checks wired JSON, referenced assets, bundle freshness and exact initial-markup parity with the renderer.
 - `test` runs current rendering, studio features, motion startup/fallbacks, navigation visibility, discovery metadata and mocked backend behavior.
 
 The rendering/motion tests target the active architecture. Mock tests do not prove live credentials, provider availability or production delivery. Browser-check the changed flow at desktop, tablet and small-phone widths, with keyboard, touch and reduced motion. Physical-device and cross-browser checks remain separate.
 
 Static title/description/social tags and JSON-LD also live in `index.html` for crawlers. When changing metadata in `data/00-meta.json`, update those static copies. The discovery test checks JSON-LD parity. `robots.txt` advertises `sitemap.xml`, which includes only the home, privacy and terms pages. Crawler exclusions for `/api/` and `/notes-admin.html` are not access control.
+
+`404.html` provides branded recovery navigation. Verify both its content and the actual HTTP 404 status after deployment; a basic Python preview does not automatically serve this file for unknown paths.
 
 ## Deployment and credentials
 

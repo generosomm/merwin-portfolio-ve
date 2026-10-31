@@ -24,19 +24,22 @@
       {
         "label": "About",
         "href": "#about",
-        "phone": true
+        "menuOnly": true
       },
       {
         "label": "Services",
-        "href": "#services"
+        "href": "#services",
+        "phone": true
       },
       {
         "label": "Proof",
-        "href": "#proof"
+        "href": "#proof",
+        "menuOnly": true
       },
       {
         "label": "Experience",
-        "href": "#experience"
+        "href": "#experience",
+        "menuOnly": true
       },
       {
         "label": "Contact",
@@ -44,7 +47,8 @@
         "phone": true
       }
     ],
-    "toggleLabel": ""
+    "toggleLabel": "",
+    "soundLabel": "Sound effects"
   },
   "socials": {
     "ariaLabel": "Social profiles",
@@ -100,19 +104,11 @@
     },
     {
       "id": "work",
-      "title": "Selected websites",
-      "viewAll": {
-        "label": "View all on GitHub",
-        "href": "https://github.com/generosomm"
-      }
+      "title": "Selected work"
     },
     {
       "id": "edits",
-      "title": "Selected Edits",
-      "viewAll": {
-        "label": "View all on TikTok",
-        "href": "https://www.tiktok.com/@eroedtx"
-      }
+      "title": "Selected Edits"
     },
     {
       "id": "proof",
@@ -140,8 +136,8 @@
     "hideLabel": "Hide the guide",
     "lines": {
       "hero": "Hi! I’m Merwin’s little helper. I’ll point out a few things as you scroll.",
-      "work": "From small business sites to a workforce platform: here’s what Merwin has been building.",
-      "edits": "Merwin’s edits have 74M+ documented views across TikTok and YouTube.",
+      "work": "Psst, one of these projects is free for you to use. Spot it?",
+      "edits": "These edits pulled 45.6M TikTok views in a year, plus 23.6M on YouTube.",
       "about": "Websites and video edits: Merwin does both.",
       "numbers": "Each number here traces back to something on this page.",
       "services": "Need something made? Pick a service and send a short brief.",

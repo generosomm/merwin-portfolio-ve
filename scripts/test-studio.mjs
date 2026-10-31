@@ -48,7 +48,8 @@ assert.doesNotMatch(nodes.get('[data-section="hero"]').innerHTML, /src="undefine
 vm.runInContext('renderWork(work)', context);
 const gallery = nodes.get('[data-section="work"]').innerHTML;
 assert.match(gallery, /class="studio-project-image"/);
-assert.match(gallery, /Document Tracking/);
+assert.doesNotMatch(gallery, /Document Tracking/, "Other systems sit on the Work page, not the homepage");
+assert.match(await readFile("work.html", "utf8"), /Document Tracking/);
 assert.doesNotMatch(gallery, /href="null"/);
 assert.match(gallery, /class="project-deck"/);
 assert.match(gallery, /data-visit-label="Visit live site"/);
@@ -61,7 +62,7 @@ assert.match(gallery, /class="deck-thumbs" role="group" hidden aria-label="Jump 
 assert.equal([...gallery.matchAll(/data-deck-jump="\d+"/g)].length, liveCount, 'Every live site needs a thumbnail');
 assert.match(gallery, /data-deck-jump="0" aria-label="ASINTA"/);
 assert.doesNotMatch(gallery, /class="project-browser"/);
-assert.match(gallery, /class="work-archive"/);
+assert.doesNotMatch(gallery, /class="work-archive"/, 'Other systems live on the Work page only');
 for (const project of context.work.items.filter(item => !item.href && item.image?.src)) {
   assert.ok(!gallery.includes(project.image.src), `Non-live project preview must stay hidden: ${project.title}`);
 }

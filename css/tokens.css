@@ -22,9 +22,12 @@
   --text-dim: #6c6c66;         /*  3.4:1 — scroll-reveal START state; AA for large text */
 
   /* ---- Accent ------------------------------------------------- */
-  --accent: #2bd47d;           /* 10.2:1 on --ink-900 — AAA at any size */
-  --accent-wash: rgba(43, 212, 125, 0.14);
+  --accent: #f2f2f0;           /* black and white only: the accent is the text colour */
+  --accent-wash: rgba(242, 242, 240, 0.1);
   --danger: #ff8a7a;           /* form errors: 8.6:1 on --ink-850 */
+
+  --shadow-deep: rgba(0, 0, 0, 0.9);  /* lifted cards (light theme: css/theme.css) */
+  --shadow-soft: rgba(0, 0, 0, 0.8);
 
   /* ---- Pointer (js/cursor.js) --------------------------------- */
   --cursor-dot: rgba(242, 242, 240, 0.3);     /* the resting dot */

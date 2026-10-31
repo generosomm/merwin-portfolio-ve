@@ -71,9 +71,9 @@ html.keyboard-input .menu, html.keyboard-input .chrome-top, html.keyboard-input 
 .deck-browser-bar { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px; height: 36px; padding-inline: 13px; }
 .mac-window-controls { display: flex; gap: 7px; }
 .mac-window-controls i { display: block; width: 10px; height: 10px; border-radius: 50%; }
-.mac-window-controls .mac-close { background: #ff5f57; }
-.mac-window-controls .mac-minimize { background: #febc2e; }
-.mac-window-controls .mac-zoom { background: #28c840; }
+.mac-window-controls .mac-close { background: #8c8c88; }
+.mac-window-controls .mac-minimize { background: #8c8c88; }
+.mac-window-controls .mac-zoom { background: #8c8c88; }
 .deck-browser-bar span { padding-right: 44px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; font-size: 12px; color: var(--studio-muted); }
 .deck-card .studio-project-image { border-radius: 0; }
 .project-cursor-cue { position: fixed; top: 0; left: 0; z-index: 1000; pointer-events: none; padding: 9px 14px; border-radius: 100px; background: var(--text); color: var(--ink-900); font: 600 13px var(--font-body); white-space: nowrap; }
@@ -138,14 +138,6 @@ html.keyboard-input .project-deck .deck-info { animation: none; }
 #work .work-tech { font: 400 13px var(--font-body); letter-spacing: 0; text-transform: none; color: var(--studio-muted); }
 .project-visit { display: inline-flex; min-height: 44px; align-items: center; font-size: 15px; white-space: nowrap; }
 .project-status { font-size: 14px; color: var(--studio-muted); }
-/* Other systems: no live link, so no screenshot. Same type as the deck's
-   details, on hairlines instead of a box, always open. */
-.work-archive { max-width: 1240px; margin: 64px auto 0; }
-.work-archive-title { margin-bottom: 18px; color: var(--studio-muted); font: 400 15px var(--font-body); letter-spacing: 0; }
-.work-archive > ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin: 0; padding: 0; list-style: none; }
-.work-archive > ul > li { padding-top: 22px; border-top: 1px solid var(--line-strong); }
-.work-archive h4 { font-family: var(--font-display); font-size: clamp(21px, 1.7vw, 26px); font-weight: 600; line-height: 1.15; letter-spacing: -.03em; }
-.work-archive > ul > li > p { color: var(--studio-muted); font-size: 15px; line-height: 1.6; margin-block: 10px 14px; }
 @media (max-width: 767px) {
   .project-description { padding-top: 16px; text-align: center; }
   .project-description > p { margin-inline: auto; }
@@ -154,8 +146,6 @@ html.keyboard-input .project-deck .deck-info { animation: none; }
   /* Phones: the live link is a full-width button under the tags, easy to hit with a thumb. */
   .project-meta { flex-direction: column; align-items: stretch; gap: 16px; }
   .project-visit { justify-content: center; min-height: 48px; border: 1px solid rgba(255, 255, 255, .2); border-radius: 100px; font-size: 15px; }
-  .work-archive { margin-top: 48px; }
-  .work-archive > ul { grid-template-columns: 1fr; gap: 26px; }
 }
 
 @media (max-width: 767px) {
@@ -229,6 +219,8 @@ html.perf-lite .status-dot, html.perf-lite .contact-availability::before, html.p
   .deck-browser-bar span { font-size: 11px; }
   .deck-controls { margin-top: 4px; }
   .deck-info { padding-top: 12px; }
+  /* Phones show the title and stack only; the summary and status wait for a wider screen. */
+  .deck-info > p { display: none; }
   /* On phones the strip replaces the arrows; swipe still works. */
   .project-deck.has-thumbs .deck-controls { display: none; }
   /* Clears the fanned side cards, which hang about 24px below the stage. */
@@ -338,7 +330,4 @@ html.keyboard-input .experience-entry[open] .experience-body > * { animation: no
   #stack .section-head { justify-content: center; text-align: center; }
   #stack .stack-group { justify-items: center; text-align: center; }
   #stack .stack-logos, #stack .stack-pills { justify-content: center; }
-  /* Other systems: each project centered between its hairlines. */
-  .work-archive { text-align: center; }
-  .work-archive .work-tags { justify-content: center; }
 }

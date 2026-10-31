@@ -205,7 +205,7 @@
   border: 1px solid var(--line);
   border-radius: 12px;
   background: linear-gradient(110deg, var(--ink-800), var(--ink-850));
-  box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 12px 28px -20px var(--shadow-soft);
   opacity: 0;
   transform: scale(0.99);
   transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out);

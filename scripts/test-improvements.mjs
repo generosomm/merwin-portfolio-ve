@@ -48,3 +48,11 @@ assert.match(node('[data-section="experience"]').innerHTML, /class="page-all" hr
 const notFound = await fs.readFile('404.html','utf8');
 assert.match(notFound,/href="\/#work"/);
 console.log('Portfolio refinement checks passed: case studies, full stack, work page, initial hero and recovery.');
+// Light mode: every page sets the saved theme before first paint and loads the theme styles.
+for (const file of ['index.html','work.html','edits.html','experience.html','privacy.html','terms.html','404.html']) {
+  const html = await fs.readFile(file,'utf8');
+  const head = html.indexOf('localStorage.getItem("theme")');
+  assert.ok(head > 0 && head < html.indexOf('<link rel="stylesheet"'), `${file} must set the saved theme before its stylesheets`);
+  assert.match(html, /css\/theme\.css/, `${file} must load css/theme.css`);
+}
+for (const file of ['index.html','work.html','edits.html','experience.html']) assert.match(await fs.readFile(file,'utf8'), /js\/theme\.js/, `${file} must load js/theme.js`);

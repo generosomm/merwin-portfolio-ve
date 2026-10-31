@@ -159,7 +159,7 @@ function readTokens() {
     graphite: read("--scene-graphite", "#1d1d1c"),
     face: read("--scene-face", "#2a2a28"),
     bone: read("--scene-bone", "#e8e6e0"),
-    accent: read("--accent", "#2bd47d")
+    accent: read("--accent", "#f2f2f0")
   };
 }
 

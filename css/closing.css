@@ -948,9 +948,9 @@
   visibility: hidden;
 }
 
-.gh-cell[data-level="1"] { background: rgba(43, 212, 125, 0.3); }
-.gh-cell[data-level="2"] { background: rgba(43, 212, 125, 0.55); }
-.gh-cell[data-level="3"] { background: rgba(43, 212, 125, 0.8); }
+.gh-cell[data-level="1"] { background: rgba(242, 242, 240, 0.3); }
+.gh-cell[data-level="2"] { background: rgba(242, 242, 240, 0.55); }
+.gh-cell[data-level="3"] { background: rgba(242, 242, 240, 0.8); }
 
 /* Activity levels are restyled as monochrome dots in studio.css. */
 .gh-cell[data-level="4"] {
@@ -999,7 +999,7 @@
   border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
   border-radius: 0.6rem;
   background: var(--ink-900);
-  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 12px 30px -12px var(--shadow-deep);
   color: var(--text-mid);
   font-size: var(--fs-small);
   line-height: 1.3;

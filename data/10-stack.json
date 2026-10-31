@@ -51,7 +51,8 @@
           "href": "https://gsap.com/",
           "description": "A JavaScript animation library for smooth, timeline-based and scroll-driven motion.",
           "icon": "assets/icons/stack/gsap.svg",
-          "color": "#88CE02"
+          "color": "#88CE02",
+          "pale": true
         }
       ]
     },
@@ -78,7 +79,8 @@
           "href": "https://www.php.net/manual/en/introduction.php",
           "description": "A server-side scripting language widely used to build dynamic websites.",
           "icon": "assets/icons/stack/php.svg",
-          "color": "#8892BF"
+          "color": "#8892BF",
+          "pale": true
         },
         {
           "name": "Vercel Functions",
@@ -341,5 +343,5 @@
       "days": "{count} days"
     }
   },
-  "note": "Items with an icon show as logos in their own colours; color is the brand colour used for the hover glow. mono: true is for single-colour logos, drawn in white. Items without an icon (or plain strings) show as text tags, for skills without a logo. href links each item to a page explaining it, and description is the one-sentence tooltip shown on hover and keyboard focus. Logos are saved in assets/icons/stack/ (sources and licences in CREDITS.txt there). The GitHub graph reads a saved snapshot, refreshed daily by .github/workflows/github-snapshot.yml (or by hand with: node scripts/update-github-snapshot.mjs). It shows one circular dot per day in week columns for the complete saved yearly snapshot."
+  "note": "Items with an icon show as logos in their own colours; color is the brand colour used for the hover glow. mono: true is for single-colour logos, drawn in white (black in light mode). pale: true darkens a light brand colour in light mode so it stays visible. Items without an icon (or plain strings) show as text tags, for skills without a logo. href links each item to a page explaining it, and description is the one-sentence tooltip shown on hover and keyboard focus. Logos are saved in assets/icons/stack/ (sources and licences in CREDITS.txt there). The GitHub graph reads a saved snapshot, refreshed daily by .github/workflows/github-snapshot.yml (or by hand with: node scripts/update-github-snapshot.mjs). It shows one circular dot per day in week columns for the complete saved yearly snapshot."
 }

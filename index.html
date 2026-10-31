@@ -2,6 +2,7 @@
 <html lang="en" class="has-initial-hero">
 <head>
   <meta charset="utf-8">
+  <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
   <meta name="robots" content="index, follow">
@@ -76,19 +77,20 @@
   <!-- Parallel links, not an @import chain: each stylesheet starts
        downloading as soon as the HTML is parsed. -->
   <link rel="stylesheet" href="css/fonts.css?v=1da91407db">
-  <link rel="stylesheet" href="css/tokens.css?v=13cf6c349b">
+  <link rel="stylesheet" href="css/tokens.css?v=e128138600">
   <link rel="stylesheet" href="css/base.css?v=809d4ebc4e">
   <link rel="stylesheet" href="css/chrome.css?v=f72961e767">
   <link rel="stylesheet" href="css/sections.css?v=6db1f32fa7">
   <link rel="stylesheet" href="css/hero.css?v=dab9d78280">
-  <link rel="stylesheet" href="css/story.css?v=2b145ecfd8">
-  <link rel="stylesheet" href="css/work.css?v=9b8fbdcd74">
+  <link rel="stylesheet" href="css/story.css?v=880e84abce">
+  <link rel="stylesheet" href="css/work.css?v=f449f0e8f7">
   <link rel="stylesheet" href="css/services.css?v=b921079b14">
-  <link rel="stylesheet" href="css/closing.css?v=e584053ace">
+  <link rel="stylesheet" href="css/closing.css?v=2879f70e91">
   <link rel="stylesheet" href="css/live-stats.css?v=00e7723969">
   <link rel="stylesheet" href="css/notes.css?v=92e19bb746">
-  <link rel="stylesheet" href="css/studio.css?v=ef9c13f558">
-  <link rel="stylesheet" href="css/refinements.css?v=ffea4382e2">
+  <link rel="stylesheet" href="css/studio.css?v=fe752646ad">
+  <link rel="stylesheet" href="css/refinements.css?v=3e1d20c15a">
+  <link rel="stylesheet" href="css/theme.css?v=b51f1cb8e2">
   <link rel="preload" href="assets/fonts/clash-display-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -97,7 +99,7 @@
        the script at high priority (a deferred script is otherwise low),
        and all the content in one file, data/site.json, built from the
        individual data/*.json files by scripts/build-data.mjs. -->
-  <link rel="preload" href="js/content.js?v=c27d4ec83a" as="script" fetchpriority="high">
+  <link rel="preload" href="js/content.js?v=5c9e7e29c8" as="script" fetchpriority="high">
   <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 
 
@@ -115,12 +117,13 @@
   <!-- Deferred scripts run in document order once the HTML is parsed.
        Lenis, GSAP and ScrollTrigger are local copies (vendor/), same
        versions as before. -->
-  <script src="js/content.js?v=c27d4ec83a" defer></script>
-  <script src="js/studio.js?v=0f01cd298b" defer></script>
+  <script src="js/content.js?v=5c9e7e29c8" defer></script>
+  <script src="js/studio.js?v=8884b340b5" defer></script>
   <script src="js/studio-motion.js?v=e8e7d88fb4" defer></script>
   <script src="js/site.js?v=f1d4b0a513" defer></script>
-  <script src="js/interactions.js?v=06b317151c" defer></script>
-  <script src="js/sound.js?v=bb23002504" defer></script>
+  <script src="js/interactions.js?v=dbc4a6e11a" defer></script>
+  <script src="js/sound.js?v=2a0702e04a" defer></script>
+  <script src="js/theme.js?v=6bfb6ba2ab" defer></script>
   <script src="js/cursor.js?v=93eea0e5eb" defer></script>
   <script src="vendor/lenis.min.js?v=0bf174d39b" defer></script>
   <script src="vendor/gsap.min.js?v=96c01b81f4" defer></script>

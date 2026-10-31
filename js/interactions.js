@@ -1112,6 +1112,9 @@
      straight there and explains that one instead; on leaving, it goes
      back to roaming. Paused while the section is off screen or the tab
      is hidden. It replaces the plain tooltip for these items.
+     Touch screens: no roaming. Tapping a tool shows the bot with its
+     description instead of opening the link; tapping it again, or
+     anywhere else, puts the bot away.
   ---------------------------------------------------------------- */
 
   function initStackGuide() {
@@ -1119,9 +1122,11 @@
     const groups = document.querySelector(".stack-groups");
     const host = guide?.parentElement;
     if (!guide || !groups || !host || !("IntersectionObserver" in window)) return;
+    const touch = !finePointer.matches;
 
     const bubble = guide.querySelector(".stack-guide-bubble");
-    const hint = () => (finePointer.matches ? guide.dataset.hint : guide.dataset.touchHint);
+    /* On touch the tap is the explanation, so there is no "tap to learn more". */
+    const hint = () => (touch ? "" : guide.dataset.hint);
     const STEP = 3200;
     const REST_EVERY = 4;
     const REST = 7000;
@@ -1205,7 +1210,7 @@
     };
 
     const roam = () => {
-      if (held || !active()) return;
+      if (touch || held || !active()) return;
       if (stops > 0 && stops % REST_EVERY === 0) {
         stops += 1;
         quiet();
@@ -1258,13 +1263,30 @@
       /* Ignored right after a scroll: wheel-scrolling under a still
          cursor also fires hover events, and the bot should not chase them. */
       item.addEventListener("pointermove", (event) => {
-        if (event.pointerType === "mouse" && held !== item && performance.now() - scrolledAt > 200) hold(item);
+        if (!touch && event.pointerType === "mouse" && held !== item && performance.now() - scrolledAt > 200) hold(item);
       });
-      item.addEventListener("pointerleave", (event) => { if (event.pointerType === "mouse") release(item); });
+      item.addEventListener("pointerleave", (event) => { if (!touch && event.pointerType === "mouse") release(item); });
       item.addEventListener("focusin", (event) => { if (event.target.matches(":focus-visible")) hold(item); });
-      item.addEventListener("focusout", () => release(item));
+      /* On touch, taps alone open and close the bot (see below). */
+      item.addEventListener("focusout", () => { if (!touch) release(item); });
     });
     document.addEventListener("keydown", (event) => { if (event.key === "Escape" && held) release(held); });
+
+    if (touch) {
+      const putAway = () => { held = null; hide(); };
+      /* The whole tile counts, icon and padding included. */
+      groups.addEventListener("click", (event) => {
+        const item = event.target.closest(ITEMS);
+        if (!item?.querySelector(".stack-link[data-tip]")) return;
+        event.preventDefault();
+        if (held === item) putAway();
+        else hold(item);
+      });
+      /* Capture phase, so taps on controls that stop their own clicks count too. */
+      document.addEventListener("pointerdown", (event) => {
+        if (held && !groups.contains(event.target)) putAway();
+      }, true);
+    }
   }
 
   /* ---- Site guide ----------------------------------------------------

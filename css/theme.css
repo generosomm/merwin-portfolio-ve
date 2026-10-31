@@ -1,0 +1,137 @@
+/* =============================================================
+   LIGHT THEME — <html data-theme="light">, set before first paint
+   by the inline script in each page's <head> and toggled by
+   js/theme.js. Dark stays the default. Only tokens change here,
+   plus the few places that hard-code a dark-only colour.
+   In the hero the name turns dark; its outline copy in front of
+   the photo turns paper-light, so the letters crossing the black
+   shirt keep a clear edge.
+   ============================================================= */
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --ink-900: #f4f3ef;          /* page canvas: warm paper */
+  --ink-850: #ebeae5;
+  --ink-800: #e2e1db;
+
+  --line: rgba(20, 20, 19, 0.1);
+  --line-strong: rgba(20, 20, 19, 0.22);
+
+  --text: #141413;             /* 17:1 on --ink-900 */
+  --white: #141413;
+  --text-mid: #5c5c57;         /* 6.2:1 — AA for body copy */
+  --text-dim: #8a8a84;         /* scroll-reveal start state */
+
+  --accent: #141413;           /* black and white only: the accent is the text colour */
+  --accent-wash: rgba(20, 20, 19, 0.08);
+  --danger: #b3261e;
+
+  --cursor-dot: rgba(20, 20, 19, 0.3);
+  --cursor-wrap: rgba(20, 20, 19, 0.08);
+  --cursor-bar: rgba(20, 20, 19, 0.75);
+
+  --shadow-deep: rgba(20, 20, 19, 0.2);
+  --shadow-soft: rgba(20, 20, 19, 0.16);
+
+  --studio-metal: #d3d2cc;
+  --studio-surface: #fbfaf7;
+  --studio-muted: #55574f;
+  --studio-glass: rgba(250, 249, 246, 0.88);
+  --studio-edge: rgba(20, 20, 19, 0.14);
+}
+
+/* The lightbox stays dark: the dark tokens again, scoped to it. */
+:root[data-theme="light"] .lightbox {
+  color-scheme: dark;
+  --ink-900: #0a0a0a;
+  --ink-850: #0e0e0e;
+  --ink-800: #141414;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --text: #f2f2f0;
+  --white: #ffffff;
+  --text-mid: #8c8c88;
+  --text-dim: #6c6c66;
+  --accent: #f2f2f0;
+  --accent-wash: rgba(242, 242, 240, 0.1);
+  color: var(--text);
+}
+/* Hero: light outline over the photo, and the photo fades into paper. */
+:root[data-theme="light"] .hero-line-outline { -webkit-text-stroke-color: #f4f3ef; }
+@media (max-width: 767px) {
+  :root[data-theme="light"] .hero-portrait::after {
+    background: linear-gradient(to bottom, rgba(244, 243, 239, 0) 28%, rgba(244, 243, 239, 0.78) 52%, var(--ink-900) 70%);
+  }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root[data-theme="light"] .hero-portrait::after {
+    background:
+      linear-gradient(to right, var(--ink-900), rgba(244, 243, 239, 0) 38%),
+      linear-gradient(to bottom, rgba(244, 243, 239, 0) 40%, rgba(244, 243, 239, 0.8) 62%, var(--ink-900) 80%);
+  }
+}
+
+/* Labels on dark chips over photos keep light text. */
+:root[data-theme="light"] :is(.edit-badge, .ep-badge, .live-post-views) { color: #f2f2f0; }
+
+/* Nav pill, deck controls and phone menu: light glass. */
+:root[data-theme="light"] :is(.chrome-top, .deck-controls, .menu) {
+  background: rgba(250, 249, 246, 0.72);
+  border-color: rgba(20, 20, 19, 0.1);
+  box-shadow: 0 10px 30px rgba(20, 20, 19, 0.1);
+}
+:root[data-theme="light"] .menu { background: rgba(250, 249, 246, 0.92); }
+:root[data-theme="light"] :is(.chrome-top, .deck-controls, .menu)::after {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2) 32%, rgba(255, 255, 255, 0.2) 68%, rgba(255, 255, 255, 0.7));
+}
+:root[data-theme="light"] .chrome-top :is(.chrome-nav-link, .nav-toggle) { color: rgba(20, 20, 19, 0.72); }
+:root[data-theme="light"] .chrome-top .chrome-nav-link:is(:hover, :focus-visible, [aria-current="true"]) { color: var(--text); }
+:root[data-theme="light"] .pill-indicator { background: rgba(20, 20, 19, 0.07); box-shadow: none; }
+:root[data-theme="light"] .deck-controls button:is(:hover:not(:disabled), :focus-visible),
+:root[data-theme="light"] :is(.sound-toggle, .theme-toggle):is(:hover, :focus-visible) { background: rgba(20, 20, 19, 0.07); }
+:root[data-theme="light"] .project-visit { border-color: var(--line-strong); }
+
+/* Single-colour stack logos are drawn dark instead of white. */
+/* Thin line logos (Three.js, MySQL) get pure black and a hair of weight. */
+:root[data-theme="light"] .stack-logo.is-mono img { filter: brightness(0) drop-shadow(0 0 0.4px #000); }
+/* Light brand colours (GSAP lime, PHP lilac) are darkened to read on paper. */
+:root[data-theme="light"] .stack-logo.is-pale img { filter: brightness(0.6) saturate(1.6); }
+:root[data-theme="light"] .stack-logo.is-mono:hover img { filter: brightness(0) drop-shadow(0 6px 14px rgba(20, 20, 19, 0.2)); }
+
+/* GitHub dots: darker means busier, as white means busier in dark. */
+:root[data-theme="light"] .github .gh-cell::after { background: #d9dad4; }
+:root[data-theme="light"] .github .gh-cell[data-level="1"]::after { background: #a3a79f; }
+:root[data-theme="light"] .github .gh-cell[data-level="2"]::after { background: #63675f; }
+:root[data-theme="light"] .github .gh-cell[data-level="3"]::after { background: #2c2f2b; }
+
+/* ---- Theme button: a sun in dark mode, a moon in light mode ------- */
+.theme-toggle { display: grid; place-items: center; width: 36px; height: 36px; margin-inline: 2px; border-radius: 50%;
+  color: var(--studio-muted, var(--text-mid)); transition: color .2s ease, background-color .2s ease; }
+.theme-toggle:hover, .theme-toggle:focus-visible { color: var(--text); background: rgb(255 255 255 / .06); }
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .theme-moon, :root[data-theme="light"] .theme-toggle .theme-sun { display: none; }
+:root[data-theme="light"] .theme-toggle .theme-moon { display: block; }
+
+/* ---- The switch: a circle grows from the button (js/theme.js) ----- */
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { z-index: 1; }
+
+/* No View Transitions: colours fade for a moment, then this goes away. */
+.theme-fade, .theme-fade *, .theme-fade *::before, .theme-fade *::after {
+  transition: background-color .4s ease, color .4s ease, border-color .4s ease, fill .4s ease, stroke .4s ease !important;
+}
+
+/* Full pages: the theme and sound buttons sit together on the right. */
+.full-page-tools { display: flex; align-items: center; gap: 4px; }
+
+/* Phones: the nav pill is full, so the button lives in the menu. */
+.menu-theme { display: none; }
+@media (max-width: 767px) {
+  .chrome-top .theme-toggle { display: none; }
+  .menu-theme { display: inline-flex; width: auto; height: auto; min-height: var(--tap); align-items: center; gap: var(--s-2); margin-top: var(--s-4);
+    padding: 0; border-radius: 0; font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-mid); }
+  :root .menu-theme.theme-toggle:is(:hover, :focus-visible) { background: none; color: var(--accent); }
+  .menu-theme svg { width: 0.9375rem; height: 0.9375rem; }
+}

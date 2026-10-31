@@ -148,6 +148,8 @@ function socialIcon(name) {
    carries the name; the icons are decorative. */
 const LUCIDE = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"';
 const MENU_ICON = `<svg class="nav-toggle-icon icon-menu" ${LUCIDE}><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>`;
+const THEME_SUN_ICON = `<svg class="theme-sun" ${LUCIDE}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>`;
+const THEME_MOON_ICON = `<svg class="theme-moon" ${LUCIDE}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
 const SOUND_ON_ICON = `<svg class="sound-icon sound-on" ${LUCIDE}><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/></svg>`;
 const SOUND_OFF_ICON = `<svg class="sound-icon sound-off" ${LUCIDE}><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`;
 const CLOSE_ICON = `<svg class="nav-toggle-icon icon-close" ${LUCIDE}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
@@ -168,6 +170,7 @@ function renderTopChrome(data) {
   root.innerHTML = `
     <nav class="chrome-nav pill-nav" aria-label="${attr(nav.ariaLabel)}">
       <ul class="chrome-nav-list">${links}</ul>
+      ${hasText(nav.themeLabel) ? `<button class="theme-toggle" type="button" aria-pressed="false" aria-label="${attr(nav.themeLabel)}">${THEME_SUN_ICON}${THEME_MOON_ICON}</button>` : ""}
       ${hasText(nav.soundLabel) ? `<button class="sound-toggle" type="button" aria-pressed="true" aria-label="${attr(nav.soundLabel)}">${SOUND_ON_ICON}${SOUND_OFF_ICON}</button>` : ""}
       <span class="pill-indicator" aria-hidden="true"></span>
       <button class="nav-toggle" id="nav-toggle" type="button"
@@ -230,7 +233,8 @@ function renderMenu(data) {
   root.setAttribute("aria-modal", "true");
   root.innerHTML = `
     <ul class="menu-list">${menuLinks}</ul>
-    <div class="menu-socials" aria-label="${attr(socials.ariaLabel)}">${menuSocials}</div>`;
+    <div class="menu-socials" aria-label="${attr(socials.ariaLabel)}">${menuSocials}</div>
+    ${hasText(nav.themeLabel) ? `<button class="theme-toggle menu-theme" type="button" data-light="${attr(nav.themeLabel)}" data-dark="${attr(nav.darkLabel || nav.themeLabel)}">${THEME_SUN_ICON}${THEME_MOON_ICON}<span>${text(nav.themeLabel)}</span></button>` : ""}`;
 }
 
 /* ---- Scroll shell ---------------------------------------------
@@ -702,7 +706,6 @@ function renderWork(data) {
   const live = projects.filter(item => hasText(item.href));
   const featuredIndex = live.findIndex(item => item.title === config.defaultProject);
   if (featuredIndex > 0) live.unshift(live.splice(featuredIndex, 1)[0]);
-  const archive = projects.filter(item => !hasText(item.href));
   const cards = live.map(item => `<div class="deck-card">
     <div class="deck-browser-bar" aria-hidden="true"><div class="mac-window-controls"><i class="mac-close"></i><i class="mac-minimize"></i><i class="mac-zoom"></i></div><span>${text(item.title)}</span></div>
     <div class="studio-project-image"><a href="${attr(item.href)}" target="_blank" rel="noopener noreferrer" aria-label="${attr(item.title)}"${hasText(item.visitLabel) ? ` data-visit-label="${attr(item.visitLabel)}"` : ''} draggable="false">${hasText(item.image?.src) ? picture(item.image) : `<p>${text(item.title)}</p>`}</a></div>
@@ -717,7 +720,6 @@ function renderWork(data) {
       <div class="deck-thumbs" role="group" hidden aria-label="${attr(config.thumbs)}">${thumbs}</div>
       <div class="deck-descriptions">${descriptions}</div>
     </div>` : ''}
-    ${archive.length ? `<div class="work-archive"><h3 class="work-archive-title">${text(config.archiveTitle)}</h3><ul>${archive.map(item => `<li><h4>${text(item.title)}</h4><p>${text(item.summary)}</p>${workTechnologies(item.tags)}${hasText(item.status) ? `<p class="project-status">${text(item.status)}</p>` : ''}</li>`).join('')}</ul></div>` : ''}
     ${seeAll(data.all)}
   </div>`;
 }
@@ -933,12 +935,13 @@ function renderProof(data) {
 ---------------------------------------------------------------- */
 
 /* The guide bot drawing, shared by the stack guide and the site guide.
-   It takes the colour of its container (currentColor). */
+   It takes the colour of its container (currentColor); the face
+   follows the page canvas, so it turns light in light mode. */
 function guideBot(className) {
   return `<svg class="${className}" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
     <path d="M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     <circle cx="16" cy="3" r="2" fill="currentColor"/>
-    <rect x="5" y="8" width="22" height="18" rx="6" fill="#0a0a0a" stroke="currentColor" stroke-width="2"/>
+    <rect x="5" y="8" width="22" height="18" rx="6" fill="#0a0a0a" style="fill: var(--ink-900)" stroke="currentColor" stroke-width="2"/>
     <g class="guide-eyes" fill="currentColor"><circle cx="12" cy="17" r="2.2"/><circle cx="20" cy="17" r="2.2"/></g>
     <path d="M9 30h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
   </svg>`;
@@ -1001,7 +1004,7 @@ function renderStack(data) {
         /* Only a plain hex colour reaches the style attribute. */
         const brand = /^#[0-9a-f]{3,8}$/i.test(item.color || "") ? ` style="--brand: ${item.color}"` : "";
         return `
-          <li class="stack-logo${item.mono ? " is-mono" : ""}"${brand}>
+          <li class="stack-logo${item.mono ? " is-mono" : ""}${item.pale ? " is-pale" : ""}"${brand}>
             <span class="stack-logo-icon"><img src="${attr(item.icon)}" alt="" width="40" height="40" loading="lazy" decoding="async"></span>
             ${stackName(item, "stack-logo-name")}
           </li>`;

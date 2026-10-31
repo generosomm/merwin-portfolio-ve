@@ -48,6 +48,8 @@
       }
     ],
     "toggleLabel": "",
+    "themeLabel": "Light mode",
+    "darkLabel": "Dark mode",
     "soundLabel": "Sound effects"
   },
   "socials": {

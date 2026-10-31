@@ -144,6 +144,55 @@ window.portfolioContentReady.then(() => {
       suppressClick = false;
     }
   }, true);
+
+  /* Phones: "Behind the build" opens a sheet with the preview, the
+     summary and the case rows instead of unfolding inside the deck. */
+  const phone = matchMedia('(max-width: 767px)');
+  const sheet = document.createElement('dialog');
+  if (typeof sheet.showModal !== 'function') return;
+  sheet.className = 'case-sheet';
+  sheet.setAttribute('data-lenis-prevent', '');
+  document.body.append(sheet);
+  const closeLabel = document.querySelector('.lightbox-close')?.getAttribute('aria-label') || 'Close';
+
+  deck.addEventListener('click', event => {
+    const summary = event.target.closest('.project-case > summary');
+    if (!summary || !phone.matches) return;
+    event.preventDefault();
+    const info = summary.closest('.deck-info');
+    const picture = cards[descriptions.indexOf(info)]?.querySelector('.studio-project-image picture, .studio-project-image img');
+    const title = info.querySelector('h3');
+    const body = document.createElement('div');
+    body.className = 'case-sheet-body';
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'case-sheet-close';
+    close.setAttribute('aria-label', closeLabel);
+    close.textContent = '×';
+    close.addEventListener('click', () => sheet.close());
+    if (picture) {
+      const figure = document.createElement('div');
+      figure.className = 'case-sheet-image';
+      figure.append(picture.cloneNode(true));
+      body.append(figure);
+    }
+    for (const part of [title, info.querySelector(':scope > p:not(.project-status)'), info.querySelector('.project-case dl')]) {
+      if (part) body.append(part.cloneNode(true));
+    }
+    sheet.setAttribute('aria-label', title?.textContent.trim() || summary.textContent.trim());
+    sheet.replaceChildren(close, body);
+    sheet.showModal();
+    sheet.scrollTop = 0;
+    document.documentElement.classList.add('dialog-open');
+    window.portfolio?.lenis?.stop();
+  });
+  /* A click on the sheet itself, not its content, is a click on the backdrop. */
+  sheet.addEventListener('click', event => { if (event.target === sheet) sheet.close(); });
+  sheet.addEventListener('close', () => {
+    document.documentElement.classList.remove('dialog-open');
+    window.portfolio?.lenis?.start();
+  });
+  phone.addEventListener('change', () => { if (!phone.matches && sheet.open) sheet.close(); });
 });
 
 /* Services: the 3D object turns toward a fine pointer, then settles. */

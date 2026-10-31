@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
   <title>All work — Merwin Generoso</title>
@@ -16,11 +17,13 @@
   <meta property="og:image:height" content="630">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0A0A'/><rect x='14' y='18' width='72' height='3' fill='%232BD47D'/><text x='50' y='74' font-size='50' font-family='system-ui,sans-serif' font-weight='700' fill='%23F2F2F0' text-anchor='middle'>M</text></svg>">
   <link rel="stylesheet" href="css/fonts.css?v=1da91407db">
-  <link rel="stylesheet" href="css/tokens.css?v=13cf6c349b">
+  <link rel="stylesheet" href="css/tokens.css?v=e128138600">
   <link rel="stylesheet" href="css/base.css?v=809d4ebc4e">
   <link rel="stylesheet" href="css/full-page.css?v=8baacae3ec">
+  <link rel="stylesheet" href="css/theme.css?v=b51f1cb8e2">
   <script defer src="/_vercel/insights/script.js"></script>
-  <script src="js/sound.js?v=bb23002504" defer></script>
+  <script src="js/sound.js?v=2a0702e04a" defer></script>
+  <script src="js/theme.js?v=6bfb6ba2ab" defer></script>
 </head>
 
 <!-- The project list between the markers is generated from
@@ -31,7 +34,7 @@
   <main>
     <div class="full-page-bar">
       <a class="full-page-back" href="./#work">&larr; Back to highlights</a>
-      <button class="sound-toggle" type="button" aria-pressed="true" aria-label="Sound effects"><svg class="sound-icon sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/></svg><svg class="sound-icon sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg></button>
+      <span class="full-page-tools"><button class="theme-toggle" type="button" aria-pressed="false" aria-label="Light mode"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button><button class="sound-toggle" type="button" aria-pressed="true" aria-label="Sound effects"><svg class="sound-icon sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/></svg><svg class="sound-icon sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg></button></span>
     </div>
     <!-- page:start --><header class="wp-head"><h1>All work</h1><p>Every website, system and tool I’ve built, with the challenge, my role and the approach behind each one.</p></header>
     <section aria-labelledby="wp-live"><h2 class="wp-heading" id="wp-live">Websites &amp; tools <span>8</span></h2><article class="wp-project">

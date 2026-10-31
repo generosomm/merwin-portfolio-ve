@@ -222,7 +222,7 @@
   overflow: hidden;
   border: 1px solid var(--line-strong);
   background: var(--ink-800);
-  box-shadow: 0 40px 70px -30px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 40px 70px -30px var(--shadow-deep);
   opacity: 0;
   /* Hidden pose: swung away on its right-edge hinge and pushed back.
      Hinging on the right keeps that edge in place, so the card never
@@ -379,6 +379,21 @@
 
 @media (max-width: 767px) {
   .edit-card { flex-basis: 76%; }
+}
+
+/* Touch screens: a swipe settles on one card. The auto-scroll loop
+   (js/interactions.js) is off on these screens, so snapping cannot
+   fight it; phones centre the card, matching the loop's start. */
+@media (hover: none), (pointer: coarse) {
+  .edits-grid { scroll-snap-type: x mandatory; }
+  .edit-card { scroll-snap-align: start; scroll-snap-stop: always; }
+  /* A mouse drag moves the row a few pixels at a time; snapping would
+     pull it straight back, so it snaps once on release instead. */
+  .edits-grid.is-dragging { scroll-snap-type: none; }
+}
+
+@media ((hover: none) or (pointer: coarse)) and (max-width: 767px) {
+  .edit-card { scroll-snap-align: center; }
 }
 
 .edit-link {

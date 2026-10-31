@@ -581,6 +581,15 @@ html.hero-play .hero-foot > :nth-child(3) {
   }
 }
 
+/* Phones: centred under the full-width buttons. */
+@media (max-width: 767px) {
+  .hero-socials {
+    align-self: center;
+    justify-content: center;
+    margin-left: 0;
+  }
+}
+
 /* ---- Phones + tablets: full-bleed portrait (below 1024px) ---------
    The portrait fills the first screen behind everything; the name,
    intro, buttons and socials sit at the bottom-left over a dark

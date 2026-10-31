@@ -21,11 +21,13 @@ const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp
 
 const tags = list => list?.length ? `<ul class="wp-tags" aria-label="Technologies used">${list.map(tag => `<li>${escape(tag)}</li>`).join('')}</ul>` : '';
 
-// The full Work page (work.html): every project with its notes open,
-// then the systems that have no public link. Plain HTML, no JS needed.
+// The full Work page (work.html): every project with its title, status,
+// summary and link, its notes and stack folded under a toggle, then the
+// systems that have no public link. Plain HTML, no JS needed.
 export function workPageHTML(work) {
   const page = work.page || {};
   const visit = work.viewer?.visit || 'Visit live site';
+  const more = work.viewer?.caseLabel || 'Behind the build';
   // Same order as the homepage carousel: the featured project first.
   const live = work.items.filter(item => item.href)
     .sort((a, b) => (b.title === work.viewer?.defaultProject) - (a.title === work.viewer?.defaultProject));
@@ -36,8 +38,11 @@ export function workPageHTML(work) {
         <h3>${escape(item.title)}</h3>
         ${item.status ? `<p class="wp-status">${escape(item.status)}</p>` : ''}
         <p class="wp-summary">${escape(item.summary)}</p>
-        ${item.caseStudy?.length ? `<dl class="wp-case">${item.caseStudy.map(row => `<div><dt>${escape(row.label)}</dt><dd>${escape(row.text)}</dd></div>`).join('')}</dl>` : ''}
-        <div class="wp-meta">${tags(item.tags)}<a class="wp-visit" href="${escape(item.href)}" target="_blank" rel="noopener noreferrer">${escape(item.visitLabel || visit)} &#8599;<span class="sr-only"> (${escape(item.title)})</span></a></div>
+        <a class="wp-visit" href="${escape(item.href)}" target="_blank" rel="noopener noreferrer">${escape(item.visitLabel || visit)} &#8599;<span class="sr-only"> (${escape(item.title)})</span></a>
+        <details class="wp-more"><summary>${escape(more)}</summary>
+          ${item.caseStudy?.length ? `<dl class="wp-case">${item.caseStudy.map(row => `<div><dt>${escape(row.label)}</dt><dd>${escape(row.text)}</dd></div>`).join('')}</dl>` : ''}
+          ${tags(item.tags)}
+        </details>
       </div>
     </article>`;
   return `${pageHead(page)}

@@ -184,29 +184,73 @@
   color: var(--text-mid);
 }
 
-.wp-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-3) var(--s-5);
-  margin-top: var(--s-4);
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-}
-
 .wp-tags {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-2) var(--s-4);
   list-style: none;
-  padding: 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
   font-size: var(--fs-small);
   color: var(--text-mid);
 }
 
-.wp-visit {
+.wp-body > .wp-visit {
+  margin-top: var(--s-4);
+  padding: 0 var(--s-5);
+  border: 1px solid var(--line-strong);
+  border-radius: 100px;
   color: var(--text);
+}
+
+/* The notes and stack stay folded until asked for. */
+.wp-more {
+  margin-top: var(--s-3);
+}
+
+.wp-more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--tap);
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--text-mid);
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.wp-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.wp-more summary::before {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  font: 400 16px/1 var(--font-body);
+  color: var(--accent);
+  transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+}
+
+.wp-more summary:hover,
+.wp-more[open] summary {
+  color: var(--text);
+}
+
+.wp-more[open] summary::before {
+  transform: rotate(45deg);
+}
+
+.wp-more .wp-case {
+  margin-top: var(--s-3);
 }
 
 /* Systems without a public link: a quiet three-column list. */
@@ -441,6 +485,30 @@ section + section {
   .xp-row {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--s-1);
+  }
+
+  /* Work page on phones: everything on the centre line. */
+  .wp-head,
+  .wp-body,
+  .wp-archive li {
+    text-align: center;
+  }
+
+  .wp-head p,
+  .wp-summary {
+    margin-inline: auto;
+  }
+
+  .wp-heading {
+    justify-content: center;
+  }
+
+  .wp-tags {
+    justify-content: center;
+  }
+
+  main:has(.wp-head) .full-page-cta {
+    text-align: center;
   }
 
   .ep-delivery {
